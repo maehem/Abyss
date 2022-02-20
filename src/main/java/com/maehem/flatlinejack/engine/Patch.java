@@ -17,6 +17,7 @@
 package com.maehem.flatlinejack.engine;
 
 import java.io.InputStream;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -39,26 +40,20 @@ import javafx.scene.shape.Rectangle;
  */
 public class Patch extends ImageView {
 
-    /**
-     * @return the box
-     */
-    public Rectangle getBox() {
-        return box;
-    }
-
     private double threshold;
     private final Rectangle box;
-    
-    
+        
     public Patch(double x, double y, double threshold, InputStream is) {
         super(new Image(is));
         setLayoutX(x);
         setLayoutY(y);
         
+        this.setBlendMode(BlendMode.BLUE);
+        
         this.threshold = threshold;
         this.box = new Rectangle(x, y, getImage().getWidth(), getImage().getHeight());
-        //this.box.setStroke(Color.RED);
-        //this.box.setStrokeWidth(2.0);
+        this.box.setStroke(Color.RED);
+        this.box.setStrokeWidth(2.0);
         this.box.setFill(Color.TRANSPARENT);
     }
     
@@ -75,4 +70,12 @@ public class Patch extends ImageView {
     public void setThreshold(double threshold) {
         this.threshold = threshold;
     }
+    
+    /**
+     * @return the box
+     */
+    public Rectangle getBox() {
+        return box;
+    }
+
 }

@@ -170,23 +170,20 @@ public class Engine extends Application {
             Constructor<?> cons = c.getConstructor(int.class, int.class, Port.class, Player.class);
             Object object = cons.newInstance(1280, 720, nextRoom, getPlayer());
             setVignette((Vignette) object);
-            log.log(Level.CONFIG, "Loaded: {0}", nextRoom.getDestination());
-
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchMethodException ex) {
-            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (SecurityException ex) {
-            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());
+        } catch (ClassNotFoundException | 
+                NoSuchMethodException | 
+                SecurityException | 
+                InstantiationException | 
+                IllegalAccessException | 
+                IllegalArgumentException | 
+                InvocationTargetException   ex) {
+            //log.error(Level.SEVERE, ex.getMessage(), ex);
+            //log.severe("exception loading scene.");
+            //log.log(Level.SEVERE, "logged exception", ex);
+            ex.printStackTrace();
         }
+        
     }
 
     private void initHotKeys() {
@@ -197,7 +194,6 @@ public class Engine extends Application {
 
             @Override
             public void handle(KeyEvent ke) {
-                //System.out.println("AAAA Pressed: " + ke.getCharacter());
                 if (keyComb.match(ke)) {
                     ke.consume(); // <-- stops passing the event to next node
 
@@ -207,7 +203,6 @@ public class Engine extends Application {
                 }
             }
         });
-
     }
 
     /**

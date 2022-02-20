@@ -26,9 +26,7 @@ import com.maehem.flatlinejack.engine.babble.DialogResponse;
 import com.maehem.flatlinejack.engine.babble.DialogResponseAction;
 import com.maehem.flatlinejack.engine.babble.DialogSheet;
 import com.maehem.flatlinejack.content.things.KomodoDeckThing;
-import java.util.ArrayList;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -40,62 +38,71 @@ import javafx.scene.shape.Polygon;
  */
 public class PawnShopVignette extends Vignette {
 
-    //private static final String TITLE = "Pawn Shop";
-
     private static final String PROP_NAME = "pawnshop";
     public static final double PLAYER_START_X = 200;
-    public static final double PLAYER_START_Y = 360;
+    public static final double PLAYER_START_Y = 400;
     private static final String CONTENT_BASE = "/content/vignette/pawn-shop/";
-    //private static final String BACKGROUND_IMAGE_FILENAME = CONTENT_BASE + "/backdrop.png";
     private static final String COUNTERS_IMAGE_FILENAME   = CONTENT_BASE + "counters.png";
     private static final String DOOR_PATCH_IMAGE_FILENAME = CONTENT_BASE + "patch-left.png";
     private static final String BROKER_POSE_SHEET_FILENAME = CONTENT_BASE + "pawn-broker-pose-sheet.png";
     private static final Polygon WALK_AREA = new Polygon(
             200, 380,
             300, 380,
-            330, 488,
-            800, 488,
-            960, 700,
-            50, 700,
-            100, 400,
+            330, 420,
+            800, 420,
+            960, 600,
+            50, 600,
+            100, 420,
             20, 400,
-            20, 372,
-            140, 372
+            20, 360,
+            140, 360
     );
 
-    private static final Patch p = new Patch(0, 0, 375, PawnShopVignette.class.getResourceAsStream(DOOR_PATCH_IMAGE_FILENAME));
+    private static final Patch p = new Patch(
+            0, 0, 375, 
+            PawnShopVignette.class.getResourceAsStream(DOOR_PATCH_IMAGE_FILENAME)
+    );
     private static final Port leftDoor = new Port(
-            20, 372,
-            30, 28,
-            880, 400, PoseSheet.Direction.LEFT,
-            "StreetVignette2");
+            20, 372,  // port XY location
+            30, 28,   // port size
+            920, 470, // place player at this XY when they leave the pawn shop.
+            PoseSheet.Direction.TOWARD,
+            "StreetVignette2"  // this door leads to the StreetVignette2 scene
+    );
 
     private Character shopOwnerCharacter;
     private int shopOwnerAnimationCount = 0;
     
-    private ResourceBundle bundle;
-
+    /**
+     * 
+     * @param w width of scene
+     * @param h height of scene
+     * @param prevPort where the player came from
+     * @param player the @Player
+     */
     public PawnShopVignette(int w, int h, Port prevPort, Player player) {
         super(w, h, CONTENT_BASE, prevPort, player);
-        // Don't put things here.  Use init().
+        // Don't put things here.  Override @init() which is called shortly after creation.
     }
 
     @Override
     protected void init() {
+        log.config("pawnshop: init start");
         // Called during super class initialization.
-        bundle = ResourceBundle.getBundle("content.messages.PawnShop");
-        setName(bundle.getString("title"));
+        // this crashes if it is called in the consructor.
+        //bundle = ResourceBundle.getBundle("content.messages.PawnShop");
+        
+        //setName(bundle.getString("title"));
+        log.config("pawnshop: init set player position");
         getPlayer().setLayoutX(PLAYER_START_X);
         getPlayer().setLayoutY(PLAYER_START_Y);
         // Add narration bundle string here.
-        getNarrationPane().setText(bundle.getString("narration"));
-        
-        
+        //getNarrationPane().setText(bundle.getString("narration"));
+
         initBackground();
         initMainArea();
         initPatches();
         initForeground();
-
     }
 
     private void initShopOwner() {
@@ -106,7 +113,7 @@ public class PawnShopVignette extends Vignette {
 
         // TODO:   Check that file exists.  The current exception message is cryptic.
         shopOwnerCharacter.setSkin(PawnShopVignette.class.getResourceAsStream(BROKER_POSE_SHEET_FILENAME), 1, 4);
-        log.config("Add skin for pawn shop owner." + BROKER_POSE_SHEET_FILENAME);
+        log.config("Add skin for pawn shop owner. " + BROKER_POSE_SHEET_FILENAME);
         // Dialog
         // Load dialog tree from file.
         shopOwnerCharacter.getDialog().init(getWidth(), getHeight());
@@ -117,10 +124,6 @@ public class PawnShopVignette extends Vignette {
     }
 
     private void initBackground() {
-//        // Load images for BACKGROUND_IMAGE_FILENAME.
-//        final ImageView backDrop = new ImageView();
-//        backDrop.setImage(new Image(PawnShopVignette.class.getResourceAsStream(BACKGROUND_IMAGE_FILENAME)));
-
         initShopOwner();
 
         // Counters (in front of shop owner )
@@ -138,57 +141,34 @@ public class PawnShopVignette extends Vignette {
     }
 
     private void initMainArea() {
-
-        // Character
-        //getPlayer().setLayoutX(getWidth() / 2); //  Near middle
-        //getPlayer().setLayoutY(2 * getHeight() / 4);  // Head about a 1/3 down
-
-        // Walk area
-        setWalkArea(WALK_AREA);
-
-        // Doors
-        getDoors().add(leftDoor);
-
-        getMainGroup().getChildren().addAll(
-                getPlayer(),
-                leftDoor.getTrigger()
-        );
+       
+        setWalkArea(WALK_AREA);  // Walk area
+        getDoors().add(leftDoor); // Doors
+        getMainGroup().getChildren().add( leftDoor );
     }
 
     private void initForeground() {
 
-        // Depth of field
-        //bgGroup.setEffect(new BoxBlur(10, 10, 3));
+        // example Depth of field
+        //fgGroup.setEffect(new BoxBlur(10, 10, 3));
     }
 
     private void initPatches() {
-
         getPatchList().add(p);
         getFgGroup().getChildren().add(p);
         getFgGroup().getChildren().add(p.getBox());
     }
 
     @Override
-    public Port processEvents(ArrayList<String> input) {
-        Port nextRoom = super.processEvents(input);
-        if (nextRoom != null) {
-            return nextRoom;
-        }
-        // Simulate perspective when player walks closer/further from view.
-        // TODO: an overidable method in @Vignette that calls this.
-        // TODO: default and setable values for scale and trim.
-        //getPlayer().setScale((8 * getPlayer().getLayoutY() / getHeight()) - 2.4);
-        getPlayer().setScale((5.2 * getPlayer().getLayoutY() / getHeight()) - 1.15);
-
+    public void loop() {
+        // animate shop owner.
+        // TODO can probably do this with a timeline?
         shopOwnerAnimationCount++;
         if (shopOwnerAnimationCount > 40) {
             shopOwnerAnimationCount = 0;
             shopOwnerCharacter.nextPose();
         }
 
-        // Player within shopOwner talkBlock and facing shopOwner
-        // makes floating dialog target visible.
-        return nextRoom;
     }
 
     private void initShopOwnerDialog() {

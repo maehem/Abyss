@@ -151,7 +151,7 @@ public class Character extends Group {
      * @param y range 0.0-1.0 (top to bottom(feet))
      */
     public final void setOrigin(double x, double y) {
-        log.log(Level.CONFIG, "character set origin: {0},{1}", new Object[]{originX, originY});
+        log.log(Level.FINEST, "character set origin: {0},{1}", new Object[]{x, y});
         this.originX = x;
         this.originY = y;
         
@@ -171,6 +171,7 @@ public class Character extends Group {
         // After scaling, translate new X or Y position back to 0, then translate to desired originX/Y.
         setTranslateX( ((-pW + bW)/2 - bW * originX ));
         setTranslateY( ((-pH + bH)/2 - bH * originY ));
+        
     }
     
     public final void setDefaultHearingBoundary() {
@@ -371,13 +372,18 @@ public class Character extends Group {
         getChildren().add(feetBoundary);        
     }
     
-    public void setFeetBoundary() {
+    private void setFeetBoundary() {
         double clipW = getPoseSheet().getWidth();
-        double feetW = clipW/4;
-        double feetX = clipW/2 - feetW/2;
         double clipH = getPoseSheet().getHeight();
+        
+        double feetW = clipW/4;
         double feetH = clipH/25;
-        double feetY = clipH - feetH;
+        
+        //double feetX = clipW/2 - feetW/2;        
+        double feetX = clipW*originX - feetW/2;        
+        //double feetY = clipH - feetH;
+        double feetY = clipH*originY - feetH/2;
+        
 
         feetBoundary.setX(feetX);
         feetBoundary.setY(feetY);

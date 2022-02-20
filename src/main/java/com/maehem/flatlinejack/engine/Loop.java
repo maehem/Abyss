@@ -18,6 +18,8 @@ package com.maehem.flatlinejack.engine;
 
 import com.maehem.flatlinejack.Engine;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
 
@@ -26,6 +28,7 @@ import javafx.scene.input.KeyEvent;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class Loop extends AnimationTimer {
+    public static final Logger log = Logger.getLogger("flatline");
 
     private long lastTime = 0;
     private final long TWAIT = 40000000;
@@ -37,21 +40,6 @@ public class Loop extends AnimationTimer {
     public Loop(Engine engine, Vignette vignette) {
         this.engine = engine;
         this.vignette = vignette;
-
-//        engine.getScene().setOnKeyPressed((KeyEvent e) -> {
-//            String code = e.getCode().toString();
-//            
-//            // only add once... prevent duplicates
-//            if (!input.contains(code)) {
-//                //System.out.println("Add key code: " + code);
-//                input.add(code);
-//            }
-//        });
-//
-//        engine.getScene().setOnKeyReleased((KeyEvent e) -> {
-//            String code = e.getCode().toString();
-//            input.remove(code);
-//        });
     }
 
     @Override
@@ -69,6 +57,7 @@ public class Loop extends AnimationTimer {
         engine.getGui().refresh();
         if ( nextRoom != null ) {
             // Save scene state.
+            log.config("[Loop] Load next room.");
             engine.notifyVignetteExit(nextRoom);
         }
 
@@ -76,7 +65,7 @@ public class Loop extends AnimationTimer {
     }
     
     public void addInputEvent(KeyEvent ke) {
-        System.out.println("Add Loop Input Event: " + ke.getCode());
+        log.log(Level.CONFIG, "Loop Input Event: {0}", ke.getCode());
         input.add(ke.getCode().toString());
     }
 }

@@ -26,47 +26,54 @@ import javafx.scene.shape.Shape;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class Port {
+public class Port extends Rectangle {
 
     public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
     public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
     
-    private Shape trigger;
+    //private Shape trigger;
     private String destination;
-    private boolean visible = false;
+//    private boolean visible = false;
     private double playerX = -1;
     private double playerY = -1;
     private Direction playerDir;
     
     public Port(String vingette) {
-        setDestination(vingette);
-        
+        //setDestination(vingette);
+        // Dummy Port for providing a default vignette. (like at game start)
+        this(0,0,1,1,-1,-1,Direction.RIGHT,vingette);
     }
     
     public Port(int x, int y, int w, int h, double px, double py, Direction pdir, String vignette) {
-        setTrigger(new Rectangle(x, y, w, h));
+        super(x, y, w, h);
+        setFill(TRIGGER_FILL_DEFAULT);
+        
+        //setTrigger(new Rectangle(x, y, w, h));
         setDestination(vignette);
+        
         this.playerX = px;
         this.playerY = py;
         this.playerDir = pdir;
+        
+        
     }
 
-    /**
-     * @return the trigger
-     */
-    public Shape getTrigger() {
-        return trigger;
-    }
-
-    /**
-     * @param trigger the trigger to set
-     */
-    public final void setTrigger(Shape trigger) {
-        this.trigger = trigger;
-        if (trigger.getFill() == null) {
-            trigger.setFill(TRIGGER_FILL_DEFAULT);
-        }        
-    }
+//    /**
+//     * @return the trigger
+//     */
+//    public Shape getTrigger() {
+//        return trigger;
+//    }
+//
+//    /**
+//     * @param trigger the trigger to set
+//     */
+//    public final void setTrigger(Shape trigger) {
+//        this.trigger = trigger;
+//        if (trigger.getFill() == null) {
+//            trigger.setFill(TRIGGER_FILL_DEFAULT);
+//        }        
+//    }
 
     /**
      * @return the @destination
@@ -84,26 +91,26 @@ public class Port {
     
     public void updateTriggerState(boolean tActive) {
         
-        if (visible) {
+//        if (visible) {
             if (tActive) {
-                getTrigger().setFill(Port.TRIGGER_FILL_ACTIVE);
+                setFill(Port.TRIGGER_FILL_ACTIVE);
             } else {
-                getTrigger().setFill(Port.TRIGGER_FILL_DEFAULT);
+                setFill(Port.TRIGGER_FILL_DEFAULT);
             }
-        } else {
-            getTrigger().setFill(Color.TRANSPARENT);
-        }
+//        } else {
+//            setFill(Color.TRANSPARENT);
+//        }
         
     }
     
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-        updateTriggerState(visible);
-    }
-    
-    public boolean isVisible() {
-        return visible;
-    }
+//    public void setVisible(boolean visible) {
+//        this.visible = visible;
+//        updateTriggerState(visible);
+//    }
+//    
+//    public boolean isVisible() {
+//        return visible;
+//    }
     
     /**
      * @return the playerX
