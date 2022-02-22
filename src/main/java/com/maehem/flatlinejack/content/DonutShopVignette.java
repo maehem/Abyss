@@ -20,7 +20,6 @@ import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
-import java.util.ArrayList;
 import java.util.Properties;
 import javafx.scene.shape.Polygon;
 
@@ -30,7 +29,6 @@ import javafx.scene.shape.Polygon;
  */
 public class DonutShopVignette extends Vignette {
 
-    //private static final String NAME = "Donut Shop";
     private static final String PROP_NAME = "donutshop";    
     private static final String CONTENT_BASE = "/content/vignette/donut-shop/";
     private static final Polygon WALK_AREA = new Polygon(
@@ -42,7 +40,7 @@ public class DonutShopVignette extends Vignette {
     
     private static final Port frontDoor = new Port(
             490, 720,   270, 40,
-            550,360, PoseSheet.Direction.TOWARD,            
+            550, 360,   PoseSheet.Direction.TOWARD,            
             "StreetVignette2");    
     
     public DonutShopVignette(int w, int h, Port prevPort, Player player) {
@@ -51,45 +49,18 @@ public class DonutShopVignette extends Vignette {
 
     @Override
     protected void init() {
-        initMainArea();
-        initPatches();
-        initForeground();
+        // Character
+        getPlayer().setLayoutX( getWidth() * 0.5);
+        getPlayer().setLayoutY(getHeight() * 0.5);
+        
+        setWalkArea(WALK_AREA);
+        
+        addPort(frontDoor); // Doors
     }
 
     @Override
     public void loop() {}
 
-    private void initMainArea() {
-        // Character
-        getPlayer().setLayoutX(getWidth() / 2); //  Near middle
-        getPlayer().setLayoutY(2 * getHeight() / 4);  // Head about a 1/3 down
-        
-        setWalkArea(WALK_AREA);
-        
-        // Doors
-        getDoors().add(frontDoor);
-        
-        getMainGroup().getChildren().addAll(
-//                getPlayer(),
-                //frontDoor.getTrigger()
-                frontDoor
-        );
-    }
-
-    private void initForeground() {
-
-        // Depth of field
-        //bgGroup.setEffect(new BoxBlur(10, 10, 3));
-
-    }
-    
-    private void initPatches() {
-        
-//        getPatchList().add(p);        
-//        getFgGroup().getChildren().add(p);
-//        getFgGroup().getChildren().add(p.getBox());
-    }
-    
     @Override
     public Properties saveProperties() {
         Properties p = new Properties();

@@ -88,7 +88,7 @@ public class Character extends Group {
         // set origin
         // Translate the image such that our image position 
         // is relative to the feet.
-        setOrigin(0.5, 0.8);
+        setOrigin(0.5, 0.9);
         
         
         setDefaultHearingBoundary();

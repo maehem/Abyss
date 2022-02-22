@@ -48,8 +48,8 @@ public class PawnShopVignette extends Vignette {
     private static final Polygon WALK_AREA = new Polygon(
             200, 380,
             300, 380,
-            330, 420,
-            800, 420,
+            330, 440,
+            800, 440,
             960, 600,
             50, 600,
             100, 420,
@@ -58,13 +58,13 @@ public class PawnShopVignette extends Vignette {
             140, 360
     );
 
-    private static final Patch p = new Patch(
-            0, 0, 375, 
+    private static final Patch leftDoorPatch = new Patch(
+            0, 0, 425, 
             PawnShopVignette.class.getResourceAsStream(DOOR_PATCH_IMAGE_FILENAME)
     );
     private static final Port leftDoor = new Port(
-            20, 372,  // port XY location
-            30, 28,   // port size
+            30, 360,  // port XY location
+            40, 40,   // port size
             920, 470, // place player at this XY when they leave the pawn shop.
             PoseSheet.Direction.TOWARD,
             "StreetVignette2"  // this door leads to the StreetVignette2 scene
@@ -87,22 +87,19 @@ public class PawnShopVignette extends Vignette {
 
     @Override
     protected void init() {
-        log.config("pawnshop: init start");
-        // Called during super class initialization.
-        // this crashes if it is called in the consructor.
-        //bundle = ResourceBundle.getBundle("content.messages.PawnShop");
-        
-        //setName(bundle.getString("title"));
-        log.config("pawnshop: init set player position");
+        setHorizon(0.2);
         getPlayer().setLayoutX(PLAYER_START_X);
         getPlayer().setLayoutY(PLAYER_START_Y);
-        // Add narration bundle string here.
-        //getNarrationPane().setText(bundle.getString("narration"));
 
+        initShopOwner();        
         initBackground();
-        initMainArea();
-        initPatches();
-        initForeground();
+        
+        setWalkArea(WALK_AREA);  // Walk area
+        addPort(leftDoor);
+        addPatch(leftDoorPatch);
+        
+        // example Depth of field
+        //fgGroup.setEffect(new BoxBlur(10, 10, 3));
     }
 
     private void initShopOwner() {
@@ -121,48 +118,27 @@ public class PawnShopVignette extends Vignette {
         initShopOwnerDialog();
 
         getCharacterList().add(shopOwnerCharacter);
+        getBgGroup().getChildren().add(
+                shopOwnerCharacter
+        );
     }
 
     private void initBackground() {
-        initShopOwner();
 
-        // Counters (in front of shop owner )
+        // Display Cases (in front of shop owner )
         final ImageView counterView = new ImageView();
         counterView.setImage(new Image(PawnShopVignette.class.getResourceAsStream(COUNTERS_IMAGE_FILENAME)));
         counterView.setLayoutX(getWidth() - counterView.getImage().getWidth());
         counterView.setLayoutY(getHeight() - counterView.getImage().getHeight());
-        counterView.setBlendMode(BlendMode.MULTIPLY);
+        //counterView.setBlendMode(BlendMode.MULTIPLY);
 
         // Add these in visual order.  Back to front.
-        getBgGroup().getChildren().addAll(
-               // backDrop,
-                shopOwnerCharacter,
-                counterView);
-    }
-
-    private void initMainArea() {
-       
-        setWalkArea(WALK_AREA);  // Walk area
-        getDoors().add(leftDoor); // Doors
-        getMainGroup().getChildren().add( leftDoor );
-    }
-
-    private void initForeground() {
-
-        // example Depth of field
-        //fgGroup.setEffect(new BoxBlur(10, 10, 3));
-    }
-
-    private void initPatches() {
-        getPatchList().add(p);
-        getFgGroup().getChildren().add(p);
-        getFgGroup().getChildren().add(p.getBox());
+        getBgGroup().getChildren().add( counterView );
     }
 
     @Override
     public void loop() {
         // animate shop owner.
-        // TODO can probably do this with a timeline?
         shopOwnerAnimationCount++;
         if (shopOwnerAnimationCount > 40) {
             shopOwnerAnimationCount = 0;
@@ -171,14 +147,14 @@ public class PawnShopVignette extends Vignette {
 
     }
 
+    // TODO:  Ways to automate this.   JSON file?
     private void initShopOwnerDialog() {
 
+        // Eddie kicks the player out of the shop but gives him his item.
         DialogResponseAction exitAction = () -> {
             shopOwnerCharacter.getDialog().setExit(leftDoor);
             shopOwnerCharacter.getDialog().setActionDone(true);
             
-            
-            // TODO:
             // Add cyberspace deck to inventory.
             shopOwnerCharacter.give(new KomodoDeckThing(), getPlayer());
             
@@ -187,23 +163,19 @@ public class PawnShopVignette extends Vignette {
         };
 
         DialogSheet ds4 = new DialogSheet(shopOwnerCharacter.getDialog());
-        //MessageFormat mf4 = new MessageFormat(bundle.getString("dialog.eddie.ds4"));
         ds4.setDialogText(bundle.getString("dialog.eddie.ds4"));
         ds4.addResponse(new DialogResponse(bundle.getString("dialog.p.ds4.1"), exitAction)); // Exit action
 
         DialogSheet ds3 = new DialogSheet(shopOwnerCharacter.getDialog());
-        //MessageFormat mf3 = new MessageFormat("Pay up.  It's $100.");
         ds3.setDialogText(bundle.getString("dialog.eddie.ds3"));
         ds3.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.3"), ds4));
 
         DialogSheet ds2 = new DialogSheet(shopOwnerCharacter.getDialog());
-        //MessageFormat mf2 = new MessageFormat(bundle.getString("dialog.eddie.ds2"));
         ds2.setDialogText(bundle.getString("dialog.eddie.ds2"));
         ds2.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.2"), ds3));
         ds2.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.3"), ds4));
 
         DialogSheet ds1 = new DialogSheet(shopOwnerCharacter.getDialog());
-        //MessageFormat mf1 = new MessageFormat("Ah! You back?\nI have your deck.");
         ds1.setDialogText(bundle.getString("dialog.eddie.ds1"));
         ds1.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.1"), ds2));
         ds1.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.2"), ds3));

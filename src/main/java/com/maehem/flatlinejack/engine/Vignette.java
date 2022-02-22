@@ -19,7 +19,6 @@ package com.maehem.flatlinejack.engine;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
 import com.maehem.flatlinejack.engine.gui.NarrationPane;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -32,7 +31,6 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
 
@@ -45,7 +43,7 @@ public abstract class Vignette extends Group {
     public static final Logger log = Logger.getLogger("flatline");
 
     public static final String PROP_PREFIX = "vignette.";
-    public static final double DEFAULT_SCALE = 4.8;  // Scale character up when they reach the fourth wall.
+    public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
     public static final double DEFAULT_HORIZON = 0.24;  // Place horizon this far down from screen top.  0.0 - 1.0
 
     private double playerScale = DEFAULT_SCALE;
@@ -81,10 +79,10 @@ public abstract class Vignette extends Group {
 
         log.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
-        add(bgGroup);
-        add(mainGroup);
-        add(fgGroup);
-        add(narrationPane);
+        addNode(bgGroup);
+        addNode(mainGroup);
+        addNode(fgGroup);
+        addNode(narrationPane);
 
         walkArea = new Polygon(0, 0, w, 0, w, h, 0, h); // Default. User should redifine in init()
 
@@ -128,47 +126,22 @@ public abstract class Vignette extends Group {
         setOnMouseClicked((event) -> {
             if (dialogOverlay == null) { // As long as dialog is not showing.
                 player.walkToward(event.getX(), event.getY(), walkArea);
-
-//                // debug: draw a small box where suer clicked
-//                Circle circle = new Circle();
-//                circle.setCenterX(event.getX());
-//                circle.setCenterY(event.getY());
-//                circle.setRadius(8);
-//                circle.setStroke(Color.MAGENTA);
-//                circle.setStrokeWidth(2);
-//                circle.setFill(Color.TRANSPARENT);
-//                bgGroup.getChildren().add(circle);
-//                
-//                Circle playerCircle = new Circle();
-//                playerCircle.setCenterX(player.getLayoutX());
-//                playerCircle.setCenterY(player.getLayoutY());
-//                playerCircle.setRadius(8);
-//                playerCircle.setStroke(Color.LIGHTBLUE);
-//                playerCircle.setStrokeWidth(2);
-//                playerCircle.setFill(Color.TRANSPARENT);
-//                bgGroup.getChildren().add(playerCircle);
             }
             event.consume();
         });
 
-//        setOnKeyPressed((k) -> {
-//            log.log(Level.CONFIG, "Vignette Key pressed: [{0}]", name);
-//        });
         narrationPane.setLayoutX(width - narrationPane.getPrefWidth());
         narrationPane.setLayoutY(height - NarrationPane.MENU_TAB_SHOW);
         narrationPane.setTitle(name);
 
-        // Start a timer for 10 seconds.  Mark vignette as visited.
-        // Debug for walk cycle
-        //mainGroup.getChildren().add(createWalkPanel());
         log.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
-    private void add(Node node) {
+    private void addNode(Node node) {
         getChildren().add(node);
     }
 
-    private void remove(Node node) {
+    private void removeNode(Node node) {
         getChildren().remove(node);
     }
 
@@ -231,7 +204,7 @@ public abstract class Vignette extends Group {
                 if (npc.isTalking() && !npc.getDialog().isActionDone()) {
                     //mode = new DialogScreen(player, npc, width, height);
                     dialogOverlay = npc.getDialog();
-                    add(dialogOverlay);
+                    addNode(dialogOverlay);
                     dialogOverlay.toFront();
                     log.warning("Show Dialog Mode.");
                 }
@@ -239,7 +212,7 @@ public abstract class Vignette extends Group {
         } else {
             // Alternate mode is overlayed like a DialogScreen.  Handle that.
             if (dialogOverlay.isActionDone()) {
-                remove(dialogOverlay);
+                removeNode(dialogOverlay);
 
                 // See if the dialog invoked a scene exit event.
                 Port exit = dialogOverlay.getExit();
@@ -252,7 +225,9 @@ public abstract class Vignette extends Group {
             }
         }
 
-        getPlayer().setScale(getPlayerScale() * (getPlayer().getLayoutY() / getHeight() - getHorizon())
+        getPlayer().setScale(
+                getPlayerScale() * 
+                    (getPlayer().getLayoutY() / getHeight() - getHorizon())
         );
         loop();
 
@@ -317,15 +292,21 @@ public abstract class Vignette extends Group {
 
         getWalkArea().setOpacity(show ? debugOpacity : 0.0);
         walkAreaCoords.setOpacity(show ? debugOpacity : 0.0);
-        //getFgGroup().setOpacity(show ? 0.5 : 1.0); // Wings translucent when debuging.
-        getFgGroup().setOpacity(show ? 0.2 : 1.0); // Wings translucent when debuging.
+        getFgGroup().setOpacity(show ? 0.5 : 1.0); // Wings translucent when debuging.
         getDoors().forEach((door) -> {
             door.setOpacity(show ? debugOpacity : 0.0);
         });
+        
+        // Display box around patches when showing collision bounds.
+        getPatchList().forEach((patch) -> {
+            patch.getBox().setOpacity(show ? debugOpacity : 0.0);
+        });
+        
         for (Node n : getChildren()) {
-            if (n instanceof Character) {
-                ((Character) n).showCollisionBounds(show);
-            }
+//            if (n instanceof Character) {
+//                ((Character) n).showCollisionBounds(show);
+//                log.config("Show collision for character: " + ((Character) n).getName());
+//            }
 
             if (n instanceof Group) {
                 for (Node nn : ((Group) n).getChildren()) {
@@ -417,7 +398,7 @@ public abstract class Vignette extends Group {
      * @param name the name to set
      */
     public void setName(String name) {
-        log.config("set name to:" + name);
+        log.log(Level.CONFIG, "set name to:{0}", name);
         this.name = name;
     }
 
@@ -543,5 +524,15 @@ public abstract class Vignette extends Group {
     public NarrationPane getNarrationPane() {
         return narrationPane;
     }
+    
+    protected void addPort(Port port) {
+        getDoors().add(port);
+        getMainGroup().getChildren().add(port);
+    }
 
+    protected void addPatch(Patch patch) {
+        getPatchList().add(patch);
+        getFgGroup().getChildren().add(patch);
+        getFgGroup().getChildren().add(patch.getBox());
+    }
 }

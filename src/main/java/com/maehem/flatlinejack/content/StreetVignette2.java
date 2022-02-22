@@ -22,7 +22,6 @@ import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
 import java.util.Properties;
-import java.util.ResourceBundle;
 import javafx.scene.shape.Polygon;
 
 /**
@@ -37,27 +36,21 @@ public class StreetVignette2 extends Vignette {
     private static final String CONTENT_BASE = "/content/vignette/street2/";
     private static final String DOOR_PATCH_IMAGE_FILENAME = CONTENT_BASE + "door-right-wing.png";
     private static final Polygon WALK_AREA = new Polygon(
-            0, 370,
-            530, 370,
-            540, 320,
-            620, 320,
-            630, 370,
-            870, 370,
-            960, 440,
-            1200, 440,
-            1200, 482,
-            1100, 482,
-            1200, 700,
-            0, 700
+               0, 370,   530, 370,
+             540, 320,   620, 320,
+             630, 370,   870, 370,
+             960, 440,  1200, 440,
+            1200, 482,  1100, 482,
+            1200, 700,     0, 700
     );
 
-    private static final Patch p = new Patch(
-            1140, 0, 490, 
+    private static final Patch pawnShopDoorPatch = new Patch(
+            1140, 0, 500, 
             StreetVignette2.class.getResourceAsStream(DOOR_PATCH_IMAGE_FILENAME));
     
     private static final Port rightDoor = new Port(
-            1140, 440, // Location
-            22, 50, // Size
+            1140, 430, // Location
+            20, 60, // Size
             PawnShopVignette.PLAYER_START_X, 
             PawnShopVignette.PLAYER_START_Y, 
             PoseSheet.Direction.TOWARD, // Player position and orientation at destination
@@ -75,55 +68,27 @@ public class StreetVignette2 extends Vignette {
 
     @Override
     public void loop() {
-        // Test the gauges.
+        // example: Test the gauges.
         //getPlayer().setMoney(getPlayer().getMoney()-1);
         //getPlayer().setHealth(getPlayer().getHealth()-1);
-        //getPlayer().setConstitution(getPlayer().getConstitution()-1);
-                
+        //getPlayer().setConstitution(getPlayer().getConstitution()-1);                
     }
 
     @Override
     protected void init() {
-        //setName(NAME);
-        //bundle = ResourceBundle.getBundle("content.messages.StreetVignette2");
-        setName(bundle.getString("title"));
-        getNarrationPane().setText(bundle.getString("narration"));
-        
-        //initBackground();
-        initMainArea();
-        initPatches();
-        initForeground();
-        //return getClass().getSimpleName();
-    }
-
-    private void initMainArea() {
         // set player position
         getPlayer().setLayoutX( getWidth() * 0.5); // Near middle
         getPlayer().setLayoutY(getHeight() * 0.5); // Hallf way down
 
-//        getMainGroup().getChildren().addAll(
-//                getPlayer()
-//        );
+        setWalkArea(WALK_AREA); // set custom walk area
 
-        // set custom walk area
-        setWalkArea(WALK_AREA);
+        addPort(rightDoor); // Doors
+        addPort(topDoor);
 
-        // Doors
-        getDoors().add(rightDoor);
-        getDoors().add(topDoor);        
-        getMainGroup().getChildren().addAll(rightDoor, topDoor);        
-    }
-
-    private void initForeground() {
-
-        // Depth of field
+        addPatch(pawnShopDoorPatch); // Patch over pawn shop door.
+        
+        // example: Depth of field
         //fgGroup.setEffect(new BoxBlur(10, 10, 3));
-    }
-
-    private void initPatches() {
-        getPatchList().add(p);
-        getFgGroup().getChildren().add(p);
-        getFgGroup().getChildren().add(p.getBox());
     }
 
     @Override
@@ -134,14 +99,15 @@ public class StreetVignette2 extends Vignette {
     @Override
     public Properties saveProperties() {
         Properties p = new Properties();
-//        p.setProperty(PROPERTY_CONDITION, condition.toString());
+        // example
+        // p.setProperty(PROPERTY_CONDITION, condition.toString());
         
         return p;
     }
 
     @Override
     public void loadProperties(Properties p) {
-        // Empty for now
+        // example
         //setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
     }
 }

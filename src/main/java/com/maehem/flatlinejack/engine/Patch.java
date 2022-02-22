@@ -17,7 +17,7 @@
 package com.maehem.flatlinejack.engine;
 
 import java.io.InputStream;
-import javafx.scene.effect.BlendMode;
+import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -40,18 +40,23 @@ import javafx.scene.shape.Rectangle;
  */
 public class Patch extends ImageView {
 
+    public static final Logger log = Logger.getLogger("flatline");
+
     private double threshold;
     private final Rectangle box;
         
-    public Patch(double x, double y, double threshold, InputStream is) {
+    public Patch(double x, double y, double thresholdY, InputStream is) {
         super(new Image(is));
         setLayoutX(x);
         setLayoutY(y);
+        this.threshold = thresholdY;
         
-        this.setBlendMode(BlendMode.BLUE);
+        // TODO:  Add a threshold opacity.
         
-        this.threshold = threshold;
-        this.box = new Rectangle(x, y, getImage().getWidth(), getImage().getHeight());
+        // TODO:  Maybe translate to thresholdY and use layoutY as the
+        // comparitor for showing it.
+        
+        this.box = new Rectangle(x, y, getImage().getWidth(), thresholdY);
         this.box.setStroke(Color.RED);
         this.box.setStrokeWidth(2.0);
         this.box.setFill(Color.TRANSPARENT);
