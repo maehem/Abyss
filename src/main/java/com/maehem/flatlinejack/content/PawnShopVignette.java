@@ -18,7 +18,6 @@ package com.maehem.flatlinejack.content;
 
 import com.maehem.flatlinejack.engine.Patch;
 import com.maehem.flatlinejack.engine.Player;
-import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.Character;
@@ -26,11 +25,11 @@ import com.maehem.flatlinejack.engine.babble.DialogResponse;
 import com.maehem.flatlinejack.engine.babble.DialogResponseAction;
 import com.maehem.flatlinejack.engine.babble.DialogSheet;
 import com.maehem.flatlinejack.content.things.KomodoDeckThing;
+import com.maehem.flatlinejack.engine.Port;
 import java.util.Properties;
-import javafx.scene.effect.BlendMode;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Polygon;
 
 /**
  *
@@ -39,35 +38,29 @@ import javafx.scene.shape.Polygon;
 public class PawnShopVignette extends Vignette {
 
     private static final String PROP_NAME = "pawnshop";
-    public static final double PLAYER_START_X = 200;
-    public static final double PLAYER_START_Y = 400;
     private static final String CONTENT_BASE = "/content/vignette/pawn-shop/";
+    public static final Point2D PLAYER_START = new Point2D(0.20, 0.60);
     private static final String COUNTERS_IMAGE_FILENAME   = CONTENT_BASE + "counters.png";
     private static final String DOOR_PATCH_IMAGE_FILENAME = CONTENT_BASE + "patch-left.png";
     private static final String BROKER_POSE_SHEET_FILENAME = CONTENT_BASE + "pawn-broker-pose-sheet.png";
-    private static final Polygon WALK_AREA = new Polygon(
-            200, 380,
-            300, 380,
-            330, 440,
-            800, 440,
-            960, 600,
-            50, 600,
-            100, 420,
-            20, 400,
-            20, 360,
-            140, 360
+    private static final double[] WALK_BOUNDARY = {
+            0.16, 0.53,   0.23, 0.53,
+            0.26, 0.61,   0.63, 0.61,
+            0.75, 0.83,   0.04, 0.83,
+            0.08, 0.58,   0.02, 0.56,
+            0.02, 0.50,   0.11, 0.50
+    };
+    private static final Port leftDoor = new Port(
+            0.02, 0.50,  // port XY location
+            0.04, 0.06,  // port size
+            0.72, 0.65,  // place player at this XY when they leave the pawn shop.        
+            PoseSheet.Direction.LEFT, // Face this direction at destination
+            "StreetVignette2"  // Class name of destination vignette
     );
-
+    
     private static final Patch leftDoorPatch = new Patch(
             0, 0, 425, 
             PawnShopVignette.class.getResourceAsStream(DOOR_PATCH_IMAGE_FILENAME)
-    );
-    private static final Port leftDoor = new Port(
-            30, 360,  // port XY location
-            40, 40,   // port size
-            920, 470, // place player at this XY when they leave the pawn shop.
-            PoseSheet.Direction.TOWARD,
-            "StreetVignette2"  // this door leads to the StreetVignette2 scene
     );
 
     private Character shopOwnerCharacter;
@@ -81,21 +74,19 @@ public class PawnShopVignette extends Vignette {
      * @param player the @Player
      */
     public PawnShopVignette(int w, int h, Port prevPort, Player player) {
-        super(w, h, CONTENT_BASE, prevPort, player);
-        // Don't put things here.  Override @init() which is called shortly after creation.
+        super(w, h, CONTENT_BASE, prevPort, player, WALK_BOUNDARY);
+        // Don't put things here.  Override @init() which is called during creation.
     }
 
     @Override
     protected void init() {
         setHorizon(0.2);
-        getPlayer().setLayoutX(PLAYER_START_X);
-        getPlayer().setLayoutY(PLAYER_START_Y);
 
         initShopOwner();        
         initBackground();
-        
-        setWalkArea(WALK_AREA);  // Walk area
+                
         addPort(leftDoor);
+        
         addPatch(leftDoorPatch);
         
         // example Depth of field

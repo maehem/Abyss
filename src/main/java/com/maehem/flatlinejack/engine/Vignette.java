@@ -26,6 +26,7 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -51,6 +52,7 @@ public abstract class Vignette extends Group {
     private final Player player;
     protected boolean showCollision = false;
     protected boolean showWalk = false;
+    private boolean showHearing = false;
     private Polygon walkArea;
     private final Group walkAreaCoords = new Group();
     private boolean playerTalkToNPC = false;
@@ -70,12 +72,14 @@ public abstract class Vignette extends Group {
     private DialogScreen dialogOverlay;
     private double debugOpacity = 0.7;
     public ResourceBundle bundle;
+    //private double[] walkBoundary;
 
-    public Vignette(int w, int h, String assetFolderName, Port prevPort, Player player) throws MissingResourceException{
+    public Vignette(int w, int h, String assetFolderName, Port prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
         this.width = w;
         this.height = h;
         this.assetFolderName = assetFolderName;
         this.player = player;
+        //this.walkBoundary = walkBoundary;
 
         log.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
@@ -84,11 +88,9 @@ public abstract class Vignette extends Group {
         addNode(fgGroup);
         addNode(narrationPane);
 
-        walkArea = new Polygon(0, 0, w, 0, w, h, 0, h); // Default. User should redifine in init()
+        setWalkArea(walkBoundary);
 
         getMainGroup().getChildren().addAll(getPlayer());
-        //log.config("call initBackdrop()");
-        log.config("vName: " + this.getClass().getSimpleName());
 
         // Load the localization bundle for this Vignette
         String bPath = "content.messages." + this.getClass().getSimpleName();
@@ -103,25 +105,26 @@ public abstract class Vignette extends Group {
         } catch (MissingResourceException ex) {
             log.log(Level.WARNING,
                     "Unable to locate vignette resource bundle at: {0}", bPath);
-            
+
             // TODO:  maybe load a default bundle here.
             throw ex;
         }
 
-        log.config("more stuff");
-        
         // This will overwrite any player position defaults set in the implementing Vignette
         // Example: Player left through right door and you want them to appear in the next
         // vignette's left side.
         if (prevPort != null && prevPort.getPlayerX() >= 0 && prevPort.getPlayerY() >= 0) {
             log.config("set player xy override");
-            player.setLayoutX(prevPort.getPlayerX());
-            player.setLayoutY(prevPort.getPlayerY());
+            setPlayerPosition(new Point2D(prevPort.getPlayerX(), prevPort.getPlayerY()));
             player.setDirection(prevPort.getPlayerDir());
+        } else {
+            setPlayerPosition(new Point2D(0.5, 0.66));
+            player.setDirection(PoseSheet.Direction.TOWARD);
         }
 
-        log.config("do debug colllision bounds");
+        log.finest("do debug colllision bounds");
         debugCollisionBounds(showCollision);
+        debugHearingBounds(showHearing);
 
         setOnMouseClicked((event) -> {
             if (dialogOverlay == null) { // As long as dialog is not showing.
@@ -135,14 +138,6 @@ public abstract class Vignette extends Group {
         narrationPane.setTitle(name);
 
         log.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
-    }
-
-    private void addNode(Node node) {
-        getChildren().add(node);
-    }
-
-    private void removeNode(Node node) {
-        getChildren().remove(node);
     }
 
     protected abstract void init();
@@ -175,6 +170,7 @@ public abstract class Vignette extends Group {
                 input.clear();
             }
 
+            // Make patch visible if player is potentially behind it.
             getPatchList().forEach((patch) -> {
                 getFgGroup().setVisible(player.getLayoutY() < patch.getThreshold());
             });
@@ -226,15 +222,16 @@ public abstract class Vignette extends Group {
         }
 
         getPlayer().setScale(
-                getPlayerScale() * 
-                    (getPlayer().getLayoutY() / getHeight() - getHorizon())
+                getPlayerScale()
+                * (getPlayer().getLayoutY() / getHeight() - getHorizon())
         );
-        loop();
+        loop(); // Run the user defined @loop() code.
 
+        // TODO:  maybe return loop() and allow the child to cause exit of scene?
         return null;
     }
 
-    public void processUDLR(ArrayList<String> input) {
+    private void processUDLR(ArrayList<String> input) {
         if (input.contains("LEFT")) {
             input.remove("LEFT");
             player.moveLeft(11, walkArea);
@@ -262,11 +259,16 @@ public abstract class Vignette extends Group {
             showCollision = !showCollision;
             debugCollisionBounds(showCollision);
         }
-        if (input.contains("W")) {
-            input.remove("W");
-            showWalk = !showWalk;
-            showWalkPanel(showWalk);
+        if (input.contains("H")) {
+            input.remove("H");
+            showHearing = !showHearing;
+            debugHearingBounds(showHearing);
         }
+//        if (input.contains("W")) {
+//            input.remove("W");
+//            showWalk = !showWalk;
+//            showWalkPanel(showWalk);
+//        }
     }
 
     private void processHotKeys(ArrayList<String> input) {
@@ -296,31 +298,52 @@ public abstract class Vignette extends Group {
         getDoors().forEach((door) -> {
             door.setOpacity(show ? debugOpacity : 0.0);
         });
-        
+
         // Display box around patches when showing collision bounds.
         getPatchList().forEach((patch) -> {
             patch.getBox().setOpacity(show ? debugOpacity : 0.0);
         });
+
+        getPlayer().showCollisionBounds(show);
+        getCharacterList().forEach((Character npc) -> {
+            ((Character) npc).showCollisionBounds(show);
+        });
         
-        for (Node n : getChildren()) {
-//            if (n instanceof Character) {
-//                ((Character) n).showCollisionBounds(show);
-//                log.config("Show collision for character: " + ((Character) n).getName());
+//        for (Node n : getChildren()) {
+////            if (n instanceof Character) {
+////                ((Character) n).showCollisionBounds(show);
+////                log.config("Show collision for character: " + ((Character) n).getName());
+////            }
+//
+//                    
+//            if (n instanceof Group) {
+//                for (Node nn : ((Group) n).getChildren()) {
+//                    if (nn instanceof Character) {
+//                        ((Character) nn).showCollisionBounds(show);
+//                    }
+//                }
 //            }
+//        }
+    }
 
-            if (n instanceof Group) {
-                for (Node nn : ((Group) n).getChildren()) {
-                    if (nn instanceof Character) {
-                        ((Character) nn).showCollisionBounds(show);
-                    }
-                }
-            }
+    protected final void debugHearingBounds(boolean show) {
+        String status;
+        if (show) {
+            status = "Showing";
+        } else {
+            status = "Hidden";
         }
-    }
+        log.log(Level.FINER, "Hearing Bounds: {0}", status);
 
-    protected final void showWalkPanel(boolean show) {
-        // Walk window set opacity show.
+        getPlayer().showHearingBounds(show);
+        getCharacterList().forEach((Character npc) -> {
+            ((Character) npc).showHearingBounds(show);
+        });
+        
     }
+//    protected final void showWalkPanel(boolean show) {
+//        // Walk window set opacity show.
+//    }
 
     /**
      *
@@ -352,28 +375,75 @@ public abstract class Vignette extends Group {
     }
 
     /**
+     * Walk area as an array of XY pairs with a value of 0.0-1.0
+     * relative to screen width and height.
+     * 
+     * @param xyArray list of X/Y pair doubles.
+     */
+    public final void setWalkArea( double[] xyArray ) {
+        //setWalkAreaOld(WALK_AREA); // set custom walk area
+        double waPx[] = new double[xyArray.length];
+        
+        for ( int i=0; i< xyArray.length; i+=2) {
+            waPx[i] = xyArray[i]*getWidth();
+            waPx[i+1] = xyArray[i+1]*getHeight();
+        }
+        
+        setWalkArea(new Polygon(waPx));
+    }
+    
+//    /**
+//     * @param walkArea the walkArea to set
+//     */
+//    public void setWalkAreaOld(Polygon walkArea) {
+//        mainGroup.getChildren().remove(this.walkArea);
+//        walkAreaCoords.getChildren().clear();
+//        this.walkArea = walkArea;
+//        mainGroup.getChildren().add(0, this.walkArea);
+//
+//        ObservableList<Double> points = walkArea.getPoints();
+//        for (int i = 0; i < points.size(); i += 2) {
+//            Text t = new Text(
+//                    points.get(i), points.get(i + 1),
+//                    points.get(i) + "," + points.get(i + 1)
+//            );
+//            t.setFill(Color.LIGHTGREEN);
+//            walkAreaCoords.getChildren().add(t);
+//        }
+//
+//        getWalkArea().setFill(Color.TRANSPARENT);
+//        Color AQUA = Color.AQUA;
+//        getWalkArea().setStroke(new Color(AQUA.getRed(), AQUA.getGreen(), AQUA.getBlue(), 0.5));
+//        getWalkArea().setStrokeWidth(3.0);
+//    }
+    
+    /**
      * @param walkArea the walkArea to set
      */
     public void setWalkArea(Polygon walkArea) {
         mainGroup.getChildren().remove(this.walkArea);
         walkAreaCoords.getChildren().clear();
         this.walkArea = walkArea;
-        mainGroup.getChildren().add(0, this.walkArea);
-
+        mainGroup.getChildren().add(0, getWalkArea());
+        
         ObservableList<Double> points = walkArea.getPoints();
         for (int i = 0; i < points.size(); i += 2) {
+            double vX = points.get(i);
+            double vY = points.get(i+1);
+            String xS = String.valueOf(points.get(i));
+            String yS = String.valueOf(points.get(i+1));
             Text t = new Text(
-                    points.get(i), points.get(i + 1),
-                    points.get(i) + "," + points.get(i + 1)
+                    vX, vY,
+                    xS.substring(0, xS.lastIndexOf('.')) + "," + yS.substring(0,yS.lastIndexOf('.'))
             );
             t.setFill(Color.LIGHTGREEN);
             walkAreaCoords.getChildren().add(t);
         }
 
-        getWalkArea().setFill(Color.TRANSPARENT);
         Color AQUA = Color.AQUA;
         getWalkArea().setStroke(new Color(AQUA.getRed(), AQUA.getGreen(), AQUA.getBlue(), 0.5));
         getWalkArea().setStrokeWidth(3.0);
+        getWalkArea().setFill(Color.TRANSPARENT);
     }
 
     /**
@@ -397,7 +467,7 @@ public abstract class Vignette extends Group {
     /**
      * @param name the name to set
      */
-    public void setName(String name) {
+    public final void setName(String name) {
         log.log(Level.CONFIG, "set name to:{0}", name);
         this.name = name;
     }
@@ -431,6 +501,15 @@ public abstract class Vignette extends Group {
     }
 
     /**
+     * 
+     * @param pos a 2D point X and Y range of 0.0 to 1.0
+     */
+    public final void setPlayerPosition( Point2D pos ) {
+        getPlayer().setLayoutX(getWidth() * pos.getX());
+        getPlayer().setLayoutY(getHeight() * pos.getY());
+    }
+    
+    /**
      * @return the horizon
      */
     public double getHorizon() {
@@ -451,8 +530,16 @@ public abstract class Vignette extends Group {
         return characterList;
     }
 
-    public String getNarrationText() {
-        return "This is a test.";
+//    public String getNarrationText() {
+//        return "This is a test.";
+//    }
+
+    private void addNode(Node node) {
+        getChildren().add(node);
+    }
+
+    private void removeNode(Node node) {
+        getChildren().remove(node);
     }
 
     private void initBackdrop() {
@@ -521,11 +608,12 @@ public abstract class Vignette extends Group {
     /**
      * @return the narrationPane
      */
-    public NarrationPane getNarrationPane() {
+    public final NarrationPane getNarrationPane() {
         return narrationPane;
     }
-    
+
     protected void addPort(Port port) {
+        port.setScale(getWidth(), getHeight());
         getDoors().add(port);
         getMainGroup().getChildren().add(port);
     }

@@ -67,6 +67,11 @@ public class Engine extends Application {
     private final Player player = new Player();
     private final Scene scene = new Scene(root, 1280, 720);
     private final GameState gameState = new GameState();
+    
+    // TODO:   Music track system
+    //          - Blend music scene to scene
+    
+    
     private Vignette currentVignette;
     static {
           System.setProperty("java.util.logging.SimpleFormatter.format",
@@ -98,7 +103,6 @@ public class Engine extends Application {
         getPlayer().loadState(getGameState());
 
         this.gui = new GUI(this);
-        //this.inventoryPane = new InventoryPane(player.getInventory());
         this.inventoryPane = new InventoryPane(player);
         
         String roomName = getGameState().getProperty(GameState.PROP_CURRENT_VIGNETTE);
@@ -243,12 +247,9 @@ public class Engine extends Application {
 
     public void doExit() {
         
-        // To do.     Ask if user is sure.
+        // TODO:   Ask if user is sure.
         
         // Check if we need to save.
-        
-        
-        
         
         
         log.warning("Exit called.  Quitting game.");

@@ -21,7 +21,7 @@ import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
 import java.util.Properties;
-import javafx.scene.shape.Polygon;
+import javafx.geometry.Point2D;
 
 /**
  *
@@ -29,33 +29,33 @@ import javafx.scene.shape.Polygon;
  */
 public class DonutShopVignette extends Vignette {
 
-    private static final String PROP_NAME = "donutshop";    
+    public  static final String PROP_NAME = "donutshop";    
     private static final String CONTENT_BASE = "/content/vignette/donut-shop/";
-    private static final Polygon WALK_AREA = new Polygon(
-                300, 374,   950, 374,
-               1270, 700,   770, 700,   
-                760, 720,   490, 720,
-                480, 700,   100, 700
-        );
-    
-    private static final Port frontDoor = new Port(
-            490, 720,   270, 40,
-            550, 360,   PoseSheet.Direction.TOWARD,            
-            "StreetVignette2");    
+    public  static final Point2D PLAYER_START = new Point2D(0.5, 0.86);
+    private static final double[] WALK_BOUNDARY = new double[] {
+                0.24, 0.52,   0.74, 0.52,
+                0.99, 0.9,   0.60, 0.9,   
+                0.59, 1.0,    0.38, 1.0,
+                0.38, 0.9,   0.08, 0.9
+    };
+    private static final double[] EXIT_POINTS = { 
+        0.38, 0.93,   // exit location
+        0.21, 0.03,   // exit size
+        0.43, 0.50    // player position at destination
+    };
+    private static final Port exitPort = new Port(
+        0.38, 0.93,   // exit location
+        0.21, 0.03,   // exit size
+        0.43, 0.50,   // player position at destination
+        PoseSheet.Direction.TOWARD, "StreetVignette2");
     
     public DonutShopVignette(int w, int h, Port prevPort, Player player) {
-        super(w, h, CONTENT_BASE,prevPort, player);        
+        super(w, h, CONTENT_BASE,prevPort, player,WALK_BOUNDARY);        
     }
 
     @Override
-    protected void init() {
-        // Character
-        getPlayer().setLayoutX( getWidth() * 0.5);
-        getPlayer().setLayoutY(getHeight() * 0.5);
-        
-        setWalkArea(WALK_AREA);
-        
-        addPort(frontDoor); // Doors
+    protected void init() {        
+        addPort(exitPort);
     }
 
     @Override

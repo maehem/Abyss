@@ -22,7 +22,7 @@ import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
 import java.util.Properties;
-import javafx.scene.shape.Polygon;
+import javafx.geometry.Point2D;
 
 /**
  *
@@ -30,40 +30,43 @@ import javafx.scene.shape.Polygon;
  */
 public class StreetVignette2 extends Vignette {
 
-    //private ResourceBundle bundle;
-    //private static final String NAME = "Street 2";
     private static final String PROP_NAME = "street2";
     private static final String CONTENT_BASE = "/content/vignette/street2/";
     private static final String DOOR_PATCH_IMAGE_FILENAME = CONTENT_BASE + "door-right-wing.png";
-    private static final Polygon WALK_AREA = new Polygon(
-               0, 370,   530, 370,
-             540, 320,   620, 320,
-             630, 370,   870, 370,
-             960, 440,  1200, 440,
-            1200, 482,  1100, 482,
-            1200, 700,     0, 700
-    );
+    public static final Point2D PLAYER_START = new Point2D(0.50, 0.66);
+
+    private static final double[] WALK_BOUNDARY = {
+             0.05, 0.5,     0.41, 0.5,
+             0.42, 0.44,    0.48, 0.44,
+             0.5, 0.5,      0.68, 0.5,
+             0.75, 0.63,    0.94, 0.63,
+             0.94, 0.67,    0.86, 0.67,
+             0.94, 0.9,     0.05, 0.9
+    };
 
     private static final Patch pawnShopDoorPatch = new Patch(
             1140, 0, 500, 
             StreetVignette2.class.getResourceAsStream(DOOR_PATCH_IMAGE_FILENAME));
     
     private static final Port rightDoor = new Port(
-            1140, 430, // Location
-            20, 60, // Size
-            PawnShopVignette.PLAYER_START_X, 
-            PawnShopVignette.PLAYER_START_Y, 
+            0.89, 0.60, // Location
+            0.016, 0.083, // Size
+            PawnShopVignette.PLAYER_START.getX(), 
+            PawnShopVignette.PLAYER_START.getY(), 
             PoseSheet.Direction.TOWARD, // Player position and orientation at destination
             "PawnShopVignette" // Destination
     );
     private static final Port topDoor = new Port(
-            540, 320,
-            80, 10,
-            550, 500, PoseSheet.Direction.AWAY,
-            "DonutShopVignette");
+            0.42, 0.44,
+            0.063, 0.014,
+            DonutShopVignette.PLAYER_START.getX(), 
+            DonutShopVignette.PLAYER_START.getY(), 
+            PoseSheet.Direction.AWAY,
+            "DonutShopVignette"
+    );
 
     public StreetVignette2(int w, int h, Port prevPort, Player player) {
-        super(w, h, CONTENT_BASE,prevPort, player);
+        super(w, h, CONTENT_BASE,prevPort, player, WALK_BOUNDARY);
     }
 
     @Override
@@ -77,10 +80,7 @@ public class StreetVignette2 extends Vignette {
     @Override
     protected void init() {
         // set player position
-        getPlayer().setLayoutX( getWidth() * 0.5); // Near middle
-        getPlayer().setLayoutY(getHeight() * 0.5); // Hallf way down
-
-        setWalkArea(WALK_AREA); // set custom walk area
+        //setPlayerPosition(PLAYER_START);
 
         addPort(rightDoor); // Doors
         addPort(topDoor);

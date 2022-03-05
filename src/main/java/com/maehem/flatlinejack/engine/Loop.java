@@ -65,7 +65,7 @@ public class Loop extends AnimationTimer {
     }
     
     public void addInputEvent(KeyEvent ke) {
-        log.log(Level.CONFIG, "Loop Input Event: {0}", ke.getCode());
+        log.log(Level.FINEST, "Loop Input Event: {0}", ke.getCode());
         input.add(ke.getCode().toString());
     }
 }
