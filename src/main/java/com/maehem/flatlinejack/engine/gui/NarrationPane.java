@@ -36,6 +36,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.scene.transform.Scale;
 
 /**
  *
@@ -49,25 +50,35 @@ public class NarrationPane extends BorderPane {
     private static final double SCREEN_LINE_SPACE = -7.17; // default is 0.0
     private static final Color SCREEN_BG_COLOR = new Color(0.1, 0.1, 0.1, 1.0);
     private static final Color SCREEN_FG_COLOR = new Color(0.1, 1.0, 0.1, 1.0);
-//    private final Text titleText = new Text();
-    //private final TextArea textArea = new TextArea();
     private final TextFlow flow = new TextFlow();
     private final Group textGroup = new Group(flow);
     private final CrtLabelPane crtLabelPane = new CrtLabelPane();
     private double menuPopY = 0;
     public final static double MENU_TAB_SHOW = 80;
-    private final static double MENU_HEIGHT = 280;
-    private final static double MENU_WIDTH = 700;
+    private final static double MENU_HEIGHT = 400;
+    private final static double MENU_WIDTH = 1024;
     private final static double MENU_POP_Y_MAX = MENU_HEIGHT - MENU_TAB_SHOW - 8;
     private final static double MENU_POP_Y_INCR = 12;
-    //private final static double BUTTON_SIZE = 48;
-    Font font = Font.loadFont(this.getClass().getResource(SCREEN_FONT).toExternalForm(),
+    private final Font font = Font.loadFont(
+            this.getClass().getResource(SCREEN_FONT).toExternalForm(),
             SCREEN_FONT_H
     );
+    private final double scale;
 
-    public NarrationPane() {
+    public NarrationPane(double width) {
 
-        //setBackground(new Background(new BackgroundFill(Color.SLATEGRAY, new CornerRadii(4), Insets.EMPTY)));
+        scale = width/MENU_WIDTH;
+        
+        // Create a custom transform for this pane that has the scaling
+        // pivot point at the same location as the layoutX/Y.
+        Scale xf = new Scale();
+        xf.setPivotX(0);
+        xf.setPivotY(0);
+        getTransforms().add(xf);
+        xf.setX(scale);
+        xf.setY(scale);
+        
+        
         setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         InputStream is = getClass().getResourceAsStream(SCREEN_BEZEL);
         if ( is == null ) {
@@ -93,7 +104,7 @@ public class NarrationPane extends BorderPane {
         flow.setLayoutY(pad);
         flow.setBackground(new Background(new BackgroundFill(SCREEN_BG_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
         flow.setLineSpacing(SCREEN_LINE_SPACE);
-        flow.setPadding(new Insets(25, 40, 0, 40)); //  T,R,B,L
+        flow.setPadding(new Insets(80, 90, 0, 90)); //  T,R,B,L
         setText("Narration Area");
                 
         WritableImage im = new WritableImage((int)MENU_WIDTH, (int)MENU_HEIGHT);
@@ -105,19 +116,21 @@ public class NarrationPane extends BorderPane {
             }
         }
         ImageView scanLines = new ImageView(im);
+        //scanLines.setPreserveRatio(true);
         scanLines.setLayoutX(20);
         scanLines.setLayoutY(21);
         textGroup.getChildren().addAll(scanLines, bezView, crtLabelPane);
         
         setCenter(textGroup);        
         setPrefSize(MENU_WIDTH, MENU_HEIGHT);
-
+        //setScaleX(scale);
+        //setScaleY(scale);
         initMenuPopper();
 
     }
 
     public void pop() {
-                // Start with the narration window popped and roll it down after
+        // Start with the narration window popped and roll it down after
         // a few seconds.
         getOnMouseEntered().handle(null);
 
@@ -155,9 +168,9 @@ public class NarrationPane extends BorderPane {
             AnimationTimer timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    if (menuPopY <= MENU_POP_Y_MAX) {
-                        menuPopY += MENU_POP_Y_INCR;
-                        setTranslateY(-menuPopY);  // Negative as we are sliding upward.
+                    if (menuPopY <= MENU_POP_Y_MAX ) {
+                        menuPopY += MENU_POP_Y_INCR ;
+                        setTranslateY(-menuPopY * scale);  // Negative as we are sliding upward.
                     } else {
                         this.stop();
                     }
@@ -172,7 +185,7 @@ public class NarrationPane extends BorderPane {
                 public void handle(long now) {
                     if (menuPopY > 0) {
                         menuPopY -= MENU_POP_Y_INCR;
-                        setTranslateY(-menuPopY);  // Negative as we are sliding upward.
+                        setTranslateY(-menuPopY * scale);  // Negative as we are sliding upward.
                     } else {
                         this.stop();
                     }

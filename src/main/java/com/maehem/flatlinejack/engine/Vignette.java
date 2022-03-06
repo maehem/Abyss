@@ -60,7 +60,8 @@ public abstract class Vignette extends Group {
     private final Group bgGroup = new Group();
     private final Group mainGroup = new Group(walkAreaCoords);
     private final Group fgGroup = new Group();
-    private final NarrationPane narrationPane = new NarrationPane();
+    private final NarrationPane narrationPane; // = new NarrationPane();
+    private static final double NARRATION_PANE_SCALE = 0.5;  // a ratio relative to screen width.
 
     private final ArrayList<Port> doors = new ArrayList<>();
     private final ArrayList<Patch> patchList = new ArrayList<>();
@@ -80,7 +81,8 @@ public abstract class Vignette extends Group {
         this.assetFolderName = assetFolderName;
         this.player = player;
         //this.walkBoundary = walkBoundary;
-
+        this.narrationPane = new NarrationPane(w * 0.5);
+        
         log.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
         addNode(bgGroup);
@@ -133,7 +135,8 @@ public abstract class Vignette extends Group {
             event.consume();
         });
 
-        narrationPane.setLayoutX(width - narrationPane.getPrefWidth());
+        narrationPane.setLayoutX(width  * (1 - NARRATION_PANE_SCALE)); //right aligned
+        
         narrationPane.setLayoutY(height - NarrationPane.MENU_TAB_SHOW);
         narrationPane.setTitle(name);
 
