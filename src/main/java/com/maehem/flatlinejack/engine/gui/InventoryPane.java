@@ -24,6 +24,7 @@ import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -40,13 +41,14 @@ import javafx.scene.text.Text;
  */
 public class InventoryPane extends BorderPane {
 
-
+    private static final String BTN_SELECTED_COLOR = "#444466";
+    private static final String BTN_NORMAL_COLOR   = "#666666";
     private static final int N_COLS = 3;
     private static final int MARGIN = 12;
     public static final int CELL_SIZE = 64;
     private final ThingDetailPane detailPane;
     private final Player player;
-    
+    private final GridPane slots = new GridPane();
     
     public InventoryPane(Player p) {
         this.player = p;
@@ -61,27 +63,20 @@ public class InventoryPane extends BorderPane {
         //  When not pinned, it slides out from the side?
         
         // Inventory Slots
-        GridPane slots = new GridPane();
         slots.setVgap(MARGIN);
         slots.setHgap(MARGIN);
         
         
         int col = 0;
         for( Thing t: player.getAInventory() ) {
-            Node slotButton = Thing.getSlotButton(t);
+            Button slotButton = Thing.getSlotButton(t);
             slots.add(slotButton, col%N_COLS, col/N_COLS );
             slotButton.setOnMouseClicked((event) -> {
                 detailPane.showThing(t);
+                highlightItem(slotButton);
             });
             
             
-//            if ( t != null ) {
-//                slots.add(t.getSlotButton(), col%N_COLS, col/N_COLS);
-//            } else {
-//                Button button = new Button(" ");
-//                button.setMinSize(CELL_SIZE, CELL_SIZE);
-//                slots.add(button, col%N_COLS, col/N_COLS);
-//            }
             col++;
         }
         Text text = new Text("Inventory");
@@ -109,5 +104,32 @@ public class InventoryPane extends BorderPane {
         setBottom(bottomPane);
     }
     
+    /**
+     * Re-style the button to indicate selected, but also un-style the other
+     * buttons.
+     * 
+     * @param b 
+     */
+    private void highlightItem( Button b ) {
+        for( Node n : slots.getChildrenUnmodifiable() ) {
+            if ( n instanceof Button ) {
+                if ( (Button)n == b ) {
+                    n.setStyle("-fx-base: " + BTN_SELECTED_COLOR + ";");
+                } else {
+                    n.setStyle("-fx-base: " + BTN_NORMAL_COLOR + ";");
+                }
+            }
+        }
+    }
     
+    public static Button createSlotButton() {
+        Button b = new Button();
+
+        b.setTooltip(new Tooltip("Empty"));
+        b.setPrefSize(CELL_SIZE, CELL_SIZE);
+        b.setMinSize(CELL_SIZE, CELL_SIZE);
+        b.setStyle("-fx-base: " + BTN_NORMAL_COLOR + ";");
+        return b;
+    }
+
 }

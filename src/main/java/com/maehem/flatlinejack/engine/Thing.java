@@ -19,7 +19,6 @@ package com.maehem.flatlinejack.engine;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import java.io.InputStream;
 import java.util.Properties;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
@@ -27,7 +26,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 /**
- * Thing  -- an obect or NPC in the scene.
+ * Thing  -- an object or NPC in the scene.
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
@@ -36,11 +35,9 @@ public abstract class Thing {
     private String name;
     protected Button slotButton;
     protected Image image;
-    private static final int SIZE = InventoryPane.CELL_SIZE;
 
     public Thing() {
-        slotButton = slotButton();
-        slotButton.setPrefSize(SIZE, SIZE);
+        slotButton = InventoryPane.createSlotButton();
         slotButton.setAccessibleHelp(name);
     }
 
@@ -141,9 +138,9 @@ public abstract class Thing {
      */
     public abstract void loadProperties(Properties p);
 
-    public static Node getSlotButton(Thing t) {
+    public static Button getSlotButton(Thing t) {
         if (t == null) {
-            Button b = slotButton();
+            Button b = InventoryPane.createSlotButton();
 
             return b;
         } else {
@@ -154,23 +151,11 @@ public abstract class Thing {
     public final void setGraphic(InputStream is) {
         image = new Image(is);
         ImageView iv = new ImageView(image);
-        //iv.setViewport(new Rectangle2D(SIZE, SIZE, SIZE, SIZE));
         iv.setPreserveRatio(true);
-        iv.setFitWidth(SIZE - 20);
-        //iv.setFitHeight(SIZE-10);
+        iv.setFitWidth(InventoryPane.CELL_SIZE - 20);
 
         slotButton.setGraphic(iv);
         slotButton.setText(null);
-    }
-
-    private static Button slotButton() {
-        Button b = new Button();
-
-        b.setTooltip(new Tooltip("Empty"));
-        b.setMinSize(InventoryPane.CELL_SIZE, InventoryPane.CELL_SIZE);
-        //b.setBackground(new Background(new BackgroundFill(Color.SLATEGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
-        b.setStyle("-fx-base: #666666;");
-        return b;
     }
 
     public Image getImage() {
