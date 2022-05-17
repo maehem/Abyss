@@ -21,8 +21,9 @@ import com.maehem.flatlinejack.engine.Loop;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
-import com.maehem.flatlinejack.engine.gui.GUI;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
+import com.maehem.flatlinejack.engine.gui.CrtTextPane;
+import com.maehem.flatlinejack.engine.gui.GUI3;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.ConsoleHandler;
@@ -32,12 +33,23 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -45,6 +57,11 @@ import javafx.stage.Stage;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class Engine extends Application {
+
+    private double SCALE = 0.75;
+    
+    private CrtTextPane narrationPane;
+    private GUI3 guiPane;
 
     /**
      * @return the inventoryPane
@@ -59,13 +76,25 @@ public class Engine extends Application {
     // This is a class name.
     private static final String STARTING_VIGNETTE = "StreetVignette2";
 
-    private GUI gui;
+    //private GUI gui;
     private InventoryPane inventoryPane;
     private Stage window;
     private Loop loop;   // Game logic Loop
-    private final Group root = new Group();
+    
+    //private final BorderPane gamePane = new BorderPane();
+    private Group vignetteGroup = new Group();
+    private final StackPane topArea = new StackPane(vignetteGroup);
+    private final HBox bottomArea = new HBox();  // gui and naration
+    private final VBox gamePane = new VBox(topArea, bottomArea);
+    
+    //private final Group root = new Group();
+    
+
+    // root:   stack pane (game window(borderpane) and overlays(inventory,save)
+    private final StackPane root = new StackPane(gamePane);
+
     private final Player player = new Player();
-    private final Scene scene = new Scene(root, 1280, 720);
+    private final Scene scene = new Scene(root); //, 1280, 920);
     private final GameState gameState = new GameState();
     
     // TODO:   Music track system
@@ -73,6 +102,7 @@ public class Engine extends Application {
     
     
     private Vignette currentVignette;
+    
     static {
           System.setProperty("java.util.logging.SimpleFormatter.format",
                   "[%1$tF %1$tT %1$tL] [%4$-7s] %5$s%n");
@@ -101,15 +131,27 @@ public class Engine extends Application {
         getGameState().load(STARTING_VIGNETTE);
 
         getPlayer().loadState(getGameState());
-
-        this.gui = new GUI(this);
-        this.inventoryPane = new InventoryPane(player);
         
+        this.guiPane = new GUI3(this);
+        this.guiPane.setPrefWidth(Vignette.NATIVE_WIDTH*SCALE/2);
+        this.narrationPane = new CrtTextPane(Vignette.NATIVE_WIDTH*SCALE/2);
+        this.bottomArea.getChildren().addAll(guiPane ,narrationPane );
+        this.inventoryPane = new InventoryPane(player);
+        //root.getChildren().add(inventoryPane);
+        
+        topArea.setPrefWidth(Vignette.NATIVE_WIDTH);
+        bottomArea.setPrefWidth(Vignette.NATIVE_WIDTH);
+        
+        topArea.setBorder(new Border(new BorderStroke(
+                Color.YELLOW, BorderStrokeStyle.SOLID, 
+                CornerRadii.EMPTY, new BorderWidths(5)
+        )));
+        root.layout();
         String roomName = getGameState().getProperty(GameState.PROP_CURRENT_VIGNETTE);
 
         // Load the starting room.
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
-        root.getChildren().addAll(getInventoryPane(), this.getGui());
+        //root.getChildren().addAll(getInventoryPane(), this.getGui());
 
 
         initHotKeys();
@@ -129,12 +171,21 @@ public class Engine extends Application {
     }
 
     private void setVignette(Vignette v) {
-        root.getChildren().remove(currentVignette);
+        //root.getChildren().remove(currentVignette);
+        //topArea.getChildren().remove(currentVignette);
+        vignetteGroup.getChildren().remove(currentVignette);
         this.currentVignette = v;
+       //v.setLayoutX(-200);
+
         currentVignette.loadState(gameState);
         
-        root.getChildren().add(v);
-        v.toBack();
+        //root.getChildren().add(v);
+        //gamePane.getChildren().add(0, v);
+        //topArea.getChildren().add(0, v);
+        vignetteGroup.getChildren().add(0, v);
+        
+        //gamePane.setCenter(v);
+        //v.toBack();
 
         window.setTitle(v.getName());
 
@@ -172,7 +223,7 @@ public class Engine extends Application {
         try {
             Class<?> c = Class.forName(getClass().getPackageName()+ ".content." + nextRoom.getDestination());
             Constructor<?> cons = c.getConstructor(int.class, int.class, Port.class, Player.class);
-            Object object = cons.newInstance(1280, 720, nextRoom, getPlayer());
+            Object object = cons.newInstance((int)(Vignette.NATIVE_WIDTH*SCALE), (int)(Vignette.NATIVE_HEIGHT*SCALE), nextRoom, getPlayer());
             setVignette((Vignette) object);
             log.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());
         } catch (ClassNotFoundException | 
@@ -226,8 +277,8 @@ public class Engine extends Application {
     /**
      * @return the gui
      */
-    public GUI getGui() {
-        return gui;
+    public GUI3 getGui() {
+        return guiPane;
     }
 
     /**

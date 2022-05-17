@@ -31,12 +31,12 @@ import javafx.scene.shape.Rectangle;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class GUI extends Group {
+public class GUI2 extends Group {
 
     private final Engine engine;
     private double menuPopY = 0;
     private final static double MENU_TAB_SHOW = 40;
-    private final static double MENU_HEIGHT = 190;
+    private final static double MENU_HEIGHT = 300;
     private final static double MENU_POP_Y_MAX = MENU_HEIGHT-MENU_TAB_SHOW-8;
     private final static double MENU_POP_Y_INCR = 12;
     private final static double BUTTON_SIZE = 48;
@@ -51,7 +51,7 @@ public class GUI extends Group {
     private Button quitButton;
     private Button knowledgeButton;
 
-    public GUI(Engine engine) {
+    public GUI2(Engine engine) {
         this.engine = engine;
 
         initMenuContent();
@@ -122,7 +122,7 @@ public class GUI extends Group {
         money = new DSEG7Display(
                 180, 10,
                 130, 26,
-                GUI.class.getResourceAsStream("/icons/money-icon.png")
+                GUI2.class.getResourceAsStream("/icons/money-icon.png")
         );
         money.setText(String.valueOf(engine.getPlayer().getMoney()));
         getChildren().add(money);
@@ -131,7 +131,7 @@ public class GUI extends Group {
                 180, 40,
                 130, 26,
                 16, -30,
-                GUI.class.getResourceAsStream("/icons/heart-icon.png"),
+                GUI2.class.getResourceAsStream("/icons/heart-icon.png"),
                 engine.getPlayer().getHealth(),
                 Player.PLAYER_HEALTH_DEFAULT
         );
@@ -141,7 +141,7 @@ public class GUI extends Group {
                 180, 70,
                 130, 26,
                 42, -60,
-                GUI.class.getResourceAsStream("/icons/shield-icon.png"),
+                GUI2.class.getResourceAsStream("/icons/shield-icon.png"),
                 engine.getPlayer().getConstitution(),
                 Player.PLAYER_CONSTITUTION_DEFAULT
         );
@@ -150,11 +150,11 @@ public class GUI extends Group {
     }
 
     private void initButtons() {        
-        inventoryButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI.class.getResourceAsStream("/icons/inventory-icon.png"));
-        chipButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI.class.getResourceAsStream("/icons/microchip-icon.png"));
-        knowledgeButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI.class.getResourceAsStream("/icons/knowledge-icon.png"));
-        saveButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI.class.getResourceAsStream("/icons/save-icon.png"));
-        quitButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI.class.getResourceAsStream("/icons/quit-icon.png"));
+        inventoryButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI2.class.getResourceAsStream("/icons/inventory-icon.png"));
+        chipButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI2.class.getResourceAsStream("/icons/microchip-icon.png"));
+        knowledgeButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI2.class.getResourceAsStream("/icons/knowledge-icon.png"));
+        saveButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI2.class.getResourceAsStream("/icons/save-icon.png"));
+        quitButton = new Button(BUTTON_SIZE, BUTTON_SIZE, GUI2.class.getResourceAsStream("/icons/quit-icon.png"));
 
         FlowPane buttonPane = new FlowPane(16, 0, inventoryButton, knowledgeButton, chipButton, saveButton, quitButton );
         buttonPane.setLayoutX(8);

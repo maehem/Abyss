@@ -32,6 +32,7 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>com.maehem.flatlinejack.Engine</mainClass>
+                    <!--<mainClass>com.maehem.flatlinejack.CrtTest</mainClass> -->
                 </configuration>
                 <executions>
                     <execution>

@@ -17,7 +17,6 @@
 package com.maehem.flatlinejack.engine;
 
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
-import com.maehem.flatlinejack.engine.gui.NarrationPane;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
@@ -31,21 +30,32 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.text.Text;
+import javafx.scene.transform.Scale;
 
 /**
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public abstract class Vignette extends Group {
+public abstract class Vignette extends Pane {
 
     public static final Logger log = Logger.getLogger("flatline");
 
     public static final String PROP_PREFIX = "vignette.";
     public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
     public static final double DEFAULT_HORIZON = 0.24;  // Place horizon this far down from screen top.  0.0 - 1.0
+    //public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
+    public static final int NATIVE_WIDTH = 1440; // Native width of PNG background.
+    public static final int NATIVE_HEIGHT = 720; // Native height of PNG background.
 
     private double playerScale = DEFAULT_SCALE;
     private double horizon = DEFAULT_HORIZON;
@@ -57,10 +67,11 @@ public abstract class Vignette extends Group {
     private final Group walkAreaCoords = new Group();
     private boolean playerTalkToNPC = false;
     private final String assetFolderName;
+    Group layerStack = new Group();
     private final Group bgGroup = new Group();
     private final Group mainGroup = new Group(walkAreaCoords);
     private final Group fgGroup = new Group();
-    private final NarrationPane narrationPane; // = new NarrationPane();
+    //private final NarrationPane narrationPane; // = new NarrationPane();
     private static final double NARRATION_PANE_SCALE = 0.5;  // a ratio relative to screen width.
 
     private final ArrayList<Port> doors = new ArrayList<>();
@@ -80,15 +91,19 @@ public abstract class Vignette extends Group {
         this.height = h;
         this.assetFolderName = assetFolderName;
         this.player = player;
-        //this.walkBoundary = walkBoundary;
-        this.narrationPane = new NarrationPane(w * 0.5);
+
+        
+         //this.walkBoundary = walkBoundary;
+        //this.narrationPane = new NarrationPane(w * 0.5);
         
         log.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
+        getChildren().add(layerStack);
         addNode(bgGroup);
-        addNode(mainGroup);
+        //addNode(mainGroup);
         addNode(fgGroup);
-        addNode(narrationPane);
+        
+        //addNode(narrationPane);
 
         setWalkArea(walkBoundary);
 
@@ -101,7 +116,7 @@ public abstract class Vignette extends Group {
 
             initBackdrop();
             setName(bundle.getString("title"));
-            getNarrationPane().setText(bundle.getString("narration"));
+//            getNarrationPane().setText(bundle.getString("narration"));
             log.config("call init()");
             init();
         } catch (MissingResourceException ex) {
@@ -134,12 +149,34 @@ public abstract class Vignette extends Group {
             }
             event.consume();
         });
-
-        narrationPane.setLayoutX(width  * (1 - NARRATION_PANE_SCALE)); //right aligned
         
-        narrationPane.setLayoutY(height - NarrationPane.MENU_TAB_SHOW);
-        narrationPane.setTitle(name);
+        
 
+//        narrationPane.setLayoutX(width  * (1 - NARRATION_PANE_SCALE)); //right aligned
+//        
+//        narrationPane.setLayoutY(height - NarrationPane.MENU_TAB_SHOW);
+//        narrationPane.setTitle(name);
+
+        //resize(640, 360);
+        //layout();
+        
+        double scale = height/NATIVE_HEIGHT;
+        // Create a custom transform for this pane that has the scaling
+        // pivot point at the same location as the layoutX/Y.
+        Scale xf = new Scale();
+        xf.setPivotX(0);
+        xf.setPivotY(0);
+        xf.setX(scale);
+        xf.setY(scale);
+        getTransforms().add(xf);
+        //setPrefSize(width, height);
+  //      resize(width, height);
+        setBorder(new Border(new BorderStroke(
+                Color.MAGENTA, 
+                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(4)
+        )));
+        //layout();
+        
         log.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
@@ -475,19 +512,19 @@ public abstract class Vignette extends Group {
         this.name = name;
     }
 
-    /**
-     * @return the width
-     */
-    public double getWidth() {
-        return width;
-    }
-
-    /**
-     * @return the height
-     */
-    public double getHeight() {
-        return height;
-    }
+//    /**
+//     * @return the width
+//     */
+//    public double getWidth() {
+//        return width;
+//    }
+//
+//    /**
+//     * @return the height
+//     */
+//    public double getHeight() {
+//        return height;
+//    }
 
     /**
      * @return the scale
@@ -538,11 +575,11 @@ public abstract class Vignette extends Group {
 //    }
 
     private void addNode(Node node) {
-        getChildren().add(node);
+        layerStack.getChildren().add(node);
     }
 
     private void removeNode(Node node) {
-        getChildren().remove(node);
+        layerStack.getChildren().remove(node);
     }
 
     private void initBackdrop() {
@@ -575,11 +612,11 @@ public abstract class Vignette extends Group {
     public void loadState(Properties p) {
         // load vignette parent properties.
 
-        if (!p.containsKey(PROP_PREFIX + getPropName())) {
-            // Pop the narration pane if this vignette has never been saved.
-            // which means the player has not yet been here.
-            narrationPane.pop();
-        }
+//        if (!p.containsKey(PROP_PREFIX + getPropName())) {
+//            // Pop the narration pane if this vignette has never been saved.
+//            // which means the player has not yet been here.
+//            narrationPane.pop();
+//        }
 
         // load child properties
         loadProperties(p);
@@ -608,12 +645,12 @@ public abstract class Vignette extends Group {
      */
     public abstract void loadProperties(Properties p);
 
-    /**
-     * @return the narrationPane
-     */
-    public final NarrationPane getNarrationPane() {
-        return narrationPane;
-    }
+//    /**
+//     * @return the narrationPane
+//     */
+//    public final NarrationPane getNarrationPane() {
+//        return narrationPane;
+//    }
 
     protected void addPort(Port port) {
         port.setScale(getWidth(), getHeight());

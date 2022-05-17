@@ -119,7 +119,7 @@ public class NarrationPane extends BorderPane {
         //scanLines.setPreserveRatio(true);
         scanLines.setLayoutX(20);
         scanLines.setLayoutY(21);
-        textGroup.getChildren().addAll(scanLines, bezView, crtLabelPane);
+        textGroup.getChildren().addAll(scanLines /*, bezView, crtLabelPane */);
         
         setCenter(textGroup);        
         setPrefSize(MENU_WIDTH, MENU_HEIGHT);
