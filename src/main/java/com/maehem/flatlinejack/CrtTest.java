@@ -4,6 +4,7 @@
  */
 package com.maehem.flatlinejack;
 
+import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import java.util.logging.ConsoleHandler;
@@ -54,8 +55,8 @@ public class CrtTest extends Application {
 
         //gamePane.setBottom(bottomArea);
         gamePane.getChildren().add(bottomArea);
-
-        this.narrationPane = new CrtTextPane(Vignette.NATIVE_WIDTH*SCALE/2);
+        GameState gameState = new GameState();
+        this.narrationPane = new CrtTextPane(gameState, Vignette.NATIVE_WIDTH*SCALE/2);
         this.bottomArea.getChildren().addAll(narrationPane );
         
         root.layout();

@@ -23,6 +23,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,8 +33,12 @@ import java.util.logging.Logger;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class GameState extends Properties {
+    
+    ArrayList<GameStateListener> listenters = new ArrayList<>();
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
+    
+    private Vignette currentVignette;
     
     private final File gameSaveFile = new File(
             System.getProperty("user.home") 
@@ -76,4 +81,25 @@ public class GameState extends Properties {
         }
     }
     
+    public void addListenter( GameStateListener l ) {
+        listenters.add(l);
+    }
+    
+    public void removeListener( GameStateListener l ) {
+        listenters.remove(l);
+    }
+    
+    public Vignette getCurrentVignette() {
+        return currentVignette;
+    }
+    
+    public void setCurrentVignette( Vignette v ) {
+        this.currentVignette = v;
+        setProperty(PROP_CURRENT_VIGNETTE, v.getClass().getSimpleName());
+        
+        // notify vignette change.
+        for ( GameStateListener l: listenters ) {
+            l.gameStateVignetteChanged(this);
+        }
+    }
 }

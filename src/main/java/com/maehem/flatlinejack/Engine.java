@@ -23,7 +23,7 @@ import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
-import com.maehem.flatlinejack.engine.gui.GUI3;
+import com.maehem.flatlinejack.engine.gui.GameControlsPane;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.ConsoleHandler;
@@ -42,13 +42,8 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -64,7 +59,7 @@ public class Engine extends Application {
     private static final double SCALE = 0.66;
     
     private CrtTextPane narrationPane;
-    private GUI3 guiPane;
+    private GameControlsPane gameControls;
 
     /**
      * @return the inventoryPane
@@ -84,27 +79,21 @@ public class Engine extends Application {
     private Stage window;
     private Loop loop;   // Game logic Loop
     
-    //private final BorderPane gamePane = new BorderPane();
-    private Group vignetteGroup = new Group();
+    private final Group vignetteGroup = new Group();
     private final StackPane topArea = new StackPane(vignetteGroup);
     private final HBox bottomArea = new HBox();  // gui and naration
     private final VBox gamePane = new VBox(new Group(topArea), new Group(bottomArea));
     
-    //private final Group root = new Group();
-    
-
-    // root:   stack pane (game window(borderpane) and overlays(inventory,save)
     private final StackPane root = new StackPane(gamePane);
-
-    private final Player player = new Player();
     private final Scene scene = new Scene(root); //, 1280, 920);
+
+    
+    private final Player player = new Player();  //  TODO: Move to game state
     private final GameState gameState = new GameState();
+    
     
     // TODO:   Music track system
     //          - Blend music scene to scene
-    
-    
-    private Vignette currentVignette;
     
     static {
           System.setProperty("java.util.logging.SimpleFormatter.format",
@@ -113,97 +102,65 @@ public class Engine extends Application {
 
     @Override
     public void start(Stage window) {
-        ConsoleHandler handler
-                    = new ConsoleHandler();
-
-        // Add console handler as handler of logs
-        log.addHandler(handler);
-
-        log.setLevel(Level.FINER);
-        for (Handler h : log.getHandlers()) {
-            h.setLevel(Level.FINER);
-        }
-
         this.window = window;
-        window.setScene(this.scene);
-        window.setResizable(false);
-        //quit when the window is close().
-        window.setOnCloseRequest(e -> Platform.exit());
+        
+        configureLogging();
+        
+        gameControls = new GameControlsPane(getGameState(), Vignette.NATIVE_WIDTH/2);
+        narrationPane = new CrtTextPane(getGameState(), Vignette.NATIVE_WIDTH/2);
+        
+        bottomArea.getChildren().addAll(gameControls ,narrationPane  );
 
+        inventoryPane = new InventoryPane(player);
 
-        topArea.setScaleX(SCALE);
-        topArea.setScaleY(SCALE);
-        
-        bottomArea.setScaleX(SCALE);
-        bottomArea.setScaleY(SCALE);
-        
-        bottomArea.setSpacing(8);
-        bottomArea.setPadding(new Insets(6));
-        bottomArea.setBackground(new Background(new BackgroundFill(
-                Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY
-        )));
-
-        this.guiPane = new GUI3(this);
-        this.guiPane.setPrefWidth(Vignette.NATIVE_WIDTH/2);
-        this.narrationPane = new CrtTextPane(Vignette.NATIVE_WIDTH/2);
-        this.bottomArea.getChildren().addAll( guiPane ,narrationPane  );
-        this.inventoryPane = new InventoryPane(player);
-        
-        topArea.setPrefWidth(Vignette.NATIVE_WIDTH);
-        bottomArea.setPrefWidth(Vignette.NATIVE_WIDTH);
-        
-        root.layout();
-        
-        
-        getGameState().load(STARTING_VIGNETTE);
+        configureGuiLayout();
 
         getPlayer().loadState(getGameState());
         
+        getGameState().load(STARTING_VIGNETTE);
         String roomName = getGameState().getProperty(GameState.PROP_CURRENT_VIGNETTE);
 
         // Load the starting room.
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
-        //root.getChildren().addAll(getInventoryPane(), this.getGui());
 
         initHotKeys();
         initKeyInput();
 
+        window.setScene(this.scene);
+        window.setResizable(false);
+        //quit when the window is close().
+        window.setOnCloseRequest(e -> Platform.exit());
         window.show();
+        
         getInventoryPane().setVisible(false);
         getInventoryPane().setLayoutX(getScene().getWidth()/2 - getInventoryPane().getWidth()/2);
         getInventoryPane().setLayoutY(getScene().getHeight()/2 - getInventoryPane().getHeight()/2);
-    }
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
     }
 
     private void setVignette(Vignette v) {
         //root.getChildren().remove(currentVignette);
         //topArea.getChildren().remove(currentVignette);
+        Vignette currentVignette = gameState.getCurrentVignette();
+        
         vignetteGroup.getChildren().remove(currentVignette);
-        this.currentVignette = v;
+        gameState.setCurrentVignette(v);
+        
+        //this.currentVignette = v;
        //v.setLayoutX(-200);
 
-        currentVignette.loadState(gameState);
+        v.loadState(gameState);
         
         //root.getChildren().add(v);
         //gamePane.getChildren().add(0, v);
         //topArea.getChildren().add(0, v);
         vignetteGroup.getChildren().add(0, v);
         
-        //gamePane.setCenter(v);
-        //v.toBack();
-
         window.setTitle(v.getName());
 
         loop = new Loop(this, v);
         loop.start();
 
-        getGameState().setProperty(GameState.PROP_CURRENT_VIGNETTE, v.getClass().getSimpleName());
     }
 
     @Override
@@ -227,6 +184,7 @@ public class Engine extends Application {
         player.stopAnimating();
         
         // Save relevant game data/goals from scene?
+        Vignette currentVignette = gameState.getCurrentVignette();
         if ( currentVignette != null ) {
             currentVignette.saveState(getGameState());
         }
@@ -288,8 +246,8 @@ public class Engine extends Application {
     /**
      * @return the gui
      */
-    public GUI3 getGui() {
-        return guiPane;
+    public GameControlsPane getGui() {
+        return gameControls;
     }
 
     /**
@@ -300,11 +258,12 @@ public class Engine extends Application {
     }
 
     public void doSave() {
+        GameState gameState = getGameState();
         // Push all state values into game state.
-        currentVignette.saveState(getGameState());
+        gameState.getCurrentVignette().saveState(gameState);
 
         // Save the file.
-        getGameState().quickSave();
+        gameState.quickSave();
     }
 
     public void doExit() {
@@ -325,4 +284,43 @@ public class Engine extends Application {
               }
         });
     }
+    
+    private void configureGuiLayout() {
+        topArea.setPrefWidth(Vignette.NATIVE_WIDTH);
+        topArea.setScaleX(SCALE);
+        topArea.setScaleY(SCALE);
+        
+        bottomArea.setPrefWidth(Vignette.NATIVE_WIDTH);
+        bottomArea.setScaleX(SCALE);
+        bottomArea.setScaleY(SCALE);
+        
+        bottomArea.setSpacing(8);
+        bottomArea.setPadding(new Insets(6));
+        bottomArea.setBackground(new Background(new BackgroundFill(
+                Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY
+        )));        
+    }
+    
+    private void configureLogging() {
+        ConsoleHandler handler
+                    = new ConsoleHandler();
+
+        // TODO:  Bring in Rocket Logging system.
+        
+        // Add console handler as handler of logs
+        log.addHandler(handler);
+
+        log.setLevel(Level.FINER);
+        for (Handler h : log.getHandlers()) {
+            h.setLevel(Level.FINER);
+        }        
+    }
+    
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        launch(args);
+    }
+
 }

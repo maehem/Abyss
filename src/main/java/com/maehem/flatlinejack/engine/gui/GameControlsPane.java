@@ -17,6 +17,7 @@
 package com.maehem.flatlinejack.engine.gui;
 
 import com.maehem.flatlinejack.Engine;
+import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.gui.widgets.DecoBox;
 import com.maehem.flatlinejack.engine.gui.widgets.GUIButtonsPane;
 import com.maehem.flatlinejack.engine.gui.widgets.OLEDStatusScreen;
@@ -33,13 +34,14 @@ import javafx.scene.paint.Color;
  *
  * @author mark
  */
-public class GUI3 extends GUIPane {
+public class GameControlsPane extends GUIPane {
     private final StackPane decoBox = new DecoBox();
     private final OLEDStatusScreen status = new OLEDStatusScreen();
     private final GUIButtonsPane buttons = new GUIButtonsPane();
     
-    public GUI3( Engine engine) {
+    public GameControlsPane( GameState gs, double width ) {
 
+        setPrefWidth(width);
         setPadding(new Insets(8));
         
         final StackPane decoInternal = new StackPane();

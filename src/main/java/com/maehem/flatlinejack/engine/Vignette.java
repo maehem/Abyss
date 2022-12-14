@@ -30,11 +30,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
@@ -69,8 +64,6 @@ public abstract class Vignette extends Pane {
     private final Group bgGroup = new Group();
     private final Group mainGroup = new Group(walkAreaCoords);
     private final Group fgGroup = new Group();
-    //private final NarrationPane narrationPane; // = new NarrationPane();
-    private static final double NARRATION_PANE_SCALE = 0.5;  // a ratio relative to screen width.
 
     private final ArrayList<Port> doors = new ArrayList<>();
     private final ArrayList<Patch> patchList = new ArrayList<>();
@@ -82,7 +75,6 @@ public abstract class Vignette extends Pane {
     private DialogScreen dialogOverlay;
     private double debugOpacity = 0.7;
     public ResourceBundle bundle;
-    //private double[] walkBoundary;
 
     public Vignette(int w, int h, String assetFolderName, Port prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
         this.width = w;
@@ -114,7 +106,6 @@ public abstract class Vignette extends Pane {
 
             initBackdrop();
             setName(bundle.getString("title"));
-//            getNarrationPane().setText(bundle.getString("narration"));
             log.config("call init()");
             init();
         } catch (MissingResourceException ex) {
@@ -148,25 +139,7 @@ public abstract class Vignette extends Pane {
             }
             event.consume();
         });
-        
-        
-        
-//        double scale = height/NATIVE_HEIGHT;
-//        // Create a custom transform for this pane that has the scaling
-//        // pivot point at the same location as the layoutX/Y.
-//        Scale xf = new Scale();
-//        xf.setPivotX(0);
-//        xf.setPivotY(0);
-//        xf.setX(scale);
-//        xf.setY(scale);
-//        getTransforms().add(xf);
 
-
-//        setBorder(new Border(new BorderStroke(
-//                Color.MAGENTA, 
-//                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(4)
-//        )));
-        
         log.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
@@ -340,21 +313,6 @@ public abstract class Vignette extends Pane {
             ((Character) npc).showCollisionBounds(show);
         });
         
-//        for (Node n : getChildren()) {
-////            if (n instanceof Character) {
-////                ((Character) n).showCollisionBounds(show);
-////                log.config("Show collision for character: " + ((Character) n).getName());
-////            }
-//
-//                    
-//            if (n instanceof Group) {
-//                for (Node nn : ((Group) n).getChildren()) {
-//                    if (nn instanceof Character) {
-//                        ((Character) nn).showCollisionBounds(show);
-//                    }
-//                }
-//            }
-//        }
     }
 
     protected final void debugHearingBounds(boolean show) {
@@ -372,9 +330,6 @@ public abstract class Vignette extends Pane {
         });
         
     }
-//    protected final void showWalkPanel(boolean show) {
-//        // Walk window set opacity show.
-//    }
 
     /**
      *
@@ -423,31 +378,6 @@ public abstract class Vignette extends Pane {
         setWalkArea(new Polygon(waPx));
     }
     
-//    /**
-//     * @param walkArea the walkArea to set
-//     */
-//    public void setWalkAreaOld(Polygon walkArea) {
-//        mainGroup.getChildren().remove(this.walkArea);
-//        walkAreaCoords.getChildren().clear();
-//        this.walkArea = walkArea;
-//        mainGroup.getChildren().add(0, this.walkArea);
-//
-//        ObservableList<Double> points = walkArea.getPoints();
-//        for (int i = 0; i < points.size(); i += 2) {
-//            Text t = new Text(
-//                    points.get(i), points.get(i + 1),
-//                    points.get(i) + "," + points.get(i + 1)
-//            );
-//            t.setFill(Color.LIGHTGREEN);
-//            walkAreaCoords.getChildren().add(t);
-//        }
-//
-//        getWalkArea().setFill(Color.TRANSPARENT);
-//        Color AQUA = Color.AQUA;
-//        getWalkArea().setStroke(new Color(AQUA.getRed(), AQUA.getGreen(), AQUA.getBlue(), 0.5));
-//        getWalkArea().setStrokeWidth(3.0);
-//    }
-    
     /**
      * @param walkArea the walkArea to set
      */
@@ -471,8 +401,13 @@ public abstract class Vignette extends Pane {
             walkAreaCoords.getChildren().add(t);
         }
 
-        Color AQUA = Color.AQUA;
-        getWalkArea().setStroke(new Color(AQUA.getRed(), AQUA.getGreen(), AQUA.getBlue(), 0.5));
+        Color collisionStroke = Color.GREEN;
+        getWalkArea().setStroke(new Color(
+                collisionStroke.getRed(), 
+                collisionStroke.getGreen(), 
+                collisionStroke.getBlue(), 
+                0.6
+        ));
         getWalkArea().setStrokeWidth(3.0);
         getWalkArea().setFill(Color.TRANSPARENT);
     }
@@ -655,5 +590,9 @@ public abstract class Vignette extends Pane {
         getPatchList().add(patch);
         getFgGroup().getChildren().add(patch);
         getFgGroup().getChildren().add(patch.getBox());
+    }
+    
+    public String getNarration() {
+        return bundle.getString("narration");
     }
 }

@@ -39,8 +39,10 @@ public class GUIButtonsPane extends DecoBox {
     private final Button diskButton;
     
     public GUIButtonsPane() {
-               
         DSEG7Display money = new DSEG7Display(0, 0, 200, 30, '$', "1234567890");
+        FlowPane moneyPane = new FlowPane(money);
+        moneyPane.setAlignment(Pos.CENTER);
+        
         inventoryButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(INV_ICON_PATH));
         chipButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(CHIP_ICON_PATH));
         knowledgeButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(KNOW_ICON_PATH));
@@ -49,7 +51,8 @@ public class GUIButtonsPane extends DecoBox {
         buttons.setHgap(2.0);
         buttons.setAlignment(Pos.CENTER);
         
-        VBox content = new VBox(money,buttons);
+        VBox content = new VBox(moneyPane,buttons);
+        content.setSpacing(16);
         getChildren().add(content);
     }
     

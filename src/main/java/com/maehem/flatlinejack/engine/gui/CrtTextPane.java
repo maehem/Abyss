@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
+import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.GameStateListener;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.effect.GaussianBlur;
@@ -36,7 +38,7 @@ import javafx.scene.transform.Scale;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class CrtTextPane extends GUIPane {
+public class CrtTextPane extends GUIPane implements GameStateListener {
     private static final String SCREEN_FONT = "/fonts/VT323-Regular.ttf";
     private static final double SCREEN_FONT_H = 37;
     private static final double SCREEN_LINE_SPACE = -7.171; // default is 0.0
@@ -54,7 +56,9 @@ public class CrtTextPane extends GUIPane {
     private final TextFlow flow = new TextFlow(t);
     private final double scale;
     
-    public CrtTextPane(double width) {
+    public CrtTextPane(GameState gs, double width) {
+        gs.addListenter(this);
+        
         StackPane contentPane = new StackPane();
         getChildren().add(contentPane);
         
@@ -124,12 +128,23 @@ public class CrtTextPane extends GUIPane {
         
     }
     
-    public final void setText( String text ) {
+    private final void setText( String text ) {
         //Text t = new Text(text);
         t.setText(text);
         //ObservableList<Node> children = flow.getChildren();
         //children.clear();
         //children.add(t);
+    }
+
+    @Override
+    public void gameStateVignetteChanged(GameState gs) {
+        // Load the new vignette text.
+        setText(gs.getCurrentVignette().getNarration());
+    }
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) {
+        // Nothing happens.
     }
     
 }
