@@ -24,16 +24,9 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.shape.StrokeType;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -62,18 +55,6 @@ public class CrtTextPane extends GUIPane {
     private final double scale;
     
     public CrtTextPane(double width) {
-//        BorderStrokeStyle bss = new BorderStrokeStyle(
-//                StrokeType.CENTERED, 
-//                StrokeLineJoin.MITER, 
-//                StrokeLineCap.BUTT,
-//                10, 0, null
-//        );
-//        setBorder(new Border(new BorderStroke(Color.RED, 
-//                bss, 
-//                CornerRadii.EMPTY, 
-//                new BorderWidths(8)
-//        )));
-        
         StackPane contentPane = new StackPane();
         getChildren().add(contentPane);
         
@@ -83,10 +64,6 @@ public class CrtTextPane extends GUIPane {
         contentPane.setBackground(new Background(new BackgroundFill(
                 Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY
         )));
-        
-//        setBackground(new Background(new BackgroundFill(
-//                Color.MAGENTA, CornerRadii.EMPTY, Insets.EMPTY
-//        )));
         
         flow.setPrefSize(CRT_WIDTH, CRT_HEIGHT);
         
@@ -107,7 +84,6 @@ public class CrtTextPane extends GUIPane {
         flow.getTransforms().add(xf);
         xf.setX(scale);
         xf.setY(scale);
-
         
         t.setFill(SCREEN_FG_COLOR);
         t.setFont(FONT);
