@@ -36,11 +36,10 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-import javafx.scene.transform.Scale;
 
 /**
  *
@@ -53,8 +52,7 @@ public abstract class Vignette extends Pane {
     public static final String PROP_PREFIX = "vignette.";
     public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
     public static final double DEFAULT_HORIZON = 0.24;  // Place horizon this far down from screen top.  0.0 - 1.0
-    //public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
-    public static final int NATIVE_WIDTH = 1440; // Native width of PNG background.
+    public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
     public static final int NATIVE_HEIGHT = 720; // Native height of PNG background.
 
     private double playerScale = DEFAULT_SCALE;
@@ -92,15 +90,15 @@ public abstract class Vignette extends Pane {
         this.assetFolderName = assetFolderName;
         this.player = player;
 
-        
-         //this.walkBoundary = walkBoundary;
-        //this.narrationPane = new NarrationPane(w * 0.5);
+        this.setWidth(width);
+        this.setHeight(height);
+        this.setClip(new Rectangle(width, height));
         
         log.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
         getChildren().add(layerStack);
         addNode(bgGroup);
-        //addNode(mainGroup);
+        addNode(mainGroup);
         addNode(fgGroup);
         
         //addNode(narrationPane);
@@ -131,10 +129,11 @@ public abstract class Vignette extends Pane {
         // Example: Player left through right door and you want them to appear in the next
         // vignette's left side.
         if (prevPort != null && prevPort.getPlayerX() >= 0 && prevPort.getPlayerY() >= 0) {
-            log.config("set player xy override");
+            log.log(Level.INFO, "set player xy override: {0},{1}", new Object[]{prevPort.getPlayerX(), prevPort.getPlayerY()});
             setPlayerPosition(new Point2D(prevPort.getPlayerX(), prevPort.getPlayerY()));
             player.setDirection(prevPort.getPlayerDir());
         } else {
+            //log.log(Level.INFO, "Set player position to: {0},{1}", new Object[]{0.5, 0.66});
             setPlayerPosition(new Point2D(0.5, 0.66));
             player.setDirection(PoseSheet.Direction.TOWARD);
         }
@@ -151,31 +150,22 @@ public abstract class Vignette extends Pane {
         });
         
         
-
-//        narrationPane.setLayoutX(width  * (1 - NARRATION_PANE_SCALE)); //right aligned
-//        
-//        narrationPane.setLayoutY(height - NarrationPane.MENU_TAB_SHOW);
-//        narrationPane.setTitle(name);
-
-        //resize(640, 360);
-        //layout();
         
-        double scale = height/NATIVE_HEIGHT;
-        // Create a custom transform for this pane that has the scaling
-        // pivot point at the same location as the layoutX/Y.
-        Scale xf = new Scale();
-        xf.setPivotX(0);
-        xf.setPivotY(0);
-        xf.setX(scale);
-        xf.setY(scale);
-        getTransforms().add(xf);
-        //setPrefSize(width, height);
-  //      resize(width, height);
-        setBorder(new Border(new BorderStroke(
-                Color.MAGENTA, 
-                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(4)
-        )));
-        //layout();
+//        double scale = height/NATIVE_HEIGHT;
+//        // Create a custom transform for this pane that has the scaling
+//        // pivot point at the same location as the layoutX/Y.
+//        Scale xf = new Scale();
+//        xf.setPivotX(0);
+//        xf.setPivotY(0);
+//        xf.setX(scale);
+//        xf.setY(scale);
+//        getTransforms().add(xf);
+
+
+//        setBorder(new Border(new BorderStroke(
+//                Color.MAGENTA, 
+//                BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(4)
+//        )));
         
         log.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
@@ -265,6 +255,7 @@ public abstract class Vignette extends Pane {
                 getPlayerScale()
                 * (getPlayer().getLayoutY() / getHeight() - getHorizon())
         );
+        //log.log(Level.FINER, "Player scale set to: " + getPlayer().getScaleY() );
         loop(); // Run the user defined @loop() code.
 
         // TODO:  maybe return loop() and allow the child to cause exit of scene?
@@ -547,6 +538,8 @@ public abstract class Vignette extends Pane {
     public final void setPlayerPosition( Point2D pos ) {
         getPlayer().setLayoutX(getWidth() * pos.getX());
         getPlayer().setLayoutY(getHeight() * pos.getY());
+        log.log(Level.INFO, "Set player position to: {0},{1}", 
+                new Object[]{getPlayer().getLayoutX(), getPlayer().getLayoutY()});
     }
     
     /**

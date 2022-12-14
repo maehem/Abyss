@@ -16,30 +16,33 @@
 */
 package com.maehem.flatlinejack.engine.gui.widgets;
 
-import javafx.geometry.Pos;
-import javafx.scene.layout.VBox;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 
 /**
  *
  * @author mark
  */
-public class OLEDStatusScreen extends DecoBox {
-    private final DateTimeWidget timeWidget = new DateTimeWidget();
-    private final PixelGaugeWidget healthWidget = new PixelGaugeWidget();
-    private final PixelGaugeWidget constWidget = new PixelGaugeWidget();
-    //private final DSEG7Display moneyWidget = new DSEG7Display(20, 30, 300, 30);
-    
-    public OLEDStatusScreen() {
-        // Add date time section        
-        // Add health bar
-        // Add const bar
-        // Add money section
-        setAlignment(Pos.CENTER);
-        VBox content = new VBox(
-                timeWidget,healthWidget,constWidget
-        );
-        getChildren().add(content);
-        //layout();
+public class DecoBox extends StackPane {
+
+    public DecoBox() {
+        setMinWidth(20);
+        setMaxHeight(Double.MAX_VALUE);
+        setPadding(new Insets(4));
+        
+        setBorder(new Border(new BorderStroke(
+                Color.DARKGREY.darker(), 
+                BorderStrokeStyle.SOLID, 
+                CornerRadii.EMPTY, 
+                new BorderWidths(2)
+        )));
+         
     }
     
 }

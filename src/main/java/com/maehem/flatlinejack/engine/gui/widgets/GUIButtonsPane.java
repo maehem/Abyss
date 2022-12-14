@@ -17,21 +17,15 @@
 package com.maehem.flatlinejack.engine.gui.widgets;
 
 import java.io.InputStream;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 
 /**
  *
  * @author mark
  */
-public class GUIButtonsPane extends FlowPane {
+public class GUIButtonsPane extends DecoBox {
     private final static double BUTTON_SIZE = 48;
 
     private final String INV_ICON_PATH = "/icons/inventory-icon.png";
@@ -45,18 +39,7 @@ public class GUIButtonsPane extends FlowPane {
     private final Button diskButton;
     
     public GUIButtonsPane() {
-        super( 2,0 );
-        
-        
-        setAlignment(Pos.CENTER);
-        setBorder(new Border(new BorderStroke(
-                Color.GREY, 
-                BorderStrokeStyle.SOLID, 
-                new CornerRadii(4.0),
-                new BorderWidths(1.0)
-        )));
-        setPadding(new Insets(4));
-        
+               
         DSEG7Display money = new DSEG7Display(0, 0, 200, 30, '$', "1234567890");
         inventoryButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(INV_ICON_PATH));
         chipButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(CHIP_ICON_PATH));
@@ -66,12 +49,12 @@ public class GUIButtonsPane extends FlowPane {
         buttons.setHgap(2.0);
         buttons.setAlignment(Pos.CENTER);
         
-        getChildren().addAll(money,buttons);
+        VBox content = new VBox(money,buttons);
+        getChildren().add(content);
     }
     
     private InputStream getStream(String path) {
         return getClass().getResourceAsStream(path);
     }
-    
     
 }

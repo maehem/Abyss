@@ -16,46 +16,34 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
-import com.maehem.flatlinejack.Engine;
-import com.maehem.flatlinejack.engine.gui.widgets.DecoBox;
-import com.maehem.flatlinejack.engine.gui.widgets.GUIButtonsPane;
-import com.maehem.flatlinejack.engine.gui.widgets.OLEDStatusScreen;
 import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 
 /**
  *
  * @author mark
  */
-public class GUI3 extends GUIPane {
-    private final StackPane decoBox = new DecoBox();
-    private final OLEDStatusScreen status = new OLEDStatusScreen();
-    private final GUIButtonsPane buttons = new GUIButtonsPane();
-    
-    public GUI3( Engine engine) {
+public class GUIPane extends HBox {
 
-        setPadding(new Insets(8));
-        
-        final StackPane decoInternal = new StackPane();
-        decoInternal.setPrefWidth(20);
-        decoInternal.setBorder(new Border(new BorderStroke(
+    public GUIPane() {
+        setBackground(new Background(new BackgroundFill(
+                Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY
+        )));
+        setBorder(new Border(new BorderStroke(
                 Color.DARKGREY.darker(), 
                 BorderStrokeStyle.SOLID, 
-                CornerRadii.EMPTY, 
-                new BorderWidths(2)
+                new CornerRadii(10.0), 
+                new BorderWidths(10.0)
         )));
-        
-        
-        getChildren().addAll(decoBox, buttons, status);
+        setSpacing(8);
     }
     
-    public void refresh() {
-        
-    }
 }

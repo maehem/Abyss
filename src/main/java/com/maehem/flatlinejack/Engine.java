@@ -33,20 +33,22 @@ import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.geometry.Pos;
+import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -58,7 +60,8 @@ import javafx.stage.Stage;
  */
 public class Engine extends Application {
 
-    private double SCALE = 0.75;
+    //private double SCALE = 0.75;
+    private static final double SCALE = 0.66;
     
     private CrtTextPane narrationPane;
     private GUI3 guiPane;
@@ -85,7 +88,7 @@ public class Engine extends Application {
     private Group vignetteGroup = new Group();
     private final StackPane topArea = new StackPane(vignetteGroup);
     private final HBox bottomArea = new HBox();  // gui and naration
-    private final VBox gamePane = new VBox(topArea, bottomArea);
+    private final VBox gamePane = new VBox(new Group(topArea), new Group(bottomArea));
     
     //private final Group root = new Group();
     
@@ -128,31 +131,39 @@ public class Engine extends Application {
         window.setOnCloseRequest(e -> Platform.exit());
 
 
-        getGameState().load(STARTING_VIGNETTE);
-
-        getPlayer().loadState(getGameState());
+        topArea.setScaleX(SCALE);
+        topArea.setScaleY(SCALE);
         
+        bottomArea.setScaleX(SCALE);
+        bottomArea.setScaleY(SCALE);
+        
+        bottomArea.setSpacing(8);
+        bottomArea.setPadding(new Insets(6));
+        bottomArea.setBackground(new Background(new BackgroundFill(
+                Color.DARKGREY, CornerRadii.EMPTY, Insets.EMPTY
+        )));
+
         this.guiPane = new GUI3(this);
-        this.guiPane.setPrefWidth(Vignette.NATIVE_WIDTH*SCALE/2);
-        this.narrationPane = new CrtTextPane(Vignette.NATIVE_WIDTH*SCALE/2);
-        this.bottomArea.getChildren().addAll(guiPane ,narrationPane );
+        this.guiPane.setPrefWidth(Vignette.NATIVE_WIDTH/2);
+        this.narrationPane = new CrtTextPane(Vignette.NATIVE_WIDTH/2);
+        this.bottomArea.getChildren().addAll( guiPane ,narrationPane  );
         this.inventoryPane = new InventoryPane(player);
-        //root.getChildren().add(inventoryPane);
         
         topArea.setPrefWidth(Vignette.NATIVE_WIDTH);
         bottomArea.setPrefWidth(Vignette.NATIVE_WIDTH);
         
-        topArea.setBorder(new Border(new BorderStroke(
-                Color.YELLOW, BorderStrokeStyle.SOLID, 
-                CornerRadii.EMPTY, new BorderWidths(5)
-        )));
         root.layout();
+        
+        
+        getGameState().load(STARTING_VIGNETTE);
+
+        getPlayer().loadState(getGameState());
+        
         String roomName = getGameState().getProperty(GameState.PROP_CURRENT_VIGNETTE);
 
         // Load the starting room.
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
         //root.getChildren().addAll(getInventoryPane(), this.getGui());
-
 
         initHotKeys();
         initKeyInput();
@@ -223,7 +234,7 @@ public class Engine extends Application {
         try {
             Class<?> c = Class.forName(getClass().getPackageName()+ ".content." + nextRoom.getDestination());
             Constructor<?> cons = c.getConstructor(int.class, int.class, Port.class, Player.class);
-            Object object = cons.newInstance((int)(Vignette.NATIVE_WIDTH*SCALE), (int)(Vignette.NATIVE_HEIGHT*SCALE), nextRoom, getPlayer());
+            Object object = cons.newInstance((int)(Vignette.NATIVE_WIDTH), (int)(Vignette.NATIVE_HEIGHT), nextRoom, getPlayer());
             setVignette((Vignette) object);
             log.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());
         } catch (ClassNotFoundException | 

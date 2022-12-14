@@ -43,7 +43,7 @@ import javafx.scene.transform.Scale;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class CrtTextPane extends StackPane {
+public class CrtTextPane extends GUIPane {
     private static final String SCREEN_FONT = "/fonts/VT323-Regular.ttf";
     private static final double SCREEN_FONT_H = 37;
     private static final double SCREEN_LINE_SPACE = -7.171; // default is 0.0
@@ -62,23 +62,28 @@ public class CrtTextPane extends StackPane {
     private final double scale;
     
     public CrtTextPane(double width) {
-        BorderStrokeStyle bss = new BorderStrokeStyle(
-                StrokeType.CENTERED, 
-                StrokeLineJoin.MITER, 
-                StrokeLineCap.BUTT,
-                10, 0, null
-        );
-        setBorder(new Border(new BorderStroke(Color.RED, 
-                bss, 
-                CornerRadii.EMPTY, 
-                new BorderWidths(8)
-        )));
+//        BorderStrokeStyle bss = new BorderStrokeStyle(
+//                StrokeType.CENTERED, 
+//                StrokeLineJoin.MITER, 
+//                StrokeLineCap.BUTT,
+//                10, 0, null
+//        );
+//        setBorder(new Border(new BorderStroke(Color.RED, 
+//                bss, 
+//                CornerRadii.EMPTY, 
+//                new BorderWidths(8)
+//        )));
+        
+        StackPane contentPane = new StackPane();
+        getChildren().add(contentPane);
+        
         scale = width/CRT_WIDTH;
 
         
-        setBackground(new Background(new BackgroundFill(
+        contentPane.setBackground(new Background(new BackgroundFill(
                 Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY
         )));
+        
 //        setBackground(new Background(new BackgroundFill(
 //                Color.MAGENTA, CornerRadii.EMPTY, Insets.EMPTY
 //        )));
@@ -139,7 +144,7 @@ public class CrtTextPane extends StackPane {
         //scanLines.setPreserveRatio(true);
         //scanLines.setLayoutX(20);
         //scanLines.setLayoutY(21);
-        getChildren().addAll(flowGroup , scanLinesGroup ); // ,scanLines);
+        contentPane.getChildren().addAll(flowGroup , scanLinesGroup ); // ,scanLines);
         
     }
     

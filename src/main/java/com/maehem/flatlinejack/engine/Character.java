@@ -151,7 +151,7 @@ public class Character extends Group {
      * @param y range 0.0-1.0 (top to bottom(feet))
      */
     public final void setOrigin(double x, double y) {
-        log.log(Level.FINEST, "character set origin: {0},{1}", new Object[]{x, y});
+        log.log(Level.INFO, "character set origin: {0},{1}", new Object[]{x, y});
         this.originX = x;
         this.originY = y;
         
