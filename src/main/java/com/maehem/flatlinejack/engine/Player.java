@@ -116,10 +116,11 @@ public class Player extends Character {
      * @param p @Properties object from game engine
      */
     public void loadState(Properties p) {
+        log.log(Level.INFO, "Initialize player settings from save file.");
         setName(p.getProperty(PLAYER_NAME, "Jack"));
-        setMoney(Integer.valueOf(p.getProperty(PLAYER_MONEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT))));
-        setHealth(Integer.valueOf(p.getProperty(PLAYER_HEALTH, String.valueOf(PLAYER_HEALTH_DEFAULT))));
-        setConstitution(Integer.valueOf(p.getProperty(PLAYER_CONSTITUTION, String.valueOf(PLAYER_CONSTITUTION_DEFAULT))));
+        setMoney(Integer.parseInt(p.getProperty(PLAYER_MONEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT))));
+        setHealth(Integer.parseInt(p.getProperty(PLAYER_HEALTH, String.valueOf(PLAYER_HEALTH_DEFAULT))));
+        setConstitution(Integer.parseInt(p.getProperty(PLAYER_CONSTITUTION, String.valueOf(PLAYER_CONSTITUTION_DEFAULT))));
 
         for ( int i=0; i< getAInventory().size(); i++ ) {
             String key = PLAYER_INVENTORY + "." + i;

@@ -22,5 +22,9 @@ package com.maehem.flatlinejack.engine;
  */
 public interface GameStateListener {
     public void gameStateVignetteChanged( GameState gs );
+    
     public void gameStatePropertyChanged( GameState gs, String propKey );
+
+    public void gameStateShowInventory(GameState gs, boolean state);
+    
 }

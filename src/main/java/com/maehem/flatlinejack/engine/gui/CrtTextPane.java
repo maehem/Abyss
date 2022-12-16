@@ -64,7 +64,6 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
         
         scale = width/CRT_WIDTH;
 
-        
         contentPane.setBackground(new Background(new BackgroundFill(
                 Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY
         )));
@@ -146,5 +145,8 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
     public void gameStatePropertyChanged(GameState gs, String propKey) {
         // Nothing happens.
     }
+
+    @Override
+    public void gameStateShowInventory(GameState gs, boolean state) {}
     
 }

@@ -16,28 +16,32 @@
 */
 package com.maehem.flatlinejack.engine.gui.widgets;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  *
  * @author mark
  */
 public class OLEDStatusScreen extends DecoBox {
-    private final DateTimeWidget timeWidget = new DateTimeWidget();
-    private final PixelGaugeWidget healthWidget = new PixelGaugeWidget();
-    private final PixelGaugeWidget constWidget = new PixelGaugeWidget();
-    //private final DSEG7Display moneyWidget = new DSEG7Display(20, 30, 300, 30);
+    private final DateTimeWidget timeWidget = new DateTimeWidget(22);
+    private final PixelGaugeWidget healthWidget = new PixelGaugeWidget(20);
+    private final PixelGaugeWidget constWidget = new PixelGaugeWidget(20);
     
     public OLEDStatusScreen() {
-        // Add date time section        
-        // Add health bar
-        // Add const bar
-        // Add money section
+        setPrefWidth(280);
         setAlignment(Pos.CENTER);
+        setBackground(new Background(new BackgroundFill(new Color(0.1,0.1,0.1,1.0), CornerRadii.EMPTY, Insets.EMPTY)));
+        
         VBox content = new VBox(
                 timeWidget,healthWidget,constWidget
         );
+        content.setSpacing(8);
         getChildren().add(content);
         //layout();
     }

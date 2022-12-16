@@ -16,16 +16,31 @@
 */
 package com.maehem.flatlinejack.engine.gui.widgets;
 
-import javafx.scene.control.Label;
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  *
  * @author mark
  */
-public class DateTimeWidget extends Label {
+public class DateTimeWidget extends HBox {
 
-    public DateTimeWidget() {
-        setText("22:22 - 2044/11/24");
+    private final Font  font;
+    private final Text  text = new Text();
+
+    public DateTimeWidget( double height ) {
+        setAlignment(Pos.CENTER);
+        font = Font.loadFont(
+            PixelGaugeWidget.class.getResourceAsStream("/fonts/DotMatrix-Bold.ttf"), height);
+        text.setFont(font);
+        //text.setTextAlignment(TextAlignment.CENTER);
+        text.setText("2044/11/24  22:22");
+        text.setFill(Color.LIGHTBLUE);
+        getChildren().add(text);
     }
     
 }

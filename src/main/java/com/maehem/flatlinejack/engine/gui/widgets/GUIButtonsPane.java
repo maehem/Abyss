@@ -31,24 +31,28 @@ public class GUIButtonsPane extends DecoBox {
     private final String INV_ICON_PATH = "/icons/inventory-icon.png";
     private final String CHIP_ICON_PATH = "/icons/microchip-icon.png";
     private final String KNOW_ICON_PATH = "/icons/knowledge-icon.png";
-    private final String DISK_ICON_PATH = "/icons/quit-icon.png";
+    private final String POWER_ICON_PATH = "/icons/quit-icon.png";
     
+    private final DSEG7Display money;
     private final Button inventoryButton;
     private final Button chipButton;
     private final Button knowledgeButton;
-    private final Button diskButton;
+    private final Button powerButton;
     
     public GUIButtonsPane() {
-        DSEG7Display money = new DSEG7Display(0, 0, 200, 30, '$', "1234567890");
+        setPrefWidth(300);
+        
+        money = new DSEG7Display(0, 0, 200, 30, '$', "1234567890");
         FlowPane moneyPane = new FlowPane(money);
         moneyPane.setAlignment(Pos.CENTER);
         
         inventoryButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(INV_ICON_PATH));
         chipButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(CHIP_ICON_PATH));
         knowledgeButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(KNOW_ICON_PATH));
-        diskButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(DISK_ICON_PATH));
-        FlowPane buttons = new FlowPane(inventoryButton,  chipButton, knowledgeButton, diskButton);
-        buttons.setHgap(2.0);
+        powerButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(POWER_ICON_PATH));
+        
+        FlowPane buttons = new FlowPane(inventoryButton,  chipButton, knowledgeButton, powerButton);
+        buttons.setHgap(4.0);
         buttons.setAlignment(Pos.CENTER);
         
         VBox content = new VBox(moneyPane,buttons);
@@ -60,4 +64,23 @@ public class GUIButtonsPane extends DecoBox {
         return getClass().getResourceAsStream(path);
     }
     
+    public void setMoney( String value ) {
+        money.setText(value);
+    }
+    
+    public Button getInventoryButton() {
+        return inventoryButton;
+    }
+    
+    public Button getChipButton() {
+        return chipButton;
+    }
+    
+    public Button getKnowledgeButton() {
+        return knowledgeButton;
+    }
+    
+    public Button getPowerButton() {
+        return powerButton;
+    }
 }

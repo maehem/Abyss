@@ -16,6 +16,7 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ import javafx.scene.text.Text;
  */
 public abstract class Vignette extends Pane {
 
-    public static final Logger log = Logger.getLogger("flatline");
+    public static final Logger log = Engine.log;
 
     public static final String PROP_PREFIX = "vignette.";
     public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
@@ -276,10 +277,10 @@ public abstract class Vignette extends Pane {
     }
 
     private void processHotKeys(ArrayList<String> input) {
-        if (input.contains("S")) {
-            input.remove("S");
-            log.config("User saved game.");
-        }
+//        if (input.contains("S")) {
+//            input.remove("S");
+//            log.config("User saved game.");
+//        }
         if (input.contains("T")) {
             input.remove("T");
             playerTalkToNPC = true;
@@ -434,7 +435,7 @@ public abstract class Vignette extends Pane {
      * @param name the name to set
      */
     public final void setName(String name) {
-        log.log(Level.CONFIG, "set name to:{0}", name);
+        log.log(Level.CONFIG, "set name to: {0}", name);
         this.name = name;
     }
 

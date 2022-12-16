@@ -13,12 +13,14 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.engine.gui.widgets;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -26,14 +28,25 @@ import javafx.scene.layout.HBox;
  */
 public class PixelGaugeWidget extends HBox {
 
-    public PixelGaugeWidget() {
-        super(10);
+    private final Font font;
+    private final Text labelText = new Text("XX:");
+    private final Text valueText = new Text("[#######------]");
+
+    public PixelGaugeWidget(double height) {
+        super(height);
         setAlignment(Pos.CENTER);
+        setSpacing(2);
+        labelText.setFill(Color.LIGHTBLUE);
+        valueText.setFill(Color.LIGHTBLUE);
+
+        font = Font.loadFont(
+                PixelGaugeWidget.class.getResourceAsStream("/fonts/DotMatrix-Regular.ttf"), height);
         
-        getChildren().addAll(
-                new Label("XX:"),
-                new Label("[##########....]")
-        );
+        labelText.setFont(font);
+        valueText.setFont(font);
+
+        getChildren().addAll(labelText, valueText);
+
     }
-    
+
 }

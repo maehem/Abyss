@@ -16,48 +16,65 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
-import com.maehem.flatlinejack.Engine;
+import static com.maehem.flatlinejack.Engine.log;
 import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.gui.widgets.DecoBox;
 import com.maehem.flatlinejack.engine.gui.widgets.GUIButtonsPane;
 import com.maehem.flatlinejack.engine.gui.widgets.OLEDStatusScreen;
+import java.util.logging.Level;
 import javafx.geometry.Insets;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 
 /**
  *
  * @author mark
  */
-public class GameControlsPane extends GUIPane {
+public class GameControlsPane extends GUIPane implements GameStateListener {
     private final StackPane decoBox = new DecoBox();
     private final OLEDStatusScreen status = new OLEDStatusScreen();
     private final GUIButtonsPane buttons = new GUIButtonsPane();
     
     public GameControlsPane( GameState gs, double width ) {
-
+        gs.addListenter(this);
+        
         setPrefWidth(width);
         setPadding(new Insets(8));
         
-        final StackPane decoInternal = new StackPane();
-        decoInternal.setPrefWidth(20);
-        decoInternal.setBorder(new Border(new BorderStroke(
-                Color.DARKGREY.darker(), 
-                BorderStrokeStyle.SOLID, 
-                CornerRadii.EMPTY, 
-                new BorderWidths(2)
-        )));
         
-        
+        buttons.setMoney("00000000");
         getChildren().addAll(decoBox, buttons, status);
-    }
-    
-    public void refresh() {
         
+        // Respond to button clicks
+        buttons.getInventoryButton().setOnMouseClicked((MouseEvent t) -> {
+            log.log(Level.INFO, "User clicked Inventory button.");
+            gs.toggleInventoryShowing();
+        });
+        buttons.getChipButton().setOnMouseClicked((t) -> {
+            log.log(Level.INFO, "User clicked Chip button.");
+        });
+        buttons.getKnowledgeButton().setOnMouseClicked((t) -> {
+            log.log(Level.INFO, "User clicked Knowledge button.");
+        });
+        buttons.getPowerButton().setOnMouseClicked((t) -> {
+            log.log(Level.INFO, "User clicked Power button.");
+        });
     }
+
+    
+    @Override
+    public void gameStateVignetteChanged(GameState gs) {}
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) {
+        switch( propKey ) {
+            case Player.PLAYER_MONEY:
+                buttons.setMoney(gs.getProperty(propKey));
+        }
+    }
+
+    @Override
+    public void gameStateShowInventory(GameState gs, boolean state) {}
 }

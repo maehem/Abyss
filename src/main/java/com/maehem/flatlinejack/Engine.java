@@ -21,6 +21,7 @@ import com.maehem.flatlinejack.engine.Loop;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
@@ -53,20 +54,13 @@ import javafx.stage.Stage;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class Engine extends Application {
+public class Engine extends Application implements GameStateListener {
 
     //private double SCALE = 0.75;
     private static final double SCALE = 0.66;
     
     private CrtTextPane narrationPane;
     private GameControlsPane gameControls;
-
-    /**
-     * @return the inventoryPane
-     */
-    public InventoryPane getInventoryPane() {
-        return inventoryPane;
-    }
 
     public static final Logger log = Logger.getLogger("flatline");
 
@@ -80,7 +74,7 @@ public class Engine extends Application {
     private Loop loop;   // Game logic Loop
     
     private final Group vignetteGroup = new Group();
-    private final StackPane topArea = new StackPane(vignetteGroup);
+    private final StackPane topArea = new StackPane();
     private final HBox bottomArea = new HBox();  // gui and naration
     private final VBox gamePane = new VBox(new Group(topArea), new Group(bottomArea));
     
@@ -88,21 +82,25 @@ public class Engine extends Application {
     private final Scene scene = new Scene(root); //, 1280, 920);
 
     
-    private final Player player = new Player();  //  TODO: Move to game state
     private final GameState gameState = new GameState();
     
     
     // TODO:   Music track system
     //          - Blend music scene to scene
     
+//    static {
+//          System.setProperty("java.util.logging.SimpleFormatter.format",
+//                  "[%1$tF %1$tT %1$tL] [%4$-7s] %5$s%n");
+//      }
     static {
           System.setProperty("java.util.logging.SimpleFormatter.format",
-                  "[%1$tF %1$tT %1$tL] [%4$-7s] %5$s%n");
-      }
+                  "[%4$-7s] %5$s%n");
+     }
 
     @Override
     public void start(Stage window) {
         this.window = window;
+        getGameState().addListenter(this);
         
         configureLogging();
         
@@ -111,14 +109,20 @@ public class Engine extends Application {
         
         bottomArea.getChildren().addAll(gameControls ,narrationPane  );
 
-        inventoryPane = new InventoryPane(player);
+        inventoryPane = new InventoryPane(gameState.getPlayer());
+        inventoryPane.setVisible(gameState.inventoryShowing());
 
+        topArea.getChildren().addAll(inventoryPane, vignetteGroup);
+        
         configureGuiLayout();
-
-        getPlayer().loadState(getGameState());
         
         getGameState().load(STARTING_VIGNETTE);
-        String roomName = getGameState().getProperty(GameState.PROP_CURRENT_VIGNETTE);
+        getPlayer().loadState(getGameState());
+        
+        String roomName = getGameState().getProperty(
+                GameState.PROP_CURRENT_VIGNETTE, 
+                STARTING_VIGNETTE
+        );
 
         // Load the starting room.
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
@@ -181,7 +185,7 @@ public class Engine extends Application {
             loop.stop();
         }
         // Player - stop doing any movement/actions
-        player.stopAnimating();
+        gameState.getPlayer().stopAnimating();
         
         // Save relevant game data/goals from scene?
         Vignette currentVignette = gameState.getCurrentVignette();
@@ -213,8 +217,8 @@ public class Engine extends Application {
     private void initHotKeys() {
         // Save Game   COMMAND+S
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
-            final KeyCombination keyComb = new KeyCodeCombination(KeyCode.S,
-                    KeyCombination.META_DOWN);
+            final KeyCombination keyComb = new KeyCodeCombination(
+                    KeyCode.S,KeyCombination.META_DOWN);
 
             @Override
             public void handle(KeyEvent ke) {
@@ -254,7 +258,7 @@ public class Engine extends Application {
      * @return the player
      */
     public Player getPlayer() {
-        return player;
+        return gameState.getPlayer();
     }
 
     public void doSave() {
@@ -302,25 +306,45 @@ public class Engine extends Application {
     }
     
     private void configureLogging() {
-        ConsoleHandler handler
-                    = new ConsoleHandler();
+        ConsoleHandler handler = new ConsoleHandler();
 
         // TODO:  Bring in Rocket Logging system.
         
         // Add console handler as handler of logs
         log.addHandler(handler);
-
-        log.setLevel(Level.FINER);
+        log.setUseParentHandlers(false);
+        
+        log.setLevel(Level.FINE);
         for (Handler h : log.getHandlers()) {
             h.setLevel(Level.FINER);
         }        
     }
     
     /**
+     * @return the inventoryPane
+     */
+    public InventoryPane getInventoryPane() {
+        return inventoryPane;
+    }
+
+    /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    @Override
+    public void gameStateVignetteChanged(GameState gs) { }
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) {}
+
+    @Override
+    public void gameStateShowInventory(GameState gs, boolean state) {
+        log.log(Level.INFO, "Set show inventory pane: " + state);
+        inventoryPane.setVisible(state);
+        vignetteGroup.setVisible(!state);
     }
 
 }

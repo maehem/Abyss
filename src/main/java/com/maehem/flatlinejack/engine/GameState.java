@@ -37,12 +37,16 @@ public class GameState extends Properties {
     ArrayList<GameStateListener> listenters = new ArrayList<>();
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
-    
+
     private Vignette currentVignette;
+    private final Player player = new Player();
+    private boolean showInventory = false;
     
     private final File gameSaveFile = new File(
             System.getProperty("user.home") 
-            + File.separator + "frustumGameState"
+            + File.separator + "Documents"
+            + File.separator + "FlatlineJack"
+            + File.separator + "save-202212131234.properties"
     );
 
     public void quickSave() {
@@ -70,16 +74,35 @@ public class GameState extends Properties {
         try {
             FileInputStream in = new FileInputStream(gameSaveFile);
             load(in);
+            log.log(Level.CONFIG, "Loaded previous save file: " + gameSaveFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
             log.config("No previous game state.  New Game.\n");
             
             setProperty(PROP_CURRENT_VIGNETTE, defaultVignetteName);  // Game starting room
+            
             //setProperty(PLAYER_MONEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT));
             
         } catch (IOException ex) {
             Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        for (GameStateListener l: listenters) {
+            for ( String s: stringPropertyNames() ) {
+                l.gameStatePropertyChanged(this, s);                
+            }
+        }
     }
+
+    @Override
+    public synchronized Object setProperty(String key, String value) {
+        Object prevVal = super.setProperty(key, value);
+        for ( GameStateListener l: listenters ) {
+            l.gameStatePropertyChanged(this, key);
+        }
+        
+        return prevVal;
+    }
+    
     
     public void addListenter( GameStateListener l ) {
         listenters.add(l);
@@ -93,6 +116,10 @@ public class GameState extends Properties {
         return currentVignette;
     }
     
+    public Player getPlayer() {
+        return player;
+    }
+    
     public void setCurrentVignette( Vignette v ) {
         this.currentVignette = v;
         setProperty(PROP_CURRENT_VIGNETTE, v.getClass().getSimpleName());
@@ -101,5 +128,20 @@ public class GameState extends Properties {
         for ( GameStateListener l: listenters ) {
             l.gameStateVignetteChanged(this);
         }
+    }
+    
+    public void setShowInventory( boolean show ) {
+        this.showInventory = show;
+        for ( GameStateListener l: listenters ) {
+            l.gameStateShowInventory(this, showInventory);
+        }
+    }
+    
+    public boolean inventoryShowing() {
+        return showInventory;
+    }
+    
+    public void toggleInventoryShowing() {
+        setShowInventory(!showInventory);
     }
 }

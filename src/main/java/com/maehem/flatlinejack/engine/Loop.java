@@ -28,7 +28,7 @@ import javafx.scene.input.KeyEvent;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class Loop extends AnimationTimer {
-    public static final Logger log = Logger.getLogger("flatline");
+    public static final Logger log = Engine.log;
 
     private long lastTime = 0;
     private final long TWAIT = 40000000;
@@ -54,7 +54,7 @@ public class Loop extends AnimationTimer {
         //scene.getPlayer().changeHealth(-1);
         
         Port nextRoom = vignette.processEvents(input);
-        engine.getGui().refresh();
+        //engine.getGui().refresh();
         if ( nextRoom != null ) {
             // Save scene state.
             log.config("[Loop] Load next room.");

@@ -25,12 +25,11 @@ import javafx.scene.shape.Rectangle;
 
 /**
  *
- * @author Mark J Koch <mark at maehem dot com>
+ * @author Mark J Koch ( @maehem on GitHub )
  */
 public class Button extends StackPane {
 
     public Button(double w, double h, InputStream is) {
-        
         Rectangle rect = new Rectangle(w, h, Color.SLATEGRAY);
         rect.setStroke(Color.DARKSLATEGRAY);
         
@@ -38,7 +37,8 @@ public class Button extends StackPane {
         ImageView icon = new ImageView();
         icon.setImage(new Image(is));
         icon.setPreserveRatio(true);
-        icon.setFitWidth(h);
+        icon.setFitWidth(h*0.66);
+        
         
         getChildren().addAll(rect, icon);
 
