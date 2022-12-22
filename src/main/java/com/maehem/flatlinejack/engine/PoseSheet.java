@@ -39,8 +39,9 @@ public class PoseSheet extends ImageView {
     public PoseSheet( int height ) {        
         setDefaultSheet();
         
-        setFitHeight(200);
-        setPreserveRatio(true);        
+        setFitHeight(height);
+        setPreserveRatio(true);
+        setSmooth(false);
     }   
 
     public final void setDefaultSheet() {
