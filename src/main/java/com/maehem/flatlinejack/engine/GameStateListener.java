@@ -27,4 +27,5 @@ public interface GameStateListener {
 
     public void gameStateShowInventory(GameState gs, boolean state);
     
+    public void gameStateShowChips(GameState gs, boolean state);
 }

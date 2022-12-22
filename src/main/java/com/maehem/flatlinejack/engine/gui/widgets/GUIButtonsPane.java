@@ -30,13 +30,13 @@ public class GUIButtonsPane extends DecoBox {
 
     private final String INV_ICON_PATH = "/icons/inventory-icon.png";
     private final String CHIP_ICON_PATH = "/icons/microchip-icon.png";
-    private final String KNOW_ICON_PATH = "/icons/knowledge-icon.png";
+    private final String ROM_ICON_PATH = "/icons/knowledge-icon.png";
     private final String POWER_ICON_PATH = "/icons/quit-icon.png";
     
     private final DSEG7Display money;
     private final Button inventoryButton;
     private final Button chipButton;
-    private final Button knowledgeButton;
+    private final Button romButton;
     private final Button powerButton;
     
     public GUIButtonsPane() {
@@ -48,10 +48,10 @@ public class GUIButtonsPane extends DecoBox {
         
         inventoryButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(INV_ICON_PATH));
         chipButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(CHIP_ICON_PATH));
-        knowledgeButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(KNOW_ICON_PATH));
-        powerButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(POWER_ICON_PATH));
+        romButton       = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(ROM_ICON_PATH));
+        powerButton     = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(POWER_ICON_PATH));
         
-        FlowPane buttons = new FlowPane(inventoryButton,  chipButton, knowledgeButton, powerButton);
+        FlowPane buttons = new FlowPane(inventoryButton,  chipButton, romButton, powerButton);
         buttons.setHgap(4.0);
         buttons.setAlignment(Pos.CENTER);
         
@@ -77,7 +77,7 @@ public class GUIButtonsPane extends DecoBox {
     }
     
     public Button getKnowledgeButton() {
-        return knowledgeButton;
+        return romButton;
     }
     
     public Button getPowerButton() {

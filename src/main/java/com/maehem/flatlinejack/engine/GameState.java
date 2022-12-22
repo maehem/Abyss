@@ -41,6 +41,7 @@ public class GameState extends Properties {
     private Vignette currentVignette;
     private final Player player = new Player();
     private boolean showInventory = false;
+    private boolean showChips = false;
     
     private final File gameSaveFile = new File(
             System.getProperty("user.home") 
@@ -142,6 +143,24 @@ public class GameState extends Properties {
     }
     
     public void toggleInventoryShowing() {
+        setShowChips(false);
         setShowInventory(!showInventory);
     }
+    
+    public void setShowChips( boolean show ) {
+        this.showChips = show;
+        for ( GameStateListener l: listenters ) {
+            l.gameStateShowChips(this, showChips);
+        }
+    }
+    
+    public boolean chipsShowing() {
+        return showChips;
+    }
+    
+    public void toggleChipsShowing() {
+        setShowInventory(false);
+        setShowChips(!showChips);
+    }
+    
 }

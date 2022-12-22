@@ -54,6 +54,7 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         });
         buttons.getChipButton().setOnMouseClicked((t) -> {
             log.log(Level.INFO, "User clicked Chip button.");
+            gs.toggleChipsShowing();
         });
         buttons.getKnowledgeButton().setOnMouseClicked((t) -> {
             log.log(Level.INFO, "User clicked Knowledge button.");
@@ -77,4 +78,10 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
 
     @Override
     public void gameStateShowInventory(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateShowChips(GameState gs, boolean state) {
+    }
+    
+    
 }

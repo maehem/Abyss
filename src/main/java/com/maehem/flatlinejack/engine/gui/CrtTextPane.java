@@ -148,5 +148,9 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
 
     @Override
     public void gameStateShowInventory(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateShowChips(GameState gs, boolean state) {}
+    
     
 }

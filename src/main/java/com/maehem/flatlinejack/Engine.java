@@ -22,6 +22,8 @@ import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.gui.ChipsConfiguratorPane;
+import com.maehem.flatlinejack.engine.gui.widgets.chip.InstalledChipsGridPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
@@ -37,6 +39,8 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -61,6 +65,7 @@ public class Engine extends Application implements GameStateListener {
     
     private CrtTextPane narrationPane;
     private GameControlsPane gameControls;
+    private ChipsConfiguratorPane chipsPane;
 
     public static final Logger log = Logger.getLogger("flatline");
 
@@ -104,15 +109,30 @@ public class Engine extends Application implements GameStateListener {
         
         configureLogging();
         
+        ImageView splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
         gameControls = new GameControlsPane(getGameState(), Vignette.NATIVE_WIDTH/2);
         narrationPane = new CrtTextPane(getGameState(), Vignette.NATIVE_WIDTH/2);
         
         bottomArea.getChildren().addAll(gameControls ,narrationPane  );
 
+        // Game Panes
+        // Inventory
         inventoryPane = new InventoryPane(gameState.getPlayer());
         inventoryPane.setVisible(gameState.inventoryShowing());
+        
+        // Chips  -- Confgurable Buffs
+        chipsPane = new ChipsConfiguratorPane(Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        chipsPane.setVisible(gameState.chipsShowing());
+        
+        // ROM Adviser -- Hint System and Third Hand
+        
+        // Terminal -- Base BBS style system
+        
+        // Deck Bench -- Configure your Deck with inventory components
+        
+        // Cyberspace  -- ROM Helper replaces Narration Window
 
-        topArea.getChildren().addAll(inventoryPane, vignetteGroup);
+        topArea.getChildren().addAll(splashScreen , vignetteGroup, chipsPane, inventoryPane);
         
         configureGuiLayout();
         
@@ -342,9 +362,21 @@ public class Engine extends Application implements GameStateListener {
 
     @Override
     public void gameStateShowInventory(GameState gs, boolean state) {
-        log.log(Level.INFO, "Set show inventory pane: " + state);
+        log.log(Level.INFO, "Set show inventory pane: {0}", state);
+        hideSpecialPanes();
         inventoryPane.setVisible(state);
-        vignetteGroup.setVisible(!state);
+    }
+
+    @Override
+    public void gameStateShowChips(GameState gs, boolean state) {
+        log.log(Level.INFO, "Set show chips pane: {0}", state);
+        hideSpecialPanes();
+        chipsPane.setVisible(state);
+    }
+    
+    private void hideSpecialPanes() {
+        chipsPane.setVisible(false);
+        inventoryPane.setVisible(false);
     }
 
 }
