@@ -34,6 +34,13 @@ into the apartment video system and sees this other person. Their distinct
 features helps Jack track them down.
 
 Jack finds his gear for sale at a surplus store.  He is able to buy some of it
-back but the expensive stuff will have to be reaquired some other way.
+back but the expensive stuff will have to be reaquired some other way(hacking,organ sales).
 
-Enjoy
+
+Web links used for reference:
+https://www.c64-wiki.com/wiki/Neuromancer
+
+
+Enjoy,
+
+Mark J. Koch
