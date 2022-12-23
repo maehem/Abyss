@@ -19,6 +19,7 @@ package com.maehem.flatlinejack.engine.gui.widgets;
 import java.io.InputStream;
 import javafx.geometry.Pos;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 /**
@@ -31,12 +32,14 @@ public class GUIButtonsPane extends DecoBox {
     private final String INV_ICON_PATH = "/icons/inventory-icon.png";
     private final String CHIP_ICON_PATH = "/icons/microchip-icon.png";
     private final String ROM_ICON_PATH = "/icons/knowledge-icon.png";
+    private final String TERM_ICON_PATH = "/icons/command-line.png";
     private final String POWER_ICON_PATH = "/icons/quit-icon.png";
     
     private final DSEG7Display money;
     private final Button inventoryButton;
     private final Button chipButton;
     private final Button romButton;
+    private final Button terminalButton;
     private final Button powerButton;
     
     public GUIButtonsPane() {
@@ -49,13 +52,19 @@ public class GUIButtonsPane extends DecoBox {
         inventoryButton = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(INV_ICON_PATH));
         chipButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(CHIP_ICON_PATH));
         romButton       = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(ROM_ICON_PATH));
+        terminalButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(TERM_ICON_PATH));
         powerButton     = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(POWER_ICON_PATH));
         
-        FlowPane buttons = new FlowPane(inventoryButton,  chipButton, romButton, powerButton);
+        FlowPane buttons = new FlowPane(
+                inventoryButton,  chipButton, romButton, terminalButton,
+                powerButton);
         buttons.setHgap(4.0);
-        buttons.setAlignment(Pos.CENTER);
-        
-        VBox content = new VBox(moneyPane,buttons);
+        buttons.setVgap(4.0);
+        buttons.setPrefWrapLength((BUTTON_SIZE+4.0)*4);
+        buttons.setAlignment(Pos.CENTER_LEFT);
+        HBox buttonBox = new HBox(buttons);
+        buttonBox.setAlignment(Pos.CENTER);
+        VBox content = new VBox(moneyPane,buttonBox);
         content.setSpacing(16);
         getChildren().add(content);
     }
