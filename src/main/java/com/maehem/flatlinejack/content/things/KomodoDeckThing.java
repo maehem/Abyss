@@ -21,10 +21,20 @@ package com.maehem.flatlinejack.content.things;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class KomodoDeckThing extends DeckThing {
-
+    public static final String DEFAULT_NAME = "Komodo Spark M3";
+    public static final int SOFTWARE_CAPACITY = 20;
+    public static final int RAM_SLOTS = 8;
+    public static final String ICON_PATH = "/content/things/deck1-thing.png";
+    
     public KomodoDeckThing() {
-        setName("Komodo Spark M3");
-        setGraphic(this.getClass().getResourceAsStream("/content/things/deck1-thing.png"));
+        super( DEFAULT_NAME, SOFTWARE_CAPACITY, RAM_SLOTS );
+        
+        //setGraphic(this.getClass().getResourceAsStream("/content/things/deck1-thing.png"));
+    }
+
+    @Override
+    public String getIconPath() {
+        return ICON_PATH;
     }
     
 }

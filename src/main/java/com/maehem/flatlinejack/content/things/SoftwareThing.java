@@ -17,9 +17,7 @@
 package com.maehem.flatlinejack.content.things;
 
 import com.maehem.flatlinejack.engine.Thing;
-import com.maehem.flatlinejack.engine.gui.widgets.Gauge;
 import java.util.Properties;
-import javafx.scene.layout.Pane;
 
 /**
  *
@@ -31,7 +29,11 @@ public class SoftwareThing extends Thing {
     private static final int REPAIR_SKILL_MIN = 1;
     
     private Integer condition = CONDITION_DEFAULT;
-    private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, condition, CONDITION_DEFAULT);
+    //private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, condition, CONDITION_DEFAULT);
+
+    public SoftwareThing(String name) {
+        super(name);
+    }
 
     @Override
     public Properties saveProperties() {
@@ -46,13 +48,18 @@ public class SoftwareThing extends Thing {
         setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
     }
 
-    @Override
-    public Pane getDetailPane() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public Pane getDetailPane() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
     
     public void setCondition(Integer condition) {
         this.condition = condition;
-        conditionGauge.setValue(condition);
+        //conditionGauge.setValue(condition);
+    }
+
+    @Override
+    public String getIconPath() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

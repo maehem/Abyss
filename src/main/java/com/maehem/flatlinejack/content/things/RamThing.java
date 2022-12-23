@@ -17,26 +17,25 @@
 package com.maehem.flatlinejack.content.things;
 
 import com.maehem.flatlinejack.engine.Thing;
-import com.maehem.flatlinejack.engine.gui.widgets.Gauge;
-import java.util.ArrayList;
 import java.util.Properties;
 
 /**
  *
+ * Memory Module for use in Decks
+ * 
  * @author mark
  */
-public class SkillChipThing extends Thing {
-
+public class RamThing extends Thing {
     private static final String PROPERTY_CONDITION = "condition";
     private static final int CONDITION_DEFAULT = 1000;
-
+    
     private Integer condition = CONDITION_DEFAULT;
-    private final ArrayList<SoftwareThing> slots = new ArrayList<>();
-    private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, 600, CONDITION_DEFAULT);
-    //private FlowPane detailPane;
+    private final Integer capacity;
 
-    public SkillChipThing( String name ) {
-        super(name);
+    
+    public RamThing( String name, int capacity ) {
+        super( name );
+        this.capacity = capacity;
     }
     
     @Override
@@ -47,30 +46,31 @@ public class SkillChipThing extends Thing {
         return p;
     }
     
+    public int getCondition() {
+        return condition;
+    }
+    
+    public void setCondition(Integer condition) {
+        this.condition = condition;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+    
     @Override
     public void loadProperties(Properties p) {
         setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
     }
 
 //    @Override
-//    public Pane getDetailPane() {        
-//        if (detailPane == null ) {
-//            HBox gaugePane = new HBox(conditionGauge);
-//            detailPane = new FlowPane(gaugePane);
-//            detailPane.setAlignment(Pos.TOP_CENTER);
-//        }
-//        
-//        return detailPane;
+//    public Pane getDetailPane() {
+//        return new Pane();
 //    }
-    
-    public void setCondition(Integer condition) {
-        this.condition = condition;
-        conditionGauge.setValue(condition);
-    }
 
     @Override
     public String getIconPath() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return null;
     }
     
 }

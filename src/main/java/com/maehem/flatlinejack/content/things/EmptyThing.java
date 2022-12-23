@@ -14,11 +14,10 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.engine;
+package com.maehem.flatlinejack.content.things;
 
+import com.maehem.flatlinejack.engine.Thing;
 import java.util.Properties;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.Pane;
 
 /**
  *
@@ -26,6 +25,11 @@ import javafx.scene.layout.Pane;
  */
 public class EmptyThing extends Thing {
 
+    public EmptyThing( ) {
+        super("Empty");
+    }
+
+    
     @Override
     public Properties saveProperties() { 
         return new Properties();
@@ -34,9 +38,14 @@ public class EmptyThing extends Thing {
     @Override
     public void loadProperties(Properties p) {}
 
+//    @Override
+//    public Pane getDetailPane() {
+//        return new FlowPane();
+//    }
+
     @Override
-    public Pane getDetailPane() {
-        return new FlowPane();
+    public String getIconPath() {
+        return null;
     }
     
 }

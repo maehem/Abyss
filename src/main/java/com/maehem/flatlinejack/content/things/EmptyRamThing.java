@@ -20,10 +20,10 @@ package com.maehem.flatlinejack.content.things;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class EmptySoftwareThing extends SoftwareThing {
+public class EmptyRamThing extends RamThing {
 
-    public EmptySoftwareThing() {
-        super( "Empty" );
+    public EmptyRamThing() {
+        super("Empty", 0);
     }
     
 }

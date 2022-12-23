@@ -19,12 +19,15 @@ package com.maehem.flatlinejack.engine.gui;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
 import com.maehem.flatlinejack.engine.gui.widgets.ThingDetailPane;
+import java.io.InputStream;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -66,19 +69,19 @@ public class InventoryPane extends BorderPane {
         slots.setVgap(MARGIN);
         slots.setHgap(MARGIN);
         
-        
-        int col = 0;
-        for( Thing t: player.getAInventory() ) {
-            Button slotButton = Thing.getSlotButton(t);
-            slots.add(slotButton, col%N_COLS, col/N_COLS );
-            slotButton.setOnMouseClicked((event) -> {
-                detailPane.showThing(t);
-                highlightItem(slotButton);
-            });
-            
-            
-            col++;
-        }
+        updateItemGrid();
+//        for( Thing t: player.getAInventory() ) {
+//            //Button slotButton = Thing.getSlotButton(t);
+//            Button slotButton = InventoryPane.createSlotButton(t);
+//            slots.add(slotButton, col%N_COLS, col/N_COLS );
+//            slotButton.setOnMouseClicked((event) -> {
+//                detailPane.showThing(t);
+//                highlightItem(slotButton);
+//            });
+//            
+//            
+//            col++;
+//        }
         Text text = new Text("Inventory");
         FlowPane topPane = new FlowPane(Orientation.HORIZONTAL, text);
         topPane.setAlignment(Pos.CENTER);
@@ -122,14 +125,44 @@ public class InventoryPane extends BorderPane {
         }
     }
     
-    public static Button createSlotButton() {
-        Button b = new Button();
+    public static Button createSlotButton(Thing t) {
+        String iconPath = t.getIconPath();
+        Button b;
+        if (iconPath != null ) {
+            InputStream imgStream = InventoryPane.class.getResourceAsStream(t.getIconPath());
+            ImageView iv = new ImageView(new Image(imgStream));
+            iv.setFitHeight(CELL_SIZE);
+            iv.setPreserveRatio(true);
+            b = new Button(null,iv);
+        } else {
+            b = new Button();
+        }
 
-        b.setTooltip(new Tooltip("Empty"));
+        b.setAccessibleHelp(t.getName());
+        b.setTooltip(new Tooltip(t.getName()));
         b.setPrefSize(CELL_SIZE, CELL_SIZE);
         b.setMinSize(CELL_SIZE, CELL_SIZE);
         b.setStyle("-fx-base: " + BTN_NORMAL_COLOR + ";");
         return b;
     }
 
+    public void updateItemGrid() {
+        slots.getChildren().clear();
+        int col = 0;
+        for( Thing t: player.getAInventory() ) {
+            //Button slotButton = Thing.getSlotButton(t);
+            Button slotButton = InventoryPane.createSlotButton(t);
+            slots.add(slotButton, col%N_COLS, col/N_COLS );
+            slotButton.setOnMouseClicked((event) -> {
+                detailPane.showThing(t);
+                highlightItem(slotButton);
+            });
+            
+            
+            col++;
+        }
+
+    }
+    
+           
 }

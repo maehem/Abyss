@@ -16,29 +16,23 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.gui.InventoryPane;
-import java.io.InputStream;
 import java.util.Properties;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 
 /**
- * Thing  -- an object or NPC in the scene.
+ * Thing  -- an inventory item or functional object used in the game.
  *
- * @author Mark J Koch [flatlinejack at maehem dot com]
+ * @author Mark J Koch [ @maehem on GitHub ]
  */
 public abstract class Thing {
 
     private String name;
-    protected Button slotButton;
-    protected Image image;
+    //protected Button slotButton;
+//    protected Image image;
 
-    public Thing() {
-        slotButton = InventoryPane.createSlotButton();
-        slotButton.setAccessibleHelp(name);
+    public Thing( String name ) {
+        this.name = name;
+//        slotButton = InventoryPane.createSlotButton();
+//        slotButton.setAccessibleHelp(name);
     }
 
     /**
@@ -53,9 +47,9 @@ public abstract class Thing {
      */
     public void setName(String name) {
         this.name = name;
-        Tooltip tooltip = new Tooltip(name);
+        //Tooltip tooltip = new Tooltip(name);
         //tooltip.setShowDelay(Duration.millis(500));  // uncomment me when Java 9 is a thing.
-        slotButton.setTooltip(tooltip);
+        //slotButton.setTooltip(tooltip);
     }
 
     /**
@@ -138,33 +132,43 @@ public abstract class Thing {
      */
     public abstract void loadProperties(Properties p);
 
-    public static Button getSlotButton(Thing t) {
-        if (t == null) {
-            Button b = InventoryPane.createSlotButton();
+//    public static Button getSlotButton(Thing t) {
+//        if (t == null) {
+//            Button b = InventoryPane.createSlotButton();
+//
+//            return b;
+//        } else {
+//            return t.slotButton;
+//        }
+//    }
 
-            return b;
-        } else {
-            return t.slotButton;
-        }
+//    public final void setGraphic(InputStream is) {
+//        image = new Image(is);
+//        ImageView iv = new ImageView(image);
+//        iv.setPreserveRatio(true);
+//        iv.setFitWidth(InventoryPane.CELL_SIZE - 20);
+//
+//        slotButton.setGraphic(iv);
+//        slotButton.setText(null);
+//    }
+
+    public abstract String getIconPath();
+    
+//    public Image getImage() {
+//        return image;
+//    }
+
+//    public abstract Pane getDetailPane();
+
+    public int getCondition() {
+        return -1;
     }
-
-    public final void setGraphic(InputStream is) {
-        image = new Image(is);
-        ImageView iv = new ImageView(image);
-        iv.setPreserveRatio(true);
-        iv.setFitWidth(InventoryPane.CELL_SIZE - 20);
-
-        slotButton.setGraphic(iv);
-        slotButton.setText(null);
+    
+    public boolean repairable() {
+        return false;
     }
-
-    public Image getImage() {
-        return image;
-    }
-
-    public abstract Pane getDetailPane();
-
-    public boolean canRepair( Player p) {
+    
+    public boolean canRepair( Character c) {
         return false;
     }
 
@@ -182,5 +186,9 @@ public abstract class Thing {
 
     public boolean needsRepair() {
         return false;
+    }
+    
+    public int getMaxCondition() {
+        return 0;
     }
 }

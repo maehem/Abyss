@@ -364,6 +364,7 @@ public class Engine extends Application implements GameStateListener {
     public void gameStateShowInventory(GameState gs, boolean state) {
         log.log(Level.INFO, "Set show inventory pane: {0}", state);
         hideSpecialPanes();
+        if ( state ) { inventoryPane.updateItemGrid(); }
         inventoryPane.setVisible(state);
     }
 

@@ -16,6 +16,7 @@
 */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.content.things.EmptyThing;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
 import com.maehem.flatlinejack.engine.gui.GUI;
 import java.io.InputStream;

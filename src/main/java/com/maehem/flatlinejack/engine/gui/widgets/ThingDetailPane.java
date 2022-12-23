@@ -13,9 +13,10 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.engine.gui.widgets;
 
+import com.maehem.flatlinejack.content.things.EmptyThing;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
 import javafx.geometry.HPos;
@@ -23,6 +24,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
@@ -55,14 +57,19 @@ public class ThingDetailPane extends FlowPane {
     private final Button repairButton;
     private final Player player;
 
-    public ThingDetailPane( Player p ) {
+    public ThingDetailPane(Player p) {
         this.player = p;
-        
+
         this.setOrientation(Orientation.VERTICAL);
         this.setVgap(4);
         this.setHgap(4);
         this.setPadding(new Insets(8));
-        this.setBorder(new Border(new BorderStroke(new Color(0, 0, 0, 0.5), BorderStrokeStyle.SOLID, new CornerRadii(4), BorderWidths.DEFAULT)));
+        this.setBorder(new Border(new BorderStroke(
+                new Color(0, 0, 0, 0.5),
+                BorderStrokeStyle.SOLID,
+                new CornerRadii(4),
+                BorderWidths.DEFAULT
+        )));
         this.setMaxHeight(300);
         this.setPrefWidth(400);
         this.setAlignment(Pos.TOP_CENTER);
@@ -83,20 +90,27 @@ public class ThingDetailPane extends FlowPane {
         HBox buttonPane = new HBox(8, useButton, giveButton, deleteButton, repairButton);
         buttonPane.setAlignment(Pos.BOTTOM_CENTER);
         this.getChildren().addAll(detailImageView, name, buttonPane);
-        
+
         clearThing();
     }
 
     public void showThing(Thing t) {
         this.currentThing = t;
-        detailImageView.setImage(t.getImage());
+        String iconPath = t.getIconPath();
+        if (iconPath != null) {
+            detailImageView.setImage(
+                    new Image(getClass().getResourceAsStream(iconPath))
+            );
+        } else {
+            detailImageView.setImage(null);
+        }
         name.setText(t.getName());
 
         if (thingCustomDetailsPane != null) {
             getChildren().remove(thingCustomDetailsPane);
         }
 
-        thingCustomDetailsPane = t.getDetailPane();
+        thingCustomDetailsPane = getDetailPane(t);
 
         getChildren().add(getChildren().lastIndexOf(name) + 1, thingCustomDetailsPane);
 
@@ -104,7 +118,7 @@ public class ThingDetailPane extends FlowPane {
         giveButton.setVisible(t.canGive());
         deleteButton.setVisible(t.canDelete());
         repairButton.setVisible(t.canRepair(player));
-        
+
         repairButton.setDisable(!t.needsRepair());
 
     }
@@ -124,4 +138,21 @@ public class ThingDetailPane extends FlowPane {
             thingCustomDetailsPane = null;
         }
     }
+
+    private Pane getDetailPane(Thing t) {
+        FlowPane detailPane = new FlowPane();
+        detailPane.setAlignment(Pos.TOP_CENTER);
+        if (!(t instanceof EmptyThing)) {
+            HBox gaugePane = new HBox(new Gauge(
+                    "Condition:",
+                    100, 20,
+                    t.getCondition(),
+                    t.getMaxCondition()
+            ));
+            detailPane.getChildren().add(gaugePane);
+        }
+        
+        return detailPane;
+    }
+
 }

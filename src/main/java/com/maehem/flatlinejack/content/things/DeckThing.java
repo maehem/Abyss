@@ -17,14 +17,11 @@
 package com.maehem.flatlinejack.content.things;
 
 import com.maehem.flatlinejack.engine.Player;
+import com.maehem.flatlinejack.engine.Character;
 import com.maehem.flatlinejack.engine.Thing;
-import com.maehem.flatlinejack.engine.gui.widgets.Gauge;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Properties;
-import javafx.geometry.Pos;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 
 /**
  * First Cyberspace deck.
@@ -36,14 +33,27 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
 
     private static final String PROPERTY_CONDITION = "condition";
     private static final int CONDITION_DEFAULT = 1000;
+    private static final int SHIELD_DEFAULT = 300;
+    private static final int RAM_DEFAULT = 128;
+    private static final int SOFTWARE_SLOTS_DEFAULT = 20;
     private static final int REPAIR_SKILL_MIN = 1;
     
     private Integer condition = CONDITION_DEFAULT;
-    private final ArrayList<SoftwareThing> slots = new ArrayList<>();
-    private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, 600, CONDITION_DEFAULT);
-    private FlowPane detailPane;
+    private Integer shield = SHIELD_DEFAULT;
+    private Integer ram = RAM_DEFAULT;
+    
+    private final ArrayList<SoftwareThing> softwareSlots = new ArrayList<>();
+    private final ArrayList<RamThing> ramSlots = new ArrayList<>();
+    
+    // TODO:  UI things don't belong here
+    //private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, 600, CONDITION_DEFAULT);
+    //private FlowPane detailPane;
 
-    public DeckThing() {
+    public DeckThing( String name, int softwareCapacity, int ramSlots ) {
+        super(name);
+        setCapacity(softwareCapacity);
+        setNumRamSlots(ramSlots);
+        
         // Fill the inventory with EmptyThing placeholders.
     }
     
@@ -60,21 +70,21 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
         setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
     }
 
-    @Override
-    public Pane getDetailPane() {        
-        if (detailPane == null ) {
-            HBox gaugePane = new HBox(conditionGauge);
-            detailPane = new FlowPane(gaugePane);
-            detailPane.setAlignment(Pos.TOP_CENTER);
-        }
-        
-        return detailPane;
-    }
+//    @Override
+//    public Pane getDetailPane() {        
+//        if (detailPane == null ) {
+//            HBox gaugePane = new HBox(conditionGauge);
+//            detailPane = new FlowPane(gaugePane);
+//            detailPane.setAlignment(Pos.TOP_CENTER);
+//        }
+//        
+//        return detailPane;
+//    }
 
-    public  void setCapacity(int cap){
-        // Fill the slots with EmptySoftwareThing placeholders.
+    private  void setCapacity(int cap){
+        // Fill the softwareSlots with EmptySoftwareThing placeholders.
         for ( int i=0; i< cap; i++ ) {
-            slots.add(new EmptySoftwareThing());
+            softwareSlots.add(new EmptySoftwareThing());
         }
     }
     
@@ -86,9 +96,9 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
      * @return  
      */
     public boolean addSoftware( SoftwareThing software ) {
-        for ( int i=0; i< slots.size(); i++) {
-            if ( slots.get(i) instanceof EmptySoftwareThing ) {
-                slots.set(i, software);
+        for ( int i=0; i< softwareSlots.size(); i++) {
+            if ( softwareSlots.get(i) instanceof EmptySoftwareThing ) {
+                softwareSlots.set(i, software);
                 return true;
             }
         }
@@ -96,12 +106,23 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
     }
     
     /**
-     * Return count of empty slots.
+     * Return count of empty softwareSlots.
      * 
      * @return empty slot count
      */
     public int slotsAvailable() {
-        return slots.stream().filter((t) -> ( t instanceof EmptySoftwareThing )).map((_item) -> 1).reduce(0, Integer::sum);
+        return softwareSlots.stream().filter((t) -> ( t instanceof EmptySoftwareThing )).map((_item) -> 1).reduce(0, Integer::sum);
+    }
+    
+    private  void setNumRamSlots(int nSlots){
+        // Fill the softwareSlots with EmptySoftwareThing placeholders.
+        for ( int i=0; i< nSlots; i++ ) {
+           ramSlots.add(new EmptyRamThing());
+        }
+    }
+    
+    public int getNumRamSlots() {
+        return ramSlots.size();
     }
     
     @Override
@@ -120,9 +141,14 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
     }
 
     @Override
-    public boolean canRepair(Player p) {
+    public boolean canRepair(Character p) {
         // Check if Player has repair skill
-        return true;
+        if ( p instanceof Player ) return true;
+        
+        // TODO:  It's possible some other characters can repair this.
+        
+        
+        return false;
     }
 
     @Override
@@ -130,9 +156,33 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
         return condition < .95*CONDITION_DEFAULT;
     }
 
+    public int getCondition() {
+        return condition;
+    }
+    
     public void setCondition(Integer condition) {
         this.condition = condition;
-        conditionGauge.setValue(condition);
+        //conditionGauge.setValue(condition);
     }
 
+    public int getShield() {
+        int sh = shield;
+        // TODO:  Add shield buffs from installed software.
+        
+        return sh;
+    }
+    
+    public ListIterator<RamThing> getRamModules() {
+        return ramSlots.listIterator();
+    }
+    
+    public int getRam() {
+        int cap = ram;
+        // TODO: Return total of base + installed RAM things.
+        for ( RamThing mod: ramSlots ) {
+            cap += mod.getCapacity();
+        }
+        
+        return ram;
+    }
 }
