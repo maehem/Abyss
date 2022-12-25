@@ -25,32 +25,28 @@ import java.util.Properties;
  * 
  * @author mark
  */
-public class RamThing extends Thing {
+public abstract class RamThing extends Thing {
     private static final String PROPERTY_CONDITION = "condition";
+    private static final String PROPERTY_CAPACITY = "capacity";
+    
     private static final int CONDITION_DEFAULT = 1000;
+    private static final int CAPACITY_DEFAULT = 128;
     
     private Integer condition = CONDITION_DEFAULT;
-    private final Integer capacity;
+    private Integer capacity = CAPACITY_DEFAULT;
 
     
-    public RamThing( String name, int capacity ) {
-        super( name );
-        this.capacity = capacity;
-    }
+    public RamThing() {}
     
-    @Override
-    public Properties saveProperties() {
-        Properties p = new Properties();
-        p.setProperty(PROPERTY_CONDITION, condition.toString());
-        
-        return p;
+    public RamThing( String name) { //, int capacity ) {
+        super( name );
     }
     
     public int getCondition() {
         return condition;
     }
     
-    public void setCondition(Integer condition) {
+    public void setCondition(int condition) {
         this.condition = condition;
     }
 
@@ -58,16 +54,25 @@ public class RamThing extends Thing {
         return capacity;
     }
     
+    protected void setCapacity( int val ) {
+        this.capacity = val;
+    }
+    
     @Override
     public void loadProperties(Properties p) {
-        setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
+        setCondition(Integer.parseInt(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
+        setCapacity(Integer.parseInt(p.getProperty(PROPERTY_CAPACITY, String.valueOf(CAPACITY_DEFAULT))));
     }
 
-//    @Override
-//    public Pane getDetailPane() {
-//        return new Pane();
-//    }
-
+    @Override
+    public Properties saveProperties() {
+        Properties p = new Properties();
+        p.setProperty("class", getClass().getSimpleName());
+        p.setProperty(PROPERTY_CONDITION, condition.toString());
+        
+        return p;
+    }
+    
     @Override
     public String getIconPath() {
         return null;

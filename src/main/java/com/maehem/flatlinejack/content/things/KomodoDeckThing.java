@@ -28,8 +28,6 @@ public class KomodoDeckThing extends DeckThing {
     
     public KomodoDeckThing() {
         super( DEFAULT_NAME, SOFTWARE_CAPACITY, RAM_SLOTS );
-        
-        //setGraphic(this.getClass().getResourceAsStream("/content/things/deck1-thing.png"));
     }
 
     @Override

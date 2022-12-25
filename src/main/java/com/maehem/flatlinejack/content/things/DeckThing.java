@@ -16,22 +16,33 @@
 */
 package com.maehem.flatlinejack.content.things;
 
-import com.maehem.flatlinejack.engine.Player;
+import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.engine.Character;
+import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
- * First Cyberspace deck.
+ * Abstract Cyberspace Deck.
  * 
  * 
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public abstract class DeckThing extends Thing /* implements CyberDeck */{
+public abstract class DeckThing extends Thing {
+    private final static Logger LOG = Logger.getLogger(Thing.class.getName());
 
     private static final String PROPERTY_CONDITION = "condition";
+    private static final String PROPERTY_SHEILD = "shield";
+    private static final String PROPERTY_BASE_RAM = "base-ram";
+    private static final String PROPERTY_RAM_SLOT = "ram-slot";
+    private static final String PROPERTY_SOFTWARE_SLOT = "software-slot";
+    
     private static final int CONDITION_DEFAULT = 1000;
     private static final int SHIELD_DEFAULT = 300;
     private static final int RAM_DEFAULT = 128;
@@ -45,43 +56,14 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
     private final ArrayList<SoftwareThing> softwareSlots = new ArrayList<>();
     private final ArrayList<RamThing> ramSlots = new ArrayList<>();
     
-    // TODO:  UI things don't belong here
-    //private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, 600, CONDITION_DEFAULT);
-    //private FlowPane detailPane;
 
     public DeckThing( String name, int softwareCapacity, int ramSlots ) {
         super(name);
-        setCapacity(softwareCapacity);
-        setNumRamSlots(ramSlots);
-        
-        // Fill the inventory with EmptyThing placeholders.
+        setNumSoftwareSlots(softwareCapacity);
+        setNumRamSlots(ramSlots);        
     }
     
-    @Override
-    public Properties saveProperties() {
-        Properties p = new Properties();
-        p.setProperty(PROPERTY_CONDITION, condition.toString());
-        
-        return p;
-    }
-    
-    @Override
-    public void loadProperties(Properties p) {
-        setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
-    }
-
-//    @Override
-//    public Pane getDetailPane() {        
-//        if (detailPane == null ) {
-//            HBox gaugePane = new HBox(conditionGauge);
-//            detailPane = new FlowPane(gaugePane);
-//            detailPane.setAlignment(Pos.TOP_CENTER);
-//        }
-//        
-//        return detailPane;
-//    }
-
-    private  void setCapacity(int cap){
+    private  void setNumSoftwareSlots(int cap){
         // Fill the softwareSlots with EmptySoftwareThing placeholders.
         for ( int i=0; i< cap; i++ ) {
             softwareSlots.add(new EmptySoftwareThing());
@@ -111,7 +93,10 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
      * @return empty slot count
      */
     public int slotsAvailable() {
-        return softwareSlots.stream().filter((t) -> ( t instanceof EmptySoftwareThing )).map((_item) -> 1).reduce(0, Integer::sum);
+        return softwareSlots.stream()
+                .filter((t) -> ( t instanceof EmptySoftwareThing ))
+                .map((_item) -> 1)
+                .reduce(0, Integer::sum);
     }
     
     private  void setNumRamSlots(int nSlots){
@@ -156,6 +141,7 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
         return condition < .95*CONDITION_DEFAULT;
     }
 
+    @Override
     public int getCondition() {
         return condition;
     }
@@ -183,6 +169,96 @@ public abstract class DeckThing extends Thing /* implements CyberDeck */{
             cap += mod.getCapacity();
         }
         
-        return ram;
+        return cap;
     }
+    
+    @Override
+    public Properties saveProperties() {
+        Properties p = new Properties();
+        p.setProperty(PROPERTY_CONDITION, condition.toString());
+        p.setProperty(PROPERTY_BASE_RAM, ram.toString());
+        
+        for ( int i=0; i<ramSlots.size(); i++ ) {
+            LOG.log(Level.INFO, "Save RAM Slot " + i);
+            String key = PROPERTY_RAM_SLOT + "." + i;
+            Properties rtp = ramSlots.get(i).saveProperties();
+            rtp.forEach((k, v) -> {
+                p.setProperty(key+"."+k.toString(), v.toString());
+            });
+        }
+        for ( int i=0; i<softwareSlots.size(); i++ ) {
+            LOG.log(Level.INFO, "Save Software Slot " + i);
+            String key = PROPERTY_SOFTWARE_SLOT + "." + i;
+            Properties rtp = softwareSlots.get(i).saveProperties();
+            rtp.forEach((k, v) -> {
+                p.setProperty(key+"."+k.toString(), v.toString());
+            });
+        }
+        
+        return p;
+    }
+    
+    @Override
+    public void loadProperties(Properties p) {
+        LOG.log(Level.INFO, "    Load DeckThing properties...");
+        setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
+        setCondition(Integer.valueOf(p.getProperty(PROPERTY_BASE_RAM, String.valueOf(RAM_DEFAULT))));
+
+        LOG.log(Level.INFO, "There are {0} RAM slots to process.", ramSlots.size());
+        for ( int i=0; i< ramSlots.size(); i++ ) {   // Load Ram slots
+            String key = PROPERTY_RAM_SLOT + "." + i;
+            String itemClass = p.getProperty(key + ".class");
+            if ( itemClass != null ) {
+                LOG.log(Level.INFO, "    Try to load key: " + key + "  item class: " + itemClass);
+                LOG.log(Level.INFO, "     ram slot props:" + p.toString());
+                try {
+                    LOG.log(Level.INFO, "        Process RamSlot." + i + " class:" + itemClass);
+                    Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
+                    Constructor<?> cons = c.getConstructor();
+                    RamThing object = (RamThing) cons.newInstance();
+                    // If we got this far then we made the RAM object.
+                    // Add it to the slots.
+                    ramSlots.set(i, object);
+                    // load it's current state properties.
+                    object.loadState(p, key);
+                } catch (ClassNotFoundException | InstantiationException | 
+                        IllegalAccessException | IllegalArgumentException | 
+                        InvocationTargetException | NoSuchMethodException | 
+                        SecurityException ex
+                ) {
+                    // If any of these exceptions happen, something is really broken.
+                    LOG.log(Level.SEVERE, null, ex);
+                }                
+            }
+        }
+        LOG.log(Level.INFO, "There are {0} software slots to process.", softwareSlots.size());
+        for ( int i=0; i< softwareSlots.size(); i++ ) {   // Load Ram slots
+            String key = PROPERTY_SOFTWARE_SLOT + "." + i;
+            String itemClass = p.getProperty(key + ".class");
+            if ( itemClass != null ) {
+                LOG.log(Level.INFO, "         Try to load key: " + key + "  item class: " + itemClass);
+                LOG.log(Level.INFO, "     software slot props: " + p.toString());
+                try {
+                    LOG.log(Level.INFO, "        Process SoftwareSlot." + i + " class:" + itemClass);
+                    Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
+                    Constructor<?> cons = c.getConstructor();
+                    SoftwareThing object = (SoftwareThing) cons.newInstance();
+                    // If we got this far then we made the software object.
+                    // Add it to the slots.
+                    softwareSlots.set(i, object);
+                    // load it's current state properties.
+                    object.loadState(p, key);
+                } catch (ClassNotFoundException | InstantiationException | 
+                        IllegalAccessException | IllegalArgumentException | 
+                        InvocationTargetException | NoSuchMethodException | 
+                        SecurityException ex
+                ) {
+                    // If any of these exceptions happen, something is really broken.
+                    LOG.log(Level.SEVERE, null, ex);
+                }
+                
+            }
+        }
+    }
+
 }

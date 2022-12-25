@@ -16,23 +16,17 @@
 */
 package com.maehem.flatlinejack.content.things;
 
-import java.util.Properties;
-
 /**
  *
- * @author Mark J Koch [flatlinejack at maehem dot com]
+ * @author mark
  */
-public class EmptyRamThing extends RamThing {
+public class ColdFireRamThing extends RamThing {
+    public static final String NAME = "Cold Fire UltraBitz 256 RAM Module";
 
-    public EmptyRamThing() {
-        super("Empty");
-        setCapacity(0);
+    public ColdFireRamThing() {
+        super(NAME);
+        setCapacity(256);
+        setCondition(1000);
     }
-
-    @Override
-    public Properties saveProperties() {
-        return new Properties();
-    }
-    
     
 }

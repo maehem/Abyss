@@ -23,14 +23,16 @@ import java.util.Properties;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class SoftwareThing extends Thing {
+public abstract class SoftwareThing extends Thing {
     private static final String PROPERTY_CONDITION = "condition";
+    
     private static final int CONDITION_DEFAULT = 1000;
     private static final int REPAIR_SKILL_MIN = 1;
     
     private Integer condition = CONDITION_DEFAULT;
-    //private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, condition, CONDITION_DEFAULT);
 
+    public SoftwareThing() {}
+    
     public SoftwareThing(String name) {
         super(name);
     }
@@ -38,6 +40,7 @@ public class SoftwareThing extends Thing {
     @Override
     public Properties saveProperties() {
         Properties p = new Properties();
+        p.setProperty("class", getClass().getSimpleName());
         p.setProperty(PROPERTY_CONDITION, condition.toString());
         
         return p;
@@ -47,11 +50,6 @@ public class SoftwareThing extends Thing {
     public void loadProperties(Properties p) {
         setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
     }
-
-//    @Override
-//    public Pane getDetailPane() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
     
     public void setCondition(Integer condition) {
         this.condition = condition;

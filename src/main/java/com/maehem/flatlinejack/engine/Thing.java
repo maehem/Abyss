@@ -17,6 +17,8 @@
 package com.maehem.flatlinejack.engine;
 
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Thing  -- an inventory item or functional object used in the game.
@@ -24,15 +26,14 @@ import java.util.Properties;
  * @author Mark J Koch [ @maehem on GitHub ]
  */
 public abstract class Thing {
+    private final static Logger LOG = Logger.getLogger(Thing.class.getName());
 
     private String name;
-    //protected Button slotButton;
-//    protected Image image;
 
+    public Thing() {}
+    
     public Thing( String name ) {
         this.name = name;
-//        slotButton = InventoryPane.createSlotButton();
-//        slotButton.setAccessibleHelp(name);
     }
 
     /**
@@ -47,9 +48,6 @@ public abstract class Thing {
      */
     public void setName(String name) {
         this.name = name;
-        //Tooltip tooltip = new Tooltip(name);
-        //tooltip.setShowDelay(Duration.millis(500));  // uncomment me when Java 9 is a thing.
-        //slotButton.setTooltip(tooltip);
     }
 
     /**
@@ -92,20 +90,28 @@ public abstract class Thing {
     public void loadState(Properties p, String key) {
         setName(p.getProperty(key + ".name", getName()));
 
+        LOG.log(Level.INFO, "Thing.loadState():  Loading props for:" + key + " with name: " + getName());
+        LOG.log( Level.INFO, "    Props: " + p.toString());
         // Process sub-class properties by filtering them and stripping
         // off the key prefiex.
         Properties sp = new Properties();
 
         p.forEach((k, v) -> {
             String itemKey = (String) k;
-            if (itemKey.startsWith(key)
+            if (itemKey.startsWith(key + ".")
                     && !itemKey.startsWith(key + ".name")
-                    && !itemKey.startsWith(key + ".class")) {
-                String shortKey = itemKey.substring(key.length() + 1);  // Plus one is for dot-separator character.
+                    && !itemKey.startsWith(key + ".class")
+            ) {
+                String shortKey = itemKey.substring(key.length() + 1);  // Plus one is for dot-separator character
+                //LOG.log(Level.INFO, "    mainKey: {0}    longKey: {1} ==> shortKey: {2}", new Object[]{key, k,shortKey});
                 sp.setProperty(shortKey, (String) v);
             }
         });
-
+        if ( !sp.isEmpty() ) {
+                LOG.log(Level.INFO, "    {0} .: {1} :. has {2} properties to process.", 
+                        new Object[]{key,getClass().getSimpleName(),sp.size()});
+                LOG.log(Level.INFO, "        {0}", sp.toString());
+        }
         loadProperties(sp);
     }
 
@@ -132,38 +138,16 @@ public abstract class Thing {
      */
     public abstract void loadProperties(Properties p);
 
-//    public static Button getSlotButton(Thing t) {
-//        if (t == null) {
-//            Button b = InventoryPane.createSlotButton();
-//
-//            return b;
-//        } else {
-//            return t.slotButton;
-//        }
-//    }
-
-//    public final void setGraphic(InputStream is) {
-//        image = new Image(is);
-//        ImageView iv = new ImageView(image);
-//        iv.setPreserveRatio(true);
-//        iv.setFitWidth(InventoryPane.CELL_SIZE - 20);
-//
-//        slotButton.setGraphic(iv);
-//        slotButton.setText(null);
-//    }
-
     public abstract String getIconPath();
     
-//    public Image getImage() {
-//        return image;
-//    }
-
-//    public abstract Pane getDetailPane();
-
     public int getCondition() {
         return -1;
     }
     
+    public int getMaxCondition() {
+        return 0;
+    }
+
     public boolean repairable() {
         return false;
     }
@@ -188,7 +172,4 @@ public abstract class Thing {
         return false;
     }
     
-    public int getMaxCondition() {
-        return 0;
-    }
 }

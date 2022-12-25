@@ -16,22 +16,15 @@
 */
 package com.maehem.flatlinejack.content.things;
 
-import java.util.Properties;
-
 /**
  *
- * @author Mark J Koch [flatlinejack at maehem dot com]
+ * @author mark
  */
-public class EmptyRamThing extends RamThing {
+public class DrillSoftwareThing extends SoftwareThing {
+    public static final String NAME = "Dryll 5.6.23 (with Karбide™ Packet Sniffer)";
 
-    public EmptyRamThing() {
-        super("Empty");
-        setCapacity(0);
-    }
-
-    @Override
-    public Properties saveProperties() {
-        return new Properties();
+    public DrillSoftwareThing() {
+        super(NAME);
     }
     
     

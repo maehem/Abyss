@@ -35,6 +35,9 @@ public class SkillChipThing extends Thing {
     private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, 600, CONDITION_DEFAULT);
     //private FlowPane detailPane;
 
+    // <protected>??? Used by settings loaders
+    public SkillChipThing() {}
+
     public SkillChipThing( String name ) {
         super(name);
     }

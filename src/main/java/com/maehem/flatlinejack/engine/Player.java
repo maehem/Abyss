@@ -17,6 +17,7 @@
 package com.maehem.flatlinejack.engine;
 
 import com.maehem.flatlinejack.Engine;
+import com.maehem.flatlinejack.content.things.EmptyThing;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
@@ -104,9 +105,16 @@ public class Player extends Character {
         p.setProperty(PLAYER_HEALTH, String.valueOf(getHealth()));
         p.setProperty(PLAYER_CONSTITUTION, String.valueOf(getConstitution()));
 
+        LOG.log(Level.WARNING, "Save Inventory.");
         for ( int i=0; i<getAInventory().size(); i++ ) {
             String key = PLAYER_INVENTORY + "." + i;
-            getAInventory().get(i).saveState(key, p);
+            Thing t = getAInventory().get(i);
+            //if ( t instanceof EmptyThing ) {
+            //    LOG.log(Level.INFO, "Player Thing SaveState: EmptyThing will not be saved.");
+            //} else {
+                LOG.log(Level.INFO, "Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
+                t.saveState(key, p);
+            //}
         }
     }
 
@@ -131,7 +139,8 @@ public class Player extends Character {
                     Constructor<?> cons = c.getConstructor();
                     Thing object = (Thing) cons.newInstance();
                     setAInventory(i, object);
-                    getAInventory().set(i, object);
+                    log.log(Level.INFO, "    {0}", key);
+                    //getAInventory().set(i, object);
                     object.loadState(p, key);
                 } catch (ClassNotFoundException ex) {
                     LOG.log(Level.SEVERE, null, ex);

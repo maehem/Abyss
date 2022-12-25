@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.content.things;
 
+import java.util.Properties;
+
 /**
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
@@ -26,4 +28,13 @@ public class EmptySoftwareThing extends SoftwareThing {
         super( "Empty" );
     }
     
+    /**
+     * Cause empty slot to not write the default properties.
+     * 
+     * @return 
+     */
+    @Override
+    public Properties saveProperties() {
+        return new Properties();
+    }
 }

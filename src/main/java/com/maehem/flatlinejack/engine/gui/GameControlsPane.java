@@ -59,6 +59,10 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         buttons.getKnowledgeButton().setOnMouseClicked((t) -> {
             log.log(Level.INFO, "User clicked Knowledge button.");
         });
+        buttons.getSaveButton().setOnMouseClicked((t) -> {
+            log.log(Level.INFO, "User clicked Save button.");
+            gs.quickSave();
+        });
         buttons.getPowerButton().setOnMouseClicked((t) -> {
             log.log(Level.INFO, "User clicked Power button.");
         });

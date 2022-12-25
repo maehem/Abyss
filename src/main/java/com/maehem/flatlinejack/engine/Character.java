@@ -24,22 +24,18 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
-import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 
 /**
- *
+ *  // TODO:  Unlink Character model from view
+ * 
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class Character extends Group {
@@ -59,9 +55,7 @@ public class Character extends Group {
     private ImageView talkIcon = new ImageView();
     private boolean allowTalk = false;
     private boolean talking = false;
-    
-//    private double walkX;
-//    private double walkY;
+
     
     private AnimationTimer aniTimer;
     private long lastTime = 0;
@@ -91,57 +85,37 @@ public class Character extends Group {
         // is relative to the feet.
         setOrigin(0.5, 0.9);
         
-        
         setDefaultHearingBoundary();
-        
         initFeetBoundary();
-        
         initTalkIcon();
         
-        dialogScreen = new DialogScreen(this);
-        
-        // Used for debug
-//                Rectangle playerRectangle = new Rectangle(
-//                        getPoseSheet().getWidth(), 
-//                        getPoseSheet().getHeight()
-//                );
-//                playerRectangle.setStroke(Color.RED);
-//                playerRectangle.setFill(Color.TRANSPARENT);
-//                playerRectangle.setStrokeWidth(1.0);
-//                getChildren().add(playerRectangle);
-        
-//        VBox statBox = new VBox(
-//                bindBox("Layout", layoutXProperty(), layoutYProperty()),
-//                bindBox(" Trans", translateXProperty(), translateYProperty()),
-//                bindBox(" Scale", scaleXProperty(), scaleYProperty())
-//        );   
-//        getChildren().add(statBox);        
+        dialogScreen = new DialogScreen(this);    
     }
 
-    private Node bindBox( String label, DoubleProperty n1, DoubleProperty n2 ) {
-        Color fill = Color.WHITESMOKE;
-        Font f = new Font(4.0);
-        
-        Text labelText = new Text(label + ": ");
-        labelText.setFont(f);
-        labelText.setFill(fill);
-        
-        Text n1Text = new Text();
-        n1Text.textProperty().bind(n1.asString());
-        n1Text.setFont(f);
-        n1Text.setFill(fill);
-        
-        Text comma = new Text(",");
-        comma.setFill(fill);
-        comma.setFont(f);
-        
-        Text n2Text = new Text();
-        n2Text.textProperty().bind(n2.asString());
-        n2Text.setFill(fill);
-        n2Text.setFont(f);
-        
-        return new HBox(labelText, n1Text, comma, n2Text);
-    }
+//    private Node bindBox( String label, DoubleProperty n1, DoubleProperty n2 ) {
+//        Color fill = Color.WHITESMOKE;
+//        Font f = new Font(4.0);
+//        
+//        Text labelText = new Text(label + ": ");
+//        labelText.setFont(f);
+//        labelText.setFill(fill);
+//        
+//        Text n1Text = new Text();
+//        n1Text.textProperty().bind(n1.asString());
+//        n1Text.setFont(f);
+//        n1Text.setFill(fill);
+//        
+//        Text comma = new Text(",");
+//        comma.setFill(fill);
+//        comma.setFont(f);
+//        
+//        Text n2Text = new Text();
+//        n2Text.textProperty().bind(n2.asString());
+//        n2Text.setFill(fill);
+//        n2Text.setFont(f);
+//        
+//        return new HBox(labelText, n1Text, comma, n2Text);
+//    }
         
     /**
      * Translate the character image so that the center (layoutX/Y)

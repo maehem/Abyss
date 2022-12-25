@@ -25,7 +25,7 @@ import java.util.Properties;
  */
 public class EmptyThing extends Thing {
 
-    public EmptyThing( ) {
+    public EmptyThing() {
         super("Empty");
     }
 
@@ -47,5 +47,12 @@ public class EmptyThing extends Thing {
     public String getIconPath() {
         return null;
     }
+
+    @Override
+    public void saveState(String key, Properties p) {
+        return;
+    }
+    
+    
     
 }
