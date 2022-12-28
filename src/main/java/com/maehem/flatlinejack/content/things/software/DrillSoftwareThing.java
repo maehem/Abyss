@@ -14,25 +14,19 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.content.things.software;
 
-import java.util.Properties;
+import com.maehem.flatlinejack.content.things.SoftwareThing;
 
 /**
  *
- * @author Mark J Koch [flatlinejack at maehem dot com]
+ * @author mark
  */
-public class EmptyRamThing extends RamThing {
+public class DrillSoftwareThing extends SoftwareThing {
+    public static final String NAME = "Dryll 5.6.23 (with Karбide™ Packet Sniffer)";
 
-    public EmptyRamThing() {
-        super("Empty");
-        setCapacity(0);
+    public DrillSoftwareThing() {
+        super(NAME);
     }
-
-    @Override
-    public Properties saveProperties() {
-        return new Properties();
-    }
-    
     
 }

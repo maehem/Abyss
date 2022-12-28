@@ -14,19 +14,20 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.content.things.skillchip;
+
+import com.maehem.flatlinejack.content.things.SkillChipThing;
 
 /**
- *
+ * Improves the ability to ask questions and get better answers sooner.
+ * 
  * @author mark
  */
-public class ColdFireRamThing extends RamThing {
-    public static final String NAME = "Cold Fire UltraBitz 256 RAM Module";
+public class InterogationSkillChip extends SkillChipThing {
+    public static final String NAME = "Interogation";
 
-    public ColdFireRamThing() {
+    public InterogationSkillChip() {
         super(NAME);
-        setCapacity(256);
-        setCondition(1000);
     }
-    
+        
 }

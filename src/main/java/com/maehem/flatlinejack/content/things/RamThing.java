@@ -67,7 +67,7 @@ public abstract class RamThing extends Thing {
     @Override
     public Properties saveProperties() {
         Properties p = new Properties();
-        p.setProperty("class", getClass().getSimpleName());
+        //p.setProperty("class", getPackage() + "." + getClass().getSimpleName());
         p.setProperty(PROPERTY_CONDITION, condition.toString());
         
         return p;
@@ -76,6 +76,11 @@ public abstract class RamThing extends Thing {
     @Override
     public String getIconPath() {
         return null;
+    }
+
+    @Override
+    public String getPackage() {
+        return "ram";
     }
     
 }

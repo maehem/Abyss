@@ -28,12 +28,16 @@ import java.util.logging.Logger;
 public abstract class Thing {
     private final static Logger LOG = Logger.getLogger(Thing.class.getName());
 
+    public final static int DEFAULT_VALUE = 0;
+    
     private String name;
+    private int value;
 
     public Thing() {}
     
     public Thing( String name ) {
         this.name = name;
+        this.value = DEFAULT_VALUE;
     }
 
     /**
@@ -50,6 +54,16 @@ public abstract class Thing {
         this.name = name;
     }
 
+    public int getValue() {
+        return value;
+    }
+    
+    public void setValue( int value ) {
+        this.value = value;
+    }
+    
+    public abstract String getPackage();
+    
     /**
      * Save important state values on game save.<p>
      *
@@ -64,9 +78,11 @@ public abstract class Thing {
         if ( name == null ) {
             return;
         }
-        p.setProperty(key + ".name", getName());
-        p.setProperty(key + ".class", getClass().getSimpleName());
-
+        p.setProperty(key + ".class", getPackage() + "." + getClass().getSimpleName());
+        if ( getValue() != DEFAULT_VALUE ) {
+            p.setProperty(key + ".value", String.valueOf(getValue()));
+        }
+        
         // Gather any custom value from subclass and store those too.
         Properties saveProperties = saveProperties();
         saveProperties.forEach(
@@ -89,6 +105,9 @@ public abstract class Thing {
      */
     public void loadState(Properties p, String key) {
         setName(p.getProperty(key + ".name", getName()));
+        setValue(Integer.parseInt(p.getProperty(  
+                key + ".value", String.valueOf(getValue() )
+        )));
 
         LOG.log(Level.INFO, "Thing.loadState():  Loading props for:" + key + " with name: " + getName());
         LOG.log( Level.INFO, "    Props: " + p.toString());

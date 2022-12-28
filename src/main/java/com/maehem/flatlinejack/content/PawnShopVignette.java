@@ -24,7 +24,7 @@ import com.maehem.flatlinejack.engine.Character;
 import com.maehem.flatlinejack.engine.babble.DialogResponse;
 import com.maehem.flatlinejack.engine.babble.DialogResponseAction;
 import com.maehem.flatlinejack.engine.babble.DialogSheet;
-import com.maehem.flatlinejack.content.things.KomodoDeckThing;
+import com.maehem.flatlinejack.content.things.deck.KomodoDeckThing;
 import com.maehem.flatlinejack.engine.Port;
 import java.util.Properties;
 import javafx.geometry.Point2D;

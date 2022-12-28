@@ -25,7 +25,7 @@ import java.util.Properties;
  *
  * @author mark
  */
-public class SkillChipThing extends Thing {
+public abstract class SkillChipThing extends Thing {
 
     private static final String PROPERTY_CONDITION = "condition";
     private static final int CONDITION_DEFAULT = 1000;
@@ -74,6 +74,11 @@ public class SkillChipThing extends Thing {
     @Override
     public String getIconPath() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public String getPackage() {
+        return "skillchip";
     }
     
 }

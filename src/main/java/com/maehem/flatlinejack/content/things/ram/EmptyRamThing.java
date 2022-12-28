@@ -14,48 +14,25 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.content.things.ram;
 
-import com.maehem.flatlinejack.engine.Thing;
+import com.maehem.flatlinejack.content.things.RamThing;
 import java.util.Properties;
 
 /**
  *
- * @author Mark J Koch <mark at maehem dot com>
+ * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class EmptyThing extends Thing {
+public class EmptyRamThing extends RamThing {
 
-    public EmptyThing() {
+    public EmptyRamThing() {
         super("Empty");
+        setCapacity(0);
     }
 
-    
     @Override
-    public Properties saveProperties() { 
+    public Properties saveProperties() {
         return new Properties();
-    }
-
-    @Override
-    public void loadProperties(Properties p) {}
-
-//    @Override
-//    public Pane getDetailPane() {
-//        return new FlowPane();
-//    }
-
-    @Override
-    public String getIconPath() {
-        return null;
-    }
-
-    @Override
-    public void saveState(String key, Properties p) {
-        return;
-    }
-
-    @Override
-    public String getPackage() {
-        return "";
     }
     
 }

@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.content.things;
 
+import com.maehem.flatlinejack.content.things.software.EmptySoftwareThing;
+import com.maehem.flatlinejack.content.things.ram.EmptyRamThing;
 import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.engine.Character;
 import com.maehem.flatlinejack.engine.Player;
@@ -171,6 +173,11 @@ public abstract class DeckThing extends Thing {
         
         return cap;
     }
+
+    @Override
+    public String getPackage() {
+        return "deck";
+    }
     
     @Override
     public Properties saveProperties() {
@@ -181,18 +188,27 @@ public abstract class DeckThing extends Thing {
         for ( int i=0; i<ramSlots.size(); i++ ) {
             LOG.log(Level.INFO, "Save RAM Slot " + i);
             String key = PROPERTY_RAM_SLOT + "." + i;
-            Properties rtp = ramSlots.get(i).saveProperties();
-            rtp.forEach((k, v) -> {
-                p.setProperty(key+"."+k.toString(), v.toString());
-            });
+            RamThing t = ramSlots.get(i);
+            if (!(t instanceof EmptyRamThing)) {
+                ramSlots.get(i).saveState(key, p);
+            }
+//            Properties rtp = ramSlots.get(i).saveProperties();
+//            rtp.forEach((k, v) -> {
+//                p.setProperty(key+"."+k.toString(), v.toString());
+//            });
         }
         for ( int i=0; i<softwareSlots.size(); i++ ) {
             LOG.log(Level.INFO, "Save Software Slot " + i);
             String key = PROPERTY_SOFTWARE_SLOT + "." + i;
-            Properties rtp = softwareSlots.get(i).saveProperties();
-            rtp.forEach((k, v) -> {
-                p.setProperty(key+"."+k.toString(), v.toString());
-            });
+            SoftwareThing t = softwareSlots.get(i);
+            if ( !(t instanceof EmptySoftwareThing) ) {
+                t.saveState(key, p);
+            }
+
+//            Properties rtp = softwareSlots.get(i).saveProperties();
+//            rtp.forEach((k, v) -> {
+//                p.setProperty(key+"."+k.toString(), v.toString());
+//            });
         }
         
         return p;

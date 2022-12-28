@@ -125,7 +125,6 @@ public class GameState extends Properties {
         return prevVal;
     }
     
-    
     public void addListenter( GameStateListener l ) {
         listenters.add(l);
     }

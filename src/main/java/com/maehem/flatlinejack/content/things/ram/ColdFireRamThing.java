@@ -14,25 +14,21 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.content.things.ram;
+
+import com.maehem.flatlinejack.content.things.RamThing;
 
 /**
  *
- * @author Mark J Koch [flatlinejack at maehem dot com]
+ * @author mark
  */
-public class KomodoDeckThing extends DeckThing {
-    public static final String DEFAULT_NAME = "Komodo Spark M3";
-    public static final int SOFTWARE_CAPACITY = 20;
-    public static final int RAM_SLOTS = 8;
-    public static final String ICON_PATH = "/content/things/deck1-thing.png";
-    
-    public KomodoDeckThing() {
-        super( DEFAULT_NAME, SOFTWARE_CAPACITY, RAM_SLOTS );
+public class ColdFireRamThing extends RamThing {
+    public static final String NAME = "Cold Fire UltraBitz 256 RAM Module";
+
+    public ColdFireRamThing() {
+        super(NAME);
+        setCapacity(256);
+        setCondition(1000);
     }
 
-    @Override
-    public String getIconPath() {
-        return ICON_PATH;
-    }
-    
 }

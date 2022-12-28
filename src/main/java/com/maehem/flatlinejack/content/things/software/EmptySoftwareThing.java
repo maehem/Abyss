@@ -14,8 +14,9 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.content.things.software;
 
+import com.maehem.flatlinejack.content.things.SoftwareThing;
 import java.util.Properties;
 
 /**

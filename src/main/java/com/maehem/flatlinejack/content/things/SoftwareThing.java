@@ -40,7 +40,7 @@ public abstract class SoftwareThing extends Thing {
     @Override
     public Properties saveProperties() {
         Properties p = new Properties();
-        p.setProperty("class", getClass().getSimpleName());
+        //p.setProperty("class", getClass().getSimpleName());
         p.setProperty(PROPERTY_CONDITION, condition.toString());
         
         return p;
@@ -60,4 +60,10 @@ public abstract class SoftwareThing extends Thing {
     public String getIconPath() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
+
+    @Override
+    public String getPackage() {
+        return "software";
+    }
+    
 }
