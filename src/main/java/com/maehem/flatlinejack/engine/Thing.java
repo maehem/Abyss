@@ -16,6 +16,9 @@
 */
 package com.maehem.flatlinejack.engine;
 
+import static com.maehem.flatlinejack.Engine.log;
+
+import com.maehem.flatlinejack.content.things.DeckThing;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,12 +29,17 @@ import java.util.logging.Logger;
  * @author Mark J Koch [ @maehem on GitHub ]
  */
 public abstract class Thing {
-    private final static Logger LOG = Logger.getLogger(Thing.class.getName());
+    //private final static Logger LOG = Logger.getLogger(Thing.class.getName());
 
     public final static int DEFAULT_VALUE = 0;
+    protected static final int CONDITION_DEFAULT = 1000;
+    protected static final int CONDITION_MAX = DeckThing.CONDITION_DEFAULT;
+    protected static final String PROPERTY_CONDITION = "condition";
     
     private String name;
     private int value;
+    private int repairSkill;
+    private int condition;
 
     public Thing() {}
     
@@ -78,9 +86,16 @@ public abstract class Thing {
         if ( name == null ) {
             return;
         }
+        log.log(Level.INFO, "Save " + getClass().getSimpleName());
         p.setProperty(key + ".class", getPackage() + "." + getClass().getSimpleName());
-        if ( getValue() != DEFAULT_VALUE ) {
-            p.setProperty(key + ".value", String.valueOf(getValue()));
+//        if ( getValue() != DEFAULT_VALUE ) {
+//            p.setProperty(key + ".value", String.valueOf(getValue()));
+//        }
+        if ( getCondition() != getMaxCondition() ) {
+            p.setProperty(key + "." + PROPERTY_CONDITION, String.valueOf(condition));
+            log.log(Level.INFO, getClass().getSimpleName() + ":: Save property: " + PROPERTY_CONDITION + " = " + getCondition());
+        } else {
+            log.log(Level.INFO, "    condition is: " + getCondition() + " which is the default of: " + CONDITION_MAX);
         }
         
         // Gather any custom value from subclass and store those too.
@@ -96,40 +111,46 @@ public abstract class Thing {
      * Load important state values on game load.<p>
      *
      * If a subclass has custom properties to load, then it should override this
-     * class and call super( p, key) to make sure these basic things are
+     * class and call super( p, keyPrefix) to make sure these basic things are
      * handled. The overriding class should then use similar syntax as below to
      * load custom values.
      *
      * @param p @Properties object from game engine
-     * @param key key base to parse from
+     * @param keyPrefix keyPrefix base to parse from
      */
-    public void loadState(Properties p, String key) {
-        setName(p.getProperty(key + ".name", getName()));
-        setValue(Integer.parseInt(p.getProperty(  
-                key + ".value", String.valueOf(getValue() )
-        )));
+    public void loadState(Properties p, String keyPrefix) {
+        setName(p.getProperty(keyPrefix + ".name", getName()));
+//        setValue(Integer.parseInt(p.getProperty(keyPrefix + ".value", String.valueOf(getValue() )
+//        )));
 
-        LOG.log(Level.INFO, "Thing.loadState():  Loading props for:" + key + " with name: " + getName());
-        LOG.log( Level.INFO, "    Props: " + p.toString());
+        log.log(Level.INFO, "Thing.loadState():  Loading props for:" + keyPrefix + " with name: " + getName());
+        
+        String conditionValue = p.getProperty(keyPrefix + "." + PROPERTY_CONDITION);
+        if ( conditionValue != null ) {
+            setCondition(Integer.parseInt(conditionValue));
+            log.log(Level.FINER, getClass().getSimpleName() + ":: Load property: " + PROPERTY_CONDITION + " = " + getCondition());
+        }
+
+        log.log( Level.FINER, "    Props: " + p.toString());
         // Process sub-class properties by filtering them and stripping
-        // off the key prefiex.
+        // off the keyPrefix prefiex.
         Properties sp = new Properties();
 
         p.forEach((k, v) -> {
             String itemKey = (String) k;
-            if (itemKey.startsWith(key + ".")
-                    && !itemKey.startsWith(key + ".name")
-                    && !itemKey.startsWith(key + ".class")
+            if (itemKey.startsWith(keyPrefix + ".")
+                    && !itemKey.startsWith(keyPrefix + ".name")
+                    && !itemKey.startsWith(keyPrefix + ".class")
             ) {
-                String shortKey = itemKey.substring(key.length() + 1);  // Plus one is for dot-separator character
-                //LOG.log(Level.INFO, "    mainKey: {0}    longKey: {1} ==> shortKey: {2}", new Object[]{key, k,shortKey});
+                String shortKey = itemKey.substring(keyPrefix.length() + 1);  // Plus one is for dot-separator character
+                //LOG.log(Level.INFO, "    mainKey: {0}    longKey: {1} ==> shortKey: {2}", new Object[]{keyPrefix, k,shortKey});
                 sp.setProperty(shortKey, (String) v);
             }
         });
         if ( !sp.isEmpty() ) {
-                LOG.log(Level.INFO, "    {0} .: {1} :. has {2} properties to process.", 
-                        new Object[]{key,getClass().getSimpleName(),sp.size()});
-                LOG.log(Level.INFO, "        {0}", sp.toString());
+                log.log(Level.FINER, "    {0} .: {1} :. has {2} properties to process.", 
+                        new Object[]{keyPrefix,getClass().getSimpleName(),sp.size()});
+                log.log(Level.FINEST, "        {0}", sp.toString());
         }
         loadProperties(sp);
     }
@@ -160,9 +181,21 @@ public abstract class Thing {
     public abstract String getIconPath();
     
     public int getCondition() {
-        return -1;
+        return condition;
+    }
+
+    public void setCondition(Integer condition) {
+        this.condition = condition;
+        if ( condition > getMaxCondition() ) {
+            this.condition = getMaxCondition();
+        }
     }
     
+    /**
+     * Get the max condition acheivable.  Subclasses should override this.
+     * 
+     * @return maximum possible condition value
+     */
     public int getMaxCondition() {
         return 0;
     }
@@ -189,6 +222,28 @@ public abstract class Thing {
 
     public boolean needsRepair() {
         return false;
+    }
+
+    public Integer getRepairSkill() {
+        return repairSkill;
+    }
+
+    public void setRepairSkill(int level) {
+        this.repairSkill = level;
+        if (level < 0) {
+            this.repairSkill = 0;
+        }
+    }
+
+    public void adjustCondition(int amount) {
+        this.condition += amount;
+        // Range check and adjust
+        if (condition < 0) {
+            this.condition = 0;
+        }
+        if (this.condition > getMaxCondition()) {
+            this.condition = getMaxCondition();
+        }
     }
     
 }

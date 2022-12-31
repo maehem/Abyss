@@ -17,7 +17,6 @@
 package com.maehem.flatlinejack.engine;
 
 import com.maehem.flatlinejack.Engine;
-import com.maehem.flatlinejack.content.things.EmptyThing;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
@@ -28,14 +27,15 @@ import java.util.logging.Logger;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class Player extends Character {
+public class Player extends Character implements GameStateListener {
     private final static Logger LOG = Logger.getLogger(Player.class.getName());
 
-    public static final String PLAYER_MONEY = "player.money";
-    public static final String PLAYER_HEALTH = "player.health";
-    public static final String PLAYER_CONSTITUTION = "player.constitution";
-    public static final String PLAYER_NAME = "player.name";
-    public static final String PLAYER_INVENTORY = "player.inventory";
+    public static final String PLAYER_KEY = "player";
+    public static final String MONEY_KEY = PLAYER_KEY + ".money";
+    public static final String HEALTH_KEY = PLAYER_KEY + ".health";
+    public static final String CONSTITUTION_KEY = PLAYER_KEY + ".constitution";
+    public static final String NAME_KEY = PLAYER_KEY + ".name";
+    public static final String INVENTORY_KEY = PLAYER_KEY + ".inventory";
 
     // DEFAULT VALUES
     public static final String PLAYER_NAME_DEFAULT = "Neo";
@@ -46,10 +46,30 @@ public class Player extends Character {
     private int money = PLAYER_MONEY_AMOUNT_DEFAULT;
     private int health = PLAYER_HEALTH_DEFAULT;
     private int constitution = PLAYER_CONSTITUTION_DEFAULT;
-    //private final String name = PLAYER_NAME_DEFAULT;
+    
+    private final GameState gameState;
 
-    public Player() {
+    public Player(GameState gs) {
+        this.gameState = gs;
+        gs.addListenter(this);
         setName(PLAYER_NAME_DEFAULT);
+    }
+
+    /**
+     * If game state asks for a player value to update a GUI it might be
+     * asked for this way.
+     * 
+     * @param key to ask for ( i.e.  "player.money"
+     * @return requested value as a string
+     */
+    public String getProperty(String key) {
+        switch (key) {
+            case CONSTITUTION_KEY:  return String.valueOf(getConstitution());
+            case HEALTH_KEY:        return String.valueOf(getHealth());
+            case MONEY_KEY:         return String.valueOf(getMoney());
+            case NAME_KEY:          return getName();
+            default:                return null;
+        }
     }
 
     /**
@@ -64,6 +84,7 @@ public class Player extends Character {
      */
     public void setHealth(int health) {
         this.health = health;
+        gameState.notifyPlayerStateChanged(HEALTH_KEY);
     }
 
     /**
@@ -78,6 +99,7 @@ public class Player extends Character {
      */
     public void setConstitution(int constitution) {
         this.constitution = constitution;
+        gameState.notifyPlayerStateChanged(CONSTITUTION_KEY);
     }
 
     /**
@@ -92,27 +114,35 @@ public class Player extends Character {
      */
     public void setMoney(int money) {
         this.money = money;
+        gameState.notifyPlayerStateChanged(MONEY_KEY);
     }
 
+    @Override
+    public void setAInventory(int index, Thing thing) {
+        super.setAInventory(index, thing);
+        gameState.notifyPlayerStateChanged(INVENTORY_KEY);
+    }
+
+    
     /**
      * Save important state values on game save
      *
      * @param p @Properties object from game engine
      */
     public void saveState(Properties p) {
-        p.setProperty(PLAYER_NAME, getName());
-        p.setProperty(PLAYER_MONEY, String.valueOf(getMoney()));
-        p.setProperty(PLAYER_HEALTH, String.valueOf(getHealth()));
-        p.setProperty(PLAYER_CONSTITUTION, String.valueOf(getConstitution()));
+        p.setProperty(NAME_KEY, getName());
+        p.setProperty(MONEY_KEY, String.valueOf(getMoney()));
+        p.setProperty(HEALTH_KEY, String.valueOf(getHealth()));
+        p.setProperty(CONSTITUTION_KEY, String.valueOf(getConstitution()));
 
         LOG.log(Level.WARNING, "Save Inventory.");
         for ( int i=0; i<getAInventory().size(); i++ ) {
-            String key = PLAYER_INVENTORY + "." + i;
+            String key = INVENTORY_KEY + "." + i;
             Thing t = getAInventory().get(i);
             //if ( t instanceof EmptyThing ) {
             //    LOG.log(Level.INFO, "Player Thing SaveState: EmptyThing will not be saved.");
             //} else {
-                LOG.log(Level.INFO, "Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
+//                LOG.log(Level.INFO, "Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
                 t.saveState(key, p);
             //}
         }
@@ -125,14 +155,14 @@ public class Player extends Character {
      */
     public void loadState(Properties p) {
         log.log(Level.INFO, "Initialize player settings from save file.");
-        setName(p.getProperty(PLAYER_NAME, "Jack"));
-        setMoney(Integer.parseInt(p.getProperty(PLAYER_MONEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT))));
-        setHealth(Integer.parseInt(p.getProperty(PLAYER_HEALTH, String.valueOf(PLAYER_HEALTH_DEFAULT))));
-        setConstitution(Integer.parseInt(p.getProperty(PLAYER_CONSTITUTION, String.valueOf(PLAYER_CONSTITUTION_DEFAULT))));
+        setName(p.getProperty(NAME_KEY, "Jack"));
+        setMoney(Integer.parseInt(p.getProperty(MONEY_KEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT))));
+        setHealth(Integer.parseInt(p.getProperty(HEALTH_KEY, String.valueOf(PLAYER_HEALTH_DEFAULT))));
+        setConstitution(Integer.parseInt(p.getProperty(CONSTITUTION_KEY, String.valueOf(PLAYER_CONSTITUTION_DEFAULT))));
 
         for ( int i=0; i< getAInventory().size(); i++ ) {
-            String key = PLAYER_INVENTORY + "." + i;
-            String itemClass = p.getProperty(PLAYER_INVENTORY + "." + i + ".class");
+            String key = INVENTORY_KEY + "." + i;
+            String itemClass = p.getProperty(INVENTORY_KEY + "." + i + ".class");
             if ( itemClass != null ) {
                 try {
                     Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
@@ -167,5 +197,17 @@ public class Player extends Character {
         setHealth(getHealth() + amount);
         
     }
+
+    @Override
+    public void gameStateVignetteChanged(GameState gs) {}
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) {}
+
+    @Override
+    public void gameStateShowInventory(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateShowChips(GameState gs, boolean state) {}
 
 }

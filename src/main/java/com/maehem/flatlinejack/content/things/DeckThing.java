@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.content.things;
 
+import static com.maehem.flatlinejack.Engine.log;
+
 import com.maehem.flatlinejack.content.things.software.EmptySoftwareThing;
 import com.maehem.flatlinejack.content.things.ram.EmptyRamThing;
 import com.maehem.flatlinejack.Engine;
@@ -28,7 +30,6 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Abstract Cyberspace Deck.
@@ -37,32 +38,35 @@ import java.util.logging.Logger;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public abstract class DeckThing extends Thing {
-    private final static Logger LOG = Logger.getLogger(Thing.class.getName());
+    //private final static Logger LOG = Logger.getLogger(Thing.class.getName());
 
-    private static final String PROPERTY_CONDITION = "condition";
-    private static final String PROPERTY_SHEILD = "shield";
+    private static final String THING_PKG = "deck";
+    
+    private static final String PROPERTY_SHIELD = "shield";
     private static final String PROPERTY_BASE_RAM = "base-ram";
     private static final String PROPERTY_RAM_SLOT = "ram-slot";
     private static final String PROPERTY_SOFTWARE_SLOT = "software-slot";
     
-    private static final int CONDITION_DEFAULT = 1000;
-    private static final int SHIELD_DEFAULT = 300;
-    private static final int RAM_DEFAULT = 128;
-    private static final int SOFTWARE_SLOTS_DEFAULT = 20;
-    private static final int REPAIR_SKILL_MIN = 1;
+    //private static final int SHIELD_MAX = 300;
+    //private static final int RAM_DEFAULT = 128;
     
-    private Integer condition = CONDITION_DEFAULT;
-    private Integer shield = SHIELD_DEFAULT;
-    private Integer ram = RAM_DEFAULT;
+    //private Integer condition = CONDITION_DEFAULT;
+    private final int baseShieldMax;
+    private final int baseRam; // = RAM_DEFAULT;
+    
+    private int baseShield; // = SHIELD_MAX;
     
     private final ArrayList<SoftwareThing> softwareSlots = new ArrayList<>();
     private final ArrayList<RamThing> ramSlots = new ArrayList<>();
     
 
-    public DeckThing( String name, int softwareCapacity, int ramSlots ) {
+    public DeckThing( String name, int baseRam, int baseShield, int softwareCapacity, int ramSlots ) {
         super(name);
+        this.baseRam = baseRam;
+        this.baseShieldMax = baseShield;
+        this.baseShield = baseShieldMax;
         setNumSoftwareSlots(softwareCapacity);
-        setNumRamSlots(ramSlots);        
+        setNumRamSlots(ramSlots);
     }
     
     private  void setNumSoftwareSlots(int cap){
@@ -127,6 +131,7 @@ public abstract class DeckThing extends Thing {
         return true;
     }
 
+    
     @Override
     public boolean canRepair(Character p) {
         // Check if Player has repair skill
@@ -140,22 +145,47 @@ public abstract class DeckThing extends Thing {
 
     @Override
     public boolean needsRepair() {
-        return condition < .95*CONDITION_DEFAULT;
+        return getCondition() < .95*CONDITION_MAX;
     }
 
     @Override
-    public int getCondition() {
-        return condition;
-    }
-    
-    public void setCondition(Integer condition) {
-        this.condition = condition;
-        //conditionGauge.setValue(condition);
+    public int getMaxCondition() {
+        return CONDITION_MAX;
     }
 
-    public int getShield() {
-        int sh = shield;
-        // TODO:  Add shield buffs from installed software.
+    /**
+     * The current base shield of this Deck device. Used for storing current
+     * value.
+     * 
+     * @return 
+     */
+    public int getBaseShield() {
+        return baseShield;
+    }
+    
+    public void setBaseShield(int value) {
+        this.baseShield = value;
+        if ( value > getMaxBaseShield() ) {
+            this.baseShield = getMaxBaseShield();
+        }
+        if ( value < 0 ) {
+            this.baseShield = 0;
+        }
+    }
+    
+    public int getMaxBaseShield() {
+        return baseShieldMax;
+    }
+    
+    /**
+     * The combined current baseShield value for this device and any sub-device
+ buffs.
+     * 
+     * @return 
+     */
+    public int getCombinedShield() {
+        int sh = baseShield;
+        // TODO:  Add baseShield buffs from installed software.
         
         return sh;
     }
@@ -164,9 +194,17 @@ public abstract class DeckThing extends Thing {
         return ramSlots.listIterator();
     }
     
-    public int getRam() {
-        int cap = ram;
-        // TODO: Return total of base + installed RAM things.
+    public int getBaseRam() {
+        return baseRam;
+    }
+    
+    /**
+     * Get total installed RAM.
+     * 
+     * @return total baseRam. Base + Slots
+     */
+    public int getTotalRam() {
+        int cap = baseRam;
         for ( RamThing mod: ramSlots ) {
             cap += mod.getCapacity();
         }
@@ -176,39 +214,32 @@ public abstract class DeckThing extends Thing {
 
     @Override
     public String getPackage() {
-        return "deck";
+        return THING_PKG;
     }
     
     @Override
     public Properties saveProperties() {
         Properties p = new Properties();
-        p.setProperty(PROPERTY_CONDITION, condition.toString());
-        p.setProperty(PROPERTY_BASE_RAM, ram.toString());
+        if ( getBaseShield() != getMaxBaseShield() ) {
+            p.setProperty(PROPERTY_SHIELD, String.valueOf(getBaseShield()));
+        }
+        p.setProperty(PROPERTY_BASE_RAM, String.valueOf(baseRam));
         
         for ( int i=0; i<ramSlots.size(); i++ ) {
-            LOG.log(Level.INFO, "Save RAM Slot " + i);
+            log.log(Level.FINER, "Save RAM Slot " + i);
             String key = PROPERTY_RAM_SLOT + "." + i;
             RamThing t = ramSlots.get(i);
             if (!(t instanceof EmptyRamThing)) {
                 ramSlots.get(i).saveState(key, p);
             }
-//            Properties rtp = ramSlots.get(i).saveProperties();
-//            rtp.forEach((k, v) -> {
-//                p.setProperty(key+"."+k.toString(), v.toString());
-//            });
         }
         for ( int i=0; i<softwareSlots.size(); i++ ) {
-            LOG.log(Level.INFO, "Save Software Slot " + i);
+            log.log(Level.FINER, "Save Software Slot " + i);
             String key = PROPERTY_SOFTWARE_SLOT + "." + i;
             SoftwareThing t = softwareSlots.get(i);
             if ( !(t instanceof EmptySoftwareThing) ) {
                 t.saveState(key, p);
             }
-
-//            Properties rtp = softwareSlots.get(i).saveProperties();
-//            rtp.forEach((k, v) -> {
-//                p.setProperty(key+"."+k.toString(), v.toString());
-//            });
         }
         
         return p;
@@ -216,19 +247,19 @@ public abstract class DeckThing extends Thing {
     
     @Override
     public void loadProperties(Properties p) {
-        LOG.log(Level.INFO, "    Load DeckThing properties...");
+        log.log(Level.INFO, "    Load DeckThing properties...");
         setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
-        setCondition(Integer.valueOf(p.getProperty(PROPERTY_BASE_RAM, String.valueOf(RAM_DEFAULT))));
+        //setCondition(Integer.valueOf(p.getProperty(PROPERTY_BASE_RAM, String.valueOf(RAM_DEFAULT))));
 
-        LOG.log(Level.INFO, "There are {0} RAM slots to process.", ramSlots.size());
+        log.log(Level.INFO, "There are {0} RAM slots to process.", ramSlots.size());
         for ( int i=0; i< ramSlots.size(); i++ ) {   // Load Ram slots
             String key = PROPERTY_RAM_SLOT + "." + i;
             String itemClass = p.getProperty(key + ".class");
             if ( itemClass != null ) {
-                LOG.log(Level.INFO, "    Try to load key: " + key + "  item class: " + itemClass);
-                LOG.log(Level.INFO, "     ram slot props:" + p.toString());
+                log.log(Level.INFO, "    Try to load key: " + key + "  item class: " + itemClass);
+                log.log(Level.INFO, "     ram slot props:" + p.toString());
                 try {
-                    LOG.log(Level.INFO, "        Process RamSlot." + i + " class:" + itemClass);
+                    log.log(Level.INFO, "        Process RamSlot." + i + " class:" + itemClass);
                     Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
                     Constructor<?> cons = c.getConstructor();
                     RamThing object = (RamThing) cons.newInstance();
@@ -243,19 +274,19 @@ public abstract class DeckThing extends Thing {
                         SecurityException ex
                 ) {
                     // If any of these exceptions happen, something is really broken.
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 }                
             }
         }
-        LOG.log(Level.INFO, "There are {0} software slots to process.", softwareSlots.size());
+        log.log(Level.INFO, "There are {0} software slots to process.", softwareSlots.size());
         for ( int i=0; i< softwareSlots.size(); i++ ) {   // Load Ram slots
             String key = PROPERTY_SOFTWARE_SLOT + "." + i;
             String itemClass = p.getProperty(key + ".class");
             if ( itemClass != null ) {
-                LOG.log(Level.INFO, "         Try to load key: " + key + "  item class: " + itemClass);
-                LOG.log(Level.INFO, "     software slot props: " + p.toString());
+                log.log(Level.INFO, "         Try to load key: " + key + "  item class: " + itemClass);
+                log.log(Level.INFO, "     software slot props: " + p.toString());
                 try {
-                    LOG.log(Level.INFO, "        Process SoftwareSlot." + i + " class:" + itemClass);
+                    log.log(Level.INFO, "        Process SoftwareSlot." + i + " class:" + itemClass);
                     Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
                     Constructor<?> cons = c.getConstructor();
                     SoftwareThing object = (SoftwareThing) cons.newInstance();
@@ -270,7 +301,7 @@ public abstract class DeckThing extends Thing {
                         SecurityException ex
                 ) {
                     // If any of these exceptions happen, something is really broken.
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 }
                 
             }

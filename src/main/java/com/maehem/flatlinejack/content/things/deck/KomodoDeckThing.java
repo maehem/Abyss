@@ -24,12 +24,20 @@ import com.maehem.flatlinejack.content.things.DeckThing;
  */
 public class KomodoDeckThing extends DeckThing {
     public static final String DEFAULT_NAME = "Komodo Spark M3";
-    public static final int SOFTWARE_CAPACITY = 20;
+    public static final int BASE_RAM = 128;
+    public static final int BASE_SHIELD = 200;
+    public static final int SOFTWARE_CAPACITY = 8;
     public static final int RAM_SLOTS = 8;
+    public static final int REPAIR_SKILL_MIN = 10;
+    
     public static final String ICON_PATH = "/content/things/deck1-thing.png";
     
     public KomodoDeckThing() {
-        super( DEFAULT_NAME, SOFTWARE_CAPACITY, RAM_SLOTS );
+        super(  DEFAULT_NAME,
+                BASE_RAM, BASE_SHIELD, 
+                SOFTWARE_CAPACITY, RAM_SLOTS
+        );
+        setRepairSkill(REPAIR_SKILL_MIN);
     }
 
     @Override

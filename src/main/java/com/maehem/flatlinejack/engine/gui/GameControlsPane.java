@@ -70,21 +70,26 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
 
     
     @Override
-    public void gameStateVignetteChanged(GameState gs) {}
+    public void gameStateVignetteChanged(GameState gs) {
+        //buttons.setMoney(String.valueOf(gs.getPlayer().getMoney()));
+    }
 
     @Override
     public void gameStatePropertyChanged(GameState gs, String propKey) {
         switch( propKey ) {
-            case Player.PLAYER_MONEY:
+            case Player.MONEY_KEY:
                 buttons.setMoney(gs.getProperty(propKey));
         }
     }
 
     @Override
-    public void gameStateShowInventory(GameState gs, boolean state) {}
+    public void gameStateShowInventory(GameState gs, boolean state) {
+        //TODO: Highlight the inventory button.
+    }
 
     @Override
     public void gameStateShowChips(GameState gs, boolean state) {
+        //TODO: Highlight the chips button.
     }
     
     

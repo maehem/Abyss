@@ -24,12 +24,12 @@ import java.util.Properties;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public abstract class SoftwareThing extends Thing {
-    private static final String PROPERTY_CONDITION = "condition";
+    //private static final String PROPERTY_CONDITION = "condition";
     
-    private static final int CONDITION_DEFAULT = 1000;
+    private static final int CONDITION_MAX = 1000;
     private static final int REPAIR_SKILL_MIN = 1;
     
-    private Integer condition = CONDITION_DEFAULT;
+    //private Integer condition = CONDITION_DEFAULT;
 
     public SoftwareThing() {}
     
@@ -41,20 +41,27 @@ public abstract class SoftwareThing extends Thing {
     public Properties saveProperties() {
         Properties p = new Properties();
         //p.setProperty("class", getClass().getSimpleName());
-        p.setProperty(PROPERTY_CONDITION, condition.toString());
+        //p.setProperty(PROPERTY_CONDITION, condition.toString());
         
         return p;
     }
 
     @Override
+    public int getMaxCondition() {
+        return CONDITION_MAX;
+    }
+
+    
+    @Override
     public void loadProperties(Properties p) {
-        setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
+        //setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
     }
     
-    public void setCondition(Integer condition) {
-        this.condition = condition;
-        //conditionGauge.setValue(condition);
-    }
+//    @Override
+//    public void setCondition(Integer condition) {
+//        this.condition = condition;
+//        //conditionGauge.setValue(condition);
+//    }
 
     @Override
     public String getIconPath() {

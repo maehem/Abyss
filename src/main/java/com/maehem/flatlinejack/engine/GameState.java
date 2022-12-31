@@ -39,7 +39,7 @@ public class GameState extends Properties {
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
 
     private Vignette currentVignette;
-    private final Player player = new Player();
+    private final Player player;
     private boolean showInventory = false;
     private boolean showChips = false;
     
@@ -56,6 +56,20 @@ public class GameState extends Properties {
 //            + File.separator + "save-202212131234.properties"
 //    );
 
+    public GameState() {
+        this.player = new Player(this);
+    }
+
+    @Override
+    public String getProperty(String key) {
+        if ( key.startsWith(Player.PLAYER_KEY ) ) {
+            return player.getProperty(key);
+        } else {
+            return super.getProperty(key);
+        }
+    }
+
+    
     public void quickSave() {
         player.saveState(this);
         
@@ -181,6 +195,12 @@ public class GameState extends Properties {
     public void toggleChipsShowing() {
         setShowInventory(false);
         setShowChips(!showChips);
+    }
+    
+    public void notifyPlayerStateChanged( String key ) {
+        for (GameStateListener l: listenters) {
+            l.gameStatePropertyChanged(this, key);                
+        }
     }
     
 }
