@@ -23,7 +23,6 @@ import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.gui.ChipsConfiguratorPane;
-import com.maehem.flatlinejack.engine.gui.widgets.chip.InstalledChipsGridPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
