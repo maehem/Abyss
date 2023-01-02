@@ -32,8 +32,6 @@ import com.maehem.flatlinejack.logging.LoggingHandler;
 import com.maehem.flatlinejack.logging.LoggingMessageList;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
@@ -131,12 +129,24 @@ public class Engine extends Application implements GameStateListener {
         LOGGER.log(Level.INFO, "JavaFX Version: {0}", System.getProperties().get("javafx.runtime.version"));
         
         ImageView splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
-        gameControls = new GameControlsPane(getGameState(), Vignette.NATIVE_WIDTH/2);
-        narrationPane = new CrtTextPane(getGameState(), Vignette.NATIVE_WIDTH/2);
-        
-        bottomArea.getChildren().addAll(gameControls ,narrationPane  );
+        topArea.getChildren().add(splashScreen);
 
-        // Game Panes
+        window.setScene(this.scene);
+        window.setResizable(false);
+        window.setOnCloseRequest(e -> { //quit when the window is close().
+            // TODO: Check if user wants to save game.
+            Platform.exit();
+        });
+        
+        gameControls = new GameControlsPane(getGameState(), Vignette.NATIVE_WIDTH/2);
+        narrationPane = new CrtTextPane(getGameState(), Vignette.NATIVE_WIDTH/2);        
+        bottomArea.getChildren().addAll(gameControls ,narrationPane  );
+        
+        configureGuiLayout();
+        
+        // Show the window so that other GUI elements know the screen size.
+        window.show();
+
         // Inventory
         inventoryPane = new InventoryPane(gameState.getPlayer());
         inventoryPane.setVisible(gameState.inventoryShowing());
@@ -153,55 +163,45 @@ public class Engine extends Application implements GameStateListener {
         
         // Cyberspace  -- ROM Helper replaces Narration Window
 
-        topArea.getChildren().addAll(splashScreen , vignetteGroup, chipsPane, inventoryPane);
+        topArea.getChildren().addAll(vignetteGroup, chipsPane, inventoryPane);
+        // Finished setting up GUI
         
-        configureGuiLayout();
-        
+        // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
         getPlayer().loadState(getGameState());
         
+        initHotKeys();
+        initKeyInput();
+        
+         // Load the starting room.
         String roomName = getGameState().getProperty(
                 GameState.PROP_CURRENT_VIGNETTE, 
                 STARTING_VIGNETTE
         );
-
-        // Load the starting room.
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
-
-        initHotKeys();
-        initKeyInput();
-
-        window.setScene(this.scene);
-        window.setResizable(false);
-        //quit when the window is close().
-        window.setOnCloseRequest(e -> Platform.exit());
-        window.show();
-        
-        getInventoryPane().setVisible(false);
-        getInventoryPane().setLayoutX(getScene().getWidth()/2 - getInventoryPane().getWidth()/2);
-        getInventoryPane().setLayoutY(getScene().getHeight()/2 - getInventoryPane().getHeight()/2);
-    }
+   }
 
     private void initDebugWindow() {
-        debugWindow.setScene(getDebugScene());
-        debugWindow.show();
+        DebugTab debugTab = new DebugTab( messageLog, gameState);
+        debugTab.setFormatter(loggingHandler.getFormatter());
+        Scene debugScene = new Scene(debugTab);
+        
+        debugWindow.setScene(debugScene);
+        debugWindow.setTitle("Debug Window");
         debugWindow.setAlwaysOnTop(true);
+        debugWindow.setOnHidden((t) -> {
+            gameState.setShowDebug(false);
+        });
+        debugWindow.setOnShowing((t) -> {
+            gameState.setShowDebug(true);
+        });
+        
+        debugWindow.show();
         Rectangle2D bounds = Screen.getPrimary().getBounds();
         debugWindow.setX(bounds.getWidth()-debugWindow.getWidth());
         debugWindow.setY(bounds.getHeight()-debugWindow.getHeight());
     }
 
-
-    private Scene getDebugScene() {
-        DebugTab debugTab = new DebugTab(
-                0, 0, 
-                messageLog, gameState);
-        debugTab.setFormatter(loggingHandler.getFormatter());
-        Scene debugScene = new Scene(debugTab);
-        
-        return debugScene;
-    }
-    
     private void setVignette(Vignette v) {
         //root.getChildren().remove(currentVignette);
         //topArea.getChildren().remove(currentVignette);

@@ -208,11 +208,15 @@ public class GameState extends Properties {
         }
     }
     
-    public void toggleSettingsShowing() {
-        showDebug = !showDebug;
+    public void setShowDebug( boolean show ) {
+        showDebug = show;
         for (GameStateListener l: listenters) {
             l.gameStateShowDebug(this, showDebug);                
         }
+    }
+    
+    public void toggleDebugShowing() {
+        setShowDebug(!showDebug);
     }
     
     

@@ -85,26 +85,25 @@ public class DebugTab extends Group implements LogListener {
     private Slider slider;
     private ScrollPane logMessagePane;
 
-    public DebugTab(double x, double y, LoggingMessageList messageLog, GameState gs) {
-        this.setLayoutX(x);
-        this.setLayoutY(y);
+    public DebugTab(LoggingMessageList messageLog, GameState gs) {
         this.messageLog = messageLog;
         messageLog.addListener(this);
 
-        StackPane tab = initTabPane();
+        //StackPane tab = initTabPane();
         panel.setCenter(getMessagePane());
         panel.setRight(initControlsPane(gs));
-        Node tabClick = initTabClick();
+        //Node tabClick = initTabClick();
 
         // Drop shadow
-        DropShadow ds = new DropShadow(30.0, new Color(0, 0, 0, 0.5));
-        tab.setEffect(ds);
+        //DropShadow ds = new DropShadow(30.0, new Color(0, 0, 0, 0.5));
+        //tab.setEffect(ds);
 
-        panel.setEffect(ds);
+        //panel.setEffect(ds);
         panel.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(CORNER_ARC), Insets.EMPTY)));
         panel.setBorder(new Border(new BorderStroke(Color.GREY, BorderStrokeStyle.NONE, CornerRadii.EMPTY, BorderWidths.FULL, new Insets(CORNER_ARC / 2))));
 
-        getChildren().addAll(tab, panel, tabClick);
+        //getChildren().addAll(tab, panel, tabClick);
+        getChildren().addAll(panel );
 
     }
 
