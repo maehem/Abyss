@@ -16,7 +16,7 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
-import static com.maehem.flatlinejack.Engine.log;
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import java.io.InputStream;
 import java.util.logging.Level;
 import javafx.animation.AnimationTimer;
@@ -82,7 +82,7 @@ public class NarrationPane extends BorderPane {
         setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         InputStream is = getClass().getResourceAsStream(SCREEN_BEZEL);
         if ( is == null ) {
-            log.log(Level.SEVERE, "Cannot find image for: {0}", SCREEN_BEZEL);
+            LOGGER.log(Level.SEVERE, "Cannot find image for: {0}", SCREEN_BEZEL);
             return;
         }
         

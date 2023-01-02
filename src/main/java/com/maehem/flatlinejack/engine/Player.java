@@ -16,14 +16,13 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import static com.maehem.flatlinejack.Engine.log;
 
 import com.maehem.flatlinejack.Engine;
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -174,14 +173,14 @@ public class Player extends Character implements GameStateListener {
         p.setProperty(HEALTH_KEY, String.valueOf(getHealth()));
         p.setProperty(CONSTITUTION_KEY, String.valueOf(getConstitution()));
 
-        log.log(Level.WARNING, "Save Inventory.");
+        LOGGER.log(Level.WARNING, "Save Inventory.");
         for ( int i=0; i<getAInventory().size(); i++ ) {
             String key = INVENTORY_KEY + "." + i;
             Thing t = getAInventory().get(i);
             //if ( t instanceof EmptyThing ) {
-            //    log.log(Level.INFO, "Player Thing SaveState: EmptyThing will not be saved.");
+            //    LOGGER.log(Level.INFO, "Player Thing SaveState: EmptyThing will not be saved.");
             //} else {
-//                log.log(Level.INFO, "Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
+//                LOGGER.log(Level.INFO, "Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
                 t.saveState(key, p);
             //}
         }
@@ -193,7 +192,7 @@ public class Player extends Character implements GameStateListener {
      * @param p @Properties object from game engine
      */
     public void loadState(Properties p) {
-        log.log(Level.INFO, "Initialize player settings from save file.");
+        LOGGER.log(Level.INFO, "Initialize player settings from save file.");
         setName(p.getProperty(NAME_KEY, "Jack"));
         setMoney(Integer.parseInt(p.getProperty(MONEY_KEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT))));
         setHealth(Integer.parseInt(p.getProperty(HEALTH_KEY, String.valueOf(PLAYER_HEALTH_MAX))));
@@ -201,7 +200,7 @@ public class Player extends Character implements GameStateListener {
 
         for ( int i=0; i< getAInventory().size(); i++ ) {
             String key = INVENTORY_KEY + "." + i;
-            log.log(Level.INFO, "Player Inventory Item: " + key);
+            LOGGER.log(Level.INFO, "Player Inventory Item: " + key);
             String itemClass = p.getProperty(INVENTORY_KEY + "." + i + ".class");
             if ( itemClass != null ) {
                 try {
@@ -209,23 +208,23 @@ public class Player extends Character implements GameStateListener {
                     Constructor<?> cons = c.getConstructor();
                     Thing object = (Thing) cons.newInstance();
                     setAInventory(i, object);
-                    log.log(Level.INFO, "    {0}", key);
+                    LOGGER.log(Level.INFO, "    {0}", key);
                     //getAInventory().set(i, object);
                     object.loadState(p, key);
                 } catch (ClassNotFoundException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 } catch (InstantiationException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 } catch (IllegalArgumentException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 } catch (InvocationTargetException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 } catch (NoSuchMethodException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 } catch (SecurityException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
                 
             }
@@ -244,5 +243,8 @@ public class Player extends Character implements GameStateListener {
 
     @Override
     public void gameStateShowChips(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateShowDebug(GameState gs, boolean state) {}
 
 }

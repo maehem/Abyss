@@ -17,9 +17,9 @@
 package com.maehem.flatlinejack.engine;
 
 import com.maehem.flatlinejack.Engine;
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.scene.input.KeyEvent;
 
@@ -28,7 +28,6 @@ import javafx.scene.input.KeyEvent;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class Loop extends AnimationTimer {
-    public static final Logger log = Engine.log;
 
     private long lastTime = 0;
     private final long TWAIT = 40000000;
@@ -57,7 +56,7 @@ public class Loop extends AnimationTimer {
         //engine.getGui().refresh();
         if ( nextRoom != null ) {
             // Save scene state.
-            log.config("[Loop] Load next room.");
+            LOGGER.config("[Loop] Load next room.");
             engine.notifyVignetteExit(nextRoom);
         }
 
@@ -65,7 +64,7 @@ public class Loop extends AnimationTimer {
     }
     
     public void addInputEvent(KeyEvent ke) {
-        log.log(Level.FINEST, "Loop Input Event: {0}", ke.getCode());
+        LOGGER.log(Level.FINEST, "Loop Input Event: {0}", ke.getCode());
         input.add(ke.getCode().toString());
     }
 }

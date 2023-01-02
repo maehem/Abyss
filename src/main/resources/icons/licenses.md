@@ -13,6 +13,8 @@ Shield          icon by Mark Koch Created for Flatline Jack
 Talk            icon by Mark Koch Created for Flatline Jack
 
 
-Command Line    icon by Arthur Shlain from Usefulicons  https://usefulicons.com/glyph-icons-16x16/command-line
+Cogwheel        icon by Arthur Shlain from Usefulicons  https://usefulicons.com/micro/cogwheel
+Command Line    icon by Arthur Shlain from Glyph Icons  https://usefulicons.com/glyph-icons-16x16/command-line
+Mechanical Head icon by Arthur Shlain from Usefulicons  https://usefulicons.com/useful/mechanical-head
 
 

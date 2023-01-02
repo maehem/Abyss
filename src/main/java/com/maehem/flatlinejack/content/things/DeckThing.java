@@ -16,7 +16,7 @@
 */
 package com.maehem.flatlinejack.content.things;
 
-import static com.maehem.flatlinejack.Engine.log;
+import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.content.things.software.EmptySoftwareThing;
 import com.maehem.flatlinejack.content.things.ram.EmptyRamThing;
@@ -226,7 +226,7 @@ public abstract class DeckThing extends Thing {
         p.setProperty(PROPERTY_BASE_RAM, String.valueOf(baseRam));
         
         for ( int i=0; i<ramSlots.size(); i++ ) {
-            log.log(Level.FINER, "Save RAM Slot " + i);
+            LOGGER.log(Level.FINER, "Save RAM Slot {0}", i);
             String key = PROPERTY_RAM_SLOT + "." + i;
             RamThing t = ramSlots.get(i);
             if (!(t instanceof EmptyRamThing)) {
@@ -234,7 +234,7 @@ public abstract class DeckThing extends Thing {
             }
         }
         for ( int i=0; i<softwareSlots.size(); i++ ) {
-            log.log(Level.FINER, "Save Software Slot " + i);
+            LOGGER.log(Level.FINER, "Save Software Slot {0}", i);
             String key = PROPERTY_SOFTWARE_SLOT + "." + i;
             SoftwareThing t = softwareSlots.get(i);
             if ( !(t instanceof EmptySoftwareThing) ) {
@@ -247,19 +247,19 @@ public abstract class DeckThing extends Thing {
     
     @Override
     public void loadProperties(Properties p) {
-        log.log(Level.INFO, "    Load DeckThing properties...");
+        LOGGER.log(Level.INFO, "    Load DeckThing properties...");
         setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
         //setCondition(Integer.valueOf(p.getProperty(PROPERTY_BASE_RAM, String.valueOf(RAM_DEFAULT))));
 
-        log.log(Level.INFO, "There are {0} RAM slots to process.", ramSlots.size());
+        LOGGER.log(Level.INFO, "There are {0} RAM slots to process.", ramSlots.size());
         for ( int i=0; i< ramSlots.size(); i++ ) {   // Load Ram slots
             String key = PROPERTY_RAM_SLOT + "." + i;
             String itemClass = p.getProperty(key + ".class");
             if ( itemClass != null ) {
-                log.log(Level.INFO, "    Try to load key: " + key + "  item class: " + itemClass);
-                log.log(Level.INFO, "     ram slot props:" + p.toString());
+                LOGGER.log(Level.INFO, "    Try to load key: {0}  item class: {1}", new Object[]{key, itemClass});
+                LOGGER.log(Level.INFO, "     ram slot props:{0}", p.toString());
                 try {
-                    log.log(Level.INFO, "        Process RamSlot." + i + " class:" + itemClass);
+                    LOGGER.log(Level.INFO, "        Process RamSlot.{0} class:{1}", new Object[]{i, itemClass});
                     Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
                     Constructor<?> cons = c.getConstructor();
                     RamThing object = (RamThing) cons.newInstance();
@@ -274,19 +274,19 @@ public abstract class DeckThing extends Thing {
                         SecurityException ex
                 ) {
                     // If any of these exceptions happen, something is really broken.
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }                
             }
         }
-        log.log(Level.INFO, "There are {0} software slots to process.", softwareSlots.size());
+        LOGGER.log(Level.INFO, "There are {0} software slots to process.", softwareSlots.size());
         for ( int i=0; i< softwareSlots.size(); i++ ) {   // Load Ram slots
             String key = PROPERTY_SOFTWARE_SLOT + "." + i;
             String itemClass = p.getProperty(key + ".class");
             if ( itemClass != null ) {
-                log.log(Level.INFO, "         Try to load key: " + key + "  item class: " + itemClass);
-                log.log(Level.INFO, "     software slot props: " + p.toString());
+                LOGGER.log(Level.INFO, "         Try to load key: {0}  item class: {1}", new Object[]{key, itemClass});
+                LOGGER.log(Level.INFO, "     software slot props: {0}", p.toString());
                 try {
-                    log.log(Level.INFO, "        Process SoftwareSlot." + i + " class:" + itemClass);
+                    LOGGER.log(Level.INFO, "        Process SoftwareSlot.{0} class:{1}", new Object[]{i, itemClass});
                     Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
                     Constructor<?> cons = c.getConstructor();
                     SoftwareThing object = (SoftwareThing) cons.newInstance();
@@ -301,7 +301,7 @@ public abstract class DeckThing extends Thing {
                         SecurityException ex
                 ) {
                     // If any of these exceptions happen, something is really broken.
-                    log.log(Level.SEVERE, null, ex);
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
                 
             }

@@ -16,12 +16,11 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import static com.maehem.flatlinejack.Engine.log;
+import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.content.things.DeckThing;
 import java.util.Properties;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Thing  -- an inventory item or functional object used in the game.
@@ -86,16 +85,16 @@ public abstract class Thing {
         if ( name == null ) {
             return;
         }
-        log.log(Level.INFO, "Save " + getClass().getSimpleName());
+        LOGGER.log(Level.INFO, "Save " + getClass().getSimpleName());
         p.setProperty(key + ".class", getPackage() + "." + getClass().getSimpleName());
 //        if ( getValue() != DEFAULT_VALUE ) {
 //            p.setProperty(key + ".value", String.valueOf(getValue()));
 //        }
         if ( getCondition() != getMaxCondition() ) {
             p.setProperty(key + "." + PROPERTY_CONDITION, String.valueOf(condition));
-            log.log(Level.INFO, getClass().getSimpleName() + ":: Save property: " + PROPERTY_CONDITION + " = " + getCondition());
+            LOGGER.log(Level.INFO, getClass().getSimpleName() + ":: Save property: " + PROPERTY_CONDITION + " = " + getCondition());
         } else {
-            log.log(Level.INFO, "    condition is: " + getCondition() + " which is the default of: " + CONDITION_MAX);
+            LOGGER.log(Level.INFO, "    condition is: " + getCondition() + " which is the default of: " + CONDITION_MAX);
         }
         
         // Gather any custom value from subclass and store those too.
@@ -123,15 +122,15 @@ public abstract class Thing {
 //        setValue(Integer.parseInt(p.getProperty(keyPrefix + ".value", String.valueOf(getValue() )
 //        )));
 
-        log.log(Level.INFO, "Thing.loadState():  Loading props for:" + keyPrefix + " with name: " + getName());
+        LOGGER.log(Level.INFO, "Thing.loadState():  Loading props for:{0} with name: {1}", new Object[]{keyPrefix, getName()});
         
         String conditionValue = p.getProperty(keyPrefix + "." + PROPERTY_CONDITION);
         if ( conditionValue != null ) {
             setCondition(Integer.parseInt(conditionValue));
-            log.log(Level.FINER, getClass().getSimpleName() + ":: Load property: " + PROPERTY_CONDITION + " = " + getCondition());
+            LOGGER.log(Level.FINER, "{0}:: Load property: " + PROPERTY_CONDITION + " = {1}", new Object[]{getClass().getSimpleName(), getCondition()});
         }
 
-        log.log( Level.FINER, "    Props: " + p.toString());
+        LOGGER.log(Level.FINER, "    Props: {0}", p.toString());
         // Process sub-class properties by filtering them and stripping
         // off the keyPrefix prefiex.
         Properties sp = new Properties();
@@ -148,9 +147,9 @@ public abstract class Thing {
             }
         });
         if ( !sp.isEmpty() ) {
-                log.log(Level.FINER, "    {0} .: {1} :. has {2} properties to process.", 
+                LOGGER.log(Level.FINER, "    {0} .: {1} :. has {2} properties to process.", 
                         new Object[]{keyPrefix,getClass().getSimpleName(),sp.size()});
-                log.log(Level.FINEST, "        {0}", sp.toString());
+                LOGGER.log(Level.FINEST, "        {0}", sp.toString());
         }
         loadProperties(sp);
     }

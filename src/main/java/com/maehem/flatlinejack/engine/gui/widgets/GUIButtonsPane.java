@@ -34,6 +34,7 @@ public class GUIButtonsPane extends DecoBox {
     private final String ROM_ICON_PATH = "/icons/knowledge-icon.png";
     private final String TERM_ICON_PATH = "/icons/command-line.png";
     private final String SAVE_ICON_PATH = "/icons/save-icon.png";
+    private final String SETTINGS_ICON_PATH = "/icons/cogwheel.png";
     private final String POWER_ICON_PATH = "/icons/quit-icon.png";
     
     private final DSEG7Display money;
@@ -42,6 +43,7 @@ public class GUIButtonsPane extends DecoBox {
     private final Button romButton;
     private final Button terminalButton;
     private final Button saveButton;
+    private final Button settingsButton;
     private final Button powerButton;
     
     public GUIButtonsPane() {
@@ -56,11 +58,12 @@ public class GUIButtonsPane extends DecoBox {
         romButton       = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(ROM_ICON_PATH));
         terminalButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(TERM_ICON_PATH));
         saveButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(SAVE_ICON_PATH));
+        settingsButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(SETTINGS_ICON_PATH));
         powerButton     = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(POWER_ICON_PATH));
         
         FlowPane buttons = new FlowPane(
                 inventoryButton,  chipButton, romButton, terminalButton,
-                saveButton, powerButton);
+                saveButton, settingsButton, powerButton);
         buttons.setHgap(4.0);
         buttons.setVgap(4.0);
         buttons.setPrefWrapLength((BUTTON_SIZE+4.0)*4);
@@ -94,6 +97,10 @@ public class GUIButtonsPane extends DecoBox {
     
     public Button getSaveButton() {
         return saveButton;
+    }
+
+    public Button getSettingsButton() {
+        return settingsButton;
     }
 
     public Button getPowerButton() {

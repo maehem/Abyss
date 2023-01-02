@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.content;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
+
 import com.maehem.flatlinejack.engine.Patch;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.PoseSheet;
@@ -101,7 +103,7 @@ public class PawnShopVignette extends Vignette {
 
         // TODO:   Check that file exists.  The current exception message is cryptic.
         shopOwnerCharacter.setSkin(PawnShopVignette.class.getResourceAsStream(BROKER_POSE_SHEET_FILENAME), 1, 4);
-        log.config("Add skin for pawn shop owner. " + BROKER_POSE_SHEET_FILENAME);
+        LOGGER.config("Add skin for pawn shop owner. " + BROKER_POSE_SHEET_FILENAME);
         // Dialog
         // Load dialog tree from file.
         shopOwnerCharacter.getDialog().init(getWidth(), getHeight());
@@ -154,23 +156,23 @@ public class PawnShopVignette extends Vignette {
         };
 
         DialogSheet ds4 = new DialogSheet(shopOwnerCharacter.getDialog());
-        ds4.setDialogText(bundle.getString("dialog.eddie.ds4"));
-        ds4.addResponse(new DialogResponse(bundle.getString("dialog.p.ds4.1"), exitAction)); // Exit action
+        ds4.setDialogText(bundle.getString("diaLOGGER.eddie.ds4"));
+        ds4.addResponse(new DialogResponse(bundle.getString("diaLOGGER.p.ds4.1"), exitAction)); // Exit action
 
         DialogSheet ds3 = new DialogSheet(shopOwnerCharacter.getDialog());
-        ds3.setDialogText(bundle.getString("dialog.eddie.ds3"));
-        ds3.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.3"), ds4));
+        ds3.setDialogText(bundle.getString("diaLOGGER.eddie.ds3"));
+        ds3.addResponse(new DialogResponse(bundle.getString("diaLOGGER.p.ds1.3"), ds4));
 
         DialogSheet ds2 = new DialogSheet(shopOwnerCharacter.getDialog());
-        ds2.setDialogText(bundle.getString("dialog.eddie.ds2"));
-        ds2.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.2"), ds3));
-        ds2.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.3"), ds4));
+        ds2.setDialogText(bundle.getString("diaLOGGER.eddie.ds2"));
+        ds2.addResponse(new DialogResponse(bundle.getString("diaLOGGER.p.ds1.2"), ds3));
+        ds2.addResponse(new DialogResponse(bundle.getString("diaLOGGER.p.ds1.3"), ds4));
 
         DialogSheet ds1 = new DialogSheet(shopOwnerCharacter.getDialog());
-        ds1.setDialogText(bundle.getString("dialog.eddie.ds1"));
-        ds1.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.1"), ds2));
-        ds1.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.2"), ds3));
-        ds1.addResponse(new DialogResponse(bundle.getString("dialog.p.ds1.3"), ds4));
+        ds1.setDialogText(bundle.getString("diaLOGGER.eddie.ds1"));
+        ds1.addResponse(new DialogResponse(bundle.getString("diaLOGGER.p.ds1.1"), ds2));
+        ds1.addResponse(new DialogResponse(bundle.getString("diaLOGGER.p.ds1.2"), ds3));
+        ds1.addResponse(new DialogResponse(bundle.getString("diaLOGGER.p.ds1.3"), ds4));
 
         shopOwnerCharacter.getDialog().addDialogSheet(ds1);
         shopOwnerCharacter.getDialog().addDialogSheet(ds2);

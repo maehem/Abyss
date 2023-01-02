@@ -16,7 +16,8 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
-import static com.maehem.flatlinejack.Engine.log;
+import static com.maehem.flatlinejack.Engine.LOGGER;
+
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.Player;
@@ -49,22 +50,26 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         
         // Respond to button clicks
         buttons.getInventoryButton().setOnMouseClicked((MouseEvent t) -> {
-            log.log(Level.INFO, "User clicked Inventory button.");
+            LOGGER.log(Level.INFO, "User clicked Inventory button.");
             gs.toggleInventoryShowing();
         });
         buttons.getChipButton().setOnMouseClicked((t) -> {
-            log.log(Level.INFO, "User clicked Chip button.");
+            LOGGER.log(Level.INFO, "User clicked Chip button.");
             gs.toggleChipsShowing();
         });
         buttons.getKnowledgeButton().setOnMouseClicked((t) -> {
-            log.log(Level.INFO, "User clicked Knowledge button.");
+            LOGGER.log(Level.INFO, "User clicked Knowledge button.");
         });
         buttons.getSaveButton().setOnMouseClicked((t) -> {
-            log.log(Level.INFO, "User clicked Save button.");
+            LOGGER.log(Level.INFO, "User clicked Save button.");
             gs.quickSave();
         });
+        buttons.getSettingsButton().setOnMouseClicked((t) -> {
+            LOGGER.log(Level.INFO, "User clicked Settings button.");
+            gs.toggleSettingsShowing();
+        });
         buttons.getPowerButton().setOnMouseClicked((t) -> {
-            log.log(Level.INFO, "User clicked Power button.");
+            LOGGER.log(Level.INFO, "User clicked Power button.");
         });
     }
 
@@ -91,6 +96,9 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
     public void gameStateShowChips(GameState gs, boolean state) {
         //TODO: Highlight the chips button.
     }
+
+    @Override
+    public void gameStateShowDebug(GameState gs, boolean state) {}
     
     
 }

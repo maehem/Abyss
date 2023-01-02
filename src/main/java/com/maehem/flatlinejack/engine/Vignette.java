@@ -16,6 +16,7 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
 import java.io.InputStream;
@@ -42,8 +43,6 @@ import javafx.scene.text.Text;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public abstract class Vignette extends Pane {
-
-    public static final Logger log = Engine.log;
 
     public static final String PROP_PREFIX = "vignette.";
     public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
@@ -87,7 +86,7 @@ public abstract class Vignette extends Pane {
         this.setHeight(height);
         this.setClip(new Rectangle(width, height));
         
-        log.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
+        LOGGER.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
         getChildren().add(layerStack);
         addNode(bgGroup);
@@ -107,10 +106,10 @@ public abstract class Vignette extends Pane {
 
             initBackdrop();
             setName(bundle.getString("title"));
-            log.config("call init()");
+            LOGGER.config("call init()");
             init();
         } catch (MissingResourceException ex) {
-            log.log(Level.WARNING,
+            LOGGER.log(Level.WARNING,
                     "Unable to locate vignette resource bundle at: {0}", bPath);
 
             // TODO:  maybe load a default bundle here.
@@ -121,16 +120,16 @@ public abstract class Vignette extends Pane {
         // Example: Player left through right door and you want them to appear in the next
         // vignette's left side.
         if (prevPort != null && prevPort.getPlayerX() >= 0 && prevPort.getPlayerY() >= 0) {
-            log.log(Level.INFO, "set player xy override: {0},{1}", new Object[]{prevPort.getPlayerX(), prevPort.getPlayerY()});
+            LOGGER.log(Level.INFO, "set player xy override: {0},{1}", new Object[]{prevPort.getPlayerX(), prevPort.getPlayerY()});
             setPlayerPosition(new Point2D(prevPort.getPlayerX(), prevPort.getPlayerY()));
             player.setDirection(prevPort.getPlayerDir());
         } else {
-            //log.log(Level.INFO, "Set player position to: {0},{1}", new Object[]{0.5, 0.66});
+            //LOGGER.log(Level.INFO, "Set player position to: {0},{1}", new Object[]{0.5, 0.66});
             setPlayerPosition(new Point2D(0.5, 0.66));
             player.setDirection(PoseSheet.Direction.TOWARD);
         }
 
-        log.finest("do debug colllision bounds");
+        LOGGER.finest("do debug colllision bounds");
         debugCollisionBounds(showCollision);
         debugHearingBounds(showHearing);
 
@@ -141,7 +140,7 @@ public abstract class Vignette extends Pane {
             event.consume();
         });
 
-        log.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
+        LOGGER.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
     protected abstract void init();
@@ -166,7 +165,7 @@ public abstract class Vignette extends Pane {
 
         if (dialogOverlay == null) {
             if (!input.isEmpty()) {
-                log.log(Level.FINE, "vignette process input event:  {0}", input.toString());
+                LOGGER.log(Level.FINE, "vignette process input event:  {0}", input.toString());
 
                 processUDLR(input);
                 processDebugKeys(input);
@@ -185,7 +184,7 @@ public abstract class Vignette extends Pane {
                 if (playerExited) {
                     // Return the players pose skin back to default.
                     getPlayer().useDefaultSkin();
-                    log.config("player triggered door.");
+                    LOGGER.config("player triggered door.");
                     return door;
                 }
             }
@@ -206,7 +205,7 @@ public abstract class Vignette extends Pane {
                     dialogOverlay = npc.getDialog();
                     addNode(dialogOverlay);
                     dialogOverlay.toFront();
-                    log.warning("Show Dialog Mode.");
+                    LOGGER.warning("Show Dialog Mode.");
                 }
             });
         } else {
@@ -229,7 +228,7 @@ public abstract class Vignette extends Pane {
                 getPlayerScale()
                 * (getPlayer().getLayoutY() / getHeight() - getHorizon())
         );
-        //log.log(Level.FINER, "Player scale set to: " + getPlayer().getScaleY() );
+        //LOGGER.log(Level.FINER, "Player scale set to: " + getPlayer().getScaleY() );
         loop(); // Run the user defined @loop() code.
 
         // TODO:  maybe return loop() and allow the child to cause exit of scene?
@@ -279,12 +278,12 @@ public abstract class Vignette extends Pane {
     private void processHotKeys(ArrayList<String> input) {
 //        if (input.contains("S")) {
 //            input.remove("S");
-//            log.config("User saved game.");
+//            LOGGER.config("User saved game.");
 //        }
         if (input.contains("T")) {
             input.remove("T");
             playerTalkToNPC = true;
-            log.config("User talked to NPC.");
+            LOGGER.config("User talked to NPC.");
         }
     }
 
@@ -295,7 +294,7 @@ public abstract class Vignette extends Pane {
         } else {
             colStatus = "Hidden";
         }
-        log.log(Level.FINER, "Collision Bounds: {0}", colStatus);
+        LOGGER.log(Level.FINER, "Collision Bounds: {0}", colStatus);
 
         getWalkArea().setOpacity(show ? debugOpacity : 0.0);
         walkAreaCoords.setOpacity(show ? debugOpacity : 0.0);
@@ -323,7 +322,7 @@ public abstract class Vignette extends Pane {
         } else {
             status = "Hidden";
         }
-        log.log(Level.FINER, "Hearing Bounds: {0}", status);
+        LOGGER.log(Level.FINER, "Hearing Bounds: {0}", status);
 
         getPlayer().showHearingBounds(show);
         getCharacterList().forEach((Character npc) -> {
@@ -435,7 +434,7 @@ public abstract class Vignette extends Pane {
      * @param name the name to set
      */
     public final void setName(String name) {
-        log.log(Level.CONFIG, "set name to: {0}", name);
+        LOGGER.log(Level.CONFIG, "set name to: {0}", name);
         this.name = name;
     }
 
@@ -474,7 +473,7 @@ public abstract class Vignette extends Pane {
     public final void setPlayerPosition( Point2D pos ) {
         getPlayer().setLayoutX(getWidth() * pos.getX());
         getPlayer().setLayoutY(getHeight() * pos.getY());
-        log.log(Level.INFO, "Set player position to: {0},{1}", 
+        LOGGER.log(Level.INFO, "Set player position to: {0},{1}", 
                 new Object[]{getPlayer().getLayoutX(), getPlayer().getLayoutY()});
     }
     
@@ -516,7 +515,7 @@ public abstract class Vignette extends Pane {
         String backgroundName = assetFolderName + "backdrop.png";
         InputStream is = getClass().getResourceAsStream(backgroundName);
         if (is == null) {
-            log.log(Level.SEVERE, "Cannot find image for: {0}", backgroundName);
+            LOGGER.log(Level.SEVERE, "Cannot find image for: {0}", backgroundName);
             return;
         }
         final ImageView bgv = new ImageView();

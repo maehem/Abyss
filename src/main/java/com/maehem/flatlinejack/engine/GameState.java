@@ -17,7 +17,7 @@
 package com.maehem.flatlinejack.engine;
 
 import com.maehem.flatlinejack.Engine;
-import static com.maehem.flatlinejack.Engine.log;
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,6 +42,7 @@ public class GameState extends Properties {
     private final Player player;
     private boolean showInventory = false;
     private boolean showChips = false;
+    private boolean showDebug = true;
     
     private final File gameSaveFile = new File(
             System.getProperty("user.home") 
@@ -55,6 +56,9 @@ public class GameState extends Properties {
 //            + File.separator + "FlatlineJack"
 //            + File.separator + "save-202212131234.properties"
 //    );
+    
+    // Debug toggles
+    public boolean showWalkPerimeter = false;
 
     public GameState() {
         this.player = new Player(this);
@@ -79,11 +83,11 @@ public class GameState extends Properties {
             out = new FileOutputStream(gameSaveFile);
             
             store(out, "Game Save");
-            log.log(Level.WARNING, "Game State saved at: {0}", gameSaveFile.getAbsolutePath());
+            LOGGER.log(Level.WARNING, "Game State saved at: {0}", gameSaveFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(GameState.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(GameState.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         } finally {
             try {
                 out.close();
@@ -98,7 +102,7 @@ public class GameState extends Properties {
             FileInputStream in = new FileInputStream(gameSaveFile);
             Properties ldProps = new Properties();
             ldProps.load(in);
-            log.log(Level.CONFIG, "Loaded previous save file: " + gameSaveFile.getAbsolutePath());
+            LOGGER.log(Level.CONFIG, "Loaded previous save file: " + gameSaveFile.getAbsolutePath());
             
             
             setProperty(PROP_CURRENT_VIGNETTE, ldProps.getProperty(PROP_CURRENT_VIGNETTE));  // Game starting room
@@ -110,13 +114,13 @@ public class GameState extends Properties {
                 String key = (String) t;
                 // Intake Vignette flag
                 if ( key.startsWith(Vignette.PROP_PREFIX) ) {
-                    log.log(Level.INFO, "Load Vignette prop: " + key);
+                    LOGGER.log(Level.INFO, "Load Vignette prop: " + key);
                     setProperty(key, ldProps.getProperty(key));
                 }                
             });
             
         } catch (FileNotFoundException ex) {
-            log.config("No previous game state.  New Game.\n");            
+            LOGGER.config("No previous game state.  New Game.\n");            
             setProperty(PROP_CURRENT_VIGNETTE, defaultVignetteName);  // Game starting room                        
         } catch (IOException ex) {
             Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
@@ -139,6 +143,7 @@ public class GameState extends Properties {
         return prevVal;
     }
     
+    // TODO:  Listener is misspelled.
     public void addListenter( GameStateListener l ) {
         listenters.add(l);
     }
@@ -202,5 +207,13 @@ public class GameState extends Properties {
             l.gameStatePropertyChanged(this, key);                
         }
     }
+    
+    public void toggleSettingsShowing() {
+        showDebug = !showDebug;
+        for (GameStateListener l: listenters) {
+            l.gameStateShowDebug(this, showDebug);                
+        }
+    }
+    
     
 }

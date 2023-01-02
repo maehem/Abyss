@@ -16,13 +16,14 @@
 */
 package com.maehem.flatlinejack.engine;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
+
 import com.maehem.flatlinejack.content.things.EmptyThing;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
 import com.maehem.flatlinejack.engine.gui.GUI;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -40,7 +41,6 @@ import javafx.scene.shape.Shape;
  */
 public class Character extends Group {
 
-    public static final Logger log = Logger.getLogger("flatline");
     private static final String TALK_ICON_IMAGE_FILENAME = "/icons/talk-icon.png";
 
     public static final int INVENTORY_SIZE = 12;
@@ -126,7 +126,7 @@ public class Character extends Group {
      * @param y range 0.0-1.0 (top to bottom(feet))
      */
     public final void setOrigin(double x, double y) {
-        log.log(Level.INFO, "character set origin: {0},{1}", new Object[]{x, y});
+        LOGGER.log(Level.INFO, "character set origin: {0},{1}", new Object[]{x, y});
         this.originX = x;
         this.originY = y;
         
@@ -142,7 +142,7 @@ public class Character extends Group {
         Bounds b = getBoundsInParent();
         double bW = b.getWidth();
         double bH = b.getHeight();
-        //log.log(Level.CONFIG, "Parent Bounds for character: {0}x{1}\n", new Object[]{b.getWidth(), b.getHeight()});
+        //LOGGER.log(Level.CONFIG, "Parent Bounds for character: {0}x{1}\n", new Object[]{b.getWidth(), b.getHeight()});
         // After scaling, translate new X or Y position back to 0, then translate to desired originX/Y.
         setTranslateX( ((-pW + bW)/2 - bW * originX ));
         setTranslateY( ((-pH + bH)/2 - bH * originY ));
@@ -181,7 +181,7 @@ public class Character extends Group {
         getChildren().add(talkIcon);        
         
         talkIcon.setOnMouseClicked((event) -> {
-            log.log(Level.WARNING, "Opacity = {0}", talkIcon.getOpacity());
+            LOGGER.log(Level.WARNING, "Opacity = {0}", talkIcon.getOpacity());
             event.consume();
             if ( talkIcon.getOpacity() > 0.0 ) {
                 setTalking(true);
@@ -241,7 +241,7 @@ public class Character extends Group {
         updateOrigin();
 
 //        Bounds b = getBoundsInParent();
-//        log.log(Level.CONFIG, "scale: {0}  lay:{1},{2}  tran:{3},{4}  size:{5}x{6}", 
+//        LOGGER.log(Level.CONFIG, "scale: {0}  lay:{1},{2}  tran:{3},{4}  size:{5}x{6}", 
 //                new Object[]{getScaleX(), 
 //                    getLayoutX(),getLayoutY(), 
 //                    getTranslateX(), getTranslateY(),
@@ -281,7 +281,7 @@ public class Character extends Group {
     }
     
     public void walkToward(double x, double y, Shape pBounds) {
-        log.log(Level.FINEST,
+        LOGGER.log(Level.FINEST,
                 "Walk toward:   Start X,Y:  {0},{1}    Dest: {2},{3}",
                 new Object[]{getLayoutX(), getLayoutY(), x, y}
         );
@@ -312,19 +312,19 @@ public class Character extends Group {
 
                 // Figure out if we are moving left or right
                 if (getLayoutX() < x) {
-                    log.finest("Moving Right");
+                    LOGGER.finest("Moving Right");
                     moveRight(12, pBounds);
                 } else if (getLayoutX() > x) {
-                    log.finest("Moving Left");
+                    LOGGER.finest("Moving Left");
                     moveLeft(12, pBounds);
                 }
 
                 // Figure out if we are moving up or down
                 if (getLayoutY() < y) {
-                    log.finest("Moving Down");
+                    LOGGER.finest("Moving Down");
                     moveDown(4, pBounds);
                 } else if (getLayoutY() > y) {
-                    log.finest("Moving Up");
+                    LOGGER.finest("Moving Up");
                     moveUp(4, pBounds);
                 }
 

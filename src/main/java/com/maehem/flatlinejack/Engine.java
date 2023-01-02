@@ -16,6 +16,7 @@
 */
 package com.maehem.flatlinejack;
 
+import com.maehem.flatlinejack.debug.DebugTab;
 import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.Loop;
 import com.maehem.flatlinejack.engine.Player;
@@ -26,6 +27,9 @@ import com.maehem.flatlinejack.engine.gui.ChipsConfiguratorPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
+import com.maehem.flatlinejack.logging.LoggingFormatter;
+import com.maehem.flatlinejack.logging.LoggingHandler;
+import com.maehem.flatlinejack.logging.LoggingMessageList;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.ConsoleHandler;
@@ -36,6 +40,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -51,6 +56,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
@@ -59,6 +65,7 @@ import javafx.stage.Stage;
  */
 public class Engine extends Application implements GameStateListener {
 
+    public static final Logger LOGGER = Logger.getLogger("com.maehem.flatlinejack");
     //private double SCALE = 0.75;
     private static final double SCALE = 0.66;
     
@@ -66,7 +73,7 @@ public class Engine extends Application implements GameStateListener {
     private GameControlsPane gameControls;
     private ChipsConfiguratorPane chipsPane;
 
-    public static final Logger log = Logger.getLogger("flatline");
+    //public static final Logger log = Logger.getLogger("flatline");
 
     private static final int PRELOADER_SHOWTIME_MILLIS = 2000;
     // This is a class name.
@@ -85,8 +92,12 @@ public class Engine extends Application implements GameStateListener {
     private final StackPane root = new StackPane(gamePane);
     private final Scene scene = new Scene(root); //, 1280, 920);
 
+    private final LoggingMessageList messageLog = new LoggingMessageList();
+    private final LoggingHandler loggingHandler = new LoggingHandler(messageLog);
+
+    private final Stage debugWindow = new Stage();
     
-    private final GameState gameState = new GameState();
+    private final GameState gameState;// = new GameState();
     
     
     // TODO:   Music track system
@@ -96,17 +107,28 @@ public class Engine extends Application implements GameStateListener {
 //          System.setProperty("java.util.logging.SimpleFormatter.format",
 //                  "[%1$tF %1$tT %1$tL] [%4$-7s] %5$s%n");
 //      }
-    static {
-          System.setProperty("java.util.logging.SimpleFormatter.format",
-                  "[%4$-7s] %5$s%n");
-     }
+//    static {
+//          System.setProperty("java.util.logging.SimpleFormatter.format",
+//                  "[%4$-7s] %5$s%n");
+//     }
+
+    
+    public Engine() {
+        configureLogging();
+        this.gameState = new GameState();
+
+    }
 
     @Override
     public void start(Stage window) {
         this.window = window;
+        
+        initDebugWindow();
+
         getGameState().addListenter(this);
         
-        configureLogging();
+        LOGGER.info("Flatline Jack version:  0.0.0");
+        LOGGER.log(Level.INFO, "JavaFX Version: {0}", System.getProperties().get("javafx.runtime.version"));
         
         ImageView splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
         gameControls = new GameControlsPane(getGameState(), Vignette.NATIVE_WIDTH/2);
@@ -158,9 +180,28 @@ public class Engine extends Application implements GameStateListener {
         getInventoryPane().setVisible(false);
         getInventoryPane().setLayoutX(getScene().getWidth()/2 - getInventoryPane().getWidth()/2);
         getInventoryPane().setLayoutY(getScene().getHeight()/2 - getInventoryPane().getHeight()/2);
-
     }
 
+    private void initDebugWindow() {
+        debugWindow.setScene(getDebugScene());
+        debugWindow.show();
+        debugWindow.setAlwaysOnTop(true);
+        Rectangle2D bounds = Screen.getPrimary().getBounds();
+        debugWindow.setX(bounds.getWidth()-debugWindow.getWidth());
+        debugWindow.setY(bounds.getHeight()-debugWindow.getHeight());
+    }
+
+
+    private Scene getDebugScene() {
+        DebugTab debugTab = new DebugTab(
+                0, 0, 
+                messageLog, gameState);
+        debugTab.setFormatter(loggingHandler.getFormatter());
+        Scene debugScene = new Scene(debugTab);
+        
+        return debugScene;
+    }
+    
     private void setVignette(Vignette v) {
         //root.getChildren().remove(currentVignette);
         //topArea.getChildren().remove(currentVignette);
@@ -217,7 +258,7 @@ public class Engine extends Application implements GameStateListener {
             Constructor<?> cons = c.getConstructor(int.class, int.class, Port.class, Player.class);
             Object object = cons.newInstance((int)(Vignette.NATIVE_WIDTH), (int)(Vignette.NATIVE_HEIGHT), nextRoom, getPlayer());
             setVignette((Vignette) object);
-            log.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());
+            LOGGER.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());
         } catch (ClassNotFoundException | 
                 NoSuchMethodException | 
                 SecurityException | 
@@ -296,7 +337,7 @@ public class Engine extends Application implements GameStateListener {
         // Check if we need to save.
         
         
-        log.warning("Exit called.  Quitting game.");
+        LOGGER.warning("Exit called.  Quitting game.");
         window.close();
     }
 
@@ -325,18 +366,22 @@ public class Engine extends Application implements GameStateListener {
     }
     
     private void configureLogging() {
-        ConsoleHandler handler = new ConsoleHandler();
+        loggingHandler.setFormatter(new LoggingFormatter());
+        // Get the top most logger and add our handler.
+        Logger.getLogger("com.maehem.flatlinejack").setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
+        Logger.getLogger("com.maehem.flatlinejack").addHandler(loggingHandler);
 
-        // TODO:  Bring in Rocket Logging system.
+        // For our java package only, log ony FINE and above.
+        Logger.getLogger("com.maehem.flatlinejack").setLevel(Level.FINEST);
+
+        //ConsoleHandler handler = new ConsoleHandler();
+
+        
         
         // Add console handler as handler of logs
-        log.addHandler(handler);
-        log.setUseParentHandlers(false);
+        //Logger.getLogger("com.maehem.flatlinejack").addHandler(handler);
+        //Logger.getLogger("com.maehem.flatlinejack").setUseParentHandlers(false);
         
-        log.setLevel(Level.FINE);
-        for (Handler h : log.getHandlers()) {
-            h.setLevel(Level.FINER);
-        }        
     }
     
     /**
@@ -361,7 +406,7 @@ public class Engine extends Application implements GameStateListener {
 
     @Override
     public void gameStateShowInventory(GameState gs, boolean state) {
-        log.log(Level.INFO, "Set show inventory pane: {0}", state);
+        LOGGER.log(Level.INFO, "Set show inventory pane: {0}", state);
         hideSpecialPanes();
         if ( state ) { inventoryPane.updateItemGrid(); }
         inventoryPane.setVisible(state);
@@ -369,7 +414,7 @@ public class Engine extends Application implements GameStateListener {
 
     @Override
     public void gameStateShowChips(GameState gs, boolean state) {
-        log.log(Level.INFO, "Set show chips pane: {0}", state);
+        LOGGER.log(Level.INFO, "Set show chips pane: {0}", state);
         hideSpecialPanes();
         chipsPane.setVisible(state);
     }
@@ -377,6 +422,15 @@ public class Engine extends Application implements GameStateListener {
     private void hideSpecialPanes() {
         chipsPane.setVisible(false);
         inventoryPane.setVisible(false);
+    }
+
+    @Override
+    public void gameStateShowDebug(GameState gs, boolean state) {
+        if ( state ) {
+            debugWindow.show();
+        } else {
+            debugWindow.hide();
+        }
     }
 
 }
