@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.engine;
 
+import static com.maehem.flatlinejack.Engine.log;
+
 import com.maehem.flatlinejack.Engine;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -28,24 +30,23 @@ import java.util.logging.Logger;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class Player extends Character implements GameStateListener {
-    private final static Logger LOG = Logger.getLogger(Player.class.getName());
 
     public static final String PLAYER_KEY = "player";
-    public static final String MONEY_KEY = PLAYER_KEY + ".money";
-    public static final String HEALTH_KEY = PLAYER_KEY + ".health";
-    public static final String CONSTITUTION_KEY = PLAYER_KEY + ".constitution";
-    public static final String NAME_KEY = PLAYER_KEY + ".name";
-    public static final String INVENTORY_KEY = PLAYER_KEY + ".inventory";
+    public static final String MONEY_KEY        = PLAYER_KEY + "." + "money";
+    public static final String HEALTH_KEY       = PLAYER_KEY + "." + "health";
+    public static final String CONSTITUTION_KEY = PLAYER_KEY + "." + "constitution";
+    public static final String NAME_KEY         = PLAYER_KEY + "." + "name";
+    public static final String INVENTORY_KEY    = PLAYER_KEY + "." + "inventory";
 
     // DEFAULT VALUES
-    public static final String PLAYER_NAME_DEFAULT = "Neo";
+    public static final String PLAYER_NAME_DEFAULT      = "Jack";
     public static final int PLAYER_MONEY_AMOUNT_DEFAULT = 23000;
-    public static final int PLAYER_HEALTH_DEFAULT = 1000;
-    public static final int PLAYER_CONSTITUTION_DEFAULT = 1000;
+    public static final int PLAYER_HEALTH_MAX           = 1000;
+    public static final int PLAYER_CONSTITUTION_MAX     = 1000;
 
     private int money = PLAYER_MONEY_AMOUNT_DEFAULT;
-    private int health = PLAYER_HEALTH_DEFAULT;
-    private int constitution = PLAYER_CONSTITUTION_DEFAULT;
+    private int health = PLAYER_HEALTH_MAX;
+    private int constitution = PLAYER_CONSTITUTION_MAX;
     
     private final GameState gameState;
 
@@ -88,6 +89,24 @@ public class Player extends Character implements GameStateListener {
     }
 
     /**
+     * Add or remove health value.
+     * Performs range checking.
+     * 
+     * @param amt to change
+     */
+    public void addHealth( int amt ) {
+        int newValue = this.health + amt;
+        if ( newValue < 0 ) {
+            newValue = 0;
+        } else if ( newValue > PLAYER_HEALTH_MAX ) {
+            newValue = PLAYER_HEALTH_MAX;
+        }
+        if ( newValue != this.health ) {
+            setHealth(newValue);
+        }
+    }
+
+    /**
      * @return the constitution
      */
     public int getConstitution() {
@@ -103,6 +122,26 @@ public class Player extends Character implements GameStateListener {
     }
 
     /**
+     * Add or remove constitution value.
+     * Performs range checking.
+     * 
+     * @param amt to change
+     */
+    public void addConstitution( int amt ) {
+        int newValue = this.constitution + amt;
+        if ( newValue < 0 ) {
+            newValue = 0;  // player death?
+        } else if ( newValue > PLAYER_CONSTITUTION_MAX ) {
+            newValue = PLAYER_CONSTITUTION_MAX;
+        }
+        if ( newValue != this.constitution ) {
+            setConstitution(newValue);
+        }
+    }
+    
+    /**
+     * Return the amount of money the player is carrying.
+     * 
      * @return the money
      */
     public int getMoney() {
@@ -135,14 +174,14 @@ public class Player extends Character implements GameStateListener {
         p.setProperty(HEALTH_KEY, String.valueOf(getHealth()));
         p.setProperty(CONSTITUTION_KEY, String.valueOf(getConstitution()));
 
-        LOG.log(Level.WARNING, "Save Inventory.");
+        log.log(Level.WARNING, "Save Inventory.");
         for ( int i=0; i<getAInventory().size(); i++ ) {
             String key = INVENTORY_KEY + "." + i;
             Thing t = getAInventory().get(i);
             //if ( t instanceof EmptyThing ) {
-            //    LOG.log(Level.INFO, "Player Thing SaveState: EmptyThing will not be saved.");
+            //    log.log(Level.INFO, "Player Thing SaveState: EmptyThing will not be saved.");
             //} else {
-//                LOG.log(Level.INFO, "Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
+//                log.log(Level.INFO, "Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
                 t.saveState(key, p);
             //}
         }
@@ -157,11 +196,12 @@ public class Player extends Character implements GameStateListener {
         log.log(Level.INFO, "Initialize player settings from save file.");
         setName(p.getProperty(NAME_KEY, "Jack"));
         setMoney(Integer.parseInt(p.getProperty(MONEY_KEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT))));
-        setHealth(Integer.parseInt(p.getProperty(HEALTH_KEY, String.valueOf(PLAYER_HEALTH_DEFAULT))));
-        setConstitution(Integer.parseInt(p.getProperty(CONSTITUTION_KEY, String.valueOf(PLAYER_CONSTITUTION_DEFAULT))));
+        setHealth(Integer.parseInt(p.getProperty(HEALTH_KEY, String.valueOf(PLAYER_HEALTH_MAX))));
+        setConstitution(Integer.parseInt(p.getProperty(CONSTITUTION_KEY, String.valueOf(PLAYER_CONSTITUTION_MAX))));
 
         for ( int i=0; i< getAInventory().size(); i++ ) {
             String key = INVENTORY_KEY + "." + i;
+            log.log(Level.INFO, "Player Inventory Item: " + key);
             String itemClass = p.getProperty(INVENTORY_KEY + "." + i + ".class");
             if ( itemClass != null ) {
                 try {
@@ -173,29 +213,24 @@ public class Player extends Character implements GameStateListener {
                     //getAInventory().set(i, object);
                     object.loadState(p, key);
                 } catch (ClassNotFoundException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 } catch (InstantiationException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 } catch (IllegalAccessException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 } catch (IllegalArgumentException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 } catch (InvocationTargetException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 } catch (NoSuchMethodException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 } catch (SecurityException ex) {
-                    LOG.log(Level.SEVERE, null, ex);
+                    log.log(Level.SEVERE, null, ex);
                 }
                 
             }
         }
 
-    }
-
-    void changeHealth(int amount) {
-        setHealth(getHealth() + amount);
-        
     }
 
     @Override

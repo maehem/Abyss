@@ -133,7 +133,7 @@ public class GUI2 extends Group {
                 16, -30,
                 GUI2.class.getResourceAsStream("/icons/heart-icon.png"),
                 engine.getPlayer().getHealth(),
-                Player.PLAYER_HEALTH_DEFAULT
+                Player.PLAYER_HEALTH_MAX
         );
         getChildren().add(healthGauge);
 
@@ -143,7 +143,7 @@ public class GUI2 extends Group {
                 42, -60,
                 GUI2.class.getResourceAsStream("/icons/shield-icon.png"),
                 engine.getPlayer().getConstitution(),
-                Player.PLAYER_CONSTITUTION_DEFAULT
+                Player.PLAYER_CONSTITUTION_MAX
         );
         getChildren().add(constitutionGauge);
         
