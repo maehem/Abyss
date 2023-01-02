@@ -57,8 +57,11 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
             LOGGER.log(Level.INFO, "User clicked Chip button.");
             gs.toggleChipsShowing();
         });
-        buttons.getKnowledgeButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked Knowledge button.");
+        buttons.getRomButton().setOnMouseClicked((t) -> {
+            LOGGER.log(Level.INFO, "User clicked ROM button.");
+        });
+        buttons.getTerminalButton().setOnMouseClicked((t) -> {
+            LOGGER.log(Level.INFO, "User clicked Terminal button.");
         });
         buttons.getSaveButton().setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked Save button.");

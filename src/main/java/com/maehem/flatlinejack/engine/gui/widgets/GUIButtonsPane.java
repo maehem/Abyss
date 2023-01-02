@@ -31,7 +31,7 @@ public class GUIButtonsPane extends DecoBox {
 
     private final String INV_ICON_PATH = "/icons/inventory-icon.png";
     private final String CHIP_ICON_PATH = "/icons/microchip-icon.png";
-    private final String ROM_ICON_PATH = "/icons/knowledge-icon.png";
+    private final String ROM_ICON_PATH = "/icons/chip-head.png";
     private final String TERM_ICON_PATH = "/icons/command-line.png";
     private final String SAVE_ICON_PATH = "/icons/save-icon.png";
     private final String SETTINGS_ICON_PATH = "/icons/cogwheel.png";
@@ -91,8 +91,12 @@ public class GUIButtonsPane extends DecoBox {
         return chipButton;
     }
     
-    public Button getKnowledgeButton() {
+    public Button getRomButton() {
         return romButton;
+    }
+    
+    public Button getTerminalButton() {
+        return terminalButton;
     }
     
     public Button getSaveButton() {
@@ -102,7 +106,7 @@ public class GUIButtonsPane extends DecoBox {
     public Button getSettingsButton() {
         return settingsButton;
     }
-
+    
     public Button getPowerButton() {
         return powerButton;
     }
