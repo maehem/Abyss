@@ -27,6 +27,8 @@ import com.maehem.flatlinejack.engine.gui.ChipsConfiguratorPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
+import com.maehem.flatlinejack.engine.gui.RomConstructPane;
+import com.maehem.flatlinejack.engine.gui.TerminalPane;
 import com.maehem.flatlinejack.logging.LoggingFormatter;
 import com.maehem.flatlinejack.logging.LoggingHandler;
 import com.maehem.flatlinejack.logging.LoggingMessageList;
@@ -68,8 +70,10 @@ public class Engine extends Application implements GameStateListener {
     private static final double SCALE = 0.66;
     
     private CrtTextPane narrationPane;
+    private RomConstructPane romPane;
     private GameControlsPane gameControls;
     private ChipsConfiguratorPane chipsPane;
+    private TerminalPane terminalPane;
 
     //public static final Logger log = Logger.getLogger("flatline");
 
@@ -126,7 +130,9 @@ public class Engine extends Application implements GameStateListener {
         getGameState().addListenter(this);
         
         LOGGER.info("Flatline Jack version:  0.0.0");
-        LOGGER.log(Level.INFO, "JavaFX Version: {0}", System.getProperties().get("javafx.runtime.version"));
+        LOGGER.log(Level.INFO, "JavaFX Version: {0}", 
+                System.getProperties().get("javafx.runtime.version")
+        );
         
         ImageView splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
         topArea.getChildren().add(splashScreen);
@@ -139,8 +145,15 @@ public class Engine extends Application implements GameStateListener {
         });
         
         gameControls = new GameControlsPane(getGameState(), Vignette.NATIVE_WIDTH/2);
-        narrationPane = new CrtTextPane(getGameState(), Vignette.NATIVE_WIDTH/2);        
-        bottomArea.getChildren().addAll(gameControls ,narrationPane  );
+        narrationPane = new CrtTextPane(getGameState(), Vignette.NATIVE_WIDTH/2);     
+        // ROM Adviser -- Hint System and Third Hand
+        romPane = new RomConstructPane(getGameState(), Vignette.NATIVE_WIDTH/2);
+        StackPane rightPane = new StackPane(narrationPane,romPane);
+        
+        
+        narrationPane.setVisible(false);
+        
+        bottomArea.getChildren().addAll(gameControls ,rightPane  );
         
         configureGuiLayout();
         
@@ -155,15 +168,18 @@ public class Engine extends Application implements GameStateListener {
         chipsPane = new ChipsConfiguratorPane(Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
         chipsPane.setVisible(gameState.chipsShowing());
         
-        // ROM Adviser -- Hint System and Third Hand
         
         // Terminal -- Base BBS style system
+        terminalPane = new TerminalPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        terminalPane.setVisible(true);
         
         // Deck Bench -- Configure your Deck with inventory components
         
         // Cyberspace  -- ROM Helper replaces Narration Window
 
-        topArea.getChildren().addAll(vignetteGroup, chipsPane, inventoryPane);
+        topArea.getChildren().addAll(vignetteGroup, 
+                chipsPane, inventoryPane, terminalPane
+        );
         // Finished setting up GUI
         
         // Initilize the game
@@ -368,11 +384,11 @@ public class Engine extends Application implements GameStateListener {
     private void configureLogging() {
         loggingHandler.setFormatter(new LoggingFormatter());
         // Get the top most logger and add our handler.
-        Logger.getLogger("com.maehem.flatlinejack").setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
-        Logger.getLogger("com.maehem.flatlinejack").addHandler(loggingHandler);
+        LOGGER.setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
+        LOGGER.addHandler(loggingHandler);
 
         // For our java package only, log ony FINE and above.
-        Logger.getLogger("com.maehem.flatlinejack").setLevel(Level.FINEST);
+        LOGGER.setLevel(Level.FINEST);
 
         //ConsoleHandler handler = new ConsoleHandler();
 

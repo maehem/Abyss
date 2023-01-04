@@ -17,7 +17,6 @@
 package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
-import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
