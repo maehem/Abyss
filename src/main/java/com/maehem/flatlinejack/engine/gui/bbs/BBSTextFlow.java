@@ -16,40 +16,17 @@
 */
 package com.maehem.flatlinejack.engine.gui.bbs;
 
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 /**
  *
  * @author mark
  */
-public class BBSText extends Text {
-    public static final Color FILL_COLOR = new Color(0.1, 1.0, 0.1, 1.0);
+public class BBSTextFlow extends TextFlow {
 
-    //private final Font FONT;
-
-//    private final int rows;
-//    private final int cols;
-    
-    public BBSText( Font f, String text ) {
-        super( text );
-        
-//        this.rows = rows;
-//        this.cols = cols;
-//        FONT = Font.loadFont(
-//            this.getClass().getResource(SCREEN_FONT).toExternalForm(),
-//            fontHeight
-//        );        
-        setFill(FILL_COLOR);
-        setFont(f);
+    public BBSTextFlow() {
+        setLineSpacing(0);
+        setTabSize(4);
     }
     
-//    public int getRows() {
-//        return rows;
-//    }
-//    
-//    public int getCols() {
-//        return cols;
-//    }
 }

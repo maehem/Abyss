@@ -40,11 +40,17 @@ public class TerminalPane extends StackPane {
                         CornerRadii.EMPTY, 
                         Insets.EMPTY)
         ));
-        terminal = new BBSTerminal(gs, w, h, 25, 80);
+        terminal = new BBSTerminal(gs); //, w, h, 25, 80);
         getChildren().add(terminal);
     }
     
     public BBSTerminal getTerminal() {
         return terminal;
+    }
+    
+    public void setTerminal( BBSTerminal t ) {
+        this.terminal = t;
+        getChildren().clear();
+        getChildren().add(t);
     }
 }

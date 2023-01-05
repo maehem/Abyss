@@ -13,43 +13,27 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.engine.gui.bbs;
 
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 /**
  *
  * @author mark
  */
-public class BBSText extends Text {
-    public static final Color FILL_COLOR = new Color(0.1, 1.0, 0.1, 1.0);
+public class BBSHeader extends TextFlow {
 
-    //private final Font FONT;
-
-//    private final int rows;
-//    private final int cols;
-    
-    public BBSText( Font f, String text ) {
-        super( text );
-        
-//        this.rows = rows;
-//        this.cols = cols;
-//        FONT = Font.loadFont(
-//            this.getClass().getResource(SCREEN_FONT).toExternalForm(),
-//            fontHeight
-//        );        
-        setFill(FILL_COLOR);
-        setFont(f);
+    public BBSHeader(Font font, String text) {
+        this();
+        BBSText txt = new BBSText(font, text);
+        getChildren().add(txt);
     }
-    
-//    public int getRows() {
-//        return rows;
-//    }
-//    
-//    public int getCols() {
-//        return cols;
-//    }
+
+    public BBSHeader() {
+        setLineSpacing(0);
+        setTabSize(4);
+    }
+
 }

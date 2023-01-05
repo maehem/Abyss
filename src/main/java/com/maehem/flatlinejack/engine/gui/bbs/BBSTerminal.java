@@ -16,17 +16,20 @@
  */
 package com.maehem.flatlinejack.engine.gui.bbs;
 
-import com.maehem.flatlinejack.content.sites.SiteHeader;
 import com.maehem.flatlinejack.engine.GameState;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -38,53 +41,73 @@ import javafx.scene.text.TextFlow;
  * 
  * @author mark
  */
-public class BBSTerminal extends TextFlow {
-    private static final double LINE_SPACE = 0.0; // default is 0.0
+public class BBSTerminal extends BorderPane {
+    public static final double LINE_SPACE = 0.0; // default is 0.0
     private static final Color BG_COLOR = new Color(0.2, 0.2, 0.2, 1.0);
-    private static final double FONT_H = 32;
+    public static final double FONT_H = 32;
+    private static final String FONT_FILE = "/fonts/AcPlus_IBM_VGA_9x14.ttf";
+    public static final Font FONT= Font.loadFont(
+            BBSTerminal.class.getResourceAsStream(FONT_FILE),
+            FONT_H
+        );
 
-    private final BBSText header; //= new BBSText();
-    private final BBSText body;   //= new BBSText();
-    private final BBSText footer; //= new BBSText();
+    //private BBSHeader header = new BBSHeader();
+    //private final BBSTextFlow body = new BBSTextFlow();
+    //private final BBSTextFlow footer = new BBSTextFlow();
+    
+//    private final int rows;
+//    private final int cols;
     
     //private final double scale;
 
-    public BBSTerminal(GameState gs, int width, int height, int rows, int cols) {
+    public BBSTerminal(GameState gs /*, int width, int height , int rows, int cols */) {
+//        this.rows = rows;
+//        this.cols = cols;
+        //setPrefSize(width, height);
         
+        setPadding(new Insets(16, 90, 16, 90)); //  T,R,B,L
         setBackground(new Background(
                 new BackgroundFill(BG_COLOR, 
                         new CornerRadii(80), 
                         Insets.EMPTY)
         ));
         setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(4))));
-        setLineSpacing(LINE_SPACE);
-        setPadding(new Insets(16, 90, 16, 90)); //  T,R,B,L
-        setTabSize(4);
+        
         //setEffect(new GaussianBlur( 3));
         
-        header = new BBSText(FONT_H, 9, cols);
-        body = new BBSText(FONT_H,  14, cols);
-        footer = new BBSText(FONT_H, 1, cols);
+//        header = new BBSText(FONT_H, 9, cols);
+//        body = new BBSText(FONT_H,  14, cols);
+//        footer = new BBSText(FONT_H, 1, cols);
         
-        //Text header = new AbyssHeader();
-        setHeader(SiteHeader.CYBERIA);
-        setBody("1\n2\n3\n4\n5");
-        setFooter("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
+        ///setBody("1\n2\n3\n4\n5");
+        //setFooter("01234567890123456789012345678901234567890123456789012345678901234567890123456789");
         
-        getChildren().addAll(header,body,footer);
+        //getChildren().addAll(header,body,footer);
     }
     
-    public void setHeader( String text ) {
-        setText(header, text);
+    public void setHeader( Node header ) {
+        setTop(header);
     }
     
-    public void setBody( String text ) {
-        setText(body,  text);
+    public void setBody( Node body ) {
+        setCenter(body);
     }
     
-    public void setFooter( String text ) {
-        setText(footer, text);
+    public void setFooter( Node footer ) {
+        setBottom(footer);
     }
+        
+//    public void setHeader( String text ) {
+//        setText(header, text);
+//    }
+//    
+//    public void setBody( String text ) {
+//        setText(body,  text);
+//    }
+//    
+//    public void setFooter( String text ) {
+//        setText(footer, text);
+//    }
     
     /**
      * Update Text element with text. Limiting/padding to n-lines.
@@ -94,20 +117,20 @@ public class BBSTerminal extends TextFlow {
      * @param lines
      * @return 
      */
-    private void setText( BBSText t, String textString ) { //, int lines ) {
-        int count = (int)(textString.lines().count());
-        int rows = t.getRows();
-        StringBuilder sb = new StringBuilder();
-        textString.lines().limit(rows).forEach((tt) -> {
-            sb.append(tt);
-            if ( rows > 1 ) sb.append("\n");
-        });
-        if ( count < t.getRows() ) {
-            for ( int i=count; i<rows; i++) {
-                sb.append("***\n");
-            }
-        }
-        
-        t.setText(sb.toString());
-    }
+//    private void setText( BBSText t, String textString ) { //, int lines ) {
+//        int count = (int)(textString.lines().count());
+//        int rows = getRows();
+//        StringBuilder sb = new StringBuilder();
+//        textString.lines().limit(rows).forEach((tt) -> {
+//            sb.append(tt);
+//            if ( rows > 1 ) sb.append("\n");
+//        });
+//        if ( count < t.getRows() ) {
+//            for ( int i=count; i<rows; i++) {
+//                sb.append("***\n");
+//            }
+//        }
+//        
+//        t.setText(sb.toString());
+//    }
 }

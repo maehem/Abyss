@@ -16,6 +16,7 @@
 */
 package com.maehem.flatlinejack;
 
+import com.maehem.flatlinejack.content.sites.AbyssSite;
 import com.maehem.flatlinejack.debug.DebugTab;
 import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.Loop;
@@ -172,6 +173,7 @@ public class Engine extends Application implements GameStateListener {
         // Terminal -- Base BBS style system
         terminalPane = new TerminalPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
         terminalPane.setVisible(true);
+        terminalPane.setTerminal(new AbyssSite(gameState,Vignette.NATIVE_WIDTH,Vignette.NATIVE_HEIGHT));
         
         // Deck Bench -- Configure your Deck with inventory components
         
