@@ -16,7 +16,7 @@
 */
 package com.maehem.flatlinejack;
 
-import com.maehem.flatlinejack.content.sites.AbyssSite;
+import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.debug.DebugTab;
 import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.Loop;
@@ -30,6 +30,7 @@ import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
 import com.maehem.flatlinejack.engine.gui.RomConstructPane;
 import com.maehem.flatlinejack.engine.gui.TerminalPane;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.logging.LoggingFormatter;
 import com.maehem.flatlinejack.logging.LoggingHandler;
 import com.maehem.flatlinejack.logging.LoggingMessageList;
@@ -106,16 +107,6 @@ public class Engine extends Application implements GameStateListener {
     // TODO:   Music track system
     //          - Blend music scene to scene
     
-//    static {
-//          System.setProperty("java.util.logging.SimpleFormatter.format",
-//                  "[%1$tF %1$tT %1$tL] [%4$-7s] %5$s%n");
-//      }
-//    static {
-//          System.setProperty("java.util.logging.SimpleFormatter.format",
-//                  "[%4$-7s] %5$s%n");
-//     }
-
-    
     public Engine() {
         configureLogging();
         this.gameState = new GameState();
@@ -172,8 +163,8 @@ public class Engine extends Application implements GameStateListener {
         
         // Terminal -- Base BBS style system
         terminalPane = new TerminalPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
-        terminalPane.setVisible(true);
-        terminalPane.setTerminal(new AbyssSite(gameState,Vignette.NATIVE_WIDTH,Vignette.NATIVE_HEIGHT));
+        terminalPane.setVisible(false);
+        terminalPane.setTerminal(new PublicTerminalSystem(gameState));
         
         // Deck Bench -- Configure your Deck with inventory components
         
@@ -393,9 +384,6 @@ public class Engine extends Application implements GameStateListener {
         LOGGER.setLevel(Level.FINEST);
 
         //ConsoleHandler handler = new ConsoleHandler();
-
-        
-        
         // Add console handler as handler of logs
         //Logger.getLogger("com.maehem.flatlinejack").addHandler(handler);
         //Logger.getLogger("com.maehem.flatlinejack").setUseParentHandlers(false);
@@ -440,6 +428,7 @@ public class Engine extends Application implements GameStateListener {
     private void hideSpecialPanes() {
         chipsPane.setVisible(false);
         inventoryPane.setVisible(false);
+        terminalPane.setVisible(false);
     }
 
     @Override
@@ -449,6 +438,18 @@ public class Engine extends Application implements GameStateListener {
         } else {
             debugWindow.hide();
         }
+    }
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {
+        terminalPane.setTerminal(term);
+    }
+
+    @Override
+    public void gameStateShowTerminal(GameState aThis, boolean state) {
+        LOGGER.log(Level.INFO, "Set show terminal pane: {0}", state);
+        hideSpecialPanes();
+        terminalPane.setVisible(state);
     }
 
 }

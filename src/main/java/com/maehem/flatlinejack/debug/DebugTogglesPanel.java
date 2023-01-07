@@ -22,6 +22,7 @@ package com.maehem.flatlinejack.debug;
 import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -117,5 +118,11 @@ public class DebugTogglesPanel extends GridPane implements GameStateListener {
 
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
+
+    @Override
+    public void gameStateShowTerminal(GameState aThis, boolean showTerminal) {}
 
 }

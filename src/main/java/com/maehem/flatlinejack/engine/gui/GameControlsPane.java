@@ -21,6 +21,7 @@ import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.Player;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.widgets.DecoBox;
 import com.maehem.flatlinejack.engine.gui.widgets.GUIButtonsPane;
 import com.maehem.flatlinejack.engine.gui.widgets.OLEDStatusScreen;
@@ -42,26 +43,32 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         gs.addListenter(this);
         
         setPrefWidth(width);
-        setPadding(new Insets(8));
+        setPadding(new Insets(6));
         
         
         buttons.setMoney("00000000");
+        buttons.getTerminalButton().toggleHighlight(false);
         getChildren().addAll(decoBox, buttons, status);
         
         // Respond to button clicks
         buttons.getInventoryButton().setOnMouseClicked((MouseEvent t) -> {
             LOGGER.log(Level.INFO, "User clicked Inventory button.");
+            clearButtonHighlights();
             gs.toggleInventoryShowing();
         });
         buttons.getChipButton().setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked Chip button.");
+            clearButtonHighlights();
             gs.toggleChipsShowing();
         });
         buttons.getRomButton().setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked ROM button.");
+            clearButtonHighlights();
         });
         buttons.getTerminalButton().setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked Terminal button.");
+            clearButtonHighlights();
+            gs.toggleTerminalShowing();
         });
         buttons.getSaveButton().setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked Save button.");
@@ -92,16 +99,41 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
 
     @Override
     public void gameStateShowInventory(GameState gs, boolean state) {
-        //TODO: Highlight the inventory button.
+        clearButtonHighlights();
+        buttons.getInventoryButton().toggleHighlight(
+                gs.inventoryShowing()
+        );
     }
 
     @Override
     public void gameStateShowChips(GameState gs, boolean state) {
+        clearButtonHighlights();
+        buttons.getChipButton().toggleHighlight(
+                gs.chipsShowing()
+        );
         //TODO: Highlight the chips button.
     }
 
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {
+        //clearButtonHighlights();
+    }
     
+    private void clearButtonHighlights() {
+        buttons.getInventoryButton().toggleHighlight(false);
+        buttons.getChipButton().toggleHighlight(false);
+        buttons.getRomButton().toggleHighlight(false);
+        buttons.getTerminalButton().toggleHighlight(false);
+        buttons.getSaveButton().toggleHighlight(false);
+        buttons.getPowerButton().toggleHighlight(false);
+    }
+
+    @Override
+    public void gameStateShowTerminal(GameState gs, boolean showTerminal) {
+        buttons.getTerminalButton().toggleHighlight( showTerminal );
+    }
     
 }

@@ -16,9 +16,10 @@
 */
 package com.maehem.flatlinejack.engine;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
-import static com.maehem.flatlinejack.Engine.LOGGER;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
@@ -32,6 +33,7 @@ public class Player extends Character implements GameStateListener {
 
     public static final String PLAYER_KEY = "player";
     public static final String MONEY_KEY        = PLAYER_KEY + "." + "money";
+    public static final String BANK_MONEY_KEY   = PLAYER_KEY + "." + "bank";
     public static final String HEALTH_KEY       = PLAYER_KEY + "." + "health";
     public static final String CONSTITUTION_KEY = PLAYER_KEY + "." + "constitution";
     public static final String NAME_KEY         = PLAYER_KEY + "." + "name";
@@ -39,11 +41,15 @@ public class Player extends Character implements GameStateListener {
 
     // DEFAULT VALUES
     public static final String PLAYER_NAME_DEFAULT      = "Jack";
-    public static final int PLAYER_MONEY_AMOUNT_DEFAULT = 23000;
+    public static final String PLAYER_NAME_LONG         = "Jack Erek Morse";
+    public static final long PLAYER_ID                  = 89472940724234l;
+    public static final int PLAYER_MONEY_AMOUNT_DEFAULT = 23;
+    public static final int PLAYER_BANK_MONEY_AMOUNT_DEFAULT = 3041;
     public static final int PLAYER_HEALTH_MAX           = 1000;
     public static final int PLAYER_CONSTITUTION_MAX     = 1000;
 
     private int money = PLAYER_MONEY_AMOUNT_DEFAULT;
+    private int bankMoney = PLAYER_BANK_MONEY_AMOUNT_DEFAULT;
     private int health = PLAYER_HEALTH_MAX;
     private int constitution = PLAYER_CONSTITUTION_MAX;
     
@@ -67,6 +73,7 @@ public class Player extends Character implements GameStateListener {
             case CONSTITUTION_KEY:  return String.valueOf(getConstitution());
             case HEALTH_KEY:        return String.valueOf(getHealth());
             case MONEY_KEY:         return String.valueOf(getMoney());
+            case BANK_MONEY_KEY:    return String.valueOf(getBankMoney());
             case NAME_KEY:          return getName();
             default:                return null;
         }
@@ -153,6 +160,33 @@ public class Player extends Character implements GameStateListener {
     public void setMoney(int money) {
         this.money = money;
         gameState.notifyPlayerStateChanged(MONEY_KEY);
+    }
+
+    public void addMoney( int amount ) {
+        this.money += amount;
+        gameState.notifyPlayerStateChanged(MONEY_KEY);
+    }
+    
+    /**
+     * Return the amount of money the player has in bank.
+     * 
+     * @return the money
+     */
+    public int getBankMoney() {
+        return bankMoney;
+    }
+
+    /**
+     * @param money the money player has in bank
+     */
+    public void setBankMoney(int money) {
+        this.bankMoney = bankMoney;
+        gameState.notifyPlayerStateChanged(BANK_MONEY_KEY);
+    }
+    
+    public void addBankMoney( int amount ) {
+        this.bankMoney += amount;
+        gameState.notifyPlayerStateChanged(BANK_MONEY_KEY);
     }
 
     @Override
@@ -246,5 +280,11 @@ public class Player extends Character implements GameStateListener {
 
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
+
+    @Override
+    public void gameStateShowTerminal(GameState gs, boolean showTerminal) {}
 
 }

@@ -18,6 +18,7 @@ package com.maehem.flatlinejack.engine.gui.bbs;
 
 import com.maehem.flatlinejack.engine.GameState;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -27,10 +28,10 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.TextFlow;
 
 /**
  *  Good source of reference stuff:  https://int10h.org/oldschool-pc-fonts/
@@ -96,7 +97,15 @@ public class BBSTerminal extends BorderPane {
     public void setFooter( Node footer ) {
         setBottom(footer);
     }
-        
+    
+    public static Node centeredNode( Node content ) {
+        HBox centerBox = new HBox(content);
+        centerBox.setAlignment(Pos.CENTER);
+        VBox cBox = new VBox(centerBox);
+        cBox.setAlignment(Pos.CENTER);
+
+        return cBox;
+    }
 //    public void setHeader( String text ) {
 //        setText(header, text);
 //    }

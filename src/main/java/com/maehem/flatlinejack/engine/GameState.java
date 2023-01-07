@@ -16,8 +16,11 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.Engine;
 import static com.maehem.flatlinejack.Engine.LOGGER;
+
+import com.maehem.flatlinejack.Engine;
+import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -39,9 +42,11 @@ public class GameState extends Properties {
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
 
     private Vignette currentVignette;
+    private BBSTerminal currentTerminal;
     private final Player player;
     private boolean showInventory = false;
     private boolean showChips = false;
+    private boolean showTerminal = false;
     private boolean showDebug = true;
     
     private final File gameSaveFile = new File(
@@ -62,6 +67,7 @@ public class GameState extends Properties {
 
     public GameState() {
         this.player = new Player(this);
+        this.currentTerminal = new PublicTerminalSystem(this);
     }
 
     @Override
@@ -183,6 +189,7 @@ public class GameState extends Properties {
     
     public void toggleInventoryShowing() {
         setShowChips(false);
+        setShowTerminal(false);
         setShowInventory(!showInventory);
     }
     
@@ -199,6 +206,7 @@ public class GameState extends Properties {
     
     public void toggleChipsShowing() {
         setShowInventory(false);
+        setShowTerminal(false);
         setShowChips(!showChips);
     }
     
@@ -218,6 +226,35 @@ public class GameState extends Properties {
     public void toggleDebugShowing() {
         setShowDebug(!showDebug);
     }
+
+    public void setShowTerminal( boolean show ) {
+        this.showTerminal = show;
+        for ( GameStateListener l: listenters ) {
+            l.gameStateShowTerminal(this, showTerminal);
+        }
+    }
     
+    public void setCurrentTerminal(BBSTerminal term) {
+        LOGGER.log(Level.INFO, "Terminal changed from:" + currentTerminal.getClass().getSimpleName() + " to: " + term.getClass().getSimpleName());
+        if ( term.getClass() == currentTerminal.getClass() ) {
+            // Exit on main screen is link to itself.
+            // So set not showing.
+            setShowTerminal(false);
+        }
+        this.currentTerminal = term;
+        for (GameStateListener l: listenters) {
+            l.gameStateTerminalChanged(this, currentTerminal);                
+        }
+    }
+    
+    public BBSTerminal getTerminal() {
+        return currentTerminal;
+    }
+
+    public void toggleTerminalShowing() {
+        setShowInventory(false);
+        setShowChips(false);
+        setShowTerminal(!showTerminal);
+    }
     
 }

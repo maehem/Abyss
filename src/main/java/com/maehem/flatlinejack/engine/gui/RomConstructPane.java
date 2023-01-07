@@ -18,6 +18,7 @@ package com.maehem.flatlinejack.engine.gui;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import javafx.geometry.Insets;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -86,4 +87,10 @@ public class RomConstructPane extends GUIPane implements GameStateListener {
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {
     }
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
+
+    @Override
+    public void gameStateShowTerminal(GameState aThis, boolean showTerminal) {}
 }

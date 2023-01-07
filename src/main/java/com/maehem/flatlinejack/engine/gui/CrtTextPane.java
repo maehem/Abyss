@@ -18,6 +18,7 @@ package com.maehem.flatlinejack.engine.gui;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import javafx.geometry.Insets;
 import javafx.scene.Group;
 import javafx.scene.effect.GaussianBlur;
@@ -154,6 +155,12 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
 
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
+
+    @Override
+    public void gameStateShowTerminal(GameState gs, boolean showTerminal) {}
     
     
 }

@@ -47,7 +47,7 @@ public class BBSPasswordBody extends StackPane {
     public BBSPasswordBody(Font f) { //, int rows, int cols) {
         this.font = f;
 
-        String color = toHex(BBSText.FILL_COLOR);
+        String fillHex = toHex(BBSText.FILL_COLOR);
         GridPane gp = new GridPane();
         BBSText userLabel = new BBSText(f, "Username:");
         TextField userField = new TextField();
@@ -55,7 +55,7 @@ public class BBSPasswordBody extends StackPane {
         userField.setBackground(Background.EMPTY);
         userField.setBorder(Border.EMPTY);               
         // TextField must use style to change text color.
-        userField.setStyle("-fx-text-fill: " + color + ";");
+        userField.setStyle("-fx-text-fill: " + fillHex + ";");
         userField.setPrefColumnCount(10);
 
         BBSText passLabel = new BBSText(f, "Password:");
@@ -63,7 +63,7 @@ public class BBSPasswordBody extends StackPane {
         passField.setFont(font);
         passField.setBackground(Background.EMPTY);
         passField.setBorder(Border.EMPTY);
-        passField.setStyle("-fx-text-fill: " + color + ";");
+        passField.setStyle("-fx-text-fill: " + fillHex + ";");
         passField.setPrefColumnCount(10);
 
         BBSText loginButtonText = new BBSText(font, "LOGIN");
@@ -82,6 +82,7 @@ public class BBSPasswordBody extends StackPane {
         HBox.setHgrow(rSpacer, Priority.ALWAYS);
         HBox loginBox = new HBox(lSpacer, loginButton, rSpacer);
         loginBox.setPadding(new Insets(20));
+        
         loginButton.setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User Clicked Abyss Login user: " + userField.getText() + "    pass: " + passField.getText());
         });
@@ -94,16 +95,22 @@ public class BBSPasswordBody extends StackPane {
         getChildren().add(new VBox(gp, loginBox));
     }
 
+    /**
+     * Convert a JavaFX Color to web hex.
+     * 
+     * @param c Color
+     * @return web style hex string for color (i.e #FFFFFF )
+     */
     private static String toHex(Color c) {
-        int green = (int) (c.getGreen() * 0xFF);
-        String greenString = Integer.toHexString(green);
-
         int red = (int) (c.getRed() * 0xFF);
-        String redString = Integer.toHexString(red);
+        String rr = Integer.toHexString(red);
+ 
+        int green = (int) (c.getGreen() * 0xFF);
+        String gg = Integer.toHexString(green);
 
         int blue = (int) (c.getBlue() * 0xFF);
-        String blueString = Integer.toHexString(blue);
+        String bb = Integer.toHexString(blue);
 
-        return "#" + redString + greenString + blueString;
+        return "#" + rr + gg + bb;
     }
 }

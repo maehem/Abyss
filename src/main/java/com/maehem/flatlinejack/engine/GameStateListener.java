@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
+
 /**
  *
  * @author mark
@@ -30,4 +32,8 @@ public interface GameStateListener {
     public void gameStateShowChips(GameState gs, boolean state);
     
     public void gameStateShowDebug(GameState gs, boolean state );
+    
+    public void gameStateTerminalChanged( GameState gs, BBSTerminal term );
+
+    public void gameStateShowTerminal(GameState aThis, boolean showTerminal);
 }

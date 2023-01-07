@@ -19,6 +19,11 @@ package com.maehem.flatlinejack.engine.gui.widgets;
 import java.io.InputStream;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -29,6 +34,7 @@ import javafx.scene.shape.Rectangle;
  */
 public class Button extends StackPane {
 
+    private static final double BTN_STROKE_W = 8;
     public Button(double w, double h, InputStream is) {
         Rectangle rect = new Rectangle(w, h, Color.SLATEGRAY);
         rect.setStroke(Color.DARKSLATEGRAY);
@@ -39,6 +45,7 @@ public class Button extends StackPane {
         icon.setPreserveRatio(true);
         icon.setFitWidth(h*0.66);
         
+        toggleHighlight(false);
         
         getChildren().addAll(rect, icon);
 
@@ -48,10 +55,15 @@ public class Button extends StackPane {
         
         setOnMouseExited((event) -> {
             rect.setFill(Color.SLATEGRAY);
-        });
-        
-        
+        });        
     }
     
+    public void toggleHighlight(boolean highlight) {
+        if ( highlight ) {
+            setBorder(new Border(new BorderStroke(new Color(0.1,0.1,1.0,1.0), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(BTN_STROKE_W))));
+        } else {
+            setBorder(new Border(new BorderStroke(Color.DARKGREY, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(BTN_STROKE_W))));            
+        }
+    }
     
 }

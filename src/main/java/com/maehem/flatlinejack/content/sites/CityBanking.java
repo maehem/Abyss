@@ -13,42 +13,46 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.content.sites;
 
+import static com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal.FONT;
+
 import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSHeader;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSPasswordBody;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSLabelValue;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSMoneyTransferWidget;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenu;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenuItem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSText;
-import javafx.geometry.Pos;
-import javafx.scene.layout.HBox;
+import java.util.ArrayList;
 import javafx.scene.layout.VBox;
 
 /**
  *
  * @author mark
  */
-public class AbyssSite extends BBSTerminal {
-    private BBSPasswordBody passwordField;
-    
-    public AbyssSite(GameState gs) { //, int rows, int cols) {
-        super(gs); //, width, height, rows, cols);
-        setHeader(new BBSHeader(FONT, SiteHeader.ABYSS));
+public class CityBanking extends BBSTerminal {
+
+    public CityBanking(GameState gs) {
+        super(gs);
+        Player player = gs.getPlayer();
         
-        passwordField = new BBSPasswordBody(FONT );//, rows, cols);
-        HBox centerBox = new HBox(passwordField);
-        centerBox.setAlignment(Pos.CENTER);
-        VBox cBox = new VBox(centerBox);
-        cBox.setAlignment(Pos.CENTER);
-        setBody(cBox);
+        setHeader(new BBSHeader(FONT, SiteHeader.BANK_MARZ));
+        
+        VBox content = new VBox();
+        content.getChildren().add(new BBSText(FONT, 
+                "   Name: " + Player.PLAYER_NAME_LONG 
+                +"    ID: " + Player.PLAYER_ID ));
+        content.getChildren().add(new BBSText(FONT, " "));
+        content.getChildren().add(new BBSMoneyTransferWidget(FONT, gs));
+                
+        setBody(BBSTerminal.centeredNode(content));
         setFooter(new BBSText(FONT,
-                  "Copyright 2056 Abyss Technology         "
-                + "                DJKE KIVN 99GJ JJKE JJ89"
+                  "Bank of the Mojave Area Residential Zone"
         ));
-        
-        passwordField.setPrefSize(getPrefWidth(), getPrefHeight());
-        
     }
     
 }
