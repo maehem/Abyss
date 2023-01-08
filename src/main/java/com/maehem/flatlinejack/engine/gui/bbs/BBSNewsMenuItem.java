@@ -18,7 +18,7 @@ package com.maehem.flatlinejack.engine.gui.bbs;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.GameState;
-import java.lang.reflect.InvocationTargetException;
+import com.maehem.flatlinejack.engine.NewsStory;
 import java.util.logging.Level;
 import javafx.scene.text.Font;
 
@@ -29,26 +29,23 @@ import javafx.scene.text.Font;
 public class BBSNewsMenuItem extends BBSText {
 
     private final Character key;
-    
-    public BBSNewsMenuItem(Font f, Character key, String text, String uid,
-            GameState gs ) {
-        super(f, key + ": " + text);
+
+    public BBSNewsMenuItem(Font f, Character key, NewsStory ns,
+            GameState gs) {
+        super(f, key + ": " + ns.getDate() + "  " + ns.getHeadline());        
         this.key = key;
+
+        if ( ns.isRead() ) {
+            setFill(FILL_COLOR.darker());
+        }
         
         setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked news item: " + key);
-            //try {
-                //BBSTerminal term = tClass.getDeclaredConstructor(GameState.class).newInstance(gs);
-                BBSNewsReader term = new BBSNewsReader(gs, uid);
-                gs.setCurrentTerminal(term);
-                
-//            } catch (SecurityException ex) {
-//                LOGGER.log(Level.SEVERE, null, ex);
-//            } catch (IllegalArgumentException ex) {
-//                LOGGER.log(Level.SEVERE, null, ex);
-//            }
-            
+            BBSNewsReader term = new BBSNewsReader(gs, ns.getUid());
+            gs.setCurrentTerminal(term);
+            ns.setRead(true);
+
         });
     }
-    
+
 }

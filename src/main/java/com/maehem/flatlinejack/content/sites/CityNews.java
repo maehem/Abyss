@@ -44,10 +44,7 @@ public class CityNews extends BBSTerminal {
         menuItems.add( new BBSSimpleMenuItem(FONT,"   DATE     SUBJECT" ));
         for ( NewsStory ns : gs.getNews() ) {
             if (ns.canShow() ) {
-                menuItems.add(new BBSNewsMenuItem(FONT, (char) ('0'+i), 
-                        ns.getDate() + "  " + ns.getHeadline(),
-                        ns.getUid(), gs
-                ));
+                menuItems.add(new BBSNewsMenuItem(FONT, (char) ('0'+i), ns, gs ));
                 
                 i++;
             }
