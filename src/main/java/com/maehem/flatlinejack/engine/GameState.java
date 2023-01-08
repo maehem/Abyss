@@ -52,6 +52,7 @@ public class GameState extends Properties {
     
     private Vignette currentVignette;
     private BBSTerminal currentTerminal;
+    private int newsIndex = 0;
     
     private ResourceBundle bundle;
     
@@ -369,6 +370,20 @@ public class GameState extends Properties {
                 setProperty(NewsStory.PROP_PREFIX+ns.getUid(), sb.toString());
             }
         }
+    }
+    
+    /**
+     * @return the newsIndex
+     */
+    public int getNewsIndex() {
+        return newsIndex;
+    }
+
+    /**
+     * @param newsIndex the newsIndex to set
+     */
+    public void setNewsIndex(int newsIndex) {
+        this.newsIndex = newsIndex;
     }
     
 }

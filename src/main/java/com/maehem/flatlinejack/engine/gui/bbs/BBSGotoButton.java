@@ -29,6 +29,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
@@ -36,20 +37,40 @@ import javafx.scene.text.Font;
  * @author mark
  */
 public class BBSGotoButton extends StackPane {
-    
-    public BBSGotoButton(Font f, String text, GameState gs, Class<? extends BBSTerminal> tClass) {
-        
-        BBSText loginButtonText = new BBSText(f, text);
-        this.getChildren().add(loginButtonText);
-        
-        setPadding(new Insets(8,12,8,12));
-        setAlignment(Pos.CENTER);
-        setBorder(new Border(new BorderStroke(
-                BBSText.FILL_COLOR, 
+    BBSText buttonText;
+    private boolean enabled;
+    private static final Color COLOR_ENABLED = BBSText.FILL_COLOR;
+    private static final Color COLOR_DISABLED = BBSText.FILL_COLOR.darker().darker();
+    private static final Border BORDER_ENABLED = new Border(new BorderStroke(
+                COLOR_ENABLED, 
                 BorderStrokeStyle.SOLID, 
                 CornerRadii.EMPTY, 
                 new BorderWidths(3)
-        )));
+    ));
+    private static final Border BORDER_DISABLED = new Border(new BorderStroke(
+                COLOR_DISABLED, 
+                BorderStrokeStyle.SOLID, 
+                CornerRadii.EMPTY, 
+                new BorderWidths(3)
+    ));
+    
+    public BBSGotoButton(Font f, String text) { //, BBSTerminal term ) {
+        buttonText = new BBSText(f, text);
+        this.getChildren().add(buttonText);
+        
+        setPadding(new Insets(8,12,8,12));
+        setAlignment(Pos.CENTER);
+        setBorder(BORDER_ENABLED );        
+    }
+    
+    public BBSGotoButton(Font f, String text, GameState gs, Class<? extends BBSTerminal> tClass) {
+        this(f, text);
+//        buttonText = new BBSText(f, text);
+//        this.getChildren().add(buttonText);
+//        
+//        setPadding(new Insets(8,12,8,12));
+//        setAlignment(Pos.CENTER);
+//        setBorder(BORDER_ENABLED);
         setOnMouseClicked((t) -> {
             try {
                 BBSTerminal term = tClass.getDeclaredConstructor(GameState.class).newInstance(gs);
@@ -68,6 +89,16 @@ public class BBSGotoButton extends StackPane {
                 LOGGER.log(Level.SEVERE, null, ex);
             }
         });
+    }
+
+    public void setEnabled(boolean enable) {
+        if ( enable ) {
+            setBorder(BORDER_ENABLED);
+            buttonText.setFill(COLOR_ENABLED);
+        } else {
+            setBorder(BORDER_DISABLED);
+            buttonText.setFill(COLOR_DISABLED);
+        }
     }
     
 }

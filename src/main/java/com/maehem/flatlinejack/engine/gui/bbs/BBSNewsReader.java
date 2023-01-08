@@ -27,11 +27,9 @@ import javafx.scene.text.TextAlignment;
  */
 public class BBSNewsReader extends BBSReader {
     
-    public BBSNewsReader(GameState gs, String uid) {
+    public BBSNewsReader(GameState gs, NewsStory ns) {
         super(gs);
-        
-        NewsStory ns = gs.getNewsStory(uid);
-        
+                
         setHeader(new BBSText(FONT, ns.getDate() + "      " + ns.getHeadline() ));
         BBSTextFlow text = new BBSTextFlow();
         text.getChildren().add(new BBSText(FONT, "\n\n"));

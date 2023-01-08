@@ -28,23 +28,18 @@ import javafx.scene.text.Font;
  */
 public class BBSNewsMenuItem extends BBSText {
 
-    private final Character key;
-
-    public BBSNewsMenuItem(Font f, Character key, NewsStory ns,
-            GameState gs) {
-        super(f, key + ": " + ns.getDate() + "  " + ns.getHeadline());        
-        this.key = key;
+    public BBSNewsMenuItem(Font f, NewsStory ns, GameState gs) {
+        super(f, ns.getDate() + "  " + ns.getHeadline());        
 
         if ( ns.isRead() ) {
             setFill(FILL_COLOR.darker());
         }
         
         setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked news item: " + key);
-            BBSNewsReader term = new BBSNewsReader(gs, ns.getUid());
+            LOGGER.log(Level.INFO, "User clicked news item: {0}", ns.getHeadline());
+            BBSNewsReader term = new BBSNewsReader(gs, ns);
             gs.setCurrentTerminal(term);
             ns.setRead(true);
-
         });
     }
 
