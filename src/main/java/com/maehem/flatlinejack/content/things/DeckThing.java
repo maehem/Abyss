@@ -249,7 +249,7 @@ public abstract class DeckThing extends Thing {
     public void loadProperties(Properties p) {
         LOGGER.log(Level.INFO, "    Load DeckThing properties...");
         setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
-        //setCondition(Integer.valueOf(p.getProperty(PROPERTY_BASE_RAM, String.valueOf(RAM_DEFAULT))));
+        setBaseShield(Integer.valueOf(p.getProperty(PROPERTY_SHIELD, String.valueOf(baseShieldMax))));
 
         LOGGER.log(Level.INFO, "There are {0} RAM slots to process.", ramSlots.size());
         for ( int i=0; i< ramSlots.size(); i++ ) {   // Load Ram slots
