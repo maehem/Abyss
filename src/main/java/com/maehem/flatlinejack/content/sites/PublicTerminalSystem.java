@@ -35,7 +35,7 @@ public class PublicTerminalSystem extends BBSTerminal {
         super(gs);
         setHeader(new BBSHeader(FONT, SiteHeader.PAP));
         
-        ArrayList<BBSSimpleMenuItem> menuItems = new ArrayList<>();
+        ArrayList<BBSText> menuItems = new ArrayList<>();
         menuItems.add( new BBSSimpleMenuItem(FONT, '1',"Banking Access", gs, CityBanking.class));
         menuItems.add( new BBSSimpleMenuItem(FONT, '2',"News", gs, CityNews.class));
         menuItems.add( new BBSSimpleMenuItem(FONT, '3',"Public Sites", gs, CityNews.class));

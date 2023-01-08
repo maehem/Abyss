@@ -17,13 +17,17 @@
 package com.maehem.flatlinejack.content.sites;
 
 import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.NewsStory;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSGotoButton;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSHeader;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSNewsMenuItem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenu;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenuItem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import static com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal.FONT;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSText;
 import java.util.ArrayList;
+import javafx.scene.layout.VBox;
 
 /**
  *
@@ -34,17 +38,31 @@ public class CityNews extends BBSTerminal {
     public CityNews(GameState gs) {
         super(gs);
         setHeader(new BBSHeader(FONT, SiteHeader.PAP_NEWS));
-        
-        ArrayList<BBSSimpleMenuItem> menuItems = new ArrayList<>();
+                
+        ArrayList<BBSText> menuItems = new ArrayList<>();
+        int i=1;
         menuItems.add( new BBSSimpleMenuItem(FONT,"   DATE     SUBJECT" ));
-        menuItems.add(new BBSSimpleMenuItem(FONT, '1',"02/23/2054  Daily News Summary", gs, CityNews.class));
-        menuItems.add(new BBSSimpleMenuItem(FONT, '2',"02/23/2054  Local Organ Bank Reopens After Mixup", gs, CityNews.class));
-        menuItems.add(new BBSSimpleMenuItem(FONT, '3',"02/22/2054  Local Man Escapes Death In Freak Cyberspace Accident", gs, CityNews.class));
-        menuItems.add(new BBSSimpleMenuItem(FONT, '4',"02/21/2054  Popular Bar Closed Due To Food Poisoning", gs, CityNews.class));
+        for ( NewsStory ns : gs.getNews() ) {
+            if (ns.canShow() ) {
+                menuItems.add(new BBSNewsMenuItem(FONT, (char) ('0'+i), 
+                        ns.getDate() + "  " + ns.getHeadline(),
+                        ns.getUid(), gs
+                ));
+                
+                i++;
+            }
+            
+            // nine messages max, generate next button
+        }
         
-        BBSSimpleMenu menu = new BBSSimpleMenu(FONT, menuItems);
-        
-        setBody(BBSTerminal.centeredNode(menu));
+        VBox content = new VBox();
+        content.getChildren().add( new BBSSimpleMenu(FONT, menuItems));
+        content.getChildren().add(new BBSText(FONT, " "));
+        content.getChildren().add( 
+                new BBSGotoButton(FONT, "DONE", gs, PublicTerminalSystem.class)
+        );
+                
+        setBody(BBSTerminal.centeredNode(content));
         setFooter(new BBSText(FONT,
                   "Public Access Point News               "
                 + "            News, News and more News!!!"

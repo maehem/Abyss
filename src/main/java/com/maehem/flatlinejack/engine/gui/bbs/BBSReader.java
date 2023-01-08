@@ -13,23 +13,20 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
- */
+*/
 package com.maehem.flatlinejack.engine.gui.bbs;
 
-import java.util.ArrayList;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
+import com.maehem.flatlinejack.engine.GameState;
 
 /**
- *
+ * Read either a NewsStory or a BulletinBoard message.
+ * 
  * @author mark
  */
-public class BBSSimpleMenu extends VBox {
-    private final Font font;
+public class BBSReader extends BBSTerminal {
     
-    public BBSSimpleMenu( Font f, ArrayList<BBSText> list ) {
-        this.font = f;
-        getChildren().addAll(list);
+    public BBSReader(GameState gs) {
+        super(gs);
     }
     
 }

@@ -19,6 +19,7 @@ package com.maehem.flatlinejack.engine;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.io.File;
@@ -27,7 +28,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,14 +41,20 @@ import java.util.logging.Logger;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class GameState extends Properties {
-    
+
     ArrayList<GameStateListener> listenters = new ArrayList<>();
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
+    private static final List<String> DEFAULT_NEWS = List.of("1", "12343");
 
+    private final Player player;
+    private final ArrayList<NewsStory> news = new ArrayList<>();
+    
     private Vignette currentVignette;
     private BBSTerminal currentTerminal;
-    private final Player player;
+    
+    private ResourceBundle bundle;
+    
     private boolean showInventory = false;
     private boolean showChips = false;
     private boolean showTerminal = false;
@@ -68,6 +79,8 @@ public class GameState extends Properties {
     public GameState() {
         this.player = new Player(this);
         this.currentTerminal = new PublicTerminalSystem(this);
+        
+        initNews();
     }
 
     @Override
@@ -82,6 +95,8 @@ public class GameState extends Properties {
     
     public void quickSave() {
         player.saveState(this);
+        
+        saveNewsSettings();
         
         FileOutputStream out = null;
         try {
@@ -108,11 +123,14 @@ public class GameState extends Properties {
             FileInputStream in = new FileInputStream(gameSaveFile);
             Properties ldProps = new Properties();
             ldProps.load(in);
-            LOGGER.log(Level.CONFIG, "Loaded previous save file: " + gameSaveFile.getAbsolutePath());
+            LOGGER.log(Level.CONFIG, 
+                    "Loaded previous save file: {0}", 
+                    gameSaveFile.getAbsolutePath());
             
             
-            setProperty(PROP_CURRENT_VIGNETTE, ldProps.getProperty(PROP_CURRENT_VIGNETTE));  // Game starting room
-            
+            setProperty(PROP_CURRENT_VIGNETTE, 
+                    ldProps.getProperty(PROP_CURRENT_VIGNETTE)  // Game starting room
+            );
             // Player tracks it's own properties. 
             player.loadState(ldProps);
             
@@ -122,12 +140,32 @@ public class GameState extends Properties {
                 if ( key.startsWith(Vignette.PROP_PREFIX) ) {
                     LOGGER.log(Level.INFO, "Load Vignette prop: " + key);
                     setProperty(key, ldProps.getProperty(key));
-                }                
+                }
+                if ( key.startsWith(NewsStory.PROP_PREFIX) ) {
+                    LOGGER.log(Level.INFO, "Load NewsStory prop: " + key);
+                    String uid = key.split("\\.")[1];
+                    NewsStory newsStory = getNewsStory(uid);
+                    if ( newsStory != null ) {
+                        String property = ldProps.getProperty(key);
+                        if ( property.contains("show") ) {
+                            newsStory.setShow(true);
+                        }
+                        if ( property.contains("read") ) {
+                            newsStory.setRead(true);
+                        }
+                    } else {
+                        LOGGER.log(Level.WARNING, 
+                                "Save file references a news story that doesn''t exist. key:{0}", 
+                                key );
+                    }
+                }
             });
+            
             
         } catch (FileNotFoundException ex) {
             LOGGER.config("No previous game state.  New Game.\n");            
-            setProperty(PROP_CURRENT_VIGNETTE, defaultVignetteName);  // Game starting room                        
+            setProperty(PROP_CURRENT_VIGNETTE, defaultVignetteName);  // Game starting room 
+            setDefaultNewsStories();
         } catch (IOException ex) {
             Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -137,6 +175,7 @@ public class GameState extends Properties {
                 l.gameStatePropertyChanged(this, s);                
             }
         }
+        
     }
 
     @Override
@@ -235,7 +274,12 @@ public class GameState extends Properties {
     }
     
     public void setCurrentTerminal(BBSTerminal term) {
-        LOGGER.log(Level.INFO, "Terminal changed from:" + currentTerminal.getClass().getSimpleName() + " to: " + term.getClass().getSimpleName());
+        LOGGER.log(Level.INFO, "Terminal changed from:{0} to: {1}", 
+                new Object[]{
+                    currentTerminal.getClass().getSimpleName(), 
+                    term.getClass().getSimpleName()
+                }
+        );
         if ( term.getClass() == currentTerminal.getClass() ) {
             // Exit on main screen is link to itself.
             // So set not showing.
@@ -255,6 +299,76 @@ public class GameState extends Properties {
         setShowInventory(false);
         setShowChips(false);
         setShowTerminal(!showTerminal);
+    }
+    
+    public ArrayList<NewsStory> getNews() {
+        return news;
+    }
+    
+    private void initNews() {
+        LOGGER.fine("Initialize News Stories");
+        // Load the localization bundle for the News
+        String bPath = "content.messages.bbs.news";
+        try {
+            this.bundle = ResourceBundle.getBundle(bPath);
+
+            Iterator<String> keys = bundle.getKeys().asIterator();
+            while ( keys.hasNext() ) {
+                String key = keys.next();
+                if ( key.startsWith(NewsStory.PROP_PREFIX) 
+                        && key.endsWith(".date")) {
+                    String prefix = NewsStory.PROP_PREFIX + key.split("\\.")[1];
+                    NewsStory ns = new NewsStory(bundle, prefix);
+                    news.add(ns);
+                }
+            }
+        } catch (MissingResourceException ex) {
+            LOGGER.log(Level.WARNING,
+                    "Unable to locate vignette resource bundle at: {0}", bPath);
+
+            // TODO:  maybe load a default bundle here.
+            throw ex;
+        }
+
+    }
+    
+    /**
+     * Set the default visible news stories. For first-time players.
+     */
+    private void setDefaultNewsStories() {
+        for ( NewsStory ns : news ) {
+            if ( DEFAULT_NEWS.contains(ns.getUid() ) ) {
+                ns.setShow(true);
+            }
+        }
+    }
+    
+    public NewsStory getNewsStory(String uid) {
+        for ( NewsStory ns: news ) {
+            if ( uid.equals(ns.getUid()) ) {
+                return ns;
+            }
+        }
+        return null;
+    }
+    
+    private void saveNewsSettings() {
+        for ( NewsStory ns: news ) {
+            StringBuilder sb = new StringBuilder();
+            if ( ns.canShow() ) {
+                sb.append(NewsStory.SHOW_FLAG);
+            }
+            if ( ns.isRead() ) {
+                if ( sb.length() == 0 ) {
+                    sb.append(",");
+                }
+                sb.append(NewsStory.READ_FLAG);
+            }
+            
+            if ( sb.length() == 0 ) {
+                setProperty(NewsStory.PROP_PREFIX+ns.getUid(), sb.toString());
+            }
+        }
     }
     
 }

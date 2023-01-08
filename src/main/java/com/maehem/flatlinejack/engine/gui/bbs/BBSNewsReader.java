@@ -13,23 +13,33 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
- */
+*/
 package com.maehem.flatlinejack.engine.gui.bbs;
 
-import java.util.ArrayList;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
+import com.maehem.flatlinejack.content.sites.CityNews;
+import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.NewsStory;
+import javafx.scene.text.TextAlignment;
 
 /**
  *
  * @author mark
  */
-public class BBSSimpleMenu extends VBox {
-    private final Font font;
+public class BBSNewsReader extends BBSReader {
     
-    public BBSSimpleMenu( Font f, ArrayList<BBSText> list ) {
-        this.font = f;
-        getChildren().addAll(list);
+    public BBSNewsReader(GameState gs, String uid) {
+        super(gs);
+        
+        NewsStory ns = gs.getNewsStory(uid);
+        
+        setHeader(new BBSText(FONT, ns.getDate() + "      " + ns.getHeadline() ));
+        BBSTextFlow text = new BBSTextFlow();
+        text.getChildren().add(new BBSText(FONT, "\n\n"));
+        text.getChildren().add(new BBSText(FONT, ns.getBody()));
+        text.setTextAlignment(TextAlignment.JUSTIFY);
+        setBody(text);
+        
+        setFooter(new BBSGotoButton(FONT, "BACK", gs, CityNews.class));
     }
     
 }

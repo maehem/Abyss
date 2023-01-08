@@ -84,7 +84,10 @@ public class BBSPasswordBody extends StackPane {
         loginBox.setPadding(new Insets(20));
         
         loginButton.setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User Clicked Abyss Login user: " + userField.getText() + "    pass: " + passField.getText());
+            LOGGER.log(Level.INFO, 
+                    "User Clicked Login user: {0}    pass: {1}", 
+                    new Object[]{userField.getText(), passField.getText()}
+            );
         });
         
         gp.add(userLabel, 0, 0);
