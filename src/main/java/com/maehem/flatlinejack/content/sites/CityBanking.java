@@ -20,14 +20,11 @@ import static com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal.FONT;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.Player;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSGotoButton;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSHeader;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSLabelValue;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSMoneyTransferWidget;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenu;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenuItem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSText;
-import java.util.ArrayList;
 import javafx.scene.layout.VBox;
 
 /**
@@ -48,7 +45,11 @@ public class CityBanking extends BBSTerminal {
                 +"    ID: " + Player.PLAYER_ID ));
         content.getChildren().add(new BBSText(FONT, " "));
         content.getChildren().add(new BBSMoneyTransferWidget(FONT, gs));
-                
+        content.getChildren().add(new BBSText(FONT, " "));
+        content.getChildren().add( 
+                new BBSGotoButton(FONT, "DONE", gs, PublicTerminalSystem.class)
+        );
+        
         setBody(BBSTerminal.centeredNode(content));
         setFooter(new BBSText(FONT,
                   "Bank of the Mojave Area Residential Zone"
