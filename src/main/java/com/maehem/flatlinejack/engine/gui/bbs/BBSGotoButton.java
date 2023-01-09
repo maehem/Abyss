@@ -54,7 +54,7 @@ public class BBSGotoButton extends StackPane {
                 new BorderWidths(3)
     ));
     
-    public BBSGotoButton(Font f, String text) { //, BBSTerminal term ) {
+    public BBSGotoButton(Font f, String text) {
         buttonText = new BBSText(f, text);
         this.getChildren().add(buttonText);
         
@@ -65,12 +65,6 @@ public class BBSGotoButton extends StackPane {
     
     public BBSGotoButton(Font f, String text, GameState gs, Class<? extends BBSTerminal> tClass) {
         this(f, text);
-//        buttonText = new BBSText(f, text);
-//        this.getChildren().add(buttonText);
-//        
-//        setPadding(new Insets(8,12,8,12));
-//        setAlignment(Pos.CENTER);
-//        setBorder(BORDER_ENABLED);
         setOnMouseClicked((t) -> {
             try {
                 BBSTerminal term = tClass.getDeclaredConstructor(GameState.class).newInstance(gs);
