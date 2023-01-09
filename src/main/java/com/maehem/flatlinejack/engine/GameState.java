@@ -19,7 +19,6 @@ package com.maehem.flatlinejack.engine;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
-import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.io.File;
@@ -29,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
@@ -43,13 +41,14 @@ import java.util.logging.Logger;
  */
 public class GameState extends Properties {
 
-    ArrayList<GameStateListener> listenters = new ArrayList<>();
+    
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
     private static final List<String> DEFAULT_NEWS = List.of("1", "12343");
 
     private final Player player;
     private final ArrayList<NewsStory> news = new ArrayList<>();
+    private final ArrayList<GameStateListener> listeners = new ArrayList<>();
     
     private Vignette currentVignette;
     private BBSTerminal currentTerminal;
@@ -68,12 +67,6 @@ public class GameState extends Properties {
             + File.separator + "FlatlineJack"
             + File.separator + "save-0.properties"
     );
-//    private final File gameLoadFile = new File(
-//            System.getProperty("user.home") 
-//            + File.separator + "Documents"
-//            + File.separator + "FlatlineJack"
-//            + File.separator + "save-202212131234.properties"
-//    );
     
     // Debug toggles
     public boolean showWalkPerimeter = false;
@@ -172,7 +165,7 @@ public class GameState extends Properties {
             Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        for (GameStateListener l: listenters) {
+        for (GameStateListener l: listeners) {
             for ( String s: stringPropertyNames() ) {
                 l.gameStatePropertyChanged(this, s);                
             }
@@ -183,7 +176,7 @@ public class GameState extends Properties {
     @Override
     public synchronized Object setProperty(String key, String value) {
         Object prevVal = super.setProperty(key, value);
-        for ( GameStateListener l: listenters ) {
+        for ( GameStateListener l: listeners ) {
             l.gameStatePropertyChanged(this, key);
         }
         
@@ -192,11 +185,11 @@ public class GameState extends Properties {
     
     // TODO:  Listener is misspelled.
     public void addListenter( GameStateListener l ) {
-        listenters.add(l);
+        listeners.add(l);
     }
     
     public void removeListener( GameStateListener l ) {
-        listenters.remove(l);
+        listeners.remove(l);
     }
     
     public Vignette getCurrentVignette() {
@@ -212,14 +205,14 @@ public class GameState extends Properties {
         setProperty(PROP_CURRENT_VIGNETTE, v.getClass().getSimpleName());
         
         // notify vignette change.
-        for ( GameStateListener l: listenters ) {
+        for ( GameStateListener l: listeners ) {
             l.gameStateVignetteChanged(this);
         }
     }
     
     public void setShowInventory( boolean show ) {
         this.showInventory = show;
-        for ( GameStateListener l: listenters ) {
+        for ( GameStateListener l: listeners ) {
             l.gameStateShowInventory(this, showInventory);
         }
     }
@@ -236,7 +229,7 @@ public class GameState extends Properties {
     
     public void setShowChips( boolean show ) {
         this.showChips = show;
-        for ( GameStateListener l: listenters ) {
+        for ( GameStateListener l: listeners ) {
             l.gameStateShowChips(this, showChips);
         }
     }
@@ -252,14 +245,14 @@ public class GameState extends Properties {
     }
     
     public void notifyPlayerStateChanged( String key ) {
-        for (GameStateListener l: listenters) {
+        for (GameStateListener l: listeners) {
             l.gameStatePropertyChanged(this, key);                
         }
     }
     
     public void setShowDebug( boolean show ) {
         showDebug = show;
-        for (GameStateListener l: listenters) {
+        for (GameStateListener l: listeners) {
             l.gameStateShowDebug(this, showDebug);                
         }
     }
@@ -270,7 +263,7 @@ public class GameState extends Properties {
 
     public void setShowTerminal( boolean show ) {
         this.showTerminal = show;
-        for ( GameStateListener l: listenters ) {
+        for ( GameStateListener l: listeners ) {
             l.gameStateShowTerminal(this, showTerminal);
         }
     }
@@ -288,7 +281,7 @@ public class GameState extends Properties {
             setShowTerminal(false);
         }
         this.currentTerminal = term;
-        for (GameStateListener l: listenters) {
+        for (GameStateListener l: listeners) {
             l.gameStateTerminalChanged(this, currentTerminal);                
         }
     }
@@ -324,19 +317,11 @@ public class GameState extends Properties {
                     news.add(ns);
                 }
             }
-            //Iterator<String> keys = bundle.getKeys().asIterator();
-//            while ( keys.hasNext() ) {
-//                String key = keys.next();
-//                if ( key.startsWith(NewsStory.PROP_PREFIX) 
-//                        && key.endsWith(".date")) {
-//                    String prefix = NewsStory.PROP_PREFIX + key.split("\\.")[1];
-//                    NewsStory ns = new NewsStory(bundle, prefix);
-//                    news.add(ns);
-//                }
-//            }
         } catch (MissingResourceException ex) {
             LOGGER.log(Level.WARNING,
-                    "Unable to locate vignette resource bundle at: {0}", bPath);
+                    "Unable to locate news resource bundle at: {0}", 
+                    bPath
+            );
 
             // TODO:  maybe load a default bundle here.
             throw ex;
