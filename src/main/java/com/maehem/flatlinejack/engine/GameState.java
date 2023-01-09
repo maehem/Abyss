@@ -360,13 +360,13 @@ public class GameState extends Properties {
                 sb.append(NewsStory.SHOW_FLAG);
             }
             if ( ns.isRead() ) {
-                if ( sb.length() == 0 ) {
+                if ( sb.length() != 0 ) {
                     sb.append(",");
                 }
                 sb.append(NewsStory.READ_FLAG);
             }
             
-            if ( sb.length() == 0 ) {
+            if ( sb.length() != 0 ) {
                 setProperty(NewsStory.PROP_PREFIX+ns.getUid(), sb.toString());
             }
         }
