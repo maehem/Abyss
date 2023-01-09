@@ -44,7 +44,11 @@ public class GameState extends Properties {
     
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
-    private static final List<String> DEFAULT_NEWS = List.of("1", "12343");
+    private static final List<String> DEFAULT_NEWS = List.of(
+            "100", "101", "102", "103", "104",
+            "105", "106", "107", "108", "109",
+            "110", "111"
+    );
 
     private final Player player;
     private final ArrayList<NewsStory> news = new ArrayList<>();

@@ -59,15 +59,47 @@ public class CityNews extends BBSTerminal {
         int index=currentIndex;
         menuItems.clear();
         menuItems.add( new BBSSimpleMenuItem(FONT,"   DATE     SUBJECT" ));
-        int j;
-        for ( j = index; j<index+NUM_ITEMS; j++ ) {
-            try {
-                NewsStory ns = gs.getNews().get(j);
-                menuItems.add(new BBSNewsMenuItem(FONT, ns, gs ));
-            } catch (IndexOutOfBoundsException ex ) {
-                break; // Reached end of list
+        ArrayList<NewsStory> newsItems = new ArrayList<>();
+        for ( NewsStory ni : gs.getNews() ) {
+            if ( ni.canShow() ) {
+                newsItems.add(ni);
             }
         }
+        int j=0;
+        while ( j < NUM_ITEMS ) {
+            try {
+                NewsStory ns = newsItems.get(index+j);
+                menuItems.add(new BBSNewsMenuItem(FONT, ns, gs ));
+                j++;
+            } catch (IndexOutOfBoundsException ex ) {
+                break;
+            }
+        }
+        boolean hasMore = false;
+        if ( j == NUM_ITEMS ) {
+            try {
+                newsItems.get(index+j);
+                hasMore = true;
+            } catch (IndexOutOfBoundsException ex ) {
+            }
+        }
+//        for ( NewsStory ns: newsItems ) {
+//            if ( j < index ) {
+//                j++;
+//            } else {
+//                menuItems.add(new BBSNewsMenuItem(FONT, ns, gs ));
+//            }
+//        }
+//        for ( j = index; j<index+NUM_ITEMS; j++ ) {
+//            try {
+//                NewsStory ns = gs.getNews().get(j);
+//                if ( ns.canShow() ) {
+//                    menuItems.add(new BBSNewsMenuItem(FONT, ns, gs ));
+//                }
+//            } catch (IndexOutOfBoundsException ex ) {
+//                break; // Reached end of list
+//            }
+//        }
 
         BBSGotoButton prevNode = new BBSGotoButton(FONT, PREV_LABEL);
         if ( index >= NUM_ITEMS ) {
@@ -82,7 +114,7 @@ public class CityNews extends BBSTerminal {
             prevNode.setEnabled(false);
         }
         BBSGotoButton nextNode = new BBSGotoButton(FONT, NEXT_LABEL);
-        if ( j < gs.getNews().size() ) {
+        if ( hasMore  ) {
             nextNode.setOnMouseClicked((t) -> {
                 currentIndex += NUM_ITEMS;
                 if ( currentIndex > gs.getNews().size()-1 ) {
