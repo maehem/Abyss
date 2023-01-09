@@ -28,6 +28,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.MissingResourceException;
@@ -312,10 +313,10 @@ public class GameState extends Properties {
         String bPath = "content.messages.bbs.news";
         try {
             this.bundle = ResourceBundle.getBundle(bPath);
-
-            Iterator<String> keys = bundle.getKeys().asIterator();
-            while ( keys.hasNext() ) {
-                String key = keys.next();
+            List<String> keys =  Collections.list( bundle.getKeys() );
+            Collections.sort(keys);
+            
+            for ( String key : keys ) {
                 if ( key.startsWith(NewsStory.PROP_PREFIX) 
                         && key.endsWith(".date")) {
                     String prefix = NewsStory.PROP_PREFIX + key.split("\\.")[1];
@@ -323,6 +324,16 @@ public class GameState extends Properties {
                     news.add(ns);
                 }
             }
+            //Iterator<String> keys = bundle.getKeys().asIterator();
+//            while ( keys.hasNext() ) {
+//                String key = keys.next();
+//                if ( key.startsWith(NewsStory.PROP_PREFIX) 
+//                        && key.endsWith(".date")) {
+//                    String prefix = NewsStory.PROP_PREFIX + key.split("\\.")[1];
+//                    NewsStory ns = new NewsStory(bundle, prefix);
+//                    news.add(ns);
+//                }
+//            }
         } catch (MissingResourceException ex) {
             LOGGER.log(Level.WARNING,
                     "Unable to locate vignette resource bundle at: {0}", bPath);
