@@ -28,7 +28,7 @@ import javafx.scene.text.Font;
  */
 public class BBSNewsMenuItem extends BBSText {
 
-    public BBSNewsMenuItem(Font f, NewsStory ns, GameState gs) {
+    public BBSNewsMenuItem(Font f, NewsStory ns, GameState gs, BBSTerminal returnTo) {
         super(f, ns.getDate() + "  " + ns.getHeadline() + "  (" + ns.getUid() + ")");        
 
         if ( ns.isRead() ) {
@@ -37,7 +37,7 @@ public class BBSNewsMenuItem extends BBSText {
         
         setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked news item: {0}", ns.getHeadline());
-            BBSNewsReader term = new BBSNewsReader(gs, ns);
+            BBSNewsReader term = new BBSNewsReader(gs, ns, returnTo);
             gs.setCurrentTerminal(term);
             ns.setRead(true);
         });

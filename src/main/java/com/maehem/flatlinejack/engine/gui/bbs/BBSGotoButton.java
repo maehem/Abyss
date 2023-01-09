@@ -63,6 +63,14 @@ public class BBSGotoButton extends StackPane {
         setBorder(BORDER_ENABLED );        
     }
     
+    public BBSGotoButton(Font f, String text, GameState gs, BBSTerminal returnTo) {
+        this(f, text);
+        setOnMouseClicked((t) -> {
+            returnTo.updateContent(gs);
+            gs.setCurrentTerminal(returnTo);
+        });
+    }
+    
     public BBSGotoButton(Font f, String text, GameState gs, Class<? extends BBSTerminal> tClass) {
         this(f, text);
         setOnMouseClicked((t) -> {

@@ -142,4 +142,5 @@ public class BBSTerminal extends BorderPane {
 //        
 //        t.setText(sb.toString());
 //    }
+    public void updateContent(GameState gs) {}
 }

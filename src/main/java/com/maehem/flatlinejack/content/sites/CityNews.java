@@ -55,7 +55,8 @@ public class CityNews extends BBSTerminal {
         ));
     }
     
-    private void updateContent(GameState gs) {
+    @Override
+    public void updateContent(GameState gs) {
         int index=currentIndex;
         menuItems.clear();
         menuItems.add( new BBSSimpleMenuItem(FONT,"   DATE     SUBJECT" ));
@@ -69,7 +70,7 @@ public class CityNews extends BBSTerminal {
         while ( j < NUM_ITEMS ) {
             try {
                 NewsStory ns = newsItems.get(index+j);
-                menuItems.add(new BBSNewsMenuItem(FONT, ns, gs ));
+                menuItems.add(new BBSNewsMenuItem(FONT, ns, gs, this ));
                 j++;
             } catch (IndexOutOfBoundsException ex ) {
                 break;
@@ -83,23 +84,6 @@ public class CityNews extends BBSTerminal {
             } catch (IndexOutOfBoundsException ex ) {
             }
         }
-//        for ( NewsStory ns: newsItems ) {
-//            if ( j < index ) {
-//                j++;
-//            } else {
-//                menuItems.add(new BBSNewsMenuItem(FONT, ns, gs ));
-//            }
-//        }
-//        for ( j = index; j<index+NUM_ITEMS; j++ ) {
-//            try {
-//                NewsStory ns = gs.getNews().get(j);
-//                if ( ns.canShow() ) {
-//                    menuItems.add(new BBSNewsMenuItem(FONT, ns, gs ));
-//                }
-//            } catch (IndexOutOfBoundsException ex ) {
-//                break; // Reached end of list
-//            }
-//        }
 
         BBSGotoButton prevNode = new BBSGotoButton(FONT, PREV_LABEL);
         if ( index >= NUM_ITEMS ) {

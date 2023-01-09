@@ -27,7 +27,7 @@ import javafx.scene.text.TextAlignment;
  */
 public class BBSNewsReader extends BBSReader {
     
-    public BBSNewsReader(GameState gs, NewsStory ns) {
+    public BBSNewsReader(GameState gs, NewsStory ns, BBSTerminal returnTo) {
         super(gs);
                 
         setHeader(new BBSText(FONT, ns.getDate() + "      " + ns.getHeadline() ));
@@ -37,7 +37,7 @@ public class BBSNewsReader extends BBSReader {
         text.setTextAlignment(TextAlignment.JUSTIFY);
         setBody(text);
         
-        setFooter(new BBSGotoButton(FONT, "BACK", gs, CityNews.class));
+        setFooter(new BBSGotoButton(FONT, "BACK", gs, returnTo));
     }
     
 }

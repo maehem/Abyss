@@ -37,13 +37,13 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Mark J Koch [flatlinejack at maehem dot com]
+ * @author Mark J Koch [maehem at GitHub]
  */
 public class GameState extends Properties {
 
-    
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
+    
     private static final List<String> DEFAULT_NEWS = List.of(
             "100", "101", "102", "103", "104",
             "105", "106", "107", "108", "109",
@@ -154,7 +154,7 @@ public class GameState extends Properties {
                         }
                     } else {
                         LOGGER.log(Level.WARNING, 
-                                "Save file references a news story that doesn''t exist. key:{0}", 
+                                "Save file references a news story that doesn''t exist. key: {0}", 
                                 key );
                     }
                 }
