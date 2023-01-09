@@ -29,7 +29,7 @@ import javafx.scene.text.Font;
 public class BBSNewsMenuItem extends BBSText {
 
     public BBSNewsMenuItem(Font f, NewsStory ns, GameState gs) {
-        super(f, ns.getDate() + "  " + ns.getHeadline());        
+        super(f, ns.getDate() + "  " + ns.getHeadline() + "  (" + ns.getUid() + ")");        
 
         if ( ns.isRead() ) {
             setFill(FILL_COLOR.darker());
