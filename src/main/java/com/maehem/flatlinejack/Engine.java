@@ -177,7 +177,7 @@ public class Engine extends Application implements GameStateListener {
         
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
-        getPlayer().loadState(getGameState());
+        //getPlayer().loadState(getGameState());
         
         initHotKeys();
         initKeyInput();

@@ -57,7 +57,7 @@ public class CityNews extends BBSTerminal {
     }
     
     @Override
-    public void updateContent(GameState gs) {
+    public final void updateContent(GameState gs) {
         int index=currentIndex;
         menuItems.clear();
         menuItems.add( new BBSSimpleMenuItem(FONT,"   DATE     SUBJECT" ));

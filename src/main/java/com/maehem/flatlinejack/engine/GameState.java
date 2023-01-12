@@ -47,12 +47,12 @@ public class GameState extends Properties {
     
     private static final String START_DATE = "2057/02/01 05:01";
     
-    // TODO: Bake into news.proerties
-    private static final List<String> DEFAULT_NEWS = List.of(
-            "100", "101", "102", "103", "104",
-            "105", "106", "107", "108", "109",
-            "110", "111"
-    );
+//    // TODO: Bake into news.proerties
+//    private static final List<String> DEFAULT_NEWS = List.of(
+//            "100", "101", "102", "103", "104",
+//            "105", "106", "107", "108", "109",
+//            "110", "111"
+//    );
 
     private final Player player;
     private final ArrayList<NewsStory> news = new ArrayList<>();
@@ -173,7 +173,7 @@ public class GameState extends Properties {
         } catch (FileNotFoundException ex) {
             LOGGER.config("No previous game state.  New Game.\n");            
             setProperty(PROP_CURRENT_VIGNETTE, defaultVignetteName);  // Game starting room 
-            setDefaultNewsStories();
+            //setDefaultNewsStories();
         } catch (IOException ex) {
             Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -342,17 +342,17 @@ public class GameState extends Properties {
 
     }
     
-    /**
-     * Set the default visible news stories. For first-time players.
-     */
-    private void setDefaultNewsStories() {
-        for ( NewsStory ns : news ) {
-            if ( DEFAULT_NEWS.contains(ns.getUid() ) ) {
-                ns.setShow(true);
-            }
-        }
-    }
-    
+//    /**
+//     * Set the default visible news stories. For first-time players.
+//     */
+//    private void setDefaultNewsStories() {
+//        for ( NewsStory ns : news ) {
+//            if ( DEFAULT_NEWS.contains(ns.getUid() ) ) {
+//                ns.setShow(true);
+//            }
+//        }
+//    }
+//    
     public NewsStory getNewsStory(String uid) {
         for ( NewsStory ns: news ) {
             if ( uid.equals(ns.getUid()) ) {

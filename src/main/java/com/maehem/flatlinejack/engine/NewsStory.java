@@ -16,6 +16,7 @@
 */
 package com.maehem.flatlinejack.engine;
 
+import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
@@ -40,6 +41,10 @@ public class NewsStory {
         this.date       = bundle.getString(propkey + ".date");
         this.headline   = bundle.getString(propkey + ".headline");
         this.body       = bundle.getString(propkey + ".body");
+        try {
+            String replyable = bundle.getString(propkey + ".show");
+            this.show = replyable.equals("true");
+        } catch (MissingResourceException ex) {}
     }
     
     public NewsStory( String uid, String date, String headline, String body, boolean read ) {
@@ -48,6 +53,7 @@ public class NewsStory {
         this.headline = headline;
         this.body = body;
         this.read = read;
+        this.show = true;
     }
     
     public String getUid() {
