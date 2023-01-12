@@ -33,6 +33,7 @@ public class GUIButtonsPane extends DecoBox {
     private final String CHIP_ICON_PATH = "/icons/microchip-icon.png";
     private final String ROM_ICON_PATH = "/icons/chip-head.png";
     private final String TERM_ICON_PATH = "/icons/command-line.png";
+    private final String JACK_ICON_PATH = "/icons/jack-icon.png";
     private final String SAVE_ICON_PATH = "/icons/save-icon.png";
     private final String SETTINGS_ICON_PATH = "/icons/cogwheel.png";
     private final String POWER_ICON_PATH = "/icons/quit-icon.png";
@@ -42,6 +43,7 @@ public class GUIButtonsPane extends DecoBox {
     private final Button chipButton;
     private final Button romButton;
     private final Button terminalButton;
+    private final Button jackButton;
     private final Button saveButton;
     private final Button settingsButton;
     private final Button powerButton;
@@ -57,13 +59,15 @@ public class GUIButtonsPane extends DecoBox {
         chipButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(CHIP_ICON_PATH));
         romButton       = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(ROM_ICON_PATH));
         terminalButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(TERM_ICON_PATH));
+        jackButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(JACK_ICON_PATH));
         saveButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(SAVE_ICON_PATH));
         settingsButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(SETTINGS_ICON_PATH));
         powerButton     = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(POWER_ICON_PATH));
         
         FlowPane buttons = new FlowPane(
-                inventoryButton,  chipButton, romButton, terminalButton,
-                saveButton, settingsButton, powerButton);
+                inventoryButton,  chipButton, romButton, 
+                terminalButton, jackButton,saveButton, 
+                settingsButton, powerButton);
         buttons.setHgap(4.0);
         buttons.setVgap(4.0);
         buttons.setPrefWrapLength((BUTTON_SIZE+4.0)*4);
