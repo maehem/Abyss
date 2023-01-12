@@ -40,6 +40,7 @@ public class BBSSimpleMenuItem extends BBSText {
         
         setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked menu item: {0}", dest.getClass().getSimpleName());
+            dest.updateContent(gs);
             gs.setCurrentTerminal(dest);
         });
     }
