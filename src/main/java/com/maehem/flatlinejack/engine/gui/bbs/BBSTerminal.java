@@ -44,7 +44,7 @@ import javafx.scene.text.Font;
  */
 public class BBSTerminal extends BorderPane {
     public static final double LINE_SPACE = 0.0; // default is 0.0
-    private static final Color BG_COLOR = new Color(0.2, 0.2, 0.2, 1.0);
+    public static final Color BG_COLOR = new Color(0.2, 0.2, 0.2, 1.0);
     public static final double FONT_H = 32;
     private static final String FONT_FILE = "/fonts/AcPlus_IBM_VGA_9x14.ttf";
     public static final Font FONT= Font.loadFont(

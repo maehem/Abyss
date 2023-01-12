@@ -18,7 +18,6 @@ package com.maehem.flatlinejack.engine.gui.bbs;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.GameState;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import javafx.scene.text.Font;
 
@@ -35,32 +34,41 @@ public class BBSSimpleMenuItem extends BBSText {
         this.key = null;
     }
     
-    
-    public BBSSimpleMenuItem(Font f, Character key, String text, 
-            GameState gs, Class<? extends BBSTerminal> tClass ) {
-        super(f, key + ": " + text);
-        this.key = key;
+    public BBSSimpleMenuItem( Font f, String text, GameState gs, BBSTerminal dest) {
+        super(f, text);
+        this.key = null;
         
         setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked menu item: " + key);
-            try {
-                BBSTerminal term = tClass.getDeclaredConstructor(GameState.class).newInstance(gs);
-                gs.setCurrentTerminal(term);
-            } catch (NoSuchMethodException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            }
-            
+            LOGGER.log(Level.INFO, "User clicked menu item: {0}", dest.getClass().getSimpleName());
+            gs.setCurrentTerminal(dest);
         });
     }
+    
+//    public BBSSimpleMenuItem(Font f, Character key, String text, 
+//            GameState gs, Class<? extends BBSTerminal> tClass ) {
+//        super(f, key + ": " + text);
+//        this.key = key;
+//        
+//        setOnMouseClicked((t) -> {
+//            LOGGER.log(Level.INFO, "User clicked menu item: " + key);
+//            try {
+//                BBSTerminal term = tClass.getDeclaredConstructor(GameState.class).newInstance(gs);
+//                gs.setCurrentTerminal(term);
+//            } catch (NoSuchMethodException ex) {
+//                LOGGER.log(Level.SEVERE, null, ex);
+//            } catch (SecurityException ex) {
+//                LOGGER.log(Level.SEVERE, null, ex);
+//            } catch (InstantiationException ex) {
+//                LOGGER.log(Level.SEVERE, null, ex);
+//            } catch (IllegalAccessException ex) {
+//                LOGGER.log(Level.SEVERE, null, ex);
+//            } catch (IllegalArgumentException ex) {
+//                LOGGER.log(Level.SEVERE, null, ex);
+//            } catch (InvocationTargetException ex) {
+//                LOGGER.log(Level.SEVERE, null, ex);
+//            }
+//            
+//        });
+//    }
     
 }

@@ -17,34 +17,65 @@
 package com.maehem.flatlinejack.content.sites;
 
 import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSBulletinBoard;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSGotoButton;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSHeader;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenu;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenuItem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import static com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal.FONT;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSText;
+import com.maehem.flatlinejack.engine.gui.bbs.HelpSystem;
 import java.util.ArrayList;
+import javafx.scene.layout.VBox;
 
 /**
  *
  * @author mark
  */
 public class PublicTerminalSystem extends BBSTerminal {
+    private static final String EXIT_LABEL = "Exit Terminal";
+    private static final String BANKING_LABEL = "\u25ba Banking Access";
+    private static final String NEWS_LABEL = "\u25ba News";
+    private static final String BULLETIN_LABEL = "\u25ba Bulletin Board";
+    private static final String HELP_LABEL = "\u25ba Help System";
+    
+    private final BBSTerminal banking;
+    private final BBSTerminal news;
+    private final BBSTerminal bulletin;
+    private final BBSTerminal help;
     
     public PublicTerminalSystem(GameState gs) {
         super(gs);
+        banking = new CityBanking(gs);
+        news = new CityNews(gs);
+        bulletin = new BBSBulletinBoard(gs,this);
+        help = new HelpSystem(gs, this);
+        
         setHeader(new BBSHeader(FONT, SiteHeader.PAP));
         
         ArrayList<BBSText> menuItems = new ArrayList<>();
-        menuItems.add( new BBSSimpleMenuItem(FONT, '1',"Banking Access", gs, CityBanking.class));
-        menuItems.add( new BBSSimpleMenuItem(FONT, '2',"News", gs, CityNews.class));
-        menuItems.add( new BBSSimpleMenuItem(FONT, '3',"Public Sites", gs, CityNews.class));
-        menuItems.add( new BBSSimpleMenuItem(FONT, '4',"Help System", gs, CityNews.class));
-        menuItems.add( new BBSSimpleMenuItem(FONT, 'X',"Exit Terminal", gs, PublicTerminalSystem.class));
-        
+        menuItems.add( new BBSSimpleMenuItem(FONT, BANKING_LABEL, gs, banking));
+        menuItems.add( new BBSSimpleMenuItem(FONT, NEWS_LABEL, gs, news));
+        menuItems.add( new BBSSimpleMenuItem(FONT, BULLETIN_LABEL, gs, bulletin));
+        menuItems.add( new BBSSimpleMenuItem(FONT, HELP_LABEL, gs, help));
+        menuItems.add( new BBSSimpleMenuItem(FONT, ""));
+        menuItems.add( new BBSSimpleMenuItem(FONT, ""));
+        menuItems.add( new BBSSimpleMenuItem(FONT, ""));
         BBSSimpleMenu menu = new BBSSimpleMenu(FONT, menuItems);
+
+        // TODO: Make into a button.
+        //BBSSimpleMenuItem exitItem = new BBSSimpleMenuItem(FONT, "Exit Terminal" );
         
-        setBody(BBSTerminal.centeredNode(menu));
+        BBSGotoButton exitButton = new BBSGotoButton(FONT, EXIT_LABEL);
+        
+        exitButton.setOnMouseClicked((t) -> {
+            gs.setCurrentTerminal(this);
+        });
+        
+        VBox content = new VBox(menu, centeredNode(exitButton));
+        
+        setBody(BBSTerminal.centeredNode(content));
         setFooter(new BBSText(FONT,
                   "Public Access Point                    "
                 + "       Illegal use will be proscecuted."

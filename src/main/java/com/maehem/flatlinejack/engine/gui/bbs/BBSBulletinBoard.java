@@ -14,19 +14,13 @@
     License for the specific language governing permissions and limitations 
     under the License.
  */
-package com.maehem.flatlinejack.content.sites;
+package com.maehem.flatlinejack.engine.gui.bbs;
 
 import static com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal.FONT;
 
+import com.maehem.flatlinejack.content.sites.SiteHeader;
+import com.maehem.flatlinejack.engine.BulletinMessage;
 import com.maehem.flatlinejack.engine.GameState;
-import com.maehem.flatlinejack.engine.NewsStory;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSGotoButton;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSHeader;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSNewsMenuItem;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenu;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSSimpleMenuItem;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSText;
 import java.util.ArrayList;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -35,43 +29,47 @@ import javafx.scene.layout.VBox;
  *
  * @author mark
  */
-public class CityNews extends BBSTerminal {
+public class BBSBulletinBoard extends BBSTerminal {
     private static final int NUM_ITEMS = 9;
-    private static final String PREV_LABEL = "PREVIOUS";
-    private static final String NEXT_LABEL = "MORE";
+    private static final String PREV_LABEL = "\u25c4\u25c4 PREVIOUS";
+    private static final String NEXT_LABEL = "MORE \u25ba\u25ba";
     private static final String DONE_LABEL = "DONE";
     
     private int currentIndex = 0;
     ArrayList<BBSText> menuItems = new ArrayList<>();
     
-    public CityNews(GameState gs) {
+    private final GameState gameState;
+    private final BBSTerminal parent;
+    
+    public BBSBulletinBoard(GameState gs, BBSTerminal parent) {
         super(gs);
-        setHeader(new BBSHeader(FONT, SiteHeader.PAP_NEWS));
-                
-        updateContent(gs);
+        this.gameState = gs;
+        this.parent = parent;
         
+        setHeader(new BBSHeader(FONT, SiteHeader.BULLETIN_BD));
+        updateContent(gs);
         setFooter(new BBSText(FONT,
-                  "Public Access Point News               "
-                + "            News, News and more News!!!"
+                  "Flatline Jack                    "
+                + "                   Bulletin Board"
         ));
     }
     
     @Override
-    public void updateContent(GameState gs) {
+    public final void updateContent(GameState gs) {
         int index=currentIndex;
         menuItems.clear();
-        menuItems.add( new BBSSimpleMenuItem(FONT,"   DATE     SUBJECT" ));
-        ArrayList<NewsStory> newsItems = new ArrayList<>();
-        for ( NewsStory ni : gs.getNews() ) {
-            if ( ni.canShow() ) {
-                newsItems.add(ni);
+        menuItems.add( new BBSSimpleMenuItem(FONT,"   DATE                   FROM   SUBJECT" ));
+        ArrayList<BulletinMessage> messageItems = new ArrayList<>();
+        for ( BulletinMessage bm : gs.getMessages()) {
+            if ( bm.canShow() ) {
+                messageItems.add(bm);
             }
         }
         int j=0;
         while ( j < NUM_ITEMS ) {
             try {
-                NewsStory ns = newsItems.get(index+j);
-                menuItems.add(new BBSNewsMenuItem(FONT, ns, gs, this ));
+                BulletinMessage ns = messageItems.get(index+j);
+                menuItems.add(new BBSBulletinMenuItem(FONT, ns, gs, this ));
                 j++;
             } catch (IndexOutOfBoundsException ex ) {
                 break;
@@ -80,7 +78,7 @@ public class CityNews extends BBSTerminal {
         boolean hasMore = false;
         if ( j == NUM_ITEMS ) {
             try {
-                newsItems.get(index+j);
+                messageItems.get(index+j);
                 hasMore = true;
             } catch (IndexOutOfBoundsException ex ) {
             }
@@ -110,7 +108,7 @@ public class CityNews extends BBSTerminal {
         } else {
             nextNode.setEnabled(false);
         }
-        BBSGotoButton doneButton = new BBSGotoButton(FONT, DONE_LABEL, gs, PublicTerminalSystem.class);
+        BBSGotoButton doneButton = new BBSGotoButton(FONT, DONE_LABEL, gs, parent);
         HBox navButtons = new HBox(prevNode, doneButton, nextNode );
         navButtons.setSpacing(20);
         
@@ -121,5 +119,5 @@ public class CityNews extends BBSTerminal {
                 
         setBody(BBSTerminal.centeredNode(content));        
     }
-    
+
 }

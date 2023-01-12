@@ -30,7 +30,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
@@ -42,7 +41,7 @@ public class BBSMoneyTransferWidget extends VBox {
     public BBSMoneyTransferWidget(Font f, GameState gs) {
         Player player = gs.getPlayer();
         setSpacing(3);
-        String fillHex = toHex(BBSText.FILL_COLOR);
+        String fillHex = BBSText.toHex(BBSText.FILL_COLOR);
         BBSLabelValue balance = new BBSLabelValue(f, "Account Balance", 
                 String.valueOf(player.getBankMoney()), 276
         );
@@ -116,17 +115,17 @@ public class BBSMoneyTransferWidget extends VBox {
 
     }
     
-    private static String toHex(Color c) {
-        int red = (int) (c.getRed() * 0xFF);
-        String rr = Integer.toHexString(red);
- 
-        int green = (int) (c.getGreen() * 0xFF);
-        String gg = Integer.toHexString(green);
-
-        int blue = (int) (c.getBlue() * 0xFF);
-        String bb = Integer.toHexString(blue);
-
-        return "#" + rr + gg + bb;
-    }
+//    private static String toHex(Color c) {
+//        int red = (int) (c.getRed() * 0xFF);
+//        String rr = Integer.toHexString(red);
+// 
+//        int green = (int) (c.getGreen() * 0xFF);
+//        String gg = Integer.toHexString(green);
+//
+//        int blue = (int) (c.getBlue() * 0xFF);
+//        String bb = Integer.toHexString(blue);
+//
+//        return "#" + rr + gg + bb;
+//    }
     
 }

@@ -47,7 +47,7 @@ public class BBSPasswordBody extends StackPane {
     public BBSPasswordBody(Font f) { //, int rows, int cols) {
         this.font = f;
 
-        String fillHex = toHex(BBSText.FILL_COLOR);
+        String fillHex = BBSText.toHex(BBSText.FILL_COLOR);
         GridPane gp = new GridPane();
         BBSText userLabel = new BBSText(f, "Username:");
         TextField userField = new TextField();
@@ -98,22 +98,4 @@ public class BBSPasswordBody extends StackPane {
         getChildren().add(new VBox(gp, loginBox));
     }
 
-    /**
-     * Convert a JavaFX Color to web hex.
-     * 
-     * @param c Color
-     * @return web style hex string for color (i.e #FFFFFF )
-     */
-    private static String toHex(Color c) {
-        int red = (int) (c.getRed() * 0xFF);
-        String rr = Integer.toHexString(red);
- 
-        int green = (int) (c.getGreen() * 0xFF);
-        String gg = Integer.toHexString(green);
-
-        int blue = (int) (c.getBlue() * 0xFF);
-        String bb = Integer.toHexString(blue);
-
-        return "#" + rr + gg + bb;
-    }
 }
