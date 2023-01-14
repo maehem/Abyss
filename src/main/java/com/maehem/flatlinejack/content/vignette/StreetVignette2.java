@@ -14,7 +14,7 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content;
+package com.maehem.flatlinejack.content.vignette;
 
 import com.maehem.flatlinejack.engine.Patch;
 import com.maehem.flatlinejack.engine.Player;

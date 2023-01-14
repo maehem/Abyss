@@ -24,6 +24,7 @@ import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.MatrixPane;
 import com.maehem.flatlinejack.engine.gui.ChipsConfiguratorPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
@@ -76,6 +77,7 @@ public class Engine extends Application implements GameStateListener {
     private GameControlsPane gameControls;
     private ChipsConfiguratorPane chipsPane;
     private TerminalPane terminalPane;
+    private MatrixPane matrixPane;
 
     //public static final Logger log = Logger.getLogger("flatline");
 
@@ -169,9 +171,11 @@ public class Engine extends Application implements GameStateListener {
         // Deck Bench -- Configure your Deck with inventory components
         
         // Cyberspace  -- ROM Helper replaces Narration Window
-
+        matrixPane = new MatrixPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        matrixPane.setVisible(true);
+        
         topArea.getChildren().addAll(vignetteGroup, 
-                chipsPane, inventoryPane, terminalPane
+                chipsPane, inventoryPane, terminalPane, matrixPane
         );
         // Finished setting up GUI
         
@@ -263,7 +267,7 @@ public class Engine extends Application implements GameStateListener {
         }
         
         try {
-            Class<?> c = Class.forName(getClass().getPackageName()+ ".content." + nextRoom.getDestination());
+            Class<?> c = Class.forName(getClass().getPackageName()+ ".content.vignette." + nextRoom.getDestination());
             Constructor<?> cons = c.getConstructor(int.class, int.class, Port.class, Player.class);
             Object object = cons.newInstance((int)(Vignette.NATIVE_WIDTH), (int)(Vignette.NATIVE_HEIGHT), nextRoom, getPlayer());
             setVignette((Vignette) object);
