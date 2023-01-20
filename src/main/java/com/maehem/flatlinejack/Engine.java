@@ -216,28 +216,17 @@ public class Engine extends Application implements GameStateListener {
     }
 
     private void setVignette(Vignette v) {
-        //root.getChildren().remove(currentVignette);
-        //topArea.getChildren().remove(currentVignette);
         Vignette currentVignette = gameState.getCurrentVignette();
         
         vignetteGroup.getChildren().remove(currentVignette);
         gameState.setCurrentVignette(v);
-        
-        //this.currentVignette = v;
-       //v.setLayoutX(-200);
-
-        v.loadState(gameState);
-        
-        //root.getChildren().add(v);
-        //gamePane.getChildren().add(0, v);
-        //topArea.getChildren().add(0, v);
+        v.loadState(gameState);        
         vignetteGroup.getChildren().add(0, v);
         
         window.setTitle(v.getName());
 
         loop = new Loop(this, v);
         loop.start();
-
     }
 
     @Override
@@ -279,9 +268,6 @@ public class Engine extends Application implements GameStateListener {
                 IllegalAccessException | 
                 IllegalArgumentException | 
                 InvocationTargetException   ex) {
-            //log.error(Level.SEVERE, ex.getMessage(), ex);
-            //log.severe("exception loading scene.");
-            //log.log(Level.SEVERE, "logged exception", ex);
             ex.printStackTrace();
         }
         
@@ -357,7 +343,7 @@ public class Engine extends Application implements GameStateListener {
     private void initKeyInput() {
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
               if(key.getCode()==KeyCode.ENTER) {
-                  System.out.println("You pressed enter");
+                  LOGGER.log(Level.INFO, "You pressed ENTER" );
               }
         });
     }
