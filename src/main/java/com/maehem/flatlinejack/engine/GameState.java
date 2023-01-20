@@ -58,6 +58,7 @@ public class GameState extends Properties {
     private final ArrayList<NewsStory> news = new ArrayList<>();
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
+    private final ArrayList<MatrixSite> sites = new ArrayList<>();
     
     private Vignette currentVignette;
     private BBSTerminal currentTerminal;
@@ -478,4 +479,24 @@ public class GameState extends Properties {
         this.messageIndex = idx;
     }
     
+    public void addSite( MatrixSite site ) {
+        if ( getSite(site.getAddress()) != null ) {
+            sites.add(site);
+        } else {
+            LOGGER.log(Level.SEVERE,
+                    "Tried to add matrix site at existing address! {0}", 
+                    MatrixSite.toHex(site.getAddress())
+            );
+        }
+    }
+    
+    public MatrixSite getSite( int address ) {
+        for ( MatrixSite s: sites ) {
+            if ( s.getAddress() == address ) {
+                return s;
+            }
+        }
+        
+        return null;
+    }
 }
