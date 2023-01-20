@@ -33,6 +33,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 /**
@@ -48,6 +49,13 @@ public class FloorTester extends Application {
     private final BorderPane root = new BorderPane(centerPane);
     private final Scene scene = new Scene(root);
     private final Button generateButton = new Button("Generate");
+    
+    private static final Color TRACE_COLOR = Color.BLUE;
+    private static final double TRACE_WIDTH = 15.0;
+    private static final Color VIA_PAD_COLOR = Color.BLUEVIOLET;
+    private static final double VIA_PAD_RADIUS = 15.0;
+    private static final Color VIA_HOLE_COLOR = Color.MAGENTA;
+    private static final double VIA_HOLE_RADIUS = 5.0;
 
     @Override
     public void start(Stage window) {
@@ -69,7 +77,11 @@ public class FloorTester extends Application {
         ToggleButton[]bottomToggle = addToggle(bottom, false);
         ToggleButton[]leftToggle   = addToggle(  left, true);
         
-        Router router = new Router( 7, SIZE);
+        Router router = new Router( 7, SIZE,
+                TRACE_COLOR, TRACE_WIDTH, 
+                VIA_PAD_COLOR, VIA_PAD_RADIUS,
+                VIA_HOLE_COLOR, VIA_HOLE_RADIUS
+        );
         
         root.setCenter(router);
         
