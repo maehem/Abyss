@@ -24,8 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.ObservableIntegerArray;
+import javafx.collections.ObservableFloatArray;
 import javafx.scene.shape.TriangleMesh;
+import javafx.scene.shape.VertexFormat;
 
 /**
  *
@@ -39,6 +40,7 @@ public class ObjTriangleMesh extends TriangleMesh {
      * @param is 
      */
     public ObjTriangleMesh( InputStream is ) {
+        super(VertexFormat.POINT_TEXCOORD);
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         
         ArrayList<String> vertices = new ArrayList();
@@ -87,10 +89,17 @@ public class ObjTriangleMesh extends TriangleMesh {
 
             }
             reader.close();
+            if ( vertexNormals.isEmpty() ) {
+                setVertexFormat(VertexFormat.POINT_TEXCOORD);
+            } else {
+                setVertexFormat(VertexFormat.POINT_NORMAL_TEXCOORD);
+            }
             processVertices(vertices);
-            processVertexNormals(vertexNormals);
             processVertexTextures(vertexTextures);
+            processVertexNormals(vertexNormals);
             processFaces(faces);
+            
+            
         } catch (IOException ex) {
             Logger.getLogger(ObjTriangleMesh.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -117,14 +126,23 @@ public class ObjTriangleMesh extends TriangleMesh {
      * @param l list of VertexTextures as: -1.750000 -3.250000 0.000000 (ignore third)
      */
     private void processVertexTextures( List<String> l) {
-        for ( String s: l ) {
-            String[] pt = s.split(" ");
-            getTexCoords().addAll(
-                    Float.valueOf(pt[0]),
-                    Float.valueOf(pt[1]),
-                    Float.valueOf(pt[2])
-            );
-        }        
+        if ( !l.isEmpty() ) {
+            for ( String s: l ) {
+                String[] pt = s.split(" ");
+                getTexCoords().addAll(
+                        Float.valueOf(pt[0]),
+                        Float.valueOf(pt[1]) //,
+                        //Float.valueOf(pt[2])
+                );
+            }
+        } else  {
+            // No Textures so make a filler.
+            ObservableFloatArray texCoords = getTexCoords();
+            for ( int i=0; i<getPoints().size()/3;i++) {
+                // For each point ad add 2D texture coord
+                texCoords.addAll(0.00f, 0.00f);
+            }
+        }
     }
 
     /**
@@ -151,12 +169,33 @@ public class ObjTriangleMesh extends TriangleMesh {
         for ( String s: l ) {
             String[] chunks = s.split(" ");
             for ( int i=0; i<3; i++ ) {
-                String[] pt = chunks[i].split("\\/");
-                getFaces().addAll(
-                        Integer.parseInt(pt[0])-1,
-                        Integer.parseInt(pt[1])-1//,
-                        //Integer.parseInt(pt[0])-1
-                );
+                String[] pt = chunks[i].split("/");
+                switch ( pt.length ) {
+                    case 1:
+                        getFaces().addAll(Integer.parseInt(pt[0])-1);
+                        //getFaces().addAll(Integer.parseInt(pt[0])-1);
+                        //getFaces().addAll(Integer.parseInt(pt[0])-1);
+                        break;
+                    case 2:
+                        getFaces().addAll(Integer.parseInt(pt[0])-1);
+                        getFaces().addAll(Integer.parseInt(pt[1])-1);
+                        break;
+                    case 3:
+                        getFaces().addAll(Integer.parseInt(pt[0])-1);
+                        getFaces().addAll(Integer.parseInt(pt[2])-1);
+                        getFaces().addAll(Integer.parseInt(pt[1])-1);
+                        break;
+                }
+//                for ( int j=0; j<pt.length; j++) {
+//                    if ( j < 2 ) {
+//                        getFaces().addAll(Integer.parseInt(pt[j])-1);
+//                    }
+//                }
+//                getFaces().addAll(
+//                        Integer.parseInt(pt[0])-1,
+//                        Integer.parseInt(pt[1])-1//,
+//                        //Integer.parseInt(pt[0])-1
+//                );
             }
         }
     }
