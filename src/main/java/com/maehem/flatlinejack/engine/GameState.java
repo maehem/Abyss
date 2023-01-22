@@ -53,12 +53,18 @@ public class GameState extends Properties {
 //            "105", "106", "107", "108", "109",
 //            "110", "111"
 //    );
-
+    private static final int N_ZONES = 5;
+    private static final int N_ROWS = 10;
+    private static final int N_COLS = 10;
+    
     private final Player player;
     private final ArrayList<NewsStory> news = new ArrayList<>();
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
     private final ArrayList<MatrixSite> sites = new ArrayList<>();
+    //private long[][][] siteEdges =  new long[N_ZONES][N_ROWS][N_COLS]; // Long T R B L ints
+    private final EdgeMap matrixEdges = new EdgeMap(64, 64);
+
     
     private Vignette currentVignette;
     private BBSTerminal currentTerminal;
@@ -89,6 +95,9 @@ public class GameState extends Properties {
         setProperty(PROP_CURRENT_DATE, START_DATE);
         initNews();
         initMessages();
+        
+        MatrixSite testSite = new  MatrixSite(this, 0, 1, 1);
+        addSite(testSite);
     }
 
     @Override
@@ -480,23 +489,28 @@ public class GameState extends Properties {
     }
     
     public void addSite( MatrixSite site ) {
-        if ( getSite(site.getAddress()) != null ) {
+        if ( getSite(site.getIntAddress()) == null ) {
             sites.add(site);
+            LOGGER.log(Level.INFO, "Added site to list as {0} with int: {1}", new Object[]{site.getAddress(), site.getIntAddress()});
         } else {
             LOGGER.log(Level.SEVERE,
                     "Tried to add matrix site at existing address! {0}", 
-                    MatrixSite.toHex(site.getAddress())
+                    site.getAddress()
             );
         }
     }
     
     public MatrixSite getSite( int address ) {
         for ( MatrixSite s: sites ) {
-            if ( s.getAddress() == address ) {
+            if ( s.getIntAddress() == address ) {
                 return s;
             }
         }
         
         return null;
+    }
+    
+    public EdgeMap getMatrixMap() {
+        return matrixEdges;
     }
 }

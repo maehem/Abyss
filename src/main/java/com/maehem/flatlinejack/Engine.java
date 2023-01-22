@@ -18,6 +18,8 @@ package com.maehem.flatlinejack;
 
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.debug.DebugTab;
+import com.maehem.flatlinejack.engine.EdgeMapOLD;
+import com.maehem.flatlinejack.engine.EdgeMap;
 import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.Loop;
 import com.maehem.flatlinejack.engine.Player;
@@ -45,6 +47,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -90,6 +93,7 @@ public class Engine extends Application implements GameStateListener {
     private Stage window;
     private Loop loop;   // Game logic Loop
     
+    private ImageView splashScreen;
     private final Group vignetteGroup = new Group();
     private final StackPane topArea = new StackPane();
     private final HBox bottomArea = new HBox();  // gui and naration
@@ -128,7 +132,8 @@ public class Engine extends Application implements GameStateListener {
                 System.getProperties().get("javafx.runtime.version")
         );
         
-        ImageView splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
+        
+        splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
         topArea.getChildren().add(splashScreen);
 
         window.setScene(this.scene);
@@ -178,6 +183,7 @@ public class Engine extends Application implements GameStateListener {
                 chipsPane, inventoryPane, terminalPane, matrixPane
         );
         // Finished setting up GUI
+        setShowing(matrixPane);
         
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
@@ -192,8 +198,19 @@ public class Engine extends Application implements GameStateListener {
                 STARTING_VIGNETTE
         );
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
+//        EdgeMap e = new EdgeMap(64, 64);
    }
 
+    private void setShowing( Node n ) {
+        splashScreen.setVisible(false);
+        vignetteGroup.setVisible(false);
+        chipsPane.setVisible(false);
+        inventoryPane.setVisible(false);
+        terminalPane.setVisible(false);
+        matrixPane.setVisible(false);
+        
+        n.setVisible(true);
+    }
     private void initDebugWindow() {
         DebugTab debugTab = new DebugTab( messageLog, gameState);
         debugTab.setFormatter(loggingHandler.getFormatter());
@@ -367,7 +384,7 @@ public class Engine extends Application implements GameStateListener {
     private void configureLogging() {
         loggingHandler.setFormatter(new LoggingFormatter());
         // Get the top most logger and add our handler.
-        LOGGER.setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
+        LOGGER.setUseParentHandlers(true);  // Prevent INFO and HIGHER from going to stderr.
         LOGGER.addHandler(loggingHandler);
 
         // For our java package only, log ony FINE and above.

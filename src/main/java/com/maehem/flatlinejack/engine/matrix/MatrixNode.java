@@ -16,15 +16,21 @@
  */
 package com.maehem.flatlinejack.engine.matrix;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.MatrixSite;
+import static java.util.logging.Level.INFO;
 import javafx.animation.RotateTransition;
+import javafx.collections.ObservableList;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
 /**
@@ -34,28 +40,69 @@ import javafx.util.Duration;
 public class MatrixNode extends Group {
 
     private final MatrixSite site; // Matrix Site (model)
+    private final double size;
     
-    public MatrixNode( MatrixSite site ) {
+    public MatrixNode( MatrixSite site, double size ) {
         this.site = site;
+        this.size = size;
+        
+        initFloor();
         initCore();
-        initShield();
+        //initShield();
         
         setRotationAxis(Rotate.Z_AXIS);
         setRotate(180);
         
     }
     
+    protected void initFloor() {
+        Router floor = new Router(16, size, 
+                Color.MAGENTA.darker().darker(), 10, 
+                Color.BLUEVIOLET, 10, 
+                Color.BLACK, 5
+        );
+        //floor.setTop(   (int)(Math.random()*(1<<16)));
+        //floor.setRight( (int)(Math.random()*(1<<16)));
+        //floor.setBottom((int)(Math.random()*(1<<16)));
+        //floor.setLeft(  (int)(Math.random()*(1<<16)));
+        
+        floor.setTop(site.getTopBits());
+        floor.setRight(site.getRightBits());
+        floor.setBottom(site.getBottomBits());
+        floor.setLeft(site.getLeftBits());
+        
+        //Scene s = new Scene(floor);
+        //Stage sg = new Stage();
+        //sg.setScene(s);
+        //sg.show();
+        floor.generate();
+        ImageView im = new ImageView(floor.snap());
+        //sg.hide();
+        im.getTransforms().addAll(
+                new Rotate(90, Rotate.X_AXIS),//,  // Tilt down a little
+               new Rotate(180, Rotate.Z_AXIS),//,  // Tilt down a little
+                new Translate(-size/2, -size/2+6, 0)   // Just off the ground
+        );
+        //im.setRotationAxis(Rotate.X_AXIS);
+        //im.setRotate(-90);
+        
+        //im.setTranslateX(-size/2);
+        //im.setTranslateY(-size/2 - 3 );
+        
+        getChildren().add(new Group(im));
+    }
+    
     protected void initCore() {        
-        MeshView core = new MeshView(new ObjTriangleMesh(
-                getClass().getResourceAsStream("/content/matrix/core/heatsink-1.obj")
-        ));
+//        MeshView core = new MeshView(new ObjTriangleMesh(
+//                getClass().getResourceAsStream("/content/matrix/core/heatsink-1.obj")
+//        ));
 
  //       core.setDrawMode(DrawMode.LINE);
-        core.setMaterial(new PhongMaterial(Color.LIGHTGRAY));
-        core.setRotationAxis(Rotate.X_AXIS);
+//        core.setMaterial(new PhongMaterial(Color.LIGHTGRAY));
+        //core.setRotationAxis(Rotate.X_AXIS);
         //core.setRotate(90);
-        
-        getChildren().add(core);
+        //LOGGER.log(INFO, "Core Z: " +  core.getBoundsInLocal().getHeight());
+//        getChildren().add(core);
     }
     
     private void initShield() {

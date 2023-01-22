@@ -16,9 +16,11 @@
  */
 package com.maehem.flatlinejack.content.matrix;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.MatrixSite;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import com.maehem.flatlinejack.engine.matrix.ObjTriangleMesh;
+import static java.util.logging.Level.INFO;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
@@ -38,8 +40,8 @@ public class HeatsinkNode extends MatrixNode {
             HeatsinkNode.class.getResourceAsStream("/content/matrix/core/heatsink-1-top.obj")
     ));
     
-    public HeatsinkNode(MatrixSite site) {
-        super(site);        
+    public HeatsinkNode(MatrixSite site, double size) {
+        super(site, size);     
         
     }
     
@@ -50,5 +52,9 @@ public class HeatsinkNode extends MatrixNode {
         top.setMaterial(new PhongMaterial(Color.DARKTURQUOISE));
         
         getChildren().addAll(base, neck,top);
+        LOGGER.log(INFO, "Core Z: " +  getBoundsInLocal().getHeight());
+        // Y:0 seems to be the top after OBJs added.
+        // So we shift the Node up so that zero is our bottom or base.
+        setTranslateY(-getBoundsInLocal().getHeight());
     }
 }

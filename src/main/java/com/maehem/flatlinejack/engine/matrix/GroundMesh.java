@@ -28,8 +28,8 @@ import javafx.scene.shape.Rectangle;
 public class GroundMesh extends Pane {
 
     Rectangle plane;
-    final int DIVISIONS = 16;
-    final Color PLANE_COLOR = new Color(0.5, 0.1, 0.5, 0.3);
+    final int DIVISIONS = 9;  //  n+1
+    final Color PLANE_COLOR = new Color(0.3, 0.05, 0.3, 0.3);
     final Color LINE_COLOR = new Color(0.2, 0.2, 0.2, 0.5);
     final Color BORDER_COLOR = new Color(0.1, 0.1, 0.1, 1.0);
 
@@ -42,28 +42,28 @@ public class GroundMesh extends Pane {
         double lineTranslate = 0;
         double lineWidth = 6.0;
 
-        for (int y = 0; y <= size; y += size / DIVISIONS) {
+        for ( int y=0; y<=DIVISIONS; y++ ) {
             Line line = new Line(0, 0, size, 0);
-            if ( y == 0 || y == size ) {
+            if ( y == 0 || y == DIVISIONS ) {
                 line.setStroke(BORDER_COLOR);
             } else {
                 line.setStroke(LINE_COLOR);
             }
-            line.setTranslateY(y);
+            line.setTranslateY(y*(size/DIVISIONS));
             line.setTranslateZ(lineTranslate);
             line.setStrokeWidth(lineWidth);
 
-            getChildren().add(line);
+            getChildren().add(line);    
         }
-
-        for (int x = 0; x <= size; x += size / DIVISIONS) {
+        
+        for (int x = 0; x <= DIVISIONS; x++) {
             Line line = new Line(0, 0, 0, size);
-            if ( x == 0 || x == size ) {
+            if ( x == 0 || x == DIVISIONS ) {
                 line.setStroke(BORDER_COLOR);
             } else {
                 line.setStroke(LINE_COLOR);
             }
-            line.setTranslateX(x);
+            line.setTranslateX(x*(size/DIVISIONS));
             line.setTranslateZ(lineTranslate);
             line.setStrokeWidth(lineWidth / 3.0); // Looks better
 

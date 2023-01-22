@@ -18,14 +18,9 @@ package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.content.matrix.HeatsinkNode;
-import com.maehem.flatlinejack.engine.matrix.BallShield;
 import com.maehem.flatlinejack.engine.matrix.GroundMesh;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
-import com.maehem.flatlinejack.engine.matrix.ObjTriangleMesh;
-import com.maehem.flatlinejack.engine.matrix.WallShield;
 import java.util.logging.Level;
-import javafx.animation.RotateTransition;
-import javafx.geometry.Point3D;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -34,15 +29,14 @@ import javafx.scene.PointLight;
 import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
-import javafx.scene.shape.CullFace;
-import javafx.scene.shape.MeshView;
+import javafx.scene.shape.DrawMode;
 import javafx.scene.transform.Rotate;
-import javafx.util.Duration;
+import javafx.scene.transform.Translate;
 
 /**
  *
@@ -56,68 +50,128 @@ public class MatrixPane extends BorderPane {
     
     private final Group root = new Group();
     private final GameState gameState;
+    
+    private final double nodeScaling = 0.333;
+    private final double size = 1280;
 
     public MatrixPane(GameState gs, double width, double height) {
         this.gameState = gs;
+        currentSite = gs.getSite(0x00101 ); // For now
         
         scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
-
-        boolean fixedEyeAtCameraZero = false;
-        PerspectiveCamera camera = new PerspectiveCamera(fixedEyeAtCameraZero);
-        //camera.setTranslateX(150);
-        //camera.setTranslateY(-100);
-        camera.setTranslateZ(300); // Higher is forward
-        camera.setRotationAxis(Rotate.X_AXIS);
-        camera.setRotate(-10);
+        
+        Box testBox = new Box(100, 100, 100);
+        testBox.setMaterial(new PhongMaterial(Color.RED));
+        testBox.setDrawMode(DrawMode.LINE);
+        testBox.setTranslateY(-50);
+        root.getChildren().add(testBox);
+ 
+        PerspectiveCamera camera = new PerspectiveCamera(true);
+        
+        // Normal Camera
+        camera.getTransforms().addAll (
+                new Rotate(-12, Rotate.X_AXIS),  // Tilt down a little
+                new Translate(0, -30, -600)); // Just off the ground
+        camera.setFieldOfView(30.0);
+        
+//        // DEBUG:  Top Down Camera
+//        camera.getTransforms().addAll (
+//                new Rotate(-64, Rotate.X_AXIS),  // Tilt down a little
+//                new Translate(0, 80, -1600)); // Just off the ground
+//        camera.setFieldOfView(45.0);
+        
+        
         camera.setNearClip(0.01);
+        camera.setFarClip(4500.0);
+        
+        root.getChildren().add(camera);
         scene.setCamera(camera);
         
-        camera.setFieldOfView(30.0);
-        LOGGER.log(Level.INFO, "FOV: {0}", camera.getFieldOfView());
+        //LOGGER.log(Level.INFO, "FOV: {0}", camera.getFieldOfView());
 
-        // Background   scene.setFill  image
-        scene.setFill(new ImagePattern(backgroundImage()));
+        initBackDrop();
+        
         setCenter(scene);
         
         updateRoot();
     }
 
+    private void initBackDrop() {
+        // Background   scene.setFill  image
+        ImageView backdrop = backgroundImage();
+        backdrop.getTransforms().add(
+                new Translate(
+                        -backdrop.getImage().getWidth()/6.0, 
+                        0, //-backdrop.getImage().getHeight()/2.0,
+                        1980.0
+                )
+        );
+        backdrop.setScaleY(2.0);
+        backdrop.setScaleX(3.0);
+        root.getChildren().add(backdrop);        
+    }
+    
     private void updateRoot() {
-        root.getChildren().clear();
+        //root.getChildren().clear();
         
         root.getChildren().add(getLighting());
-        root.getChildren().add(getGround());
+        root.getChildren().add(getGrid(size));
         
         // Draw Ceiling (none for 'F')
-        //MatrixNode matrixNode = new MatrixNode(currentSite);
-        MatrixNode matrixNode = new HeatsinkNode(currentSite);
+        
+        
+        MatrixNode matrixNode = new HeatsinkNode(currentSite, nodeScaling*size);
         root.getChildren().add(matrixNode);
-        matrixNode.setTranslateX(640);
-        matrixNode.setTranslateY(200); // Higher is down
-        matrixNode.setTranslateZ(-640); // Higher is farther away
-            
+        
+        // Surrounding Nodes
+        addNeighbor(MatrixSiteNeighbor.N);
+        addNeighbor(MatrixSiteNeighbor.S);
+        addNeighbor(MatrixSiteNeighbor.E);
+        addNeighbor(MatrixSiteNeighbor.W);
+        
+        addNeighbor(MatrixSiteNeighbor.NE);
+        addNeighbor(MatrixSiteNeighbor.NW);
+        addNeighbor(MatrixSiteNeighbor.SE);
+        addNeighbor(MatrixSiteNeighbor.SW);
+             
     }
 
-    private Group getGround() {
+    private void addNeighbor( MatrixSiteNeighbor n) {
+        int neighborE = currentSite.getNeighbor(n);
+        MatrixSite siteE = gameState.getSite(neighborE);
+        if ( siteE == null ) {
+            // Blank Site
+            siteE = new MatrixSite(gameState, neighborE);
+        }
+        MatrixNode nodeE = new MatrixNode(siteE, nodeScaling*size );
+        nodeE.setTranslateX(n.col*nodeScaling*size);
+        nodeE.setTranslateZ(-n.row*nodeScaling*size);
+        root.getChildren().add(nodeE);
+     }
+    
+    private Group getGrid( double size) {
         Group g = new Group();
         
-        float size = 1280;
+        //float size = 1280;
 
         for( int x=0; x<3; x++) {
-            for ( int y=0; y<2; y++ ) {
+            for ( int y=0; y<3; y++ ) {
                 GroundMesh mesh = new GroundMesh(size);
                 mesh.setRotationAxis(Rotate.X_AXIS);
-                mesh.setRotate(90);
-                
+                mesh.setRotate(90);                
                 mesh.setTranslateX((x-1)*size);
-                
-                mesh.setTranslateY(-220); // Negative is up
-                mesh.setTranslateZ(y*size); // Negative is closer
+                mesh.setTranslateZ((y-1)*size); // Negative is closer
                 
                 g.getChildren().add(mesh);
             }
         }
         
+        // Re-center object
+        g.setTranslateX(-size/2.0);
+        g.setTranslateY(-size/2.0);
+        g.setScaleX(nodeScaling);
+        g.setScaleY(nodeScaling);
+        g.setScaleZ(nodeScaling);
         initFloorDecor();
         
         return g;
@@ -148,10 +202,13 @@ public class MatrixPane extends BorderPane {
         return new Group( ambient, upperLight, lowerLight);
     }
     
-    private Image backgroundImage() {
+    private ImageView backgroundImage() {
         Image im = new Image(getClass().getResourceAsStream("/content/matrix/background-1.png"));
 
-        return im;
+        ImageView iv = new ImageView(im);
+        iv.setPreserveRatio(true);
+        
+        return iv;
     }
 
 }

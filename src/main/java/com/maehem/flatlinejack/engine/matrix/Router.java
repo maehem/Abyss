@@ -22,11 +22,9 @@ import static java.util.logging.Level.INFO;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -46,7 +44,7 @@ public class Router extends Pane {
     private final int nBits;
 
     private static final double CORNER_TRIM = 0.707;
-    
+
     private final static int T = 0;
     private final static int R = 1;
     private final static int B = 2;
@@ -67,8 +65,8 @@ public class Router extends Pane {
     private final Color viaHoleColor;
     private final double viaHoleRadius;
 
-    public Router(int nBits, double size, 
-            Color traceColor, double traceWidth, 
+    public Router(int nBits, double size,
+            Color traceColor, double traceWidth,
             Color viaPadColor, double viaPadRadius,
             Color viaHoleColor, double viaHoleRadius
     ) {
@@ -80,7 +78,7 @@ public class Router extends Pane {
         this.viaHoleColor = viaHoleColor;
         this.viaHoleRadius = viaHoleRadius;
 
-        this.matrix = new char[2*nBits][2*nBits];
+        this.matrix = new char[2 * nBits][2 * nBits];
         clearMatrix();
 
         setPrefSize(size, size);
@@ -88,11 +86,11 @@ public class Router extends Pane {
 
         setClip(new Rectangle(size, size));
 
-        setBorder(new Border(new BorderStroke(Color.RED,
-                BorderStrokeStyle.SOLID,
-                CornerRadii.EMPTY,
-                new BorderWidths(5)
-        )));
+//        setBorder(new Border(new BorderStroke(Color.RED,
+//                BorderStrokeStyle.SOLID,
+//                CornerRadii.EMPTY,
+//                new BorderWidths(5)
+//        )));
         grid = size / (nBits + 1);
     }
 
@@ -122,29 +120,26 @@ public class Router extends Pane {
         genCorners(2, 0.4); // Third and third from last pins. 
 
         //dumpMatrix();
-
         // Stub remaining pins
         for (int i = 3; i < (nBits + 1) / 2; i++) {
             genStub(i);
         }
 
         //dumpMatrix();
-
         //int nH = nBits*2;
-        
         //build a stub list (side, pin)
         ArrayList<Edge> stubList = new ArrayList<>();
-        for (int b = 1; b < nBits-1; b++) {
-            if (matrix[0][2*b] == X_STUB) {
+        for (int b = 1; b < nBits - 1; b++) {
+            if (matrix[0][2 * b] == X_STUB) {
                 stubList.add(new Edge(T, b));
             }
-            if (matrix[2*b][2*(nBits-1)] == X_STUB) {
+            if (matrix[2 * b][2 * (nBits - 1)] == X_STUB) {
                 stubList.add(new Edge(R, b));
             }
-            if (matrix[2*(nBits-1)][2*b] == X_STUB) {
+            if (matrix[2 * (nBits - 1)][2 * b] == X_STUB) {
                 stubList.add(new Edge(B, b));
             }
-            if (matrix[2*b][0] == X_STUB) {
+            if (matrix[2 * b][0] == X_STUB) {
                 stubList.add(new Edge(L, b));
             }
         }
@@ -164,188 +159,188 @@ public class Router extends Pane {
     }
 
     private void route(Edge e) {
-        LOGGER.log(INFO, "Route: e={0}   bit={1}", new Object[]{e.side, e.bit});
+        //LOGGER.log(INFO, "Route: e={0}   bit={1}", new Object[]{e.side, e.bit});
         int dir = 0;
-        if ( e.bit < nBits/2 ) {
+        if (e.bit < nBits / 2) {
             dir = 1;
-        } else if ( e.bit > (nBits/2)) {
+        } else if (e.bit > (nBits / 2)) {
             dir = -1;
         }
-        LOGGER.log(INFO, "Dir:: bit: " + e.bit + "  direction:" + dir);
+        //LOGGER.log(INFO, "Dir:: bit: " + e.bit + "  direction:" + dir);
         switch (e.side) {
             case T:
-                routeTop( e.bit, dir );
+                routeTop(e.bit, dir);
                 break;
             case R:
-                routeRight( e.bit, dir );
+                routeRight(e.bit, dir);
                 break;
             case B:
-                routeBottom(e.bit, dir );
+                routeBottom(e.bit, dir);
                 break;
             case L:
-                routeLeft( e.bit, dir );
+                routeLeft(e.bit, dir);
                 break;
         }
     }
 
-    private void routeTop( int bit, int dir ) {
-                Coord root = new Coord(bit, 0);
-                matrix[2*root.y][2*root.x] = X_CON;
-                for (int y = 1; y < ((nBits + 1) / 2); y++) {
-                    ArrayList<Coord> choices = new ArrayList<>();
-                    if (matrix[2*(root.y+1)][2*root.x] == X_NONE) {
-                        choices.add(new Coord(root.x, root.y+1));
-                    }
-                    if ( matrix[2*(root.y+1)][2*(root.x+dir)] == X_NONE &&
-                         matrix[2*root.y + 1][2*root.x + dir] == X_NONE    ) { // Check for crossing line
-                        choices.add(new Coord(root.x+dir, root.y+1));                        
-                    }
-                    if ( choices.isEmpty() ) {
-                        break; // end of the line
-                    } else {
-                        Coord c = choices.get((int)(Math.random()*choices.size()));
-                        if ((root.x-c.x) != 0 ){
-                            matrix[2*root.y+1][2*root.x+dir] = X_CON; // diag
-                        } else {
-                            matrix[2*root.y+1][2*root.x] = X_CON;  // straight                        
-                        }
-                        matrix[2*c.y][2*c.x] = X_CON;
-                        Node l = genTrace(root.x*grid, root.y*grid, c.x*grid, c.y*grid);
-                        l.setLayoutY(grid);
-                        l.setLayoutX(grid);
-                        drawArea.getChildren().add(l);
-                        root = c;
-                    }
+    private void routeTop(int bit, int dir) {
+        Coord root = new Coord(bit, 0);
+        matrix[2 * root.y][2 * root.x] = X_CON;
+        for (int y = 1; y < ((nBits + 1) / 2); y++) {
+            ArrayList<Coord> choices = new ArrayList<>();
+            if (matrix[2 * (root.y + 1)][2 * root.x] == X_NONE) {
+                choices.add(new Coord(root.x, root.y + 1));
+            }
+            if (matrix[2 * (root.y + 1)][2 * (root.x + dir)] == X_NONE
+                    && matrix[2 * root.y + 1][2 * root.x + dir] == X_NONE) { // Check for crossing line
+                choices.add(new Coord(root.x + dir, root.y + 1));
+            }
+            if (choices.isEmpty()) {
+                break; // end of the line
+            } else {
+                Coord c = choices.get((int) (Math.random() * choices.size()));
+                if ((root.x - c.x) != 0) {
+                    matrix[2 * root.y + 1][2 * root.x + dir] = X_CON; // diag
+                } else {
+                    matrix[2 * root.y + 1][2 * root.x] = X_CON;  // straight                        
                 }
-                dumpMatrix();
-                matrix[2*root.y][2*root.x] = X_VIA;
-                addVia(grid+grid*root.x, grid+grid*root.y);
+                matrix[2 * c.y][2 * c.x] = X_CON;
+                Node l = genTrace(root.x * grid, root.y * grid, c.x * grid, c.y * grid);
+                l.setLayoutY(grid);
+                l.setLayoutX(grid);
+                drawArea.getChildren().add(l);
+                root = c;
+            }
+        }
+        //dumpMatrix();
+        matrix[2 * root.y][2 * root.x] = X_VIA;
+        addVia(grid + grid * root.x, grid + grid * root.y);
     }
-    
-        private void routeRight( int bit, int dir ) {
-                Coord root = new Coord(nBits-1, bit);
-                matrix[2*root.y][2*root.x] = X_CON;
-                //for (int y = 1; y < ((nBits + 1) / 2); y++) {
-                for (int x = nBits-1; x > ((nBits + 1) / 2)-1; x--) {                    
-                    ArrayList<Coord> choices = new ArrayList<>();
-                    if (matrix[2*root.y][2*(root.x-1)] == X_NONE) {
-                        choices.add(new Coord(root.x-1, root.y));
-                    }
-                    if ( matrix[2*(root.y+dir)][2*(root.x-1)] == X_NONE &&
-                         matrix[2*(root.y+dir) - dir][2*(root.x-1) - 1] == X_NONE    ) { // Check for crossing line
-                        choices.add(new Coord(root.x-1, root.y+dir));                        
-                    }
-                    
-                    if ( choices.isEmpty() ) {
-                        break; // end of the line
-                    } else {
-                        Coord c = choices.get((int)(Math.random()*choices.size()));
-                       
-                        if ((root.y-c.y) != 0 ){
-                            matrix[2*root.y+dir][2*root.x-1] = X_CON; // diag
-                        } else {
-                            matrix[2*root.y][2*root.x-1] = X_CON;  // straight                        
-                        }
-                        
-                        matrix[2*c.y][2*c.x] = X_CON;
-                        
-                        Node l = genTrace(root.x*grid, root.y*grid, c.x*grid, c.y*grid);
-                        
-                        l.setLayoutY(grid);
-                        l.setLayoutX(grid);
-                        drawArea.getChildren().add(l);
-                        root = c;
-                    }
+
+    private void routeRight(int bit, int dir) {
+        Coord root = new Coord(nBits - 1, bit);
+        matrix[2 * root.y][2 * root.x] = X_CON;
+        //for (int y = 1; y < ((nBits + 1) / 2); y++) {
+        for (int x = nBits - 1; x > ((nBits + 1) / 2) - 1; x--) {
+            ArrayList<Coord> choices = new ArrayList<>();
+            if (matrix[2 * root.y][2 * (root.x - 1)] == X_NONE) {
+                choices.add(new Coord(root.x - 1, root.y));
+            }
+            if (matrix[2 * (root.y + dir)][2 * (root.x - 1)] == X_NONE
+                    && matrix[2 * (root.y + dir) - dir][2 * (root.x - 1) - 1] == X_NONE) { // Check for crossing line
+                choices.add(new Coord(root.x - 1, root.y + dir));
+            }
+
+            if (choices.isEmpty()) {
+                break; // end of the line
+            } else {
+                Coord c = choices.get((int) (Math.random() * choices.size()));
+
+                if ((root.y - c.y) != 0) {
+                    matrix[2 * root.y + dir][2 * root.x - 1] = X_CON; // diag
+                } else {
+                    matrix[2 * root.y][2 * root.x - 1] = X_CON;  // straight                        
                 }
-                dumpMatrix();
-                matrix[2*root.y][2*root.x] = X_VIA;
-                addVia(grid+grid*root.x, grid+grid*root.y);
+
+                matrix[2 * c.y][2 * c.x] = X_CON;
+
+                Node l = genTrace(root.x * grid, root.y * grid, c.x * grid, c.y * grid);
+
+                l.setLayoutY(grid);
+                l.setLayoutX(grid);
+                drawArea.getChildren().add(l);
+                root = c;
+            }
+        }
+        //dumpMatrix();
+        matrix[2 * root.y][2 * root.x] = X_VIA;
+        addVia(grid + grid * root.x, grid + grid * root.y);
     }
-    
-    private void routeBottom( int bit, int dir ) {
-                Coord root = new Coord(bit, nBits-1);
-                
-                matrix[2*root.y][2*root.x] = 'R';
-                
-                for (int y = nBits-1; y > ((nBits + 1) / 2)-1; y--) {
-                    ArrayList<Coord> choices = new ArrayList<>();
-                    if (matrix[2*(root.y-1)][2*root.x] == X_NONE) {
-                        choices.add(new Coord(root.x, root.y-1));
-                    }
-                    if ( matrix[2*(root.y-1)]    [2*(root.x+dir)] == X_NONE &&
-                         matrix[2*(root.y-1) + 1][2*(root.x+dir) - dir] == X_NONE    ) { // Check for crossing line
-                        choices.add(new Coord(root.x+dir, root.y-1));                        
-                    }
-                    if ( choices.isEmpty() ) {
-                        break; // end of the line
-                    } else {
-                        Coord c = choices.get((int)(Math.random()*choices.size()));
-                        if ((root.x-c.x) != 0 ){
-                            matrix[2*root.y-1][2*root.x+dir] = 'x'; // diag
-                        } else {
-                            matrix[2*root.y-1][2*root.x] = 's';  // straight                        
-                        }
-                        matrix[2*c.y][2*c.x] = 'c';
-                        Node l = genTrace(root.x*grid, root.y*grid, c.x*grid, c.y*grid);
-                        l.setLayoutY(grid);
-                        l.setLayoutX(grid);
-                        drawArea.getChildren().add(l);
-                        root = c;
-                    }
+
+    private void routeBottom(int bit, int dir) {
+        Coord root = new Coord(bit, nBits - 1);
+
+        matrix[2 * root.y][2 * root.x] = 'R';
+
+        for (int y = nBits - 1; y > ((nBits + 1) / 2) - 1; y--) {
+            ArrayList<Coord> choices = new ArrayList<>();
+            if (matrix[2 * (root.y - 1)][2 * root.x] == X_NONE) {
+                choices.add(new Coord(root.x, root.y - 1));
+            }
+            if (matrix[2 * (root.y - 1)][2 * (root.x + dir)] == X_NONE
+                    && matrix[2 * (root.y - 1) + 1][2 * (root.x + dir) - dir] == X_NONE) { // Check for crossing line
+                choices.add(new Coord(root.x + dir, root.y - 1));
+            }
+            if (choices.isEmpty()) {
+                break; // end of the line
+            } else {
+                Coord c = choices.get((int) (Math.random() * choices.size()));
+                if ((root.x - c.x) != 0) {
+                    matrix[2 * root.y - 1][2 * root.x + dir] = 'x'; // diag
+                } else {
+                    matrix[2 * root.y - 1][2 * root.x] = 's';  // straight                        
                 }
-                dumpMatrix();
-                matrix[2*root.y][2*root.x] = X_VIA;
-                addVia(grid+grid*root.x, grid+grid*root.y);
+                matrix[2 * c.y][2 * c.x] = 'c';
+                Node l = genTrace(root.x * grid, root.y * grid, c.x * grid, c.y * grid);
+                l.setLayoutY(grid);
+                l.setLayoutX(grid);
+                drawArea.getChildren().add(l);
+                root = c;
+            }
+        }
+        //dumpMatrix();
+        matrix[2 * root.y][2 * root.x] = X_VIA;
+        addVia(grid + grid * root.x, grid + grid * root.y);
     }
-    
-        private void routeLeft( int bit, int dir ) {
-                Coord root = new Coord(0, bit);
-                matrix[2*root.y][2*root.x] = X_CON;
-                //for (int y = 1; y < ((nBits + 1) / 2); y++) {
-                for (int x = 1; x < ((nBits + 1) / 2); x++) {                    
-                    ArrayList<Coord> choices = new ArrayList<>();
-                    if (matrix[2*root.y][2*(root.x+1)] == X_NONE) {
-                        choices.add(new Coord(root.x+1, root.y));
-                    }
-                    if ( matrix[2*(root.y+dir)]      [2*(root.x+1)    ] == X_NONE &&
-                         matrix[2*(root.y+dir) - dir][2*(root.x+1) - 1] == X_NONE    ) { // Check for crossing line
-                        choices.add(new Coord(root.x+1, root.y+dir));                        
-                    }
-                    
-                    if ( choices.isEmpty() ) {
-                        break; // end of the line
-                    } else {
-                        Coord c = choices.get((int)(Math.random()*choices.size()));
-                       
-                        if ((root.y-c.y) != 0 ){
-                            matrix[2*root.y+dir][2*root.x+1] = X_CON; // diag
-                        } else {
-                            matrix[2*root.y][2*root.x+1] = X_CON;  // straight                        
-                        }
-                        
-                        matrix[2*c.y][2*c.x] = X_CON;
-                        
-                        Node l = genTrace(root.x*grid, root.y*grid, c.x*grid, c.y*grid);
-                        
-                        l.setLayoutY(grid);
-                        l.setLayoutX(grid);
-                        drawArea.getChildren().add(l);
-                        root = c;
-                    }
+
+    private void routeLeft(int bit, int dir) {
+        Coord root = new Coord(0, bit);
+        matrix[2 * root.y][2 * root.x] = X_CON;
+        //for (int y = 1; y < ((nBits + 1) / 2); y++) {
+        for (int x = 1; x < ((nBits + 1) / 2); x++) {
+            ArrayList<Coord> choices = new ArrayList<>();
+            if (matrix[2 * root.y][2 * (root.x + 1)] == X_NONE) {
+                choices.add(new Coord(root.x + 1, root.y));
+            }
+            if (matrix[2 * (root.y + dir)][2 * (root.x + 1)] == X_NONE
+                    && matrix[2 * (root.y + dir) - dir][2 * (root.x + 1) - 1] == X_NONE) { // Check for crossing line
+                choices.add(new Coord(root.x + 1, root.y + dir));
+            }
+
+            if (choices.isEmpty()) {
+                break; // end of the line
+            } else {
+                Coord c = choices.get((int) (Math.random() * choices.size()));
+
+                if ((root.y - c.y) != 0) {
+                    matrix[2 * root.y + dir][2 * root.x + 1] = X_CON; // diag
+                } else {
+                    matrix[2 * root.y][2 * root.x + 1] = X_CON;  // straight                        
                 }
-                dumpMatrix();
-                matrix[2*root.y][2*root.x] = X_VIA;
-                addVia(grid+grid*root.x, grid+grid*root.y);
+
+                matrix[2 * c.y][2 * c.x] = X_CON;
+
+                Node l = genTrace(root.x * grid, root.y * grid, c.x * grid, c.y * grid);
+
+                l.setLayoutY(grid);
+                l.setLayoutX(grid);
+                drawArea.getChildren().add(l);
+                root = c;
+            }
+        }
+        //dumpMatrix();
+        matrix[2 * root.y][2 * root.x] = X_VIA;
+        addVia(grid + grid * root.x, grid + grid * root.y);
     }
-    
-    private boolean checkIntersect( Bounds b ) {
-        for ( Node n: drawArea.getChildren() ) {
+
+    private boolean checkIntersect(Bounds b) {
+        for (Node n : drawArea.getChildren()) {
             return n.intersects(b);
         }
-        
+
         return false;
     }
-    
+
     private void dumpMatrix() {
         // dump matrix
         StringBuilder sb = new StringBuilder("Matrix Dump:\n");
@@ -390,8 +385,8 @@ public class Router extends Pane {
         Circle c2 = new Circle(viaHoleRadius, viaHoleColor);
         c2.setLayoutX(x);
         c2.setLayoutY(y);
-        
-        drawArea.getChildren().addAll(c,c2);
+
+        drawArea.getChildren().addAll(c, c2);
     }
 
     private void genCorners(int bitL, double probability) {
@@ -404,11 +399,11 @@ public class Router extends Pane {
         // T1, L1
         if (isSet(side[T], bitL) && isSet(side[L], bitL) /*&& doMaybe(probability) */) {
             for (int i = 0; i < bitL + 1; i++) {
-                matrix[bitL*2][i*2] = X_CON;
-                matrix[2*i][bitL*2] = X_CON;
-                if ( i>0 ) {
-                    matrix[2*i-1][bitL*2] = X_CON;
-                    matrix[bitL*2][i*2-1] = X_CON;
+                matrix[bitL * 2][i * 2] = X_CON;
+                matrix[2 * i][bitL * 2] = X_CON;
+                if (i > 0) {
+                    matrix[2 * i - 1][bitL * 2] = X_CON;
+                    matrix[bitL * 2][i * 2 - 1] = X_CON;
                 }
             }
             //matrix[bitL][bitL] = X_CON;
@@ -422,126 +417,148 @@ public class Router extends Pane {
             //p.setLayoutX( g );
             drawArea.getChildren().add(p);
         } else if (isSet(side[T], bitL)) {  // Stub
-            matrix[0][bitL*2] = X_STUB;
-            matrix[1][bitL*2] = X_VIA;
+            matrix[0][bitL * 2] = X_STUB;
+            matrix[1][bitL * 2] = X_VIA;
             Node l = genTrace(gL, 0, gL, g);
             drawArea.getChildren().add(l);
-            if ( bitL == 0) addVia(gL, gL);
+            if (bitL == 0) {
+                addVia(gL, gL);
+            }
         } else if (isSet(side[L], bitL)) {  // Stub
-            matrix[bitL*2][0] = X_STUB;
-            matrix[bitL*2][1] = X_CON;
+            matrix[bitL * 2][0] = X_STUB;
+            matrix[bitL * 2][1] = X_CON;
             Node l = genTrace(0, gL, g, gL);
             drawArea.getChildren().add(l);
-            if ( bitL == 0 ) addVia(gL, gL);
+            if (bitL == 0) {
+                addVia(gL, gL);
+            }
         }
 
         // Tn-2, R1
         if (isSet(side[T], bitH) && isSet(side[R], bitL) /*&& doMaybe(probability)*/) {
             for (int i = 0; i < bitL + 1; i++) {
-                matrix[2*bitL][2*(last - i)] = X_CON;
-                if ( i < bitL) matrix[2*bitL][2*(last - i)-1] = X_CON;
-                matrix[2*i][2*bitH] = X_CON;
-                if ( i>0 ) matrix[2*i-1][2*bitH] = X_CON;
+                matrix[2 * bitL][2 * (last - i)] = X_CON;
+                if (i < bitL) {
+                    matrix[2 * bitL][2 * (last - i) - 1] = X_CON;
+                }
+                matrix[2 * i][2 * bitH] = X_CON;
+                if (i > 0) {
+                    matrix[2 * i - 1][2 * bitH] = X_CON;
+                }
             }
             //matrix[bitL][bitH] = X_CON;
             Node p = genPolyLine(
                     0, 0,
                     0, CORNER_TRIM * gL,
-                    (1.0-CORNER_TRIM) * gL, gL,
+                    (1.0 - CORNER_TRIM) * gL, gL,
                     gL, gL
             );
             p.setLayoutX(gH);
             drawArea.getChildren().add(p);
         } else if (isSet(side[T], bitH)) { // Stub
-            matrix[0][2*bitH] = X_STUB;
-            matrix[1][2*bitH] = X_CON;
+            matrix[0][2 * bitH] = X_STUB;
+            matrix[1][2 * bitH] = X_CON;
             Node l = genTrace(0, 0, 0, g);
             l.setLayoutX(gH);
             drawArea.getChildren().add(l);
-            if ( bitH == last) addVia(gH, gL);
+            if (bitH == last) {
+                addVia(gH, gL);
+            }
         } else if (isSet(side[R], bitL)) { // Stub
-            matrix[2*bitL][2*last] = X_STUB;
-            matrix[2*bitL][2*last-1] = X_VIA;
+            matrix[2 * bitL][2 * last] = X_STUB;
+            matrix[2 * bitL][2 * last - 1] = X_VIA;
             Node l = genTrace(0, gL, g, gL);
             l.setLayoutX(nBits * g);
             drawArea.getChildren().add(l);
-            if ( bitH == last) addVia(gH, gL);
+            if (bitH == last) {
+                addVia(gH, gL);
+            }
         }
 
         // B0, Ln
         if (isSet(side[B], bitL) && isSet(side[L], bitH) /*&& doMaybe(probability)*/) {
             for (int i = 0; i < bitL + 1; i++) {
-                matrix[2*bitH][2*i] = X_CON;
-                matrix[2*(last - i)][2*bitL] = X_CON;
-                if ( i > 0 ) {
-                    matrix[2*bitH][2*i-1] = X_CON;
+                matrix[2 * bitH][2 * i] = X_CON;
+                matrix[2 * (last - i)][2 * bitL] = X_CON;
+                if (i > 0) {
+                    matrix[2 * bitH][2 * i - 1] = X_CON;
                 }
-                if ( i < bitL) matrix[2*(last - i)-1][2*bitL] = X_CON;
+                if (i < bitL) {
+                    matrix[2 * (last - i) - 1][2 * bitL] = X_CON;
+                }
 
             }
             Node p = genPolyLine(
                     0, 0,
                     CORNER_TRIM * gL, 0,
-                    gL, (1.0-CORNER_TRIM) * gL,
+                    gL, (1.0 - CORNER_TRIM) * gL,
                     gL, gL
             );
             //p.setLayoutX( g );
             p.setLayoutY(gH);
             drawArea.getChildren().add(p);
         } else if (isSet(side[B], bitL)) { // Stub
-            matrix[2*(nBits - 1)][2*bitL] = X_STUB;
+            matrix[2 * (nBits - 1)][2 * bitL] = X_STUB;
             //matrix[2*(nBits - 1)-1][2*bitL] = X_CON;
             Node l = genTrace(gL, 0, gL, g);
             //l.setLayoutX(gH);
             l.setLayoutY(nBits * g);
             drawArea.getChildren().add(l);
-            if ( bitH == last ) addVia(gL, gH);
+            if (bitH == last) {
+                addVia(gL, gH);
+            }
         } else if (isSet(side[L], bitH)) { // Stub
-            matrix[2*bitH][0] = X_STUB;
-            matrix[2*bitH][1] = X_CON;
+            matrix[2 * bitH][0] = X_STUB;
+            matrix[2 * bitH][1] = X_CON;
             Node l = genTrace(0, 0, g, 0);
             //l.setLayoutX(gH);
             l.setLayoutY(gH);
             drawArea.getChildren().add(l);
-            if ( bitH == last ) addVia(gL, gH);
+            if (bitH == last) {
+                addVia(gL, gH);
+            }
         }
 
         // Bn, Rn
         if (isSet(side[B], bitH) && isSet(side[R], bitH) /*&& doMaybe(probability)*/) {
             for (int i = 0; i < bitL + 1; i++) {
-                matrix[2*bitH][2*(last - i)] = X_CON;
-                matrix[2*(last - i)][2*bitH] = X_CON;
-                if ( i < bitL ) {
-                    matrix[2*bitH][2*(last - i)-1] = X_CON;
-                    matrix[2*(last - i)-1][2*bitH] = X_CON;                    
+                matrix[2 * bitH][2 * (last - i)] = X_CON;
+                matrix[2 * (last - i)][2 * bitH] = X_CON;
+                if (i < bitL) {
+                    matrix[2 * bitH][2 * (last - i) - 1] = X_CON;
+                    matrix[2 * (last - i) - 1][2 * bitH] = X_CON;
                 }
             }
             //matrix[bitH][bitH] = X_CON;
             Node p = genPolyLine(
                     0, (bitL + 1) * g,
-                    0, (1.0-CORNER_TRIM) * (bitL + 1) * g,
-                    (1.0-CORNER_TRIM) * (bitL + 1) * g, 0,
+                    0, (1.0 - CORNER_TRIM) * (bitL + 1) * g,
+                    (1.0 - CORNER_TRIM) * (bitL + 1) * g, 0,
                     (bitL + 1) * g, 0
             );
             p.setLayoutX(gH);
             p.setLayoutY(gH);
             drawArea.getChildren().add(p);
         } else if (isSet(side[B], bitH)) { // Stub
-            matrix[2*(nBits - 1)][2*bitH] = X_STUB;
+            matrix[2 * (nBits - 1)][2 * bitH] = X_STUB;
             //matrix[2*(nBits - 1)-1][2*bitH] = X_CON;
             Node l = genTrace(0, 0, 0, g);
             l.setLayoutX(gH);
             l.setLayoutY(nBits * g);
             drawArea.getChildren().add(l);
-            if ( bitH == last) addVia(gH, gH);
+            if (bitH == last) {
+                addVia(gH, gH);
+            }
         } else if (isSet(side[R], bitH)) { // Stub
-            matrix[2*bitH][2*(nBits - 1)] = X_STUB;
-            matrix[2*bitH-1][2*(nBits - 1)] = X_CON;
+            matrix[2 * bitH][2 * (nBits - 1)] = X_STUB;
+            matrix[2 * bitH - 1][2 * (nBits - 1)] = X_CON;
             Node l = genTrace(0, 0, g, 0);
             l.setLayoutX(nBits * g);
             l.setLayoutY(gH);
             drawArea.getChildren().add(l);
-            if ( bitH == last) addVia(gH, gH);
+            if (bitH == last) {
+                addVia(gH, gH);
+            }
         }
     }
 
@@ -553,12 +570,12 @@ public class Router extends Pane {
 
         // Top
         if (isSet(side[T], bitL)) {  // Stub
-            matrix[0][2*bitL] = X_STUB;
+            matrix[0][2 * bitL] = X_STUB;
             Node l = genTrace(gL, 0, gL, g);
             drawArea.getChildren().add(l);
         }
         if (isSet(side[T], bitH)) { // Stub
-            matrix[0][2*bitH] = X_STUB;
+            matrix[0][2 * bitH] = X_STUB;
             Node l = genTrace(0, 0, 0, g);
             l.setLayoutX(gH);
             drawArea.getChildren().add(l);
@@ -566,13 +583,13 @@ public class Router extends Pane {
 
         // Right
         if (isSet(side[R], bitL)) { // Stub
-            matrix[2*bitL][2*(nBits - 1)] = X_STUB;
+            matrix[2 * bitL][2 * (nBits - 1)] = X_STUB;
             Node l = genTrace(0, gL, g, gL);
             l.setLayoutX(nBits * g);
             drawArea.getChildren().add(l);
         }
         if (isSet(side[R], bitH)) { // Stub
-            matrix[2*bitH][2*(nBits - 1)] = X_STUB;
+            matrix[2 * bitH][2 * (nBits - 1)] = X_STUB;
             Node l = genTrace(0, 0, g, 0);
             l.setLayoutX(nBits * g);
             l.setLayoutY(gH);
@@ -581,14 +598,14 @@ public class Router extends Pane {
 
         // Bottom
         if (isSet(side[B], bitL)) { // Stub
-            matrix[2*(nBits - 1)][2*bitL] = X_STUB;
+            matrix[2 * (nBits - 1)][2 * bitL] = X_STUB;
             Node l = genTrace(gL, 0, gL, g);
             //l.setLayoutX(gH);
             l.setLayoutY(nBits * g);
             drawArea.getChildren().add(l);
         }
         if (isSet(side[B], bitH)) { // Stub
-            matrix[2*(nBits - 1)][2*bitH] = X_STUB;
+            matrix[2 * (nBits - 1)][2 * bitH] = X_STUB;
             Node l = genTrace(0, 0, 0, g);
             l.setLayoutX(gH);
             l.setLayoutY(nBits * g);
@@ -597,12 +614,12 @@ public class Router extends Pane {
 
         // Left
         if (isSet(side[L], bitL)) {  // Stub
-            matrix[2*bitL][0] = X_STUB;
+            matrix[2 * bitL][0] = X_STUB;
             Node l = genTrace(0, gL, g, gL);
             drawArea.getChildren().add(l);
         }
         if (isSet(side[L], bitH)) { // Stub
-            matrix[2*bitH][0] = X_STUB;
+            matrix[2 * bitH][0] = X_STUB;
             //Line l = new Line(0, 0, g, 0);
             Node l = genTrace(0, 0, g, 0);
             //l.setLayoutX(gH);
@@ -612,19 +629,19 @@ public class Router extends Pane {
 
     }
 
-    private Node genTrace( double x1, double y1, double x2, double y2 ) {
+    private Node genTrace(double x1, double y1, double x2, double y2) {
         Line l = new Line(x1, y1, x2, y2);
         l.setStroke(traceColor);
         l.setStrokeWidth(traceWidth);
         l.setStrokeLineCap(StrokeLineCap.ROUND);
         return l;
     }
-    
+
     private Node genPolyLine(double... doubles) {
         Polyline p = new Polyline(doubles);
         p.setStroke(traceColor);
         p.setStrokeWidth(traceWidth);
-        
+
         return p;
     }
 //    private Node genVia( double x, double y ) {
@@ -632,7 +649,7 @@ public class Router extends Pane {
 //        
 //        return c;
 //    }
-    
+
     private boolean isSet(int edge, int bit) {
         return (edge & (1 << bit)) > 0;
     }
@@ -643,11 +660,19 @@ public class Router extends Pane {
                 matrix[y][x] = ' ';
             }
         }
-        for (int y = 0; y < matrix.length-1; y++) {
-            for (int x = 0; x < matrix[y].length-1; x++) {
+        for (int y = 0; y < matrix.length - 1; y++) {
+            for (int x = 0; x < matrix[y].length - 1; x++) {
                 matrix[y][x] = X_NONE;
             }
         }
+    }
+
+    public Image snap() {
+        final SnapshotParameters sp = new SnapshotParameters();
+        sp.setFill(Color.TRANSPARENT);
+        WritableImage snapshot = new WritableImage((int)getPrefWidth(), (int)getPrefHeight());
+        snapshot = this.snapshot(sp, snapshot);
+        return snapshot;
     }
 
     private class Edge {
