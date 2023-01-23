@@ -35,7 +35,7 @@ public class BallShield extends Group {
             double sin = Math.sin(i*rad);
             double cos = Math.cos(i*rad);
             Sphere s = new Sphere(BALL_SIZE);
-            s.setMaterial(new PhongMaterial(Color.GREEN));
+            s.setMaterial(new PhongMaterial(Color.DARKGREY));
             s.setTranslateX(sin*SHIELD_RADIUS);
             s.setTranslateZ(cos*SHIELD_RADIUS);
 

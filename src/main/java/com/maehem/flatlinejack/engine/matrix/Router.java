@@ -153,7 +153,7 @@ public class Router extends Pane {
             stubList.remove(e);
         }
 
-        LOGGER.log(INFO, "All routed!");
+        //LOGGER.log(INFO, "All routed!");
         // genCornerVias
         //genCornerVias();
     }

@@ -54,7 +54,7 @@ public class MatrixSite {
         this.bottomBits = map.getEdge(EdgeMap.Edge.BOTTOM, row, col);
         this.leftBits = map.getEdge(EdgeMap.Edge.LEFT, row, col);
         
-        LOGGER.log(Level.INFO, "Created new Site: {0}", getAddress());
+        LOGGER.log(Level.FINER, "Created new Site: {0}", getAddress());
     }
     
     public MatrixSite( GameState gs, int addr ) {

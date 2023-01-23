@@ -29,7 +29,8 @@ import javafx.scene.transform.Rotate;
 public class WallShield extends Group {
 
     //private final static double BALL_SIZE = 10.0;
-    private final static double SHIELD_RADIUS = 80.0;
+    private final static double SHIELD_RADIUS = 85.0;
+    private final static Color SHIELD_COLOR = new Color(0.3, 0.1, 0.5, 0.5);
 
     public WallShield() {
         int nShields = 3;
@@ -41,15 +42,17 @@ public class WallShield extends Group {
             MeshView sh = new MeshView(new ObjTriangleMesh(
                     getClass().getResourceAsStream("/content/matrix/shield1.obj")
             ));
-            sh.setMaterial(new PhongMaterial(new Color(1.0, 0.2, 0.5, 0.4)));
+            sh.setMaterial(new PhongMaterial(SHIELD_COLOR));
+            sh.setTranslateX(sin * SHIELD_RADIUS);
+            //sh.setTranslateZ(sin * SHIELD_RADIUS);
+            sh.setTranslateZ(cos * SHIELD_RADIUS);
             sh.setRotationAxis(Rotate.Y_AXIS);
             sh.setRotate(rot*i);
-            sh.setTranslateX(sin * SHIELD_RADIUS);
-            sh.setTranslateZ(cos * SHIELD_RADIUS);
 
             getChildren().add(sh);
             
-            setTranslateZ(-50);
+            setTranslateZ(-62);
+            setTranslateX(10);
         }
     }
 

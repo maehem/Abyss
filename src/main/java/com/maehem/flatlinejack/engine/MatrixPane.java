@@ -57,15 +57,8 @@ public class MatrixPane extends BorderPane {
     public MatrixPane(GameState gs, double width, double height) {
         this.gameState = gs;
         currentSite = gs.getSite(0x00101 ); // For now
-        
         scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
         
-        Box testBox = new Box(100, 100, 100);
-        testBox.setMaterial(new PhongMaterial(Color.RED));
-        testBox.setDrawMode(DrawMode.LINE);
-        testBox.setTranslateY(-50);
-        root.getChildren().add(testBox);
- 
         PerspectiveCamera camera = new PerspectiveCamera(true);
         
         // Normal Camera
@@ -74,25 +67,28 @@ public class MatrixPane extends BorderPane {
                 new Translate(0, -30, -600)); // Just off the ground
         camera.setFieldOfView(30.0);
         
-//        // DEBUG:  Top Down Camera
+//        // DEBUG:  Ortho Camera
 //        camera.getTransforms().addAll (
-//                new Rotate(-64, Rotate.X_AXIS),  // Tilt down a little
+//                new Rotate(-90, Rotate.X_AXIS),  // Tilt down a little
 //                new Translate(0, 80, -1600)); // Just off the ground
 //        camera.setFieldOfView(45.0);
+
+            // Top down
+//        camera.getTransforms().addAll (
+//                new Rotate(-90, Rotate.X_AXIS),  // Tilt down a little
+//                new Translate(0, 80, -1600)); // Just off the ground
+//        camera.setFieldOfView(20.0);
         
+        //LOGGER.log(Level.INFO, "FOV: {0}", camera.getFieldOfView());
         
-        camera.setNearClip(0.01);
+        camera.setNearClip(100);
         camera.setFarClip(4500.0);
         
         root.getChildren().add(camera);
         scene.setCamera(camera);
-        
-        //LOGGER.log(Level.INFO, "FOV: {0}", camera.getFieldOfView());
-
-        initBackDrop();
-        
         setCenter(scene);
-        
+
+        initBackDrop();        
         updateRoot();
     }
 
@@ -119,6 +115,14 @@ public class MatrixPane extends BorderPane {
         
         // Draw Ceiling (none for 'F')
         
+        
+        // Test Box of a site volume
+//        Box testBox = new Box(100, 100, 100);
+//        testBox.setMaterial(new PhongMaterial(Color.RED));
+//        testBox.setDrawMode(DrawMode.LINE);
+//        testBox.setTranslateY(-50);
+//        root.getChildren().add(testBox);
+ 
         
         MatrixNode matrixNode = new HeatsinkNode(currentSite, nodeScaling*size);
         root.getChildren().add(matrixNode);
@@ -151,8 +155,6 @@ public class MatrixPane extends BorderPane {
     
     private Group getGrid( double size) {
         Group g = new Group();
-        
-        //float size = 1280;
 
         for( int x=0; x<3; x++) {
             for ( int y=0; y<3; y++ ) {
@@ -169,37 +171,48 @@ public class MatrixPane extends BorderPane {
         // Re-center object
         g.setTranslateX(-size/2.0);
         g.setTranslateY(-size/2.0);
-        g.setScaleX(nodeScaling);
+        g.setScaleX(nodeScaling); // Lines appear sharper when we scale down a larger grid.
         g.setScaleY(nodeScaling);
         g.setScaleZ(nodeScaling);
-        initFloorDecor();
         
         return g;
     }
     
-    private void initFloorDecor() {
-        
-    }
-    
    private Group getLighting() {
         AmbientLight ambient = new AmbientLight(new Color(0.2, 0.2, 0.25, 1.0));
-        PointLight upperLight = new PointLight();
-        upperLight.setColor(Color.WHITE);
-        upperLight.setTranslateY(-500);
-        upperLight.setTranslateX(600);
-        upperLight.setTranslateZ(-700);
-        upperLight.setRotationAxis(Rotate.X_AXIS);
+        
+        PointLight upperLight = new PointLight(Color.GRAY);
+        upperLight.setMaxRange(300);
+        upperLight.setTranslateY(-350);
+        upperLight.setTranslateX(100);
+        upperLight.setTranslateZ(100);
+        //upperLight.setRotationAxis(Rotate.X_AXIS);
         //upperLight.setRotate(90);
         
-        PointLight lowerLight = new PointLight();
-        lowerLight.setColor(Color.BLUE);
-        lowerLight.setTranslateY(100);
-        lowerLight.setTranslateX(440);
-        lowerLight.setTranslateZ(-700);
-        lowerLight.setRotationAxis(Rotate.X_AXIS);
-        lowerLight.setRotate(90);
+        PointLight lowerLight = new PointLight(Color.BLUE);
+        lowerLight.setMaxRange(300);
+        Box lightBox = new Box(20, 20, 20);
+        lightBox.setMaterial(new PhongMaterial(Color.BLUE));
+        lightBox.setDrawMode(DrawMode.LINE);
+        Group light1 = new Group(lowerLight, lightBox);
         
-        return new Group( ambient, upperLight, lowerLight);
+        light1.setTranslateY(-100);
+        light1.setTranslateX(-100);
+        light1.setTranslateZ(-100);
+        
+        PointLight underLight = new PointLight(Color.VIOLET.darker());
+        underLight.setMaxRange(300);
+        //underLight.setColor(Color.MAGENTA);
+        Box lightBox2 = new Box(20, 20, 20);
+        lightBox2.setMaterial(new PhongMaterial(Color.BLUE));
+        lightBox2.setDrawMode(DrawMode.LINE);
+        Group light2 = new Group(underLight, lightBox2);
+        
+        light2.setTranslateY(-20);
+        light2.setTranslateX(0);
+        light2.setTranslateZ(-200);
+       
+        return new Group( ambient, upperLight, light1, light2);
     }
     
     private ImageView backgroundImage() {
