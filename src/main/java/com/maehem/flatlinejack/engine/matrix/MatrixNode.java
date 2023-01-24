@@ -54,8 +54,8 @@ public abstract class MatrixNode extends Group {
     
     public void init() {
         //getChildren().add(shieldGroup);
-        initCore();
-        initShields();
+        initStructure();  // The thing/building-like-thing in the center of the site.
+        initShields();    // The ICE that protects the site.
         
         // Groups must be added after init or weird visual things happen.
         // JavaFX bug?
@@ -104,7 +104,7 @@ public abstract class MatrixNode extends Group {
         getChildren().add(coordText);
     }
     
-    public abstract void initCore();
+    public abstract void initStructure();
     
     public abstract void initShields();
     
@@ -112,7 +112,7 @@ public abstract class MatrixNode extends Group {
 //        return shieldGroup;
 //    }
     
- //   protected void initCore() {
+ //   protected void initStructure() {
         // Empty site by default.  Overide to add your own core.
         
 //        MeshView core = new MeshView(new ObjTriangleMesh(

@@ -16,15 +16,12 @@
  */
 package com.maehem.flatlinejack.content.matrix;
 
-import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.MatrixSite;
 import com.maehem.flatlinejack.engine.matrix.BallShield;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import com.maehem.flatlinejack.engine.matrix.ObjTriangleMesh;
 import com.maehem.flatlinejack.engine.matrix.WallShield;
-import java.util.logging.Level;
 import javafx.animation.RotateTransition;
-import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
@@ -53,8 +50,13 @@ public class HeatsinkNode extends MatrixNode {
         init();
     }
     
+    /**
+     * Initialize the structure item.
+     * Add your OBJs to the structureGroup.
+     * 
+     */
     @Override
-    public void initCore() {
+    public void initStructure() {
         base.setMaterial(new PhongMaterial(Color.DARKGREY));
         neck.setMaterial(new PhongMaterial(Color.DARKRED));
         top.setMaterial(new PhongMaterial(Color.DARKTURQUOISE));
@@ -69,6 +71,8 @@ public class HeatsinkNode extends MatrixNode {
     
     /**
      * Initialize any shields.
+     * Add your items to the shieldGroup.
+     * 
      * 
      */
     @Override
@@ -108,7 +112,6 @@ public class HeatsinkNode extends MatrixNode {
         ws2.setTranslateY(60);
         
         shieldGroup.getChildren().addAll(bs, ws, ws2);
-//        getChildren().add(shieldGroup);
                 
     }
 }

@@ -31,7 +31,7 @@ public class EmptyMatrixNode extends MatrixNode {
     }
 
     @Override
-    public void initCore() {}
+    public void initStructure() {}
 
     @Override
     public void initShields() {}
