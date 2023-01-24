@@ -97,8 +97,12 @@ public class GameState extends Properties {
         initNews();
         initMessages();
 
-        MatrixSite testSite = new MatrixSite(this, 0, 1, 1);
-        addSite(testSite);
+        //MatrixSite testSite = new MatrixSite(this, 0, 1, 1, "HeatsinkNode");
+        addSite(new MatrixSite(this, 0, 1, 1, "HeatsinkNode"));
+        addSite(new MatrixSite(this, 0, 2, 5, "HeatsinkNode"));
+        addSite(new MatrixSite(this, 0, 3, 8, "HeatsinkNode"));
+        addSite(new MatrixSite(this, 0, 4, 2, "HeatsinkNode"));
+        addSite(new MatrixSite(this, 0, 5, 3, "HeatsinkNode"));
     }
 
     @Override
@@ -539,7 +543,7 @@ public class GameState extends Properties {
                 && MatrixSite.decodeRow(address) >= 0
                 && MatrixSite.decodeCol(address) < MAP_SIZE-1
                 && MatrixSite.decodeRow(address) < MAP_SIZE-1) {
-            return addSite(new MatrixSite(this, address));
+            return addSite(new MatrixSite(this, address, ""));
         }
 
         LOGGER.log(Level.INFO, "Tried to add a site out of bounds!" );

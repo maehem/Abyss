@@ -58,12 +58,6 @@ public class MatrixPane extends BorderPane {
 
     // For movement, cache a list of nodes to make
     // shifting and removing them easier.
-//    private ArrayList<MatrixNode> colRightNodes = new  ArrayList<>();
-//    private ArrayList<MatrixNode> colLeftNodes = new ArrayList<>();
-//    private ArrayList<MatrixNode> colCenterNodes = new ArrayList<>();
-//    private ArrayList<MatrixNode> rowAheadNodes = new ArrayList<>();
-//    private ArrayList<MatrixNode> rowBehindNodes = new ArrayList<>();
-//    private ArrayList<MatrixNode> rowMiddleNodes = new ArrayList<>();
     MatrixNode nodeCenter;
     MatrixNode nodeN;
     MatrixNode nodeS;
@@ -85,6 +79,7 @@ public class MatrixPane extends BorderPane {
     public MatrixPane(GameState gs, double width, double height) {
         this.gameState = gs;
         currentSite = gs.getSite(0x00101); // For now
+                
         scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -145,9 +140,6 @@ public class MatrixPane extends BorderPane {
                 if (currentSite.getRow() < GameState.MAP_SIZE - 1) { // Determine if player can move.
                     // Yes. We can move.
                     // Remove the nodes to the South
-//                    for ( MatrixNode t: rowAheadNodes ) {
-//                        root.getChildren().remove(t);
-//                    }
                     MatrixNode tempSW = addNeighbor(MatrixSiteNeighbor.SSW);
                     MatrixNode tempS = addNeighbor(MatrixSiteNeighbor.SS);
                     MatrixNode tempSE = addNeighbor(MatrixSiteNeighbor.SSE);
@@ -184,9 +176,6 @@ public class MatrixPane extends BorderPane {
                     // Update current site and get it.
                     currentSite = gameState.getSite(currentSite.getNeighbor(MatrixSiteNeighbor.S));
                     //LOGGER.log(Level.INFO, "Current Site is: {0}:{1}", new Object[]{currentSite.getRow(), currentSite.getCol()});
-//                    rowAheadNodes = rowMiddleNodes;
-//                    rowMiddleNodes = rowBehindNodes;
-//                    rowBehindNodes = new ArrayList<>();
                     // Generate new sites ahead of current site.
                     nodeSW = tempSW;
                     nodeS = tempS;
@@ -195,11 +184,7 @@ public class MatrixPane extends BorderPane {
                 break;
             case FORWARD:
                 if (currentSite.getRow() > 1) { // Determine if player can move.
-                    // Yes. We can move.
-                    // Remove the nodes to the South
-//                    for ( MatrixNode t: rowBehindNodes ) {
-//                        root.getChildren().remove(t);
-//                    }
+
                     MatrixNode tempNW = addNeighbor(MatrixSiteNeighbor.NNW);
                     MatrixNode tempN = addNeighbor(MatrixSiteNeighbor.NN);
                     MatrixNode tempNE = addNeighbor(MatrixSiteNeighbor.NNE);
@@ -242,22 +227,10 @@ public class MatrixPane extends BorderPane {
                     nodeN = tempN;
                     nodeNE = tempNE;
 
-//                    rowBehindNodes = rowMiddleNodes;
-//                    rowMiddleNodes = rowAheadNodes;
-//                    rowAheadNodes = new ArrayList<>();
-//                    // Generate new sites ahead of current site.
-//                    rowAheadNodes.add(addNeighbor(MatrixSiteNeighbor.NE));
-//                    rowAheadNodes.add(addNeighbor(MatrixSiteNeighbor.N));
-//                    rowAheadNodes.add(addNeighbor(MatrixSiteNeighbor.NW));
                 }
                 break;
             case LEFT:
                 if (currentSite.getCol() > 1) { // Determine if player can move.
-                    // Yes. We can move.
-                    // Remove the nodes to the East
-//                    for ( MatrixNode t: colRightNodes ) {
-//                        root.getChildren().remove(t);
-//                    }
 
                     MatrixNode tempNW = addNeighbor(MatrixSiteNeighbor.NWW);
                     MatrixNode tempW = addNeighbor(MatrixSiteNeighbor.WW);
@@ -292,14 +265,6 @@ public class MatrixPane extends BorderPane {
                     nodeNW = tempNW;
                     nodeW = tempW;
                     nodeSW = tempSW;
-
-//                    colRightNodes = colCenterNodes;
-//                    colCenterNodes = colLeftNodes;
-//                    colLeftNodes = new ArrayList<>();
-//                    // Generate left nodes, fill, place.
-//                    colLeftNodes.add(addNeighbor(MatrixSiteNeighbor.NW));
-//                    colLeftNodes.add(addNeighbor(MatrixSiteNeighbor.W));
-//                    colLeftNodes.add(addNeighbor(MatrixSiteNeighbor.SW));
                 }
 
                 break;
@@ -307,9 +272,6 @@ public class MatrixPane extends BorderPane {
                 if (currentSite.getCol() < GameState.MAP_SIZE - 1) { // Determine if player can move.
                     // Yes. We can move.
                     //ArrayList<MatrixNode> trashNodes = colLeftNodes;
-//                    for ( MatrixNode t: colLeftNodes ) {
-//                        root.getChildren().remove(t);
-//                    }
                     MatrixNode tempNE = addNeighbor(MatrixSiteNeighbor.NEE);
                     MatrixNode tempE = addNeighbor(MatrixSiteNeighbor.EE);
                     MatrixNode tempSE = addNeighbor(MatrixSiteNeighbor.SEE);
@@ -346,13 +308,6 @@ public class MatrixPane extends BorderPane {
                     nodeE = tempE;
                     nodeSE = tempSE;
 
-//                    colLeftNodes = colCenterNodes;
-//                    colCenterNodes = colRightNodes;
-//                    colRightNodes = new ArrayList<>();
-//                    // Generate left nodes, fill, place.
-//                    colRightNodes.add(addNeighbor(MatrixSiteNeighbor.NE));
-//                    colRightNodes.add(addNeighbor(MatrixSiteNeighbor.E));
-//                    colRightNodes.add(addNeighbor(MatrixSiteNeighbor.SE));
                 }
                 break;
         }
@@ -419,7 +374,8 @@ public class MatrixPane extends BorderPane {
 //        testBox.setDrawMode(DrawMode.LINE);
 //        testBox.setTranslateY(-50);
 //        root.getChildren().add(testBox);
-        nodeCenter = new HeatsinkNode(currentSite, nodeScaling * size);
+        //nodeCenter = new HeatsinkNode(currentSite, nodeScaling * size);
+        nodeCenter = MatrixNodeFactory.getNewMatrixNode(currentSite, nodeScaling*size);
         root.getChildren().add(nodeCenter);
 
         // Surrounding Nodes
@@ -433,29 +389,6 @@ public class MatrixPane extends BorderPane {
         nodeSE = addNeighbor(MatrixSiteNeighbor.SE);
         nodeSW = addNeighbor(MatrixSiteNeighbor.SW);
 
-//        colCenterNodes.add(nodeN);
-//        colCenterNodes.add(nodeCenter);
-//        colCenterNodes.add(nodeS);
-//                
-//        colLeftNodes.add(nodeNW);
-//        colLeftNodes.add(nodeW);
-//        colLeftNodes.add(nodeSW);
-//        
-//        colRightNodes.add(nodeNE);
-//        colRightNodes.add(nodeE);
-//        colRightNodes.add(nodeSE);
-//        
-//        rowAheadNodes.add(nodeNW);
-//        rowAheadNodes.add(nodeN);
-//        rowAheadNodes.add(nodeNE);
-//        
-//        rowMiddleNodes.add(nodeW);
-//        rowMiddleNodes.add(nodeCenter);
-//        rowMiddleNodes.add(nodeE);
-//        
-//        rowBehindNodes.add(nodeSW);
-//        rowBehindNodes.add(nodeS);
-//        rowBehindNodes.add(nodeSE);
     }
 
     private MatrixNode addNeighbor(MatrixSiteNeighbor n) {
@@ -463,9 +396,10 @@ public class MatrixPane extends BorderPane {
         MatrixSite site = gameState.getSite(neighbor);
         if (site == null) {
             // Blank Site
-            site = new MatrixSite(gameState, neighbor);
+            site = new MatrixSite(gameState, neighbor,"");
         }
-        MatrixNode node = new MatrixNode(site, nodeScaling * size);
+        //MatrixNode node = new MatrixNode(site, nodeScaling * size);
+        MatrixNode node = MatrixNodeFactory.getNewMatrixNode(site, nodeScaling*size);
         node.setTranslateX(n.col * nodeScaling * size);
         node.setTranslateZ(-n.row * nodeScaling * size);
         root.getChildren().add(node);
@@ -504,8 +438,6 @@ public class MatrixPane extends BorderPane {
         upperLight.setTranslateY(-350);
         upperLight.setTranslateX(100);
         upperLight.setTranslateZ(100);
-        //upperLight.setRotationAxis(Rotate.X_AXIS);
-        //upperLight.setRotate(90);
 
         PointLight lowerLight = new PointLight(Color.BLUE);
         lowerLight.setMaxRange(300);
@@ -520,7 +452,6 @@ public class MatrixPane extends BorderPane {
 
         PointLight underLight = new PointLight(Color.VIOLET.darker());
         underLight.setMaxRange(300);
-        //underLight.setColor(Color.MAGENTA);
         Box lightBox2 = new Box(20, 20, 20);
         lightBox2.setMaterial(new PhongMaterial(Color.BLUE));
         lightBox2.setDrawMode(DrawMode.LINE);

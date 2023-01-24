@@ -18,8 +18,6 @@ package com.maehem.flatlinejack;
 
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.debug.DebugTab;
-import com.maehem.flatlinejack.engine.EdgeMapOLD;
-import com.maehem.flatlinejack.engine.EdgeMap;
 import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.Loop;
 import com.maehem.flatlinejack.engine.Player;
@@ -198,7 +196,6 @@ public class Engine extends Application implements GameStateListener {
                 STARTING_VIGNETTE
         );
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
-//        EdgeMap e = new EdgeMap(64, 64);
    }
 
     private void setShowing( Node n ) {

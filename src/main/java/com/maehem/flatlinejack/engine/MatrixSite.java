@@ -17,8 +17,6 @@
 package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
-import com.maehem.flatlinejack.engine.EdgeMap.Edge;
-import static com.maehem.flatlinejack.engine.MatrixSiteNeighbor.N;
 import java.util.logging.Level;
 
 /**
@@ -39,14 +37,15 @@ public class MatrixSite {
     private int rightBits = 0;
     private int bottomBits = 0;
     private int leftBits = 0;
+    private final String nodeName;
     
 
-    public MatrixSite( GameState gs, int zone, int row, int col) {
-        //this.address = (zone&0xF) << 16 | (col&0xFF) << 8 | (row&0xFF);
+    public MatrixSite( GameState gs, int zone, int row, int col, String nodeName) {
         this.gameState = gs;
         this.addrCol = col;
         this.addrRow = row;
         this.zone = zone;
+        this.nodeName = nodeName;
         
         EdgeMap map = gs.getMatrixMap();
         this.topBits = map.getEdge(EdgeMap.Edge.TOP, row, col);
@@ -57,8 +56,8 @@ public class MatrixSite {
         LOGGER.log(Level.FINER, "Created new Site: {0}", getAddress());
     }
     
-    public MatrixSite( GameState gs, int addr ) {
-        this(gs, decodeZone(addr), decodeRow(addr), decodeCol(addr));
+    public MatrixSite( GameState gs, int addr, String nodeName ) {
+        this(gs, decodeZone(addr), decodeRow(addr), decodeCol(addr), nodeName);
     }
     
     //  Level:X:Y  ==>  F:FF:FF
@@ -147,6 +146,15 @@ public class MatrixSite {
     
     public static final int decodeCol( int addr ) {
         return addr &0xFF;
+    }
+    
+    /**
+     * Name of MatrixNode class to load and attach to node.
+     * 
+     * @return 
+     */
+    public String getNodeName() {
+        return nodeName;
     }
     
 //    public static String toHex( int address ) {
