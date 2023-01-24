@@ -23,6 +23,7 @@ import com.maehem.flatlinejack.engine.matrix.GroundMesh;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import java.util.ArrayList;
 import java.util.logging.Level;
+import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
@@ -150,25 +151,27 @@ public class MatrixPane extends BorderPane {
                     MatrixNode tempSW = addNeighbor(MatrixSiteNeighbor.SSW);
                     MatrixNode tempS = addNeighbor(MatrixSiteNeighbor.SS);
                     MatrixNode tempSE = addNeighbor(MatrixSiteNeighbor.SSE);
-                    
+
+                    fadeNode(nodeNW, false);
+                    fadeNode(nodeN, false);
+                    fadeNode(nodeNE, false);
                     //root.getChildren().removeAll(nodeNW, nodeN, nodeNE);
-
                     // Translate items in site groups
-                    translateNode(tempSW, Direction.FORWARD, false );
-                    translateNode(tempS, Direction.FORWARD, false );
-                    translateNode(tempSE, Direction.FORWARD, false );
+                    translateNode(tempSW, Direction.FORWARD, false);
+                    translateNode(tempS, Direction.FORWARD, false);
+                    translateNode(tempSE, Direction.FORWARD, false);
 
-                    translateNode(nodeSW, Direction.FORWARD, false );
-                    translateNode(nodeS, Direction.FORWARD, false );
-                    translateNode(nodeSE, Direction.FORWARD, false );
+                    translateNode(nodeSW, Direction.FORWARD, false);
+                    translateNode(nodeS, Direction.FORWARD, false);
+                    translateNode(nodeSE, Direction.FORWARD, false);
 
-                    translateNode(nodeW, Direction.FORWARD, false );
-                    translateNode(nodeCenter, Direction.FORWARD, false );
-                    translateNode(nodeE, Direction.FORWARD, false );
-                    
-                    translateNode(nodeNW, Direction.FORWARD, true );
-                    translateNode(nodeN, Direction.FORWARD, true );
-                    translateNode(nodeNE, Direction.FORWARD, true );
+                    translateNode(nodeW, Direction.FORWARD, false);
+                    translateNode(nodeCenter, Direction.FORWARD, false);
+                    translateNode(nodeE, Direction.FORWARD, false);
+
+                    translateNode(nodeNW, Direction.FORWARD, true);
+                    translateNode(nodeN, Direction.FORWARD, true);
+                    translateNode(nodeNE, Direction.FORWARD, true);
 
                     nodeNW = nodeW;
                     nodeN = nodeCenter;
@@ -201,24 +204,27 @@ public class MatrixPane extends BorderPane {
                     MatrixNode tempN = addNeighbor(MatrixSiteNeighbor.NN);
                     MatrixNode tempNE = addNeighbor(MatrixSiteNeighbor.NNE);
 
+                    fadeNode(tempN, true);
+                    fadeNode(tempNW, true);
+                    fadeNode(tempNE, true);
+                    
                     //root.getChildren().removeAll(nodeSW, nodeS, nodeSE);
-
                     // Translate items in site groups
-                    translateNode(tempNW, Direction.BACKWARD, false );
-                    translateNode(tempN, Direction.BACKWARD, false );
-                    translateNode(tempNE, Direction.BACKWARD, false );
+                    translateNode(tempNW, Direction.BACKWARD, false);
+                    translateNode(tempN, Direction.BACKWARD, false);
+                    translateNode(tempNE, Direction.BACKWARD, false);
 
-                    translateNode(nodeNW, Direction.BACKWARD, false );
-                    translateNode(nodeN, Direction.BACKWARD, false );
-                    translateNode(nodeNE, Direction.BACKWARD, false );
+                    translateNode(nodeNW, Direction.BACKWARD, false);
+                    translateNode(nodeN, Direction.BACKWARD, false);
+                    translateNode(nodeNE, Direction.BACKWARD, false);
 
-                    translateNode(nodeW, Direction.BACKWARD, false );
-                    translateNode(nodeCenter, Direction.BACKWARD, false );
-                    translateNode(nodeE, Direction.BACKWARD, false );
+                    translateNode(nodeW, Direction.BACKWARD, false);
+                    translateNode(nodeCenter, Direction.BACKWARD, false);
+                    translateNode(nodeE, Direction.BACKWARD, false);
 
-                    translateNode(nodeSW, Direction.BACKWARD, true );
-                    translateNode(nodeS, Direction.BACKWARD, true );
-                    translateNode(nodeSE, Direction.BACKWARD, true );
+                    translateNode(nodeSW, Direction.BACKWARD, true);
+                    translateNode(nodeS, Direction.BACKWARD, true);
+                    translateNode(nodeSE, Direction.BACKWARD, true);
 
                     nodeSW = nodeW;
                     nodeS = nodeCenter;
@@ -256,24 +262,22 @@ public class MatrixPane extends BorderPane {
                     MatrixNode tempNW = addNeighbor(MatrixSiteNeighbor.NWW);
                     MatrixNode tempW = addNeighbor(MatrixSiteNeighbor.WW);
                     MatrixNode tempSW = addNeighbor(MatrixSiteNeighbor.SWW);
-                    
-                    // Translate items in site groups
-                    translateNode(nodeN, Direction.RIGHT, false );
-                    translateNode(nodeCenter, Direction.RIGHT, false );
-                    translateNode(nodeS, Direction.RIGHT, false );
-                    translateNode(nodeNW, Direction.RIGHT, false );
-                    translateNode(nodeW, Direction.RIGHT, false );
-                    translateNode(nodeSW, Direction.RIGHT, false );
-                    translateNode(nodeNE, Direction.RIGHT, true );
-                    translateNode(nodeE, Direction.RIGHT, true );
-                    translateNode(nodeSE, Direction.RIGHT, true );
-                    translateNode(tempNW, Direction.RIGHT, false );
-                    translateNode(tempW, Direction.RIGHT, false );
-                    translateNode(tempSW, Direction.RIGHT, false );
-                    
-                    
-                    //root.getChildren().removeAll(nodeNE, nodeE, nodeSE);
 
+                    // Translate items in site groups
+                    translateNode(nodeN, Direction.RIGHT, false);
+                    translateNode(nodeCenter, Direction.RIGHT, false);
+                    translateNode(nodeS, Direction.RIGHT, false);
+                    translateNode(nodeNW, Direction.RIGHT, false);
+                    translateNode(nodeW, Direction.RIGHT, false);
+                    translateNode(nodeSW, Direction.RIGHT, false);
+                    translateNode(nodeNE, Direction.RIGHT, true);
+                    translateNode(nodeE, Direction.RIGHT, true);
+                    translateNode(nodeSE, Direction.RIGHT, true);
+                    translateNode(tempNW, Direction.RIGHT, false);
+                    translateNode(tempW, Direction.RIGHT, false);
+                    translateNode(tempSW, Direction.RIGHT, false);
+
+                    //root.getChildren().removeAll(nodeNE, nodeE, nodeSE);
                     nodeNE = nodeN;
                     nodeE = nodeCenter;
                     nodeSE = nodeS;
@@ -311,21 +315,20 @@ public class MatrixPane extends BorderPane {
                     MatrixNode tempSE = addNeighbor(MatrixSiteNeighbor.SEE);
 
                     //root.getChildren().removeAll(nodeNW, nodeW, nodeSW);
-
                     // Translate items in site groups
-                    translateNode(tempNE, Direction.LEFT, false );
-                    translateNode(tempE, Direction.LEFT, false );
-                    translateNode(tempSE, Direction.LEFT, false );
-                    translateNode(nodeN, Direction.LEFT, false );
-                    translateNode(nodeCenter, Direction.LEFT, false );
-                    translateNode(nodeS, Direction.LEFT, false );
-                    translateNode(nodeNE, Direction.LEFT, false );
-                    translateNode(nodeE, Direction.LEFT, false );
-                    translateNode(nodeSE, Direction.LEFT, false );
-                    
-                    translateNode(nodeNW, Direction.LEFT, true ); // Remove after scoot
-                    translateNode(nodeW, Direction.LEFT, true );
-                    translateNode(nodeSW, Direction.LEFT, true );
+                    translateNode(tempNE, Direction.LEFT, false);
+                    translateNode(tempE, Direction.LEFT, false);
+                    translateNode(tempSE, Direction.LEFT, false);
+                    translateNode(nodeN, Direction.LEFT, false);
+                    translateNode(nodeCenter, Direction.LEFT, false);
+                    translateNode(nodeS, Direction.LEFT, false);
+                    translateNode(nodeNE, Direction.LEFT, false);
+                    translateNode(nodeE, Direction.LEFT, false);
+                    translateNode(nodeSE, Direction.LEFT, false);
+
+                    translateNode(nodeNW, Direction.LEFT, true); // Remove after scoot
+                    translateNode(nodeW, Direction.LEFT, true);
+                    translateNode(nodeSW, Direction.LEFT, true);
 
                     nodeNW = nodeN;
                     nodeW = nodeCenter;
@@ -355,11 +358,26 @@ public class MatrixPane extends BorderPane {
         }
     }
 
-    private void translateNode(MatrixNode node, Direction d, boolean removeWhenDone ) {
+    /**
+     * Fade a Matrix Node in or out on the horizon
+     * 
+     * @param n the node to fade
+     * @param in true=fade-in, false=fade-out
+     */
+    private void fadeNode(MatrixNode n, boolean in) {
+        FadeTransition ft = new FadeTransition(Duration.millis(in?100:300), n);
+        ft.setFromValue(in?0.0:1.0);
+        ft.setToValue(in?1.0:0.0);
+        ft.setCycleCount(1);
+        ft.setAutoReverse(false);
+        ft.play();
+    }
+
+    private void translateNode(MatrixNode node, Direction d, boolean removeWhenDone) {
         TranslateTransition tt = new TranslateTransition(Duration.millis(200), node);
         tt.setCycleCount(1);
         tt.setAutoReverse(false);
-        if ( removeWhenDone ) {
+        if (removeWhenDone) {
             tt.setOnFinished((t) -> {
                 root.getChildren().remove(node);
             });
