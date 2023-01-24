@@ -396,9 +396,8 @@ public class MatrixPane extends BorderPane {
         MatrixSite site = gameState.getSite(neighbor);
         if (site == null) {
             // Blank Site
-            site = new MatrixSite(gameState, neighbor,"");
+            site = new MatrixSite(gameState, neighbor);
         }
-        //MatrixNode node = new MatrixNode(site, nodeScaling * size);
         MatrixNode node = MatrixNodeFactory.getNewMatrixNode(site, nodeScaling*size);
         node.setTranslateX(n.col * nodeScaling * size);
         node.setTranslateZ(-n.row * nodeScaling * size);

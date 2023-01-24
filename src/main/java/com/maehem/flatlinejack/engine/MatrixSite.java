@@ -60,6 +60,10 @@ public class MatrixSite {
         this(gs, decodeZone(addr), decodeRow(addr), decodeCol(addr), nodeName);
     }
     
+    public MatrixSite( GameState gs, int addr) {
+        this(gs, addr, "");
+    }
+    
     //  Level:X:Y  ==>  F:FF:FF
     // Recovery time (after cracking)  
     //      ROM remembers best warez to use if player needs to return.

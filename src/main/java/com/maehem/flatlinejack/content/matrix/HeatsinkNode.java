@@ -22,7 +22,7 @@ import com.maehem.flatlinejack.engine.matrix.BallShield;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import com.maehem.flatlinejack.engine.matrix.ObjTriangleMesh;
 import com.maehem.flatlinejack.engine.matrix.WallShield;
-import static java.util.logging.Level.INFO;
+import java.util.logging.Level;
 import javafx.animation.RotateTransition;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -49,24 +49,28 @@ public class HeatsinkNode extends MatrixNode {
     public HeatsinkNode(MatrixSite site, double size) {
         super(site, size);     
         
-        initCore();
-        initShield();
-        setTranslateY(-getBoundsInLocal().getHeight());
+        init();
     }
     
-    private void initCore() {
+    @Override
+    public void initCore() {
         base.setMaterial(new PhongMaterial(Color.DARKGREY));
         neck.setMaterial(new PhongMaterial(Color.DARKRED));
         top.setMaterial(new PhongMaterial(Color.DARKTURQUOISE));
         
         getChildren().addAll(base, neck,top);
-        LOGGER.log(INFO, "Core Z: " +  getBoundsInLocal().getHeight());
+        LOGGER.log(Level.INFO, "Core Z: {0}", getBoundsInLocal().getHeight());
         // Y:0 seems to be the top after OBJs added.
         // So we shift the Node up so that zero is our bottom or base.
 
     }
     
-    private void initShield() {
+    /**
+     * Initialize any shields.
+     * 
+     */
+    @Override
+    public void initShields() {
         Group shieldGroup = new Group();
         
         BallShield bs = new BallShield(12);

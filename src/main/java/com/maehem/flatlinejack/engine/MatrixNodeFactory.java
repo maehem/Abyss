@@ -19,6 +19,7 @@ package com.maehem.flatlinejack.engine;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
+import com.maehem.flatlinejack.engine.matrix.EmptyMatrixNode;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -32,13 +33,13 @@ public class MatrixNodeFactory {
 
     public static final MatrixNode getNewMatrixNode(MatrixSite site, double size) {
         if ( site.getNodeName().isEmpty() ) {
-            return new MatrixNode(site, size);
+            return new EmptyMatrixNode(site, size);
         }
         try {
             Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.matrix." + site.getNodeName() );
             Constructor<?> cons = c.getConstructor(MatrixSite.class, double.class);
             Object object = cons.newInstance(site, size);
-            LOGGER.log(Level.FINER, "MatrixFacotry: Loaded Matrix Node: {0}", site.getNodeName());
+            LOGGER.log(Level.FINER, "MatrixNodeFactory: Loaded Matrix Node: {0}", site.getNodeName());
             return (MatrixNode) object;
         } catch (ClassNotFoundException
                 | NoSuchMethodException

@@ -31,7 +31,7 @@ import javafx.scene.transform.Translate;
  *
  * @author mark
  */
-public class MatrixNode extends Group {
+public abstract class MatrixNode extends Group {
 
     private final MatrixSite site; // Matrix Site (model)
     private final double size;
@@ -40,14 +40,18 @@ public class MatrixNode extends Group {
         this.site = site;
         this.size = size;
         
-        // Overridable methods, let;s fix this.
         initFloor();
-        //initCore();
-        //initShield();
         
         setRotationAxis(Rotate.Z_AXIS);
         setRotate(180);  // Objects inport upside down so we flip to make that easier.
-        
+    }
+    
+    public void init() {
+        initCore();
+        initShields();
+        // Your OBJs probably have a different size, placement and scale
+        // than this system.  Adjust here.
+        setTranslateY(-getBoundsInLocal().getHeight());
     }
     
     private void initFloor() {
@@ -86,6 +90,10 @@ public class MatrixNode extends Group {
         );
         getChildren().add(coordText);
     }
+    
+    public abstract void initCore();
+    
+    public abstract void initShields();
     
  //   protected void initCore() {
         // Empty site by default.  Overide to add your own core.
