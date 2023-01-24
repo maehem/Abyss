@@ -17,15 +17,15 @@
 package com.maehem.flatlinejack.engine.matrix;
 
 import com.maehem.flatlinejack.engine.MatrixSite;
-import javafx.animation.RotateTransition;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
-import javafx.util.Duration;
 
 /**
  *
@@ -46,7 +46,7 @@ public class MatrixNode extends Group {
         //initShield();
         
         setRotationAxis(Rotate.Z_AXIS);
-        setRotate(180);
+        setRotate(180);  // Objects inport upside down so we flip to make that easier.
         
     }
     
@@ -68,11 +68,23 @@ public class MatrixNode extends Group {
         //sg.hide();
         im.getTransforms().addAll(
                 new Rotate(90, Rotate.X_AXIS),  // Image was generated on difffernt plane
-                new Rotate(180, Rotate.Z_AXIS),  //  It's also flipped
+                new Rotate(180, Rotate.Z_AXIS),  //  It's also flipped to make objects import easier.
                 new Translate(-size/2, -size/2+6, 0)   // Offset and lift a touch.
         );
         
-        getChildren().add(new Group(im));
+        getChildren().add(im);
+        
+        
+        // Coords Displayed in Lower Left of Matrix Floor
+        Text coordText = new Text(site.getAddress());
+        coordText.setFill(Color.LIMEGREEN);
+        coordText.getTransforms().addAll(
+                new Rotate(90, Rotate.X_AXIS),  // Image was generated on difffernt plane
+                new Rotate(180, Rotate.Z_AXIS),  //  It's also flipped
+                new Translate(-size/2.4, size/2.3, 0),   // Offset to lower-left corner
+                new Scale(3.0, 3.0)
+        );
+        getChildren().add(coordText);
     }
     
  //   protected void initCore() {

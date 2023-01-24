@@ -81,6 +81,8 @@ public class Engine extends Application implements GameStateListener {
     private ChipsConfiguratorPane chipsPane;
     private TerminalPane terminalPane;
     private MatrixPane matrixPane;
+    private InventoryPane inventoryPane;
+    private ImageView splashScreen;
 
     //public static final Logger log = Logger.getLogger("flatline");
 
@@ -89,11 +91,9 @@ public class Engine extends Application implements GameStateListener {
     private static final String STARTING_VIGNETTE = "StreetVignette2";
 
     //private GUI gui;
-    private InventoryPane inventoryPane;
     private Stage window;
     private Loop loop;   // Game logic Loop
     
-    private ImageView splashScreen;
     private final Group vignetteGroup = new Group();
     private final StackPane topArea = new StackPane();
     private final HBox bottomArea = new HBox();  // gui and naration
@@ -242,7 +242,8 @@ public class Engine extends Application implements GameStateListener {
         
         window.setTitle(v.getName());
 
-        loop = new Loop(this, v);
+        //loop = new Loop(this, v);
+        loop = new Loop(this);
         loop.start();
     }
 
@@ -404,6 +405,14 @@ public class Engine extends Application implements GameStateListener {
         return inventoryPane;
     }
 
+    public MatrixPane getMatrixPane() {
+        return matrixPane;
+    }
+    
+    public Group getVignetteGroup() {
+        return vignetteGroup;
+    }
+    
     /**
      * @param args the command line arguments
      */

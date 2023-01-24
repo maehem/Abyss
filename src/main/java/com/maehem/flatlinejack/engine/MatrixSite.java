@@ -81,6 +81,14 @@ public class MatrixSite {
     
     // save()
     
+    public final int getRow() {
+        return addrRow;
+    }
+    
+    public final int getCol() {
+        return addrCol;
+    }
+    
     public final int getEdgeBits() {
         return nBits;
     }

@@ -13,7 +13,7 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.engine;
 
 import com.maehem.flatlinejack.Engine;
@@ -31,14 +31,14 @@ public class Loop extends AnimationTimer {
 
     private long lastTime = 0;
     private final long TWAIT = 40000000;
-    
+
     private final ArrayList<String> input = new ArrayList<>();
-    private final Vignette vignette;
+    //private final Vignette vignette;
     private final Engine engine;
 
-    public Loop(Engine engine, Vignette vignette) {
+    public Loop(Engine engine) { //, Vignette vignette) {
         this.engine = engine;
-        this.vignette = vignette;
+        //this.vignette = vignette;
     }
 
     @Override
@@ -51,18 +51,22 @@ public class Loop extends AnimationTimer {
 
         // debug for gauge
         //scene.getPlayer().changeHealth(-1);
-        
-        Port nextRoom = vignette.processEvents(input);
-        //engine.getGui().refresh();
-        if ( nextRoom != null ) {
-            // Save scene state.
-            LOGGER.config("[Loop] Load next room.");
-            engine.notifyVignetteExit(nextRoom);
+        GameState gs = engine.getGameState();
+        if (engine.getVignetteGroup().isVisible()) {
+            Port nextRoom = gs.getCurrentVignette().processEvents(input);
+            //engine.getGui().refresh();
+            if (nextRoom != null) {
+                // Save scene state.
+                LOGGER.config("[Loop] Load next room.");
+                engine.notifyVignetteExit(nextRoom);
+            }
+        } else if ( engine.getMatrixPane().isVisible() ) {
+            engine.getMatrixPane().processEvents(input);
         }
 
         lastTime = now;
     }
-    
+
     public void addInputEvent(KeyEvent ke) {
         LOGGER.log(Level.FINEST, "Loop Input Event: {0}", ke.getCode());
         input.add(ke.getCode().toString());

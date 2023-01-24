@@ -20,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
 
 /**
  *
@@ -69,6 +70,9 @@ public class GroundMesh extends Pane {
 
             getChildren().add(line);
         }
+        // Make it lay the right way.
+        setRotationAxis(Rotate.X_AXIS);
+        setRotate(90);                
 
     }
 
