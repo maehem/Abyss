@@ -36,9 +36,15 @@ public abstract class MatrixNode extends Group {
     private final MatrixSite site; // Matrix Site (model)
     private final double size;
     
+    public final Group shieldGroup = new Group();
+    public final Group structureGroup = new Group();
+    
+    //private Group shieldGroup = new Group();
+    
     public MatrixNode( MatrixSite site, double size ) {
         this.site = site;
         this.size = size;
+        
         
         initFloor();
         
@@ -47,8 +53,15 @@ public abstract class MatrixNode extends Group {
     }
     
     public void init() {
+        //getChildren().add(shieldGroup);
         initCore();
         initShields();
+        
+        // Groups must be added after init or weird visual things happen.
+        // JavaFX bug?
+        getChildren().add(structureGroup);
+        getChildren().add(shieldGroup);
+        
         // Your OBJs probably have a different size, placement and scale
         // than this system.  Adjust here.
         setTranslateY(-getBoundsInLocal().getHeight());
@@ -94,6 +107,10 @@ public abstract class MatrixNode extends Group {
     public abstract void initCore();
     
     public abstract void initShields();
+    
+//    public Group getShieldGroup() {
+//        return shieldGroup;
+//    }
     
  //   protected void initCore() {
         // Empty site by default.  Overide to add your own core.

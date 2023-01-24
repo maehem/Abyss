@@ -36,6 +36,7 @@ import javafx.util.Duration;
  * @author mark
  */
 public class HeatsinkNode extends MatrixNode {
+
     private final MeshView base = new MeshView(new ObjTriangleMesh(
             HeatsinkNode.class.getResourceAsStream("/content/matrix/core/heatsink-1-base.obj")
     ));
@@ -58,8 +59,9 @@ public class HeatsinkNode extends MatrixNode {
         neck.setMaterial(new PhongMaterial(Color.DARKRED));
         top.setMaterial(new PhongMaterial(Color.DARKTURQUOISE));
         
-        getChildren().addAll(base, neck,top);
-        LOGGER.log(Level.INFO, "Core Z: {0}", getBoundsInLocal().getHeight());
+        structureGroup.getChildren().addAll(base, neck,top);
+        
+        //LOGGER.log(Level.INFO, "Core Z: {0}", getBoundsInLocal().getHeight());
         // Y:0 seems to be the top after OBJs added.
         // So we shift the Node up so that zero is our bottom or base.
 
@@ -71,7 +73,6 @@ public class HeatsinkNode extends MatrixNode {
      */
     @Override
     public void initShields() {
-        Group shieldGroup = new Group();
         
         BallShield bs = new BallShield(12);
         
@@ -105,18 +106,9 @@ public class HeatsinkNode extends MatrixNode {
         bs.setTranslateY(20);
         ws.setTranslateY(35);
         ws2.setTranslateY(60);
+        
         shieldGroup.getChildren().addAll(bs, ws, ws2);
-        
-        getChildren().add(shieldGroup);
-        
-        
-//        siteBlob.setRotationAxis(Rotate.X_AXIS);
-//        RotateTransition trans2 = new RotateTransition(Duration.seconds(8), siteBlob);
-//        trans2.setFromAngle(0.0);
-//        trans2.setToAngle(360.0);
-//        trans2.setCycleCount(RotateTransition.INDEFINITE); // Let the animation run forever
-//        trans2.setAutoReverse(false); // Reverse direction on alternating cycles
-//        trans2.play(); // Play the Animation
-        
+//        getChildren().add(shieldGroup);
+                
     }
 }
