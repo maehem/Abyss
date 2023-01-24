@@ -36,13 +36,13 @@ import javafx.util.Duration;
  * @author mark
  */
 public class HeatsinkNode extends MatrixNode {
-    private static final MeshView base = new MeshView(new ObjTriangleMesh(
+    private final MeshView base = new MeshView(new ObjTriangleMesh(
             HeatsinkNode.class.getResourceAsStream("/content/matrix/core/heatsink-1-base.obj")
     ));
-    private static final MeshView neck = new MeshView(new ObjTriangleMesh(
+    private final MeshView neck = new MeshView(new ObjTriangleMesh(
             HeatsinkNode.class.getResourceAsStream("/content/matrix/core/heatsink-1-neck.obj")
     ));
-    private static final MeshView top = new MeshView(new ObjTriangleMesh(
+    private final MeshView top = new MeshView(new ObjTriangleMesh(
             HeatsinkNode.class.getResourceAsStream("/content/matrix/core/heatsink-1-top.obj")
     ));
     
