@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 
 /**
  *
@@ -30,7 +31,7 @@ public class GroundMesh extends Pane {
 
     Rectangle plane;
     final int DIVISIONS = 9;  //  n+1
-    final Color PLANE_COLOR = new Color(0.3, 0.05, 0.3, 0.3);
+    final Color PLANE_COLOR = new Color(0.3, 0.05, 0.3, 0.4);
     final Color LINE_COLOR = new Color(0.2, 0.2, 0.2, 0.5);
     final Color BORDER_COLOR = new Color(0.1, 0.1, 0.1, 1.0);
 
@@ -41,7 +42,7 @@ public class GroundMesh extends Pane {
         getChildren().add(plane);
 
         double lineTranslate = 0;
-        double lineWidth = 6.0;
+        double lineWidth = 2.4;
 
         for ( int y=0; y<=DIVISIONS; y++ ) {
             Line line = new Line(0, 0, size, 0);
@@ -71,8 +72,11 @@ public class GroundMesh extends Pane {
             getChildren().add(line);
         }
         // Make it lay the right way.
-        setRotationAxis(Rotate.X_AXIS);
-        setRotate(90);                
+        getTransforms().addAll(
+                new Rotate(90.0, Rotate.X_AXIS),
+                new Translate(-size/2.0, -size/2.0, 2)
+        );        
+
 
     }
 

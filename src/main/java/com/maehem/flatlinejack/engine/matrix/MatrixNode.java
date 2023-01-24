@@ -33,6 +33,8 @@ import javafx.scene.transform.Translate;
  */
 public abstract class MatrixNode extends Group {
 
+    private final static double GRID_SCALE = 0.333;
+    
     private final MatrixSite site; // Matrix Site (model)
     private final double size;
     
@@ -44,7 +46,6 @@ public abstract class MatrixNode extends Group {
     public MatrixNode( MatrixSite site, double size ) {
         this.site = site;
         this.size = size;
-        
         
         initFloor();
         
@@ -68,6 +69,10 @@ public abstract class MatrixNode extends Group {
     }
     
     private void initFloor() {
+        // Add the grid
+        getChildren().add(new GroundMesh(size));
+
+        // Circuit floor decor
         Router floor = new Router(16, size, 
                 Color.MAGENTA.darker().darker(), 10, 
                 Color.BLUEVIOLET, 10, 
@@ -98,7 +103,7 @@ public abstract class MatrixNode extends Group {
         coordText.getTransforms().addAll(
                 new Rotate(90, Rotate.X_AXIS),  // Image was generated on difffernt plane
                 new Rotate(180, Rotate.Z_AXIS),  //  It's also flipped
-                new Translate(-size/2.4, size/2.3, 0),   // Offset to lower-left corner
+                new Translate(-size/2.4, size/2.3, -1),   // Offset to lower-left corner
                 new Scale(3.0, 3.0)
         );
         getChildren().add(coordText);
@@ -107,27 +112,7 @@ public abstract class MatrixNode extends Group {
     public abstract void initStructure();
     
     public abstract void initShields();
-    
-//    public Group getShieldGroup() {
-//        return shieldGroup;
-//    }
-    
- //   protected void initStructure() {
-        // Empty site by default.  Overide to add your own core.
         
-//        MeshView core = new MeshView(new ObjTriangleMesh(
-//                getClass().getResourceAsStream("/content/matrix/core/heatsink-1.obj")
-//        ));
-
- //       core.setDrawMode(DrawMode.LINE);
-//        core.setMaterial(new PhongMaterial(Color.LIGHTGRAY));
-        //core.setRotationAxis(Rotate.X_AXIS);
-        //core.setRotate(90);
-        //LOGGER.log(INFO, "Core Z: " +  core.getBoundsInLocal().getHeight());
-//        getChildren().add(core);
-//    }
-    
-    
     //  TODO:  Maybe move this to a utils class?
     /**
      * Rotate Node

@@ -17,7 +17,6 @@
 package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
-import com.maehem.flatlinejack.content.matrix.HeatsinkNode;
 import static com.maehem.flatlinejack.engine.MatrixPane.Direction.RIGHT;
 import com.maehem.flatlinejack.engine.matrix.GroundMesh;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
@@ -365,7 +364,7 @@ public class MatrixPane extends BorderPane {
     private void initRoot() {
 
         root.getChildren().add(getLighting());
-        root.getChildren().add(getGrid(size));
+        //root.getChildren().add(getGrid(size));
 
         // Draw Ceiling (none for 'F')
         // Test Box of a site volume
@@ -406,28 +405,28 @@ public class MatrixPane extends BorderPane {
         return node;
     }
 
-    private Group getGrid(double size) {
-        Group g = new Group();
-
-        for (int x = 0; x < 3; x++) {
-            for (int y = 0; y < 3; y++) {
-                GroundMesh mesh = new GroundMesh(size);
-                mesh.setTranslateX((x - 1) * size);
-                mesh.setTranslateZ((y - 1) * size); // Negative is closer
-
-                g.getChildren().add(mesh);
-            }
-        }
-
-        // Re-center object
-        g.setTranslateX(-size / 2.0);
-        g.setTranslateY(-size / 2.0);
-        g.setScaleX(nodeScaling); // Lines appear sharper when we scale down a larger grid.
-        g.setScaleY(nodeScaling);
-        g.setScaleZ(nodeScaling);
-
-        return g;
-    }
+//    private Group getGrid(double size) {
+//        Group g = new Group();
+//
+//        for (int x = 0; x < 3; x++) {
+//            for (int y = 0; y < 3; y++) {
+//                GroundMesh mesh = new GroundMesh(size);
+//                mesh.setTranslateX((x - 1) * size);
+//                mesh.setTranslateZ((y - 1) * size); // Negative is closer
+//
+//                g.getChildren().add(mesh);
+//            }
+//        }
+//
+//        // Re-center object
+//        g.setTranslateX(-size / 2.0);
+//        g.setTranslateY(-size / 2.0);
+//        g.setScaleX(nodeScaling); // Lines appear sharper when we scale down a larger grid.
+//        g.setScaleY(nodeScaling);
+//        g.setScaleZ(nodeScaling);
+//
+//        return g;
+//    }
 
     private Group getLighting() {
         AmbientLight ambient = new AmbientLight(new Color(0.2, 0.2, 0.25, 1.0));
@@ -439,7 +438,7 @@ public class MatrixPane extends BorderPane {
         upperLight.setTranslateZ(100);
 
         PointLight lowerLight = new PointLight(Color.BLUE);
-        lowerLight.setMaxRange(300);
+        lowerLight.setMaxRange(500);
         Box lightBox = new Box(20, 20, 20);
         lightBox.setMaterial(new PhongMaterial(Color.BLUE));
         lightBox.setDrawMode(DrawMode.LINE);
@@ -450,7 +449,7 @@ public class MatrixPane extends BorderPane {
         light1.setTranslateZ(-100);
 
         PointLight underLight = new PointLight(Color.VIOLET.darker());
-        underLight.setMaxRange(300);
+        underLight.setMaxRange(500);
         Box lightBox2 = new Box(20, 20, 20);
         lightBox2.setMaterial(new PhongMaterial(Color.BLUE));
         lightBox2.setDrawMode(DrawMode.LINE);
@@ -460,7 +459,7 @@ public class MatrixPane extends BorderPane {
         light2.setTranslateX(0);
         light2.setTranslateZ(-200);
 
-        return new Group(/*ambient, upperLight, */light1, light2);
+        return new Group(ambient, /* upperLight, */light1, light2);
     }
 
     private void initBackDrop() {
