@@ -14,9 +14,11 @@
     License for the specific language governing permissions and limitations 
     under the License.
  */
-package com.maehem.flatlinejack.engine.matrix;
+package com.maehem.flatlinejack.content.matrix.shieldnode;
 
-import javafx.scene.Group;
+import com.maehem.flatlinejack.engine.matrix.ObjTriangleMesh;
+import com.maehem.flatlinejack.engine.matrix.Shield;
+import com.maehem.flatlinejack.engine.matrix.ShieldNode;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.MeshView;
@@ -26,13 +28,15 @@ import javafx.scene.transform.Rotate;
  *
  * @author mark
  */
-public class WallShield extends Group {
+public class WallShieldNode extends ShieldNode {
 
     //private final static double BALL_SIZE = 10.0;
     private final static double SHIELD_RADIUS = 85.0;
     private final static Color SHIELD_COLOR = new Color(0.3, 0.1, 0.5, 0.5);
 
-    public WallShield() {
+    public WallShieldNode( Shield s, double yPos ) {
+        super(s, yPos);
+        
         int nShields = 3;
         double rad = 2.0 * Math.PI / nShields;
         double rot = 360/nShields;

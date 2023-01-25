@@ -26,15 +26,19 @@ import java.util.Properties;
 public abstract class SoftwareThing extends Thing {
     //private static final String PROPERTY_CONDITION = "condition";
     
-    private static final int CONDITION_MAX = 1000;
+    private static final int CONDITION_MAX = 1000; // Behaves like shield for player.
     private static final int REPAIR_SKILL_MIN = 1;
     
+    private static final int ATTACK_DAMAGE = 100; // Reduces random site shield by this amount per attack.
+    
     //private Integer condition = CONDITION_DEFAULT;
-
+    
     public SoftwareThing() {}
     
     public SoftwareThing(String name) {
         super(name);
+        
+        setCondition(CONDITION_MAX);
     }
 
     @Override
@@ -73,4 +77,7 @@ public abstract class SoftwareThing extends Thing {
         return "software";
     }
     
+    public int getAttackDamage() {
+        return ATTACK_DAMAGE;
+    }
 }

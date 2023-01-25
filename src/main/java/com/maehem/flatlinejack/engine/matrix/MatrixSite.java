@@ -14,9 +14,15 @@
     License for the specific language governing permissions and limitations 
     under the License.
  */
-package com.maehem.flatlinejack.engine;
+package com.maehem.flatlinejack.engine.matrix;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
+import com.maehem.flatlinejack.content.things.SoftwareThing;
+import com.maehem.flatlinejack.engine.EdgeMap;
+import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.matrix.Shield;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -26,18 +32,21 @@ import java.util.logging.Level;
  */
 public class MatrixSite {
     
+    private static final int EDGE_BITS = 16; // traces per edge
+
     private final GameState gameState;
-    //private final int address; // Site Address Z:YY:XX
+
     private final int addrCol;  // Col
     private final int addrRow;  // Row
     private final int zone;  // 0=bottom(starting),  5=top
+
+    private final String nodeName; // Change to Class<? extends MatrixNode>
+    private final ArrayList<Shield> shields = new ArrayList<>();
     
-    private final int nBits = 16; // traces per edge
     private int topBits = 0;
     private int rightBits = 0;
     private int bottomBits = 0;
     private int leftBits = 0;
-    private final String nodeName;
     
 
     public MatrixSite( GameState gs, int zone, int row, int col, String nodeName) {
@@ -68,11 +77,27 @@ public class MatrixSite {
     // Recovery time (after cracking)  
     //      ROM remembers best warez to use if player needs to return.
     
+    
     // Terminal Site (after cracking)
+    public boolean terminalAvailable() {
+        return getShieldValue() <= 0;
+    }
+    
     // Data state of the site.
-    // Health
+    
     // Shield
-    // Path to Base Shape
+    public List<Shield> getShields() {
+        return shields;
+    }
+    
+    public int getShieldValue() {
+        int val = 0;
+        for ( Shield s: shields ) {
+            val += s.getCondition();
+        }
+        
+        return val;
+    }
     
     
     // Attack Warez
@@ -93,7 +118,7 @@ public class MatrixSite {
     }
     
     public final int getEdgeBits() {
-        return nBits;
+        return EDGE_BITS;
     }
     
     public final int getTopBits() {

@@ -14,8 +14,9 @@
     License for the specific language governing permissions and limitations 
     under the License.
  */
-package com.maehem.flatlinejack.engine;
+package com.maehem.flatlinejack.engine.matrix;
 
+import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
@@ -36,7 +37,7 @@ public class MatrixNodeFactory {
             return new EmptyMatrixNode(site, size);
         }
         try {
-            Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.matrix." + site.getNodeName() );
+            Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.matrix.sitenode." + site.getNodeName() );
             Constructor<?> cons = c.getConstructor(MatrixSite.class, double.class);
             Object object = cons.newInstance(site, size);
             LOGGER.log(Level.FINER, "MatrixNodeFactory: Loaded Matrix Node: {0}", site.getNodeName());

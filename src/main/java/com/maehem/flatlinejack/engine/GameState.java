@@ -16,6 +16,7 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;

@@ -38,7 +38,7 @@ public abstract class Thing {
     private String name;
     private int value;
     private int repairSkill;
-    private int condition;
+    private int condition = CONDITION_DEFAULT;
 
     public Thing() {}
     

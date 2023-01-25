@@ -16,32 +16,32 @@
  */
 package com.maehem.flatlinejack.engine.matrix;
 
-import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Sphere;
-
 /**
  *
  * @author mark
  */
-public class BallShield extends Group {
-    private final static double BALL_SIZE = 10.0;
-    private final static double SHIELD_RADIUS = 100.0;
+public enum MatrixSiteNeighbor {
+    W(0, -1), E(0, 1), N(-1, 0), S(1, 0),
+    NW(-1, -1), NE(-1, 1), SW(1, -1), SE(1, 1),
     
-    public BallShield(int nBalls) {
-        double rad = 2.0*Math.PI/nBalls;
-        for ( int i=0; i<nBalls; i++ ) {
-            double sin = Math.sin(i*rad);
-            double cos = Math.cos(i*rad);
-            Sphere s = new Sphere(BALL_SIZE);
-            s.setMaterial(new PhongMaterial(Color.DARKGREY));
-            s.setTranslateX(sin*SHIELD_RADIUS);
-            s.setTranslateZ(cos*SHIELD_RADIUS);
+    WW(0, -2), EE(0, 2), NN(-2, 0), SS(2, 0),
+    NWW(-1, -2), NEE(-1, 2), SWW(1, -2), SEE(1, 2),
+    
+    SSW(2, -1), SSE(2, 1), NNW(-2, -1), NNE(-2, 1);
 
-            getChildren().add(s);
-            
-        }
+    public final int col;
+    public final int row;
+
+    MatrixSiteNeighbor(int r, int c) {
+        row = r;
+        col = c;
     }
-    
+
+//    int getR() {
+//        return row;
+//    }
+//    
+//    int getC() {
+//        return col;
+//    }
 }

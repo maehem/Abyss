@@ -16,8 +16,6 @@
  */
 package com.maehem.flatlinejack.engine.matrix;
 
-import com.maehem.flatlinejack.engine.MatrixSite;
-
 /**
  *
  * @author mark

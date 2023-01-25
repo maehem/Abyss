@@ -14,34 +14,24 @@
     License for the specific language governing permissions and limitations 
     under the License.
  */
-package com.maehem.flatlinejack.engine;
+package com.maehem.flatlinejack.engine.matrix;
+
+import javafx.scene.Group;
 
 /**
  *
  * @author mark
  */
-public enum MatrixSiteNeighbor {
-    W(0, -1), E(0, 1), N(-1, 0), S(1, 0),
-    NW(-1, -1), NE(-1, 1), SW(1, -1), SE(1, 1),
+public abstract class ShieldNode extends Group {
+    private final Shield shield;
     
-    WW(0, -2), EE(0, 2), NN(-2, 0), SS(2, 0),
-    NWW(-1, -2), NEE(-1, 2), SWW(1, -2), SEE(1, 2),
-    
-    SSW(2, -1), SSE(2, 1), NNW(-2, -1), NNE(-2, 1);
-
-    int col;
-    int row;
-
-    MatrixSiteNeighbor(int r, int c) {
-        row = r;
-        col = c;
+    public ShieldNode( Shield s, double yPos ) {
+        this.shield = s;
+        setTranslateY(yPos);
     }
-
-//    int getR() {
-//        return row;
-//    }
-//    
-//    int getC() {
-//        return col;
-//    }
+    
+    public Shield getShield() {
+        return shield;
+    }
+    
 }

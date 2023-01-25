@@ -16,7 +16,6 @@
  */
 package com.maehem.flatlinejack.engine.matrix;
 
-import com.maehem.flatlinejack.engine.MatrixSite;
 import javafx.geometry.Point3D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -115,6 +114,10 @@ public abstract class MatrixNode extends Group {
                 //new Scale(3.0, 3.0)
         );
         getChildren().add(coordText);
+    }
+    
+    public MatrixSite getSite() {
+        return site;
     }
     
     public abstract void initStructure();

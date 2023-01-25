@@ -16,6 +16,9 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.engine.matrix.MatrixNodeFactory;
+import com.maehem.flatlinejack.engine.matrix.MatrixSiteNeighbor;
+import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 import static com.maehem.flatlinejack.engine.MatrixPane.Direction.RIGHT;
 import com.maehem.flatlinejack.engine.matrix.GroundMesh;
@@ -404,29 +407,6 @@ public class MatrixPane extends BorderPane {
 
         return node;
     }
-
-//    private Group getGrid(double size) {
-//        Group g = new Group();
-//
-//        for (int x = 0; x < 3; x++) {
-//            for (int y = 0; y < 3; y++) {
-//                GroundMesh mesh = new GroundMesh(size);
-//                mesh.setTranslateX((x - 1) * size);
-//                mesh.setTranslateZ((y - 1) * size); // Negative is closer
-//
-//                g.getChildren().add(mesh);
-//            }
-//        }
-//
-//        // Re-center object
-//        g.setTranslateX(-size / 2.0);
-//        g.setTranslateY(-size / 2.0);
-//        g.setScaleX(nodeScaling); // Lines appear sharper when we scale down a larger grid.
-//        g.setScaleY(nodeScaling);
-//        g.setScaleZ(nodeScaling);
-//
-//        return g;
-//    }
 
     private Group getLighting() {
         AmbientLight ambient = new AmbientLight(new Color(0.2, 0.2, 0.25, 1.0));

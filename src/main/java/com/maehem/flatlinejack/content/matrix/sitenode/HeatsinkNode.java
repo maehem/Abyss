@@ -14,13 +14,14 @@
     License for the specific language governing permissions and limitations 
     under the License.
  */
-package com.maehem.flatlinejack.content.matrix;
+package com.maehem.flatlinejack.content.matrix.sitenode;
 
-import com.maehem.flatlinejack.engine.MatrixSite;
-import com.maehem.flatlinejack.engine.matrix.BallShield;
+import com.maehem.flatlinejack.engine.matrix.MatrixSite;
+import com.maehem.flatlinejack.content.matrix.shieldnode.BallShieldNode;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import com.maehem.flatlinejack.engine.matrix.ObjTriangleMesh;
-import com.maehem.flatlinejack.engine.matrix.WallShield;
+import com.maehem.flatlinejack.content.matrix.shieldnode.WallShieldNode;
+import com.maehem.flatlinejack.engine.matrix.Shield;
 import javafx.animation.RotateTransition;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -46,6 +47,8 @@ public class HeatsinkNode extends MatrixNode {
     
     public HeatsinkNode(MatrixSite site, double size) {
         super(site, size);     
+        
+        // Add shields
         
         init();
     }
@@ -78,8 +81,10 @@ public class HeatsinkNode extends MatrixNode {
     @Override
     public void initShields() {
         
-        BallShield bs = new BallShield(12);
+        Shield ballShield = new Shield(200);
+        getSite().getShields().add(ballShield);
         
+        BallShieldNode bs = new BallShieldNode(ballShield, 12, 20.0);        
         // Set up a Rotate Transition the Rectangle
         bs.setRotationAxis(Rotate.Y_AXIS);
         RotateTransition trans = new RotateTransition(Duration.seconds(8), bs);
@@ -89,29 +94,28 @@ public class HeatsinkNode extends MatrixNode {
         trans.setAutoReverse(false); // Reverse direction on alternating cycles
         trans.play(); // Play the Animation
         
-        WallShield ws = new WallShield();
-        ws.setRotationAxis(Rotate.Y_AXIS);
-        RotateTransition wsT = new RotateTransition(Duration.seconds(4), ws);
+        Shield wallShield1 = new Shield(240);
+        getSite().getShields().add(wallShield1);
+        WallShieldNode wsNode2 = new WallShieldNode(wallShield1, 35.0);
+        wsNode2.setRotationAxis(Rotate.Y_AXIS);
+        RotateTransition wsT = new RotateTransition(Duration.seconds(4), wsNode2);
         wsT.setFromAngle(45.0);
         wsT.setToAngle(165.0);
         wsT.setCycleCount(RotateTransition.INDEFINITE); // Let the animation run forever
         wsT.setAutoReverse(true); // Reverse direction on alternating cycles
         wsT.play(); // Play the Animation
         
-        WallShield ws2 = new WallShield();
-        ws2.setRotationAxis(Rotate.Y_AXIS);
-        RotateTransition wsT2 = new RotateTransition(Duration.seconds(3), ws2);
+        Shield wallShield2 = new Shield(240);
+        getSite().getShields().add(wallShield2);
+        WallShieldNode ws2Node = new WallShieldNode(wallShield2, 60.0);
+        ws2Node.setRotationAxis(Rotate.Y_AXIS);
+        RotateTransition wsT2 = new RotateTransition(Duration.seconds(3), ws2Node);
         wsT2.setFromAngle(165.0);
         wsT2.setToAngle(45.0);
         wsT2.setCycleCount(RotateTransition.INDEFINITE); // Let the animation run forever
         wsT2.setAutoReverse(true); // Reverse direction on alternating cycles
         wsT2.play(); // Play the Animation
 
-        bs.setTranslateY(20);
-        ws.setTranslateY(35);
-        ws2.setTranslateY(60);
-        
-        shieldGroup.getChildren().addAll(bs, ws, ws2);
-                
+        shieldGroup.getChildren().addAll(bs, wsNode2, ws2Node);                
     }
 }
