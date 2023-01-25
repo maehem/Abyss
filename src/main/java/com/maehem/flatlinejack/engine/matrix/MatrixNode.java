@@ -22,6 +22,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
@@ -35,6 +36,13 @@ public abstract class MatrixNode extends Group {
 
     private final static double GRID_SCALE = 0.333;
     
+    public static final double FONT_H = 32;
+    private static final String FONT_FILE = "/fonts/Orbitron-Regular.ttf";
+    public static final Font FONT= Font.loadFont(
+            MatrixNode.class.getResourceAsStream(FONT_FILE),
+            FONT_H
+        );
+
     private final MatrixSite site; // Matrix Site (model)
     private final double size;
     
@@ -96,15 +104,15 @@ public abstract class MatrixNode extends Group {
         
         getChildren().add(im);
         
-        
         // Coords Displayed in Lower Left of Matrix Floor
         Text coordText = new Text(site.getAddress());
+        coordText.setFont(FONT);
         coordText.setFill(Color.LIMEGREEN);
         coordText.getTransforms().addAll(
                 new Rotate(90, Rotate.X_AXIS),  // Image was generated on difffernt plane
                 new Rotate(180, Rotate.Z_AXIS),  //  It's also flipped
-                new Translate(-size/2.4, size/2.3, -1),   // Offset to lower-left corner
-                new Scale(3.0, 3.0)
+                new Translate(-size/2.4, size/2.3, -1)//,   // Offset to lower-left corner
+                //new Scale(3.0, 3.0)
         );
         getChildren().add(coordText);
     }
