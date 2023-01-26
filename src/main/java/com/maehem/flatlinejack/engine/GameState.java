@@ -20,8 +20,11 @@ import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
+import com.maehem.flatlinejack.content.matrix.site.DefaultSitesList;
+import com.maehem.flatlinejack.content.matrix.sitenode.HeatsinkNode;
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
+import com.maehem.flatlinejack.engine.matrix.EmptyMatrixNode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -64,7 +67,7 @@ public class GameState extends Properties {
     private final ArrayList<NewsStory> news = new ArrayList<>();
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
-    private final ArrayList<MatrixSite> sites = new ArrayList<>();
+    private final ArrayList<MatrixSite> sites;
     //private long[][][] siteEdges =  new long[N_ZONES][N_ROWS][N_COLS]; // Long T R B L ints
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
 
@@ -98,12 +101,13 @@ public class GameState extends Properties {
         initNews();
         initMessages();
 
-        //MatrixSite testSite = new MatrixSite(this, 0, 1, 1, "HeatsinkNode");
-        addSite(new MatrixSite(this, 0, 1, 1, "HeatsinkNode"));
-        addSite(new MatrixSite(this, 0, 2, 5, "HeatsinkNode"));
-        addSite(new MatrixSite(this, 0, 3, 8, "HeatsinkNode"));
-        addSite(new MatrixSite(this, 0, 4, 2, "HeatsinkNode"));
-        addSite(new MatrixSite(this, 0, 5, 3, "HeatsinkNode"));
+        sites = new DefaultSitesList(this);
+
+//        addSite(new MatrixSite(this, 0, 1, 1, HeatsinkNode.class));
+//        addSite(new MatrixSite(this, 0, 2, 5, HeatsinkNode.class));
+//        addSite(new MatrixSite(this, 0, 3, 8, HeatsinkNode.class));
+//        addSite(new MatrixSite(this, 0, 4, 2, HeatsinkNode.class));
+//        addSite(new MatrixSite(this, 0, 5, 3, HeatsinkNode.class));
     }
 
     @Override
@@ -544,7 +548,7 @@ public class GameState extends Properties {
                 && MatrixSite.decodeRow(address) >= 0
                 && MatrixSite.decodeCol(address) < MAP_SIZE-1
                 && MatrixSite.decodeRow(address) < MAP_SIZE-1) {
-            return addSite(new MatrixSite(this, address, ""));
+            return addSite(new MatrixSite(this, address, EmptyMatrixNode.class));
         }
 
         LOGGER.log(Level.INFO, "Tried to add a site out of bounds!" );

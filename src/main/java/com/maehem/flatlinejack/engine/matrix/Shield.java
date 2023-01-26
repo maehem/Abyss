@@ -31,12 +31,8 @@ import java.util.List;
  */
 public class Shield {
 
-    // Damage caused back to player software when we are attacked.
-    private final static int COUNTER_DAMAGE = 30;
-    
-    //private final Class<? extends ShieldNode> nodeClass;
-    private int condition;
-    private int counterDamage = COUNTER_DAMAGE;
+    private int condition;      // Health of shield.  Non-functional when zero.
+    private int counterDamage;  // Health Damage cast back at attacking SoftwareThing.
     
     // Double damage suffered against these Softwares
     private final ArrayList<Class<? extends SoftwareThing>> weakTo = new ArrayList<>();
@@ -45,9 +41,9 @@ public class Shield {
     
         
     
-    public Shield(int condition /*, Class<? extends ShieldNode> nodeClass */) {
+    public Shield( int condition, int counterDamage ) {
         this.condition = condition;
-        //this.nodeClass = nodeClass;
+        this.counterDamage = counterDamage;
     }
     
 //    /**

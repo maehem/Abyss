@@ -33,17 +33,18 @@ import java.util.logging.Level;
 public class MatrixNodeFactory {
 
     public static final MatrixNode getNewMatrixNode(MatrixSite site, double size) {
-        if ( site.getNodeName().isEmpty() ) {
+        if ( site.getNodeClass() == null ) {
             return new EmptyMatrixNode(site, size);
         }
         try {
-            Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.matrix.sitenode." + site.getNodeName() );
+            Class<? extends MatrixNode> c = site.getNodeClass();
+            //Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.matrix.sitenode." + site.getNodeClass().getSimpleName() );
             Constructor<?> cons = c.getConstructor(MatrixSite.class, double.class);
             Object object = cons.newInstance(site, size);
-            LOGGER.log(Level.FINER, "MatrixNodeFactory: Loaded Matrix Node: {0}", site.getNodeName());
+            LOGGER.log(Level.FINER, "MatrixNodeFactory: Loaded Matrix Node: {0}", site.getNodeClass().getSimpleName());
             return (MatrixNode) object;
-        } catch (ClassNotFoundException
-                | NoSuchMethodException
+        } catch ( //ClassNotFoundException |
+                 NoSuchMethodException
                 | SecurityException
                 | InstantiationException
                 | IllegalAccessException

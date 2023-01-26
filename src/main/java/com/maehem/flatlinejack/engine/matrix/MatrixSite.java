@@ -20,7 +20,6 @@ import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.content.things.SoftwareThing;
 import com.maehem.flatlinejack.engine.EdgeMap;
 import com.maehem.flatlinejack.engine.GameState;
-import com.maehem.flatlinejack.engine.matrix.Shield;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,8 +39,13 @@ public class MatrixSite {
     private final int addrRow;  // Row
     private final int zone;  // 0=bottom(starting),  5=top
 
-    private final String nodeName; // Change to Class<? extends MatrixNode>
+    //private final String nodeName; // Change to Class<? extends MatrixNode>
+    private final Class<? extends MatrixNode> nodeClass;
+    
     private final ArrayList<Shield> shields = new ArrayList<>();
+    
+    // Add to this list for tools to attack player with.
+    private final ArrayList<SoftwareThing> attackTools = new ArrayList<>();
     
     private int topBits = 0;
     private int rightBits = 0;
@@ -49,12 +53,12 @@ public class MatrixSite {
     private int leftBits = 0;
     
 
-    public MatrixSite( GameState gs, int zone, int row, int col, String nodeName) {
+    public MatrixSite( GameState gs, int zone, int row, int col, Class<? extends MatrixNode> nodeClass) {
         this.gameState = gs;
         this.addrCol = col;
         this.addrRow = row;
         this.zone = zone;
-        this.nodeName = nodeName;
+        this.nodeClass = nodeClass;
         
         EdgeMap map = gs.getMatrixMap();
         this.topBits = map.getEdge(EdgeMap.Edge.TOP, row, col);
@@ -65,12 +69,12 @@ public class MatrixSite {
         LOGGER.log(Level.FINER, "Created new Site: {0}", getAddress());
     }
     
-    public MatrixSite( GameState gs, int addr, String nodeName ) {
-        this(gs, decodeZone(addr), decodeRow(addr), decodeCol(addr), nodeName);
+    public MatrixSite( GameState gs, int addr, Class<? extends MatrixNode> nodeClass ) {
+        this(gs, decodeZone(addr), decodeRow(addr), decodeCol(addr), nodeClass);
     }
     
     public MatrixSite( GameState gs, int addr) {
-        this(gs, addr, "");
+        this(gs, addr, null);
     }
     
     //  Level:X:Y  ==>  F:FF:FF
@@ -101,10 +105,7 @@ public class MatrixSite {
     
     
     // Attack Warez
-    // Defense Warez
-            
-    // isOpen()  can be accessed immediatly
-    
+                
     // load()
     
     // save()
@@ -182,8 +183,8 @@ public class MatrixSite {
      * 
      * @return 
      */
-    public String getNodeName() {
-        return nodeName;
+    public Class<? extends MatrixNode> getNodeClass() {
+        return nodeClass;
     }
     
 //    public static String toHex( int address ) {
