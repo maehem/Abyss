@@ -41,10 +41,12 @@ public class MatrixSite {
 
     //private final String nodeName; // Change to Class<? extends MatrixNode>
     private final Class<? extends MatrixNode> nodeClass;
+    private final String nodeProperties; // A string with comma separated properties. "foo=12345,bar=aa:bb:cc:dd"
     
     private final ArrayList<Shield> shields = new ArrayList<>();
     
     // Add to this list for tools to attack player with.
+    // Usually added by MatrixNode at init().
     private final ArrayList<SoftwareThing> attackTools = new ArrayList<>();
     
     private int topBits = 0;
@@ -53,12 +55,13 @@ public class MatrixSite {
     private int leftBits = 0;
     
 
-    public MatrixSite( GameState gs, int zone, int row, int col, Class<? extends MatrixNode> nodeClass) {
+    public MatrixSite( GameState gs, int zone, int row, int col, Class<? extends MatrixNode> nodeClass, String nodeProperties) {
         this.gameState = gs;
         this.addrCol = col;
         this.addrRow = row;
         this.zone = zone;
         this.nodeClass = nodeClass;
+        this.nodeProperties = nodeProperties;
         
         EdgeMap map = gs.getMatrixMap();
         this.topBits = map.getEdge(EdgeMap.Edge.TOP, row, col);
@@ -69,12 +72,12 @@ public class MatrixSite {
         LOGGER.log(Level.FINER, "Created new Site: {0}", getAddress());
     }
     
-    public MatrixSite( GameState gs, int addr, Class<? extends MatrixNode> nodeClass ) {
-        this(gs, decodeZone(addr), decodeRow(addr), decodeCol(addr), nodeClass);
+    public MatrixSite( GameState gs, int addr, Class<? extends MatrixNode> nodeClass, String nodeProperties ) {
+        this(gs, decodeZone(addr), decodeRow(addr), decodeCol(addr), nodeClass, nodeProperties);
     }
     
     public MatrixSite( GameState gs, int addr) {
-        this(gs, addr, null);
+        this(gs, addr, null, "");
     }
     
     //  Level:X:Y  ==>  F:FF:FF
@@ -105,6 +108,9 @@ public class MatrixSite {
     
     
     // Attack Warez
+    public List<SoftwareThing> getAttackTools() {
+        return attackTools;
+    }
                 
     // load()
     
@@ -185,6 +191,10 @@ public class MatrixSite {
      */
     public Class<? extends MatrixNode> getNodeClass() {
         return nodeClass;
+    }
+    
+    public String getNodeProperties() {
+        return nodeProperties;
     }
     
 //    public static String toHex( int address ) {

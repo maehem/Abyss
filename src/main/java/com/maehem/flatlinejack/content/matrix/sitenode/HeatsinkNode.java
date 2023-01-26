@@ -21,6 +21,8 @@ import com.maehem.flatlinejack.content.matrix.shieldnode.BallShieldNode;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import com.maehem.flatlinejack.engine.matrix.ObjTriangleMesh;
 import com.maehem.flatlinejack.content.matrix.shieldnode.WallShieldNode;
+import com.maehem.flatlinejack.content.things.software.BackOffice3SoftwareThing;
+import com.maehem.flatlinejack.content.things.software.DrillSoftwareThing;
 import com.maehem.flatlinejack.engine.matrix.Shield;
 import javafx.animation.RotateTransition;
 import javafx.scene.paint.Color;
@@ -48,7 +50,10 @@ public class HeatsinkNode extends MatrixNode {
     public HeatsinkNode(MatrixSite site, double size) {
         super(site, size);     
         
-        // Add shields
+        
+        // TODO: Read the add-on properties string and do those things.
+        // Comma separated list of custom values to apply.
+        String nodeProperties = site.getNodeProperties();
         
         // Call init() if you overrode initStructure() or initShields()
         init();
@@ -119,4 +124,15 @@ public class HeatsinkNode extends MatrixNode {
 
         shieldGroup.getChildren().addAll(bs, ws1Node, ws2Node);                
     }
+
+    @Override
+    public void initAttacks() {
+        // Add your attack tools thusly.
+        getSite().getAttackTools().add(new BackOffice3SoftwareThing());
+        getSite().getAttackTools().add(new DrillSoftwareThing());
+
+        // Add objects for attack animations.
+    }
+    
+    
 }

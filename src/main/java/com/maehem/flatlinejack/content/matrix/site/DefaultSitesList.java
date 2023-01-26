@@ -28,19 +28,19 @@ import java.util.ArrayList;
 public class DefaultSitesList extends ArrayList {
 
     public DefaultSitesList( GameState gs ) {
-        add(new MatrixSite(gs, 0x00202, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00205, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x0020B, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00304, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x0031A, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00401, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00406, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00503, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x0050A, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00702, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00A01, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00B05, HeatsinkNode.class ));
-        add(new MatrixSite(gs, 0x00B0F, HeatsinkNode.class ));
+        add(new MatrixSite(gs, 0x00202, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00205, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x0020B, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00304, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x0031A, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00401, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00406, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00503, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x0050A, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00702, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00A01, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00B05, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00B0F, HeatsinkNode.class, "" ));
     }
     
 }

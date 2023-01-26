@@ -33,5 +33,9 @@ public class EmptyMatrixNode extends MatrixNode {
 
     @Override
     public void initShields() {}
+
+    @Override
+    public void initAttacks() {}
+    
     
 }

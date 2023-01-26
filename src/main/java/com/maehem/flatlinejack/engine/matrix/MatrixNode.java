@@ -47,6 +47,7 @@ public abstract class MatrixNode extends Group {
     
     public final Group shieldGroup = new Group();
     public final Group structureGroup = new Group();
+    public final Group attacksGroup = new Group();
     
     //private Group shieldGroup = new Group();
     
@@ -123,6 +124,8 @@ public abstract class MatrixNode extends Group {
     public abstract void initStructure();
     
     public abstract void initShields();
+    
+    public abstract void initAttacks();
         
     //  TODO:  Maybe move this to a utils class?
     /**

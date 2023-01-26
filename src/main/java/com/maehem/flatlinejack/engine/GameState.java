@@ -548,7 +548,7 @@ public class GameState extends Properties {
                 && MatrixSite.decodeRow(address) >= 0
                 && MatrixSite.decodeCol(address) < MAP_SIZE-1
                 && MatrixSite.decodeRow(address) < MAP_SIZE-1) {
-            return addSite(new MatrixSite(this, address, EmptyMatrixNode.class));
+            return addSite(new MatrixSite(this, address));
         }
 
         LOGGER.log(Level.INFO, "Tried to add a site out of bounds!" );
