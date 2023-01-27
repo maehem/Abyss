@@ -18,7 +18,6 @@ package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
-import com.maehem.flatlinejack.content.things.DeckThing;
 import java.util.Properties;
 import java.util.logging.Level;
 

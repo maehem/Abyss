@@ -14,16 +14,11 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
-import com.maehem.flatlinejack.content.things.software.EmptySoftwareThing;
-import com.maehem.flatlinejack.content.things.ram.EmptyRamThing;
 import com.maehem.flatlinejack.Engine;
-import com.maehem.flatlinejack.engine.Character;
-import com.maehem.flatlinejack.engine.Player;
-import com.maehem.flatlinejack.engine.Thing;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -37,7 +32,7 @@ import java.util.logging.Level;
  * 
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public abstract class DeckThing extends Thing {
+public abstract class DeckThing extends Thing implements SoftwareUser {
     //private final static Logger LOG = Logger.getLogger(Thing.class.getName());
 
     private static final String THING_PKG = "deck";
@@ -58,6 +53,7 @@ public abstract class DeckThing extends Thing {
     
     private final ArrayList<SoftwareThing> softwareSlots = new ArrayList<>();
     private final ArrayList<RamThing> ramSlots = new ArrayList<>();
+    private Player player = null;
     
 
     public DeckThing( String name, int baseRam, int baseShield, int softwareCapacity, int ramSlots ) {
@@ -68,7 +64,7 @@ public abstract class DeckThing extends Thing {
         setNumSoftwareSlots(softwareCapacity);
         setNumRamSlots(ramSlots);
     }
-    
+        
     private  void setNumSoftwareSlots(int cap){
         // Fill the softwareSlots with EmptySoftwareThing placeholders.
         for ( int i=0; i< cap; i++ ) {
@@ -87,9 +83,19 @@ public abstract class DeckThing extends Thing {
         for ( int i=0; i< softwareSlots.size(); i++) {
             if ( softwareSlots.get(i) instanceof EmptySoftwareThing ) {
                 softwareSlots.set(i, software);
+                software.setUser(this);
                 return true;
             }
         }
+        return false;
+    }
+    
+    public boolean removeSoftware( SoftwareThing software ) {
+        if ( softwareSlots.remove(software) ) {
+            software.setUser(null);
+            return true;
+        }
+        
         return false;
     }
     
@@ -306,6 +312,11 @@ public abstract class DeckThing extends Thing {
                 
             }
         }
+    }
+
+    @Override
+    public void attack(SoftwareUser enemy, SoftwareThing tool) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 
 }

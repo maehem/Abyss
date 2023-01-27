@@ -14,25 +14,28 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things.ram;
+package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.content.things.RamThing;
+import com.maehem.flatlinejack.engine.SoftwareThing;
 import java.util.Properties;
 
 /**
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class EmptyRamThing extends RamThing {
+public class EmptySoftwareThing extends SoftwareThing {
 
-    public EmptyRamThing() {
-        super("Empty");
-        setCapacity(0);
+    public EmptySoftwareThing() {
+        super( "Empty" );
     }
-
+    
+    /**
+     * Cause empty slot to not write the default properties.
+     * 
+     * @return 
+     */
     @Override
     public Properties saveProperties() {
         return new Properties();
     }
-    
 }

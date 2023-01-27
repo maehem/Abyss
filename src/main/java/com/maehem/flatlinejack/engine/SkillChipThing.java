@@ -14,8 +14,9 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.engine.SoftwareThing;
 import com.maehem.flatlinejack.engine.Thing;
 import com.maehem.flatlinejack.engine.gui.widgets.Gauge;
 import java.util.ArrayList;

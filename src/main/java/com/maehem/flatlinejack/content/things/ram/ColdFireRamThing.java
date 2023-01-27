@@ -16,7 +16,7 @@
 */
 package com.maehem.flatlinejack.content.things.ram;
 
-import com.maehem.flatlinejack.content.things.RamThing;
+import com.maehem.flatlinejack.engine.RamThing;
 
 /**
  *

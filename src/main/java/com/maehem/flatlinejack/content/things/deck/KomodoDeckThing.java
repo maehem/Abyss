@@ -16,7 +16,7 @@
 */
 package com.maehem.flatlinejack.content.things.deck;
 
-import com.maehem.flatlinejack.content.things.DeckThing;
+import com.maehem.flatlinejack.engine.DeckThing;
 
 /**
  *

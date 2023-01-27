@@ -16,7 +16,7 @@
 */
 package com.maehem.flatlinejack.content.things.skillchip;
 
-import com.maehem.flatlinejack.content.things.SkillChipThing;
+import com.maehem.flatlinejack.engine.SkillChipThing;
 
 /**
  * Improves the ability to ask questions and get better answers sooner.

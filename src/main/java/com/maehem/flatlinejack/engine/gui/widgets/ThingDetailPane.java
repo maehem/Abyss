@@ -16,7 +16,7 @@
  */
 package com.maehem.flatlinejack.engine.gui.widgets;
 
-import com.maehem.flatlinejack.content.things.EmptyThing;
+import com.maehem.flatlinejack.engine.EmptyThing;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
 import javafx.geometry.HPos;

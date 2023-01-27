@@ -13,21 +13,14 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
-package com.maehem.flatlinejack.content.things.skillchip;
-
-import com.maehem.flatlinejack.engine.SkillChipThing;
+ */
+package com.maehem.flatlinejack.engine;
 
 /**
- * Improves the ability to ask questions and get better answers sooner.
- * 
+ *
  * @author mark
  */
-public class NegotiationSkillChip extends SkillChipThing {
-    public static final String NAME = "Negotiaton";
-
-    public NegotiationSkillChip() {
-        super(NAME);
-    }
+public interface SoftwareUser {
     
+    public void attack( SoftwareUser enemy, SoftwareThing tool );
 }

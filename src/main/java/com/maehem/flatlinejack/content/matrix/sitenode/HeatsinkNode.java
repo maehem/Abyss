@@ -16,6 +16,8 @@
  */
 package com.maehem.flatlinejack.content.matrix.sitenode;
 
+import com.maehem.flatlinejack.content.matrix.attacknode.BulletsAttackNode;
+import com.maehem.flatlinejack.content.matrix.attacknode.FlameBallAttackNode;
 import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import com.maehem.flatlinejack.content.matrix.shieldnode.BallShieldNode;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
@@ -24,6 +26,7 @@ import com.maehem.flatlinejack.content.matrix.shieldnode.WallShieldNode;
 import com.maehem.flatlinejack.content.things.software.BackOffice3SoftwareThing;
 import com.maehem.flatlinejack.content.things.software.DrillSoftwareThing;
 import com.maehem.flatlinejack.engine.matrix.Shield;
+import com.maehem.flatlinejack.engine.matrix.SoftwareNode;
 import javafx.animation.RotateTransition;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
@@ -127,11 +130,20 @@ public class HeatsinkNode extends MatrixNode {
 
     @Override
     public void initAttacks() {
-        // Add your attack tools thusly.
-        getSite().getAttackTools().add(new BackOffice3SoftwareThing());
-        getSite().getAttackTools().add(new DrillSoftwareThing());
-
         // Add objects for attack animations.
+        // Add your attack tools thusly.
+        BackOffice3SoftwareThing backOfficeSoft = new BackOffice3SoftwareThing();
+        // Site uses for control
+        getSite().getAttackTools().add(backOfficeSoft);
+        // Node uses for visual
+        SoftwareNode backOffficeNode = new FlameBallAttackNode(backOfficeSoft);
+        
+        DrillSoftwareThing drillSoft = new DrillSoftwareThing();
+        getSite().getAttackTools().add(drillSoft);
+        SoftwareNode drillNode = new BulletsAttackNode(drillSoft);
+        
+        attacksGroup.getChildren().addAll(backOffficeNode, drillNode);
+       
     }
     
     

@@ -13,49 +13,28 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
-package com.maehem.flatlinejack.content.things;
+ */
+package com.maehem.flatlinejack.engine.matrix;
 
-import com.maehem.flatlinejack.engine.Thing;
-import java.util.Properties;
+import com.maehem.flatlinejack.engine.SoftwareListener;
+import com.maehem.flatlinejack.engine.SoftwareThing;
+import javafx.scene.Group;
 
 /**
  *
- * @author Mark J Koch <mark at maehem dot com>
+ * @author mark
  */
-public class EmptyThing extends Thing {
+public abstract class SoftwareNode extends Group implements SoftwareListener {
 
-    public EmptyThing() {
-        super("Empty");
-    }
+    private final SoftwareThing software;
 
-    
-    @Override
-    public Properties saveProperties() { 
-        return new Properties();
-    }
-
-    @Override
-    public void loadProperties(Properties p) {}
-
-//    @Override
-//    public Pane getDetailPane() {
-//        return new FlowPane();
-//    }
-
-    @Override
-    public String getIconPath() {
-        return null;
-    }
-
-    @Override
-    public void saveState(String key, Properties p) {
-        return;
-    }
-
-    @Override
-    public String getPackage() {
-        return "";
+    public SoftwareNode(SoftwareThing software) {
+        this.software = software;
+        
+        software.addListener(this);
     }
     
+    // SoftwareNode can have two modes.  Player or Adversary
+    //  - same attack but viewpoint is different.
+    //  - effects are switched between player or enemy
 }

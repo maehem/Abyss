@@ -13,21 +13,35 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
-package com.maehem.flatlinejack.content.things.skillchip;
+ */
+package com.maehem.flatlinejack.content.matrix.attacknode;
 
-import com.maehem.flatlinejack.engine.SkillChipThing;
+import com.maehem.flatlinejack.engine.SoftwareThing;
+import com.maehem.flatlinejack.engine.matrix.SoftwareNode;
 
 /**
- * Improves the ability to ask questions and get better answers sooner.
- * 
+ *
  * @author mark
  */
-public class NegotiationSkillChip extends SkillChipThing {
-    public static final String NAME = "Negotiaton";
+public class FlameBallAttackNode extends SoftwareNode {
+    
+    /**
+     * Visual for a software's attack properties.
+     * 
+     * @param software 
+     */
+    public FlameBallAttackNode(SoftwareThing software) {
+        super(software);
+    }
 
-    public NegotiationSkillChip() {
-        super(NAME);
+    @Override
+    public void softwareConditionChanged(SoftwareThing aThis, int amount) {
+        throw new UnsupportedOperationException("Not supported yet."); 
+    }
+
+    @Override
+    public void softwareAttackStarted(SoftwareThing src) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

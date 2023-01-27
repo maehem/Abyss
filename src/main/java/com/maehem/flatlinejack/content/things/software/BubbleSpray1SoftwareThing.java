@@ -16,7 +16,7 @@
  */
 package com.maehem.flatlinejack.content.things.software;
 
-import com.maehem.flatlinejack.content.things.SoftwareThing;
+import com.maehem.flatlinejack.engine.SoftwareThing;
 
 /**
  *

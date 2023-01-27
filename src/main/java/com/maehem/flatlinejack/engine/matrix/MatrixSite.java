@@ -17,9 +17,10 @@
 package com.maehem.flatlinejack.engine.matrix;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
-import com.maehem.flatlinejack.content.things.SoftwareThing;
+import com.maehem.flatlinejack.engine.SoftwareThing;
 import com.maehem.flatlinejack.engine.EdgeMap;
 import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.SoftwareUser;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,7 +30,7 @@ import java.util.logging.Level;
  * 
  * @author mark
  */
-public class MatrixSite {
+public class MatrixSite implements SoftwareUser {
     
     private static final int EDGE_BITS = 16; // traces per edge
 
@@ -197,14 +198,8 @@ public class MatrixSite {
         return nodeProperties;
     }
     
-//    public static String toHex( int address ) {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(String.format("%01X", (address&0xF0000)>>16))
-//                .append(":")
-//                .append(String.format("%02X", (address&0xFF00)>>8))
-//                .append(":")
-//                .append(String.format("%02X", (address&0xFF)));
-//        
-//        return sb.toString();
-//    }
+    @Override
+    public void attack(SoftwareUser enemy, SoftwareThing tool) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

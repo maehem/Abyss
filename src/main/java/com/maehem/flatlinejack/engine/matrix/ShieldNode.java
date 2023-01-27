@@ -27,6 +27,9 @@ public abstract class ShieldNode extends Group {
     
     public ShieldNode( Shield s, double yPos ) {
         this.shield = s;
+        
+    //    s.addListener(this);
+        
         setTranslateY(yPos);
     }
     

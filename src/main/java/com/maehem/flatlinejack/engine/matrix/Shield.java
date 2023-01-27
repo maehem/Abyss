@@ -16,7 +16,7 @@
  */
 package com.maehem.flatlinejack.engine.matrix;
 
-import com.maehem.flatlinejack.content.things.SoftwareThing;
+import com.maehem.flatlinejack.engine.SoftwareThing;
 import java.util.ArrayList;
 import java.util.List;
 

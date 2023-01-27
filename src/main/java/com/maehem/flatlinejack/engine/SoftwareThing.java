@@ -14,9 +14,9 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things;
+package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.Thing;
+import java.util.ArrayList;
 import java.util.Properties;
 
 /**
@@ -24,6 +24,7 @@ import java.util.Properties;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public abstract class SoftwareThing extends Thing {
+    // Already tracked via super class.
     //private static final String PROPERTY_CONDITION = "condition";
     
     private static final int CONDITION_MAX = 1000; // Behaves like shield for player.
@@ -32,6 +33,9 @@ public abstract class SoftwareThing extends Thing {
     private static final int ATTACK_DAMAGE = 100; // Reduces random site shield by this amount per attack.
     
     //private Integer condition = CONDITION_DEFAULT;
+    
+    private final ArrayList<SoftwareListener> listeners = new ArrayList<>();
+    private SoftwareUser user;
     
     public SoftwareThing() {}
     
@@ -80,4 +84,32 @@ public abstract class SoftwareThing extends Thing {
     public int getAttackDamage() {
         return ATTACK_DAMAGE;
     }
+    
+    public void addListener( SoftwareListener l ) {
+        listeners.add(l);
+    }
+    
+    public void removeListener( SoftwareListener l ) {
+        listeners.remove(l);
+    }
+
+    @Override
+    public void adjustCondition(int amount) {
+        super.adjustCondition(amount);
+        for ( SoftwareListener l: listeners ) {
+            l.softwareConditionChanged( this, amount );
+        }
+    }
+    
+    /**
+     * Set when installing software in a DeckThing or a MatrixSite.
+     * Null when not installed or uninstalled ( Inventory Item ).
+     * 
+     * @param user 
+     */
+    public void setUser( SoftwareUser user ) {
+        this.user = user;
+    }
+    
+    
 }

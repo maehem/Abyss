@@ -14,20 +14,48 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.content.things.skillchip;
+package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.SkillChipThing;
+import com.maehem.flatlinejack.engine.Thing;
+import java.util.Properties;
 
 /**
- * Improves the ability to ask questions and get better answers sooner.
- * 
- * @author mark
+ *
+ * @author Mark J Koch <mark at maehem dot com>
  */
-public class NegotiationSkillChip extends SkillChipThing {
-    public static final String NAME = "Negotiaton";
+public class EmptyThing extends Thing {
 
-    public NegotiationSkillChip() {
-        super(NAME);
+    public EmptyThing() {
+        super("Empty");
+    }
+
+    
+    @Override
+    public Properties saveProperties() { 
+        return new Properties();
+    }
+
+    @Override
+    public void loadProperties(Properties p) {}
+
+//    @Override
+//    public Pane getDetailPane() {
+//        return new FlowPane();
+//    }
+
+    @Override
+    public String getIconPath() {
+        return null;
+    }
+
+    @Override
+    public void saveState(String key, Properties p) {
+        return;
+    }
+
+    @Override
+    public String getPackage() {
+        return "";
     }
     
 }
