@@ -149,8 +149,8 @@ public class MatrixSite implements SoftwareUser {
         StringBuilder sb = new StringBuilder();
         
         sb.append(String.format("%01X", zone))
-                .append(":").append(String.format("%02X", addrRow))
-                .append(":").append(String.format("%02X", addrCol));
+                .append(".").append(String.format("%02X", addrRow))
+                .append(".").append(String.format("%02X", addrCol));
         
         return sb.toString();
     }
