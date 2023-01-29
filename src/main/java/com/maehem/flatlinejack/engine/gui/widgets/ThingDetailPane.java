@@ -147,7 +147,8 @@ public class ThingDetailPane extends FlowPane {
                     "Condition:",
                     100, 20,
                     t.getCondition(),
-                    t.getMaxCondition()
+                    t.getMaxCondition(),
+                    Gauge.ValueLabel.OVERLAY_CENTERED
             ));
             detailPane.getChildren().add(gaugePane);
         }

@@ -38,6 +38,7 @@ public class Player extends Character implements GameStateListener {
     public static final String CONSTITUTION_KEY = PLAYER_KEY + "." + "constitution";
     public static final String NAME_KEY         = PLAYER_KEY + "." + "name";
     public static final String INVENTORY_KEY    = PLAYER_KEY + "." + "inventory";
+    public static final String CURRENT_DECK_KEY = PLAYER_KEY + "." + "deck";
 
     // DEFAULT VALUES
     public static final String PLAYER_NAME_DEFAULT      = "Jack";
@@ -52,6 +53,8 @@ public class Player extends Character implements GameStateListener {
     private int bankMoney = PLAYER_BANK_MONEY_AMOUNT_DEFAULT;
     private int health = PLAYER_HEALTH_MAX;
     private int constitution = PLAYER_CONSTITUTION_MAX;
+    
+    private DeckThing currentDeck = null;
     
     private final GameState gameState;
 
@@ -195,6 +198,16 @@ public class Player extends Character implements GameStateListener {
         gameState.notifyPlayerStateChanged(INVENTORY_KEY);
     }
 
+    public DeckThing getCurrentDeck() {
+        return currentDeck;
+    }
+    
+    public void setCurrentDeck( DeckThing d ) {
+        if ( currentDeck != null ) {
+            // TODO Unregister current deck.
+        }
+        this.currentDeck = d;
+    }
     
     /**
      * Save important state values on game save
@@ -206,6 +219,9 @@ public class Player extends Character implements GameStateListener {
         p.setProperty(MONEY_KEY, String.valueOf(getMoney()));
         p.setProperty(HEALTH_KEY, String.valueOf(getHealth()));
         p.setProperty(CONSTITUTION_KEY, String.valueOf(getConstitution()));
+        if ( currentDeck != null ) {
+            p.setProperty(CURRENT_DECK_KEY, String.valueOf("deck" + "." + currentDeck.getClass().getSimpleName()));
+        }
 
         LOGGER.log(Level.WARNING, "Save Inventory.");
         for ( int i=0; i<getAInventory().size(); i++ ) {
@@ -263,7 +279,18 @@ public class Player extends Character implements GameStateListener {
                 
             }
         }
+        
+        String deck = p.getProperty(CURRENT_DECK_KEY, null);
 
+        if ( deck != null ) {
+            // Load current deck if we have it in inventory
+            for ( Thing t: getAInventory() ) {
+                if ( (t instanceof DeckThing) && t.getClass().getName().endsWith(deck) ) { // "deck.MyDeckName"
+                    currentDeck = (DeckThing) t;
+                    LOGGER.log(Level.INFO, "===> Player Current Deck: {0}", currentDeck.getName());
+                }
+            }
+        }
     }
 
     @Override

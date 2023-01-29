@@ -31,8 +31,12 @@ public abstract class SoftwareThing extends Thing {
     private static final int REPAIR_SKILL_MIN = 1;
     
     private static final int ATTACK_DAMAGE = 100; // Reduces random site shield by this amount per attack.
+    private static final int SLOW_EFFECT = 0;     // Slows attack rate of enemy.
+    private static final double RECOVERY_TIME = 0.84; // Cooldown between next use of this attack.
     
     //private Integer condition = CONDITION_DEFAULT;
+    public static double MAX_RECHARGE = 1.0;
+    private double rechargeStatus = 0.0;
     
     private final ArrayList<SoftwareListener> listeners = new ArrayList<>();
     private SoftwareUser user;
@@ -71,10 +75,6 @@ public abstract class SoftwareThing extends Thing {
 //        //conditionGauge.setValue(condition);
 //    }
 
-    @Override
-    public String getIconPath() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
 
     @Override
     public String getPackage() {
@@ -83,6 +83,28 @@ public abstract class SoftwareThing extends Thing {
     
     public int getAttackDamage() {
         return ATTACK_DAMAGE;
+    }
+    
+    public int getSlowEffect() {
+        return ATTACK_DAMAGE;
+    }
+    
+    public double getRecoveryTime() {
+        return RECOVERY_TIME;
+    }
+    
+    public void setRechargeSatatus( double value ) {
+        if ( value > 1.0 ) {
+            rechargeStatus = 1.0;
+        } else if ( value < 0.0 ) {
+            rechargeStatus = 0.0;
+        } else {
+            rechargeStatus = value;
+        }
+    }
+    
+    public double getRechargeStatus() {
+        return rechargeStatus;
     }
     
     public void addListener( SoftwareListener l ) {

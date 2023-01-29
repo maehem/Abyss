@@ -19,7 +19,6 @@ package com.maehem.flatlinejack.engine;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
-import com.maehem.flatlinejack.engine.gui.GUI;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -169,7 +168,7 @@ public class Character extends Group {
         double clipW = getPoseSheet().getWidth();
         
         talkIcon = new ImageView();
-        talkIcon.setImage(new Image(GUI.class.getResourceAsStream(TALK_ICON_IMAGE_FILENAME)));
+        talkIcon.setImage(new Image(getClass().getResourceAsStream(TALK_ICON_IMAGE_FILENAME)));
         talkIcon.setPreserveRatio(true);
         talkIcon.setFitWidth(clipW/3);
         talkIcon.setX(clipW-talkIcon.getFitWidth());

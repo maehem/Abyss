@@ -16,11 +16,15 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.matrix.MatrixNodeFactory;
 import com.maehem.flatlinejack.engine.matrix.MatrixSiteNeighbor;
 import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
+import com.maehem.flatlinejack.engine.matrix.SoftwareTabNode;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
 import javafx.scene.AmbientLight;
@@ -32,11 +36,13 @@ import javafx.scene.SubScene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
 import javafx.util.Duration;
 
@@ -68,6 +74,9 @@ public class MatrixPane extends BorderPane {
     MatrixNode nodeSW;
 
     private final Group root = new Group();
+    private final Group siteGroup = new Group();
+    private final Group hudGroup = new Group();
+    private final HBox hudTabs = new HBox();
 
     private final GameState gameState;
 
@@ -77,7 +86,7 @@ public class MatrixPane extends BorderPane {
     public MatrixPane(GameState gs, double width, double height) {
         this.gameState = gs;
         currentSite = gs.getSite(0x00101); // For now
-                
+
         scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -85,7 +94,7 @@ public class MatrixPane extends BorderPane {
         // Normal Camera
         camera.getTransforms().addAll(
                 new Rotate(-12, Rotate.X_AXIS), // Tilt down a little
-                new Translate(0, -30, -600)); // Just off the ground
+                new Translate(0, -22, -600)); // Just off the ground
         camera.setFieldOfView(30.0);
 
 //        // DEBUG:  Ortho Camera
@@ -100,14 +109,18 @@ public class MatrixPane extends BorderPane {
 //        camera.setFieldOfView(40.0);
         //LOGGER.log(Level.INFO, "FOV: {0}", camera.getFieldOfView());
         camera.setNearClip(100);
-        camera.setFarClip(4500.0);
+        camera.setFarClip(2800.0);
 
         root.getChildren().addAll(camera);
         scene.setCamera(camera);
         setCenter(scene);
 
         initBackDrop();
+        root.getChildren().add(siteGroup);
         initRoot();
+        root.getChildren().add(hudGroup);
+        initHUD();
+
     }
 
     void processEvents(ArrayList<String> input) {
@@ -145,7 +158,7 @@ public class MatrixPane extends BorderPane {
                     fadeNode(nodeNW, false);
                     fadeNode(nodeN, false);
                     fadeNode(nodeNE, false);
-                    //root.getChildren().removeAll(nodeNW, nodeN, nodeNE);
+
                     // Translate items in site groups
                     translateNode(tempSW, Direction.FORWARD, false);
                     translateNode(tempS, Direction.FORWARD, false);
@@ -190,8 +203,7 @@ public class MatrixPane extends BorderPane {
                     fadeNode(tempN, true);
                     fadeNode(tempNW, true);
                     fadeNode(tempNE, true);
-                    
-                    //root.getChildren().removeAll(nodeSW, nodeS, nodeSE);
+
                     // Translate items in site groups
                     translateNode(tempNW, Direction.BACKWARD, false);
                     translateNode(tempN, Direction.BACKWARD, false);
@@ -313,26 +325,29 @@ public class MatrixPane extends BorderPane {
 
     /**
      * Fade a Matrix Node in or out on the horizon
-     * 
+     * NOTE:  Doesn't actually fade. JavaFX 3D groups cannot be faded. This acts like
+     * a visibility delay and we set it's time for half of the translation.
+     *
      * @param n the node to fade
      * @param in true=fade-in, false=fade-out
      */
     private void fadeNode(MatrixNode n, boolean in) {
-        FadeTransition ft = new FadeTransition(Duration.millis(in?100:300), n);
-        ft.setFromValue(in?0.0:1.0);
-        ft.setToValue(in?1.0:0.0);
+        FadeTransition ft = new FadeTransition(Duration.millis(in ? 100 : 100), n);
+        
+        ft.setFromValue(in ? 0.0 : 1.0);
+        ft.setToValue(in ? 1.0 : 0.0);
         ft.setCycleCount(1);
         ft.setAutoReverse(false);
         ft.play();
     }
 
     private void translateNode(MatrixNode node, Direction d, boolean removeWhenDone) {
-        TranslateTransition tt = new TranslateTransition(Duration.millis(200), node);
+        TranslateTransition tt = new TranslateTransition(Duration.millis(180), node);
         tt.setCycleCount(1);
         tt.setAutoReverse(false);
         if (removeWhenDone) {
             tt.setOnFinished((t) -> {
-                root.getChildren().remove(node);
+                siteGroup.getChildren().remove(node);
             });
         }
         switch (d) {
@@ -373,8 +388,8 @@ public class MatrixPane extends BorderPane {
 //        testBox.setTranslateY(-50);
 //        root.getChildren().add(testBox);
         //nodeCenter = new HeatsinkNode(currentSite, nodeScaling * size);
-        nodeCenter = MatrixNodeFactory.getNewMatrixNode(currentSite, nodeScaling*size);
-        root.getChildren().add(nodeCenter);
+        nodeCenter = MatrixNodeFactory.getNewMatrixNode(currentSite, nodeScaling * size);
+        siteGroup.getChildren().add(nodeCenter);
 
         // Surrounding Nodes
         nodeN = addNeighbor(MatrixSiteNeighbor.N);
@@ -389,6 +404,60 @@ public class MatrixPane extends BorderPane {
 
     }
 
+    /**
+     * Software attack hudTabs
+     */
+    private void initHUD() {
+
+//        // Test Tab for Software
+//        Pane softwareTab1 = new SoftwareTabNode();
+//        Pane softwareTab2 = new SoftwareTabNode();
+//        softwareTab2.setOpacity(0.5);
+//        Pane softwareTab3 = new SoftwareTabNode();
+//        Pane softwareTab4 = new SoftwareTabNode();
+        hudTabs.setSpacing(4);
+        hudTabs.getTransforms().addAll(
+                new Translate(-52.5, -101, -474),
+                new Rotate(-45, Rotate.X_AXIS),
+                new Scale(0.087, 0.087)
+        );
+
+//        for (int i = 0; i < 4; i++) {
+//            hudTabs.getChildren().add(new SoftwareTabNode(new EmptySoftwareThing(), ' '));
+//        }
+
+        updateHud();
+        hudGroup.getChildren().add(hudTabs);
+    }
+
+    public void updateHud() {
+        LOGGER.log(Level.INFO, "Update HUD");
+        DeckThing currentDeck = gameState.getPlayer().getCurrentDeck();
+        hudTabs.getChildren().clear();
+
+        if (currentDeck != null) {
+            List<SoftwareThing> software = currentDeck.getSoftware();
+            int[] loadout = currentDeck.getSoftwareLoadout();
+            for (int i = 0; i < loadout.length; i++) {
+                int idx = loadout[i];
+                SoftwareThing st;
+                if ( idx >= 0 ) {
+                    st = software.get(loadout[i]);
+                } else {
+                    st = new EmptySoftwareThing();
+                }
+                LOGGER.log(Level.INFO, "    [{0}] put software thing: {1}", new Object[]{i, st.getName()});
+                hudTabs.getChildren().add(new SoftwareTabNode(st, (char) ('0' + i + 1)));                    
+            }
+        } else { // Empty hudTabs
+            LOGGER.log(Level.INFO, "    No current deck: Fill blank HUD.");
+            for (int i = 0; i < 4; i++) {
+                hudTabs.getChildren().add(new SoftwareTabNode(new EmptySoftwareThing(), (char)('0' + i + 1)));
+            }
+        }
+
+    }
+
     private MatrixNode addNeighbor(MatrixSiteNeighbor n) {
         int neighbor = currentSite.getNeighbor(n);
         MatrixSite site = gameState.getSite(neighbor);
@@ -396,10 +465,16 @@ public class MatrixPane extends BorderPane {
             // Blank Site
             site = new MatrixSite(gameState, neighbor);
         }
-        MatrixNode node = MatrixNodeFactory.getNewMatrixNode(site, nodeScaling*size);
+        MatrixNode node = MatrixNodeFactory.getNewMatrixNode(site, nodeScaling * size);
         node.setTranslateX(n.col * nodeScaling * size);
         node.setTranslateZ(-n.row * nodeScaling * size);
-        root.getChildren().add(node);
+        if ( n==MatrixSiteNeighbor.N || n==MatrixSiteNeighbor.NE || n == MatrixSiteNeighbor.NW ||
+             n==MatrixSiteNeighbor.NN || n==MatrixSiteNeighbor.NNE || n == MatrixSiteNeighbor.NNW 
+                )   {
+            siteGroup.getChildren().add(0, node);
+        } else {
+            siteGroup.getChildren().add(node);            
+        }
 
         return node;
     }
@@ -435,22 +510,23 @@ public class MatrixPane extends BorderPane {
         light2.setTranslateX(0);
         light2.setTranslateZ(-200);
 
-        return new Group(ambient, /* upperLight, */light1, light2);
+        return new Group(/*ambient,*/ /* upperLight, */ light1, light2);
     }
 
     private void initBackDrop() {
         // Background   scene.setFill  image
         ImageView backdrop = backgroundImage();
-        backdrop.getTransforms().add(
+        backdrop.getTransforms().addAll(
                 new Translate(
-                        -backdrop.getImage().getWidth() / 6.0,
-                        0, //-backdrop.getImage().getHeight()/2.0,
-                        1980.0
-                )
+                        -backdrop.getImage().getWidth() ,
+                        -580, //-backdrop.getImage().getHeight()/2.0,
+                        1900.0
+                ),
+                new Scale(3.0, 2.0)
         );
-        backdrop.setScaleY(2.0);
-        backdrop.setScaleX(3.0);
-        root.getChildren().add(backdrop);
+//        backdrop.setScaleY(2.0);
+//        backdrop.setScaleX(3.0);
+        root.getChildren().add(0, backdrop);
     }
 
     private ImageView backgroundImage() {

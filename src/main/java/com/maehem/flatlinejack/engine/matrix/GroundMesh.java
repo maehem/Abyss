@@ -31,7 +31,7 @@ public class GroundMesh extends Pane {
 
     Rectangle plane;
     final int DIVISIONS = 9;  //  n+1
-    final Color PLANE_COLOR = new Color(0.3, 0.05, 0.3, 0.4);
+    final Color PLANE_COLOR = new Color(0.3, 0.05, 0.3, 0.1);
     final Color LINE_COLOR = new Color(0.2, 0.2, 0.2, 0.5);
     final Color BORDER_COLOR = new Color(0.1, 0.1, 0.1, 1.0);
 
@@ -41,8 +41,8 @@ public class GroundMesh extends Pane {
         plane.setFill(PLANE_COLOR);
         getChildren().add(plane);
 
-        double lineTranslate = 0;
-        double lineWidth = 2.4;
+        //double lineTranslate = 0;
+        double lineWidth = 3.0;
 
         for ( int y=0; y<=DIVISIONS; y++ ) {
             Line line = new Line(0, 0, size, 0);
@@ -52,7 +52,7 @@ public class GroundMesh extends Pane {
                 line.setStroke(LINE_COLOR);
             }
             line.setTranslateY(y*(size/DIVISIONS));
-            line.setTranslateZ(lineTranslate);
+            //line.setTranslateZ(lineTranslate);
             line.setStrokeWidth(lineWidth);
 
             getChildren().add(line);    
@@ -66,7 +66,7 @@ public class GroundMesh extends Pane {
                 line.setStroke(LINE_COLOR);
             }
             line.setTranslateX(x*(size/DIVISIONS));
-            line.setTranslateZ(lineTranslate);
+            //line.setTranslateZ(lineTranslate);
             line.setStrokeWidth(lineWidth / 3.0); // Looks better
 
             getChildren().add(line);

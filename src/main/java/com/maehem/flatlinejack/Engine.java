@@ -88,7 +88,6 @@ public class Engine extends Application implements GameStateListener {
     // This is a class name.
     private static final String STARTING_VIGNETTE = "StreetVignette2";
 
-    //private GUI gui;
     private Stage window;
     private Loop loop;   // Game logic Loop
     
@@ -186,6 +185,8 @@ public class Engine extends Application implements GameStateListener {
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
         //getPlayer().loadState(getGameState());
+        
+        matrixPane.updateHud();
         
         initHotKeys();
         initKeyInput();

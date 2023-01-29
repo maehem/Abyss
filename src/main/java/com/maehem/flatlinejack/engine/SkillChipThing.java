@@ -16,8 +16,6 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.SoftwareThing;
-import com.maehem.flatlinejack.engine.Thing;
 import com.maehem.flatlinejack.engine.gui.widgets.Gauge;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -33,7 +31,10 @@ public abstract class SkillChipThing extends Thing {
 
     private Integer condition = CONDITION_DEFAULT;
     private final ArrayList<SoftwareThing> slots = new ArrayList<>();
-    private final Gauge conditionGauge = new Gauge("Condition:", 100, 20, 600, CONDITION_DEFAULT);
+    private final Gauge conditionGauge = new Gauge(
+            "Condition:", 100, 20, 600, CONDITION_DEFAULT,
+            Gauge.ValueLabel.NONE
+    );
     //private FlowPane detailPane;
 
     // <protected>??? Used by settings loaders

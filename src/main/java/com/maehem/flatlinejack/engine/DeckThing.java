@@ -22,6 +22,7 @@ import com.maehem.flatlinejack.Engine;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -53,6 +54,9 @@ public abstract class DeckThing extends Thing implements SoftwareUser {
     
     private final ArrayList<SoftwareThing> softwareSlots = new ArrayList<>();
     private final ArrayList<RamThing> ramSlots = new ArrayList<>();
+    //private final int[] softwareLoadout = {-1, -1, -1, -1}; // index into softwareSlots
+    private final int[] softwareLoadout = {0, 1, -1, 2}; // index into softwareSlots
+    
     private Player player = null;
     
 
@@ -64,7 +68,11 @@ public abstract class DeckThing extends Thing implements SoftwareUser {
         setNumSoftwareSlots(softwareCapacity);
         setNumRamSlots(ramSlots);
     }
-        
+
+    public List<SoftwareThing> getSoftware() {
+        return softwareSlots;
+    }
+    
     private  void setNumSoftwareSlots(int cap){
         // Fill the softwareSlots with EmptySoftwareThing placeholders.
         for ( int i=0; i< cap; i++ ) {
@@ -109,6 +117,10 @@ public abstract class DeckThing extends Thing implements SoftwareUser {
                 .filter((t) -> ( t instanceof EmptySoftwareThing ))
                 .map((_item) -> 1)
                 .reduce(0, Integer::sum);
+    }
+    
+    public int[] getSoftwareLoadout() {
+        return softwareLoadout;
     }
     
     private  void setNumRamSlots(int nSlots){
@@ -299,6 +311,7 @@ public abstract class DeckThing extends Thing implements SoftwareUser {
                     // If we got this far then we made the software object.
                     // Add it to the slots.
                     softwareSlots.set(i, object);
+                    object.setUser(this);
                     // load it's current state properties.
                     object.loadState(p, key);
                 } catch (ClassNotFoundException | InstantiationException | 
