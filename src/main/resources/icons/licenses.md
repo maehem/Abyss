@@ -11,10 +11,12 @@ Quit            icon by Mark Koch Created for Flatline Jack
 Save            icon by Mark Koch Created for Flatline Jack
 Shield          icon by Mark Koch Created for Flatline Jack
 Talk            icon by Mark Koch Created for Flatline Jack
+Attack          icon by Mark Koch Created for Flatline Jack
 
 
 Cogwheel        icon by Arthur Shlain from Usefulicons  https://usefulicons.com/micro/cogwheel
-Command Line    icon by Arthur Shlain from Glyph Icons  https://usefulicons.com/glyph-icons-16x16/command-line
+Command Line    icon by Arthur Shlain from Usefulicons  https://usefulicons.com/glyph-icons-16x16/command-line
 Mechanical Head icon by Arthur Shlain from Usefulicons  https://usefulicons.com/useful/mechanical-head
-
-
+Repair          icon by Arthur Shlain from Usefulicons  https://usefulicons.com/pure-lines/repair
+Turtle          icon by Arthur Shlain from Usefulicons  https://usefulicons.com/useful/turtle
+Computer Fan    icon by Arthur Shlain from Usefulicons  https://usefulicons.com/glyph-icons-16x16/computer-fan
