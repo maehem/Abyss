@@ -90,9 +90,13 @@ public class MatrixPane extends BorderPane {
         scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
+        camera.setNearClip(10);
+        camera.setFarClip(2800.0);
+        
+        Group cameraHudGroup = new Group(camera, hudGroup);
 
         // Normal Camera
-        camera.getTransforms().addAll(
+        cameraHudGroup.getTransforms().addAll(
                 new Rotate(-12, Rotate.X_AXIS), // Tilt down a little
                 new Translate(0, -22, -600)); // Just off the ground
         camera.setFieldOfView(30.0);
@@ -108,18 +112,17 @@ public class MatrixPane extends BorderPane {
 //                new Translate(0, 80, -1600)); // Just off the ground
 //        camera.setFieldOfView(40.0);
         //LOGGER.log(Level.INFO, "FOV: {0}", camera.getFieldOfView());
-        camera.setNearClip(100);
-        camera.setFarClip(2800.0);
+        
 
-        root.getChildren().addAll(camera);
         scene.setCamera(camera);
         setCenter(scene);
 
         initBackDrop();
         root.getChildren().add(siteGroup);
         initRoot();
-        root.getChildren().add(hudGroup);
+        //root.getChildren().add(hudGroup);
         initHUD();
+        root.getChildren().addAll(cameraHudGroup);
 
     }
 
@@ -408,23 +411,13 @@ public class MatrixPane extends BorderPane {
      * Software attack hudTabs
      */
     private void initHUD() {
-
-//        // Test Tab for Software
-//        Pane softwareTab1 = new SoftwareTabNode();
-//        Pane softwareTab2 = new SoftwareTabNode();
-//        softwareTab2.setOpacity(0.5);
-//        Pane softwareTab3 = new SoftwareTabNode();
-//        Pane softwareTab4 = new SoftwareTabNode();
         hudTabs.setSpacing(4);
         hudTabs.getTransforms().addAll(
-                new Translate(-52.5, -101, -474),
+               // new Translate(-52.5, -101, -474),
+                new Translate(-121, 53, 270),
                 new Rotate(-45, Rotate.X_AXIS),
-                new Scale(0.087, 0.087)
+                new Scale(0.2, 0.2)
         );
-
-//        for (int i = 0; i < 4; i++) {
-//            hudTabs.getChildren().add(new SoftwareTabNode(new EmptySoftwareThing(), ' '));
-//        }
 
         updateHud();
         hudGroup.getChildren().add(hudTabs);
