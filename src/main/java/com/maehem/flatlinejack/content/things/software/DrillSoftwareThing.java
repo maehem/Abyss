@@ -28,5 +28,21 @@ public class DrillSoftwareThing extends SoftwareThing {
     public DrillSoftwareThing() {
         super(NAME);
     }
+
+    @Override
+    public int getAttackDamage() {
+        return 123;
+    }
+
+    @Override
+    public double getRecoveryTime() {
+        return 0.667;
+    }
+
+    @Override
+    public String getIconPath() {
+        return "/content/things/software/drill_5.png";
+    }
+    
     
 }

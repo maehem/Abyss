@@ -37,4 +37,9 @@ public class BackOffice3SoftwareThing extends SoftwareThing {
         return ATTACK_DAMAGE;
     }
     
+    @Override
+    public String getIconPath() {
+        return "/content/things/software/back-office_3.png";
+    }
+    
 }

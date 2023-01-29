@@ -37,6 +37,10 @@ public class BubbleSpray1SoftwareThing extends SoftwareThing {
         return ATTACK_DAMAGE;
     }
     
+    @Override
+    public String getIconPath() {
+        return "/content/things/software/bubble-spray_1.png";
+    }
     
     
 }
