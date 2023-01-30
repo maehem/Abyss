@@ -27,13 +27,15 @@ public interface GameStateListener {
     
     public void gameStatePropertyChanged( GameState gs, String propKey );
 
-    public void gameStateShowInventory(GameState gs, boolean state);
+    //public void gameStateShowInventory(GameState gs, boolean state);
     
-    public void gameStateShowChips(GameState gs, boolean state);
+    //public void gameStateShowChips(GameState gs, boolean state);
     
     public void gameStateShowDebug(GameState gs, boolean state );
     
     public void gameStateTerminalChanged( GameState gs, BBSTerminal term );
 
-    public void gameStateShowTerminal(GameState aThis, boolean showTerminal);
+    //public void gameStateShowTerminal(GameState aThis, boolean showTerminal);
+
+    public void gameStateDisplayChanged(GameState aThis, GameState.Display d);
 }

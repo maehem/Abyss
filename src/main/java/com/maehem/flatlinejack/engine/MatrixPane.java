@@ -17,6 +17,7 @@
 package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.matrix.MatrixNodeFactory;
 import com.maehem.flatlinejack.engine.matrix.MatrixSiteNeighbor;
 import com.maehem.flatlinejack.engine.matrix.MatrixSite;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,6 +51,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
@@ -60,8 +63,10 @@ import javafx.util.Duration;
  *
  * @author mark
  */
-public class MatrixPane extends BorderPane {
+public class MatrixPane extends BorderPane implements GameStateListener {
 
+    private static final GameState.Display display = GameState.Display.MATRIX;
+    
     private boolean showSoftwareTabs = false;
     private boolean showTerminalTab;
 
@@ -92,6 +97,7 @@ public class MatrixPane extends BorderPane {
     private final Group root = new Group();
     private final Group siteGroup = new Group();
     private final Group hudGroup = new Group();
+    private final Group cameraHudGroup;
     private final HBox hudTabs = new HBox();
     private final StackPane terminalTab = new StackPane();
 
@@ -102,6 +108,8 @@ public class MatrixPane extends BorderPane {
 
     public MatrixPane(GameState gs, double width, double height) {
         this.gameState = gs;
+        gameState.addListenter(this);
+        
         currentSite = gs.getSite(0x00101); // For now
 
         scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
@@ -110,7 +118,7 @@ public class MatrixPane extends BorderPane {
         camera.setNearClip(1);
         camera.setFarClip(2800.0);
         
-        Group cameraHudGroup = new Group(camera, hudGroup);
+        cameraHudGroup = new Group(camera, hudGroup);
 
         // Normal Camera
         cameraHudGroup.getTransforms().addAll(
@@ -140,6 +148,8 @@ public class MatrixPane extends BorderPane {
         //root.getChildren().add(hudGroup);
         initHUD();
         root.getChildren().addAll(cameraHudGroup);
+        
+        setVisible(false);
 
     }
 
@@ -378,24 +388,18 @@ public class MatrixPane extends BorderPane {
             case FORWARD:
                 tt.setByZ(nodeScaling * size);
                 tt.play();
-                //node.setTranslateZ(nodeScaling * size + node.getTranslateZ());
                 break;
             case BACKWARD:
                 tt.setByZ(-nodeScaling * size);
                 tt.play();
-                //node.setTranslateZ(-nodeScaling * size + node.getTranslateZ());
                 break;
             case LEFT: // When moving right
                 tt.setByX(-nodeScaling * size);
                 tt.play();
-                //node.setTranslateX(-nodeScaling * size + node.getTranslateX());
-//                setShowSoftwareTabs(true);
                 break;
             case RIGHT: // When moving left
                 tt.setByX(nodeScaling * size);
                 tt.play();
-                //node.setTranslateX(nodeScaling * size + node.getTranslateX());
-//                setShowSoftwareTabs(false);
                 break;
 
         }
@@ -509,9 +513,6 @@ public class MatrixPane extends BorderPane {
                 new Color(0.2,0.2,0.2,1.0), new CornerRadii(20), 
                 new Insets(10,20,0,20 )
         )));
-        screenRect.setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked open terminal.");
-        });
         
         Text termTitleText = new Text("Matrix Site Service Interface");
         termTitleText.setFont(Font.font(28));
@@ -531,11 +532,14 @@ public class MatrixPane extends BorderPane {
         termtabItems.setFillWidth(true);
         termtabItems.setAlignment(Pos.CENTER);
         terminalTab.getChildren().add(termtabItems);
-                
         hudGroup.getChildren().add(terminalTab);
         
-        
         setShowTerminalTab(true);
+        
+        screenRect.setOnMouseClicked((t) -> {
+            LOGGER.log(Level.INFO, "User clicked open terminal.");
+            doTerminalOpenAnimation();
+        });
     }
     
     private void setShowTerminalTab( boolean show ) {
@@ -546,6 +550,54 @@ public class MatrixPane extends BorderPane {
         tr.setByY(show?-TERM_TAB_H:TERM_TAB_H);
         
         tr.play();
+    }
+    
+    /**
+     * Cause a rectangle to appear near the clicked element and then
+     * grow rapidly, filling the screen.  Then disappear, switching out
+     * the animated element with actual terminal screen Pane.
+     * 
+     */
+    private void doTerminalOpenAnimation() {
+        double rectW = 400;
+        double rectH = 200;
+        double w = getWidth();
+        double h = getHeight();
+        double t = 3000.0;
+        double stepW = (w-rectW)/2.0/t;
+        double stepH = (h-rectH)/2.0/t;
+        double toScX = w/rectW;
+        double toScY = h/rectH;
+        
+//        Rectangle r = new Rectangle(
+//                (w-rectW)/2, (h-rectH)*0.8, 
+//                rectW, rectH 
+//        );
+            Rectangle r = new Rectangle( -150, -100, 300, 200 );
+//                (w-rectW)/2, (h-rectH)*0.8, 
+//                rectW, rectH 
+//        );
+  //r.setTranslateZ(-200);
+         r.setFill(Color.BLACK);
+        
+        ScaleTransition st = new ScaleTransition(new Duration(t), r);
+        st.setToX(toScX);
+        st.setToY(toScY);
+        st.setCycleCount(1);
+        
+        TranslateTransition tt = new TranslateTransition(new Duration(t), r);
+        tt.setToX(0);
+        tt.setToY(0);
+        tt.setCycleCount(1);
+        
+        root.getChildren().add(0,r);
+        tt.setOnFinished((f) -> {
+            root.getChildren().remove(r);
+        });
+        
+//        st.play();
+//        tt.play();
+        
     }
     
 
@@ -627,6 +679,23 @@ public class MatrixPane extends BorderPane {
         iv.setPreserveRatio(true);
 
         return iv;
+    }
+
+    @Override
+    public void gameStateVignetteChanged(GameState gs) {}
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) {}
+
+    @Override
+    public void gameStateShowDebug(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
+
+    @Override
+    public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {
+        setVisible(d == display);
     }
 
 }

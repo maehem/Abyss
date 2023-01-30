@@ -13,17 +13,21 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.engine.gui;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
+import javafx.animation.Interpolator;
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 /**
  *
@@ -32,25 +36,45 @@ import javafx.scene.paint.Color;
 public class TerminalPane extends StackPane {
 
     private BBSTerminal terminal;
-    public TerminalPane( GameState gs, int w, int h ) {
+
+    public TerminalPane(GameState gs, int w, int h) {
         this.setPrefSize(w, h);
-        
+
         setBackground(new Background(
-                new BackgroundFill(Color.BLACK, 
-                        CornerRadii.EMPTY, 
+                new BackgroundFill(Color.BLACK,
+                        CornerRadii.EMPTY,
                         Insets.EMPTY)
         ));
         terminal = new BBSTerminal(gs); //, w, h, 25, 80);
         getChildren().add(terminal);
+        setVisible(false);
     }
-    
+
     public BBSTerminal getTerminal() {
         return terminal;
     }
-    
-    public void setTerminal( BBSTerminal t ) {
+
+    public void setTerminal(BBSTerminal t, boolean showTransistion) {
         this.terminal = t;
         getChildren().clear();
-        getChildren().add(t);
+
+        if (showTransistion) {
+            Rectangle r = new Rectangle(200, 100, Color.AZURE);
+            getChildren().add(r);
+            
+            ScaleTransition st = new ScaleTransition(new Duration(1000), r);
+            st.setCycleCount(1);
+            st.setToX(2.0);
+            st.setToY(2.0);
+            st.setInterpolator(Interpolator.LINEAR);
+            st.play();
+            
+            st.setOnFinished((tt) -> {
+                getChildren().remove(r);
+                getChildren().add(t);
+            });
+        } else {
+            getChildren().add(t);
+        }
     }
 }

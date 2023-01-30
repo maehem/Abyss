@@ -21,10 +21,8 @@ import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.content.matrix.site.DefaultSitesList;
-import com.maehem.flatlinejack.content.matrix.sitenode.HeatsinkNode;
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
-import com.maehem.flatlinejack.engine.matrix.EmptyMatrixNode;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,6 +43,8 @@ import java.util.logging.Logger;
  */
 public class GameState extends Properties {
 
+    public enum Display { SPLASH, INVENTORY, CHIPS, TERMINAL, VIGNETTE, MATRIX }
+    
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
     public static final String PROP_CURRENT_DATE = "game.date";
@@ -78,9 +78,16 @@ public class GameState extends Properties {
 
     private ResourceBundle bundle;
 
+    private Display showing = Display.SPLASH;
+    private Display termPop = Display.VIGNETTE; // What to display if we leave terminal.
+    
+    private boolean showSplash = false;
     private boolean showInventory = false;
     private boolean showChips = false;
     private boolean showTerminal = false;
+    private boolean showMatrix = false;
+    private boolean showVignette = false;
+    
     private boolean showDebug = true;
 
     private final File gameSaveFile = new File(
@@ -222,6 +229,44 @@ public class GameState extends Properties {
         listeners.remove(l);
     }
 
+    public void setShowing ( Display d ) {
+        showing = d;
+        
+        for (GameStateListener l : listeners) {
+            l.gameStateDisplayChanged(this, d);
+        }
+        
+    }
+    
+    /**
+     * If it is showing, hide it.
+     * If hidden, show it.
+     * 
+     * @param d 
+     */
+    public void toggleShowing( Display d ){
+        if ( showing == d) {
+            // Hide it.
+            switch (d) {
+                case CHIPS:
+                case INVENTORY:
+                case MATRIX:
+                    setShowing(Display.VIGNETTE);
+                    break;
+                case TERMINAL:
+                case SPLASH:
+                    setShowing(termPop);
+                    break;
+            }
+        } else {
+            // Show it
+            if ( d == Display.TERMINAL || d == Display.SPLASH ) {
+                termPop = showing;
+            }
+            setShowing(d);
+        }
+    }
+        
     public Vignette getCurrentVignette() {
         return currentVignette;
     }
@@ -240,39 +285,39 @@ public class GameState extends Properties {
         }
     }
 
-    public void setShowInventory(boolean show) {
-        this.showInventory = show;
-        for (GameStateListener l : listeners) {
-            l.gameStateShowInventory(this, showInventory);
-        }
-    }
+//    public void setShowInventory(boolean show) {
+//        this.showInventory = show;
+//        for (GameStateListener l : listeners) {
+//            l.gameStateShowInventory(this, showInventory);
+//        }
+//    }
 
-    public boolean inventoryShowing() {
-        return showInventory;
-    }
+//    public boolean inventoryShowing() {
+//        return showInventory;
+//    }
 
-    public void toggleInventoryShowing() {
-        setShowChips(false);
-        setShowTerminal(false);
-        setShowInventory(!showInventory);
-    }
+//    public void toggleInventoryShowing() {
+//        setShowChips(false);
+//        setShowTerminal(false);
+//        setShowInventory(!showInventory);
+//    }
 
-    public void setShowChips(boolean show) {
-        this.showChips = show;
-        for (GameStateListener l : listeners) {
-            l.gameStateShowChips(this, showChips);
-        }
-    }
+//    public void setShowChips(boolean show) {
+//        this.showChips = show;
+//        for (GameStateListener l : listeners) {
+//            l.gameStateShowChips(this, showChips);
+//        }
+//    }
 
-    public boolean chipsShowing() {
-        return showChips;
-    }
+//    public boolean chipsShowing() {
+//        return showChips;
+//    }
 
-    public void toggleChipsShowing() {
-        setShowInventory(false);
-        setShowTerminal(false);
-        setShowChips(!showChips);
-    }
+//    public void toggleChipsShowing() {
+//        setShowInventory(false);
+//        setShowTerminal(false);
+//        setShowChips(!showChips);
+//    }
 
     public void notifyPlayerStateChanged(String key) {
         for (GameStateListener l : listeners) {
@@ -291,12 +336,12 @@ public class GameState extends Properties {
         setShowDebug(!showDebug);
     }
 
-    public void setShowTerminal(boolean show) {
-        this.showTerminal = show;
-        for (GameStateListener l : listeners) {
-            l.gameStateShowTerminal(this, showTerminal);
-        }
-    }
+//    public void setShowTerminal(boolean show) {
+//        this.showTerminal = show;
+//        for (GameStateListener l : listeners) {
+//            l.gameStateShowTerminal(this, showTerminal);
+//        }
+//    }
 
     public void setCurrentTerminal(BBSTerminal term) {
         LOGGER.log(Level.INFO, "Terminal changed from:{0} to: {1}",
@@ -308,7 +353,8 @@ public class GameState extends Properties {
         if (term.getClass() == currentTerminal.getClass()) {
             // Exit on main screen is link to itself.
             // So set not showing.
-            setShowTerminal(false);
+            setShowing(termPop);
+            //setShowTerminal(false);
         }
         this.currentTerminal = term;
         for (GameStateListener l : listeners) {
@@ -320,11 +366,11 @@ public class GameState extends Properties {
         return currentTerminal;
     }
 
-    public void toggleTerminalShowing() {
-        setShowInventory(false);
-        setShowChips(false);
-        setShowTerminal(!showTerminal);
-    }
+//    public void toggleTerminalShowing() {
+//        setShowInventory(false);
+//        setShowChips(false);
+//        setShowTerminal(!showTerminal);
+//    }
 
     public ArrayList<NewsStory> getNews() {
         return news;

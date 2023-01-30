@@ -73,6 +73,8 @@ public class Engine extends Application implements GameStateListener {
     //private double SCALE = 0.75;
     private static final double SCALE = 0.66;
     
+    private final Group vignetteGroup = new Group();
+    private final StackPane topArea = new StackPane();
     private CrtTextPane narrationPane;
     private RomConstructPane romPane;
     private GameControlsPane gameControls;
@@ -91,8 +93,6 @@ public class Engine extends Application implements GameStateListener {
     private Stage window;
     private Loop loop;   // Game logic Loop
     
-    private final Group vignetteGroup = new Group();
-    private final StackPane topArea = new StackPane();
     private final HBox bottomArea = new HBox();  // gui and naration
     private final VBox gamePane = new VBox(new Group(topArea), new Group(bottomArea));
     
@@ -119,7 +119,7 @@ public class Engine extends Application implements GameStateListener {
     @Override
     public void start(Stage window) {
         this.window = window;
-        
+        topArea.setPrefSize(Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
         initDebugWindow();
 
         getGameState().addListenter(this);
@@ -131,7 +131,7 @@ public class Engine extends Application implements GameStateListener {
         
         
         splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
-        topArea.getChildren().add(splashScreen);
+        //topArea.getChildren().add(splashScreen);
 
         window.setScene(this.scene);
         window.setResizable(false);
@@ -157,30 +157,28 @@ public class Engine extends Application implements GameStateListener {
         window.show();
 
         // Inventory
-        inventoryPane = new InventoryPane(gameState.getPlayer());
-        inventoryPane.setVisible(gameState.inventoryShowing());
+        inventoryPane = new InventoryPane(gameState);
+        //inventoryPane.setVisible(gameState.inventoryShowing());
         
         // Chips  -- Confgurable Buffs
-        chipsPane = new ChipsConfiguratorPane(Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
-        chipsPane.setVisible(gameState.chipsShowing());
+        chipsPane = new ChipsConfiguratorPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        //chipsPane.setVisible(gameState.chipsShowing());
         
         
         // Terminal -- Base BBS style system
         terminalPane = new TerminalPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
-        terminalPane.setVisible(false);
-        terminalPane.setTerminal(new PublicTerminalSystem(gameState));
+        //terminalPane.setVisible(false);
+        terminalPane.setTerminal(new PublicTerminalSystem(gameState), false);
         
         // Deck Bench -- Configure your Deck with inventory components
         
         // Cyberspace  -- ROM Helper replaces Narration Window
         matrixPane = new MatrixPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
-        matrixPane.setVisible(true);
+        //matrixPane.setVisible(true);
         
-        topArea.getChildren().addAll(vignetteGroup, 
+        topArea.getChildren().addAll(vignetteGroup, //splashScreen,
                 chipsPane, inventoryPane, terminalPane, matrixPane
         );
-        // Finished setting up GUI
-        setShowing(matrixPane);
         
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
@@ -197,18 +195,22 @@ public class Engine extends Application implements GameStateListener {
                 STARTING_VIGNETTE
         );
         notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
+        // Finished setting up GUI
+        //setShowing(matrixPane);
+        //setShowing(vignetteGroup);
+        gameState.setShowing(GameState.Display.MATRIX);
    }
 
-    private void setShowing( Node n ) {
-        splashScreen.setVisible(false);
-        vignetteGroup.setVisible(false);
-        chipsPane.setVisible(false);
-        inventoryPane.setVisible(false);
-        terminalPane.setVisible(false);
-        matrixPane.setVisible(false);
-        
-        n.setVisible(true);
-    }
+//    private void setShowing( Node n ) {
+//        splashScreen.setVisible(false);
+//        vignetteGroup.setVisible(false);
+//        chipsPane.setVisible(false);
+//        inventoryPane.setVisible(false);
+//        terminalPane.setVisible(false);
+//        matrixPane.setVisible(false);
+//        
+//        n.setVisible(true);
+//    }
     private void initDebugWindow() {
         DebugTab debugTab = new DebugTab( messageLog, gameState);
         debugTab.setFormatter(loggingHandler.getFormatter());
@@ -424,26 +426,26 @@ public class Engine extends Application implements GameStateListener {
     @Override
     public void gameStatePropertyChanged(GameState gs, String propKey) {}
 
-    @Override
-    public void gameStateShowInventory(GameState gs, boolean state) {
-        LOGGER.log(Level.INFO, "Set show inventory pane: {0}", state);
-        hideSpecialPanes();
-        if ( state ) { inventoryPane.updateItemGrid(); }
-        inventoryPane.setVisible(state);
-    }
+//    @Override
+//    public void gameStateShowInventory(GameState gs, boolean state) {
+//        LOGGER.log(Level.INFO, "Set show inventory pane: {0}", state);
+//        hideSpecialPanes();
+//        if ( state ) { inventoryPane.updateItemGrid(); }
+//        inventoryPane.setVisible(state);
+//    }
 
-    @Override
-    public void gameStateShowChips(GameState gs, boolean state) {
-        LOGGER.log(Level.INFO, "Set show chips pane: {0}", state);
-        hideSpecialPanes();
-        chipsPane.setVisible(state);
-    }
+//    @Override
+//    public void gameStateShowChips(GameState gs, boolean state) {
+//        LOGGER.log(Level.INFO, "Set show chips pane: {0}", state);
+//        hideSpecialPanes();
+//        chipsPane.setVisible(state);
+//    }
     
-    private void hideSpecialPanes() {
-        chipsPane.setVisible(false);
-        inventoryPane.setVisible(false);
-        terminalPane.setVisible(false);
-    }
+//    private void hideSpecialPanes() {
+//        chipsPane.setVisible(false);
+//        inventoryPane.setVisible(false);
+//        terminalPane.setVisible(false);
+//    }
 
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {
@@ -456,14 +458,18 @@ public class Engine extends Application implements GameStateListener {
 
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {
-        terminalPane.setTerminal(term);
+        terminalPane.setTerminal(term, true);
     }
 
+//    @Override
+//    public void gameStateShowTerminal(GameState aThis, boolean state) {
+//        LOGGER.log(Level.INFO, "Set show terminal pane: {0}", state);
+//        hideSpecialPanes();
+//        terminalPane.setVisible(state);
+//    }
+
     @Override
-    public void gameStateShowTerminal(GameState aThis, boolean state) {
-        LOGGER.log(Level.INFO, "Set show terminal pane: {0}", state);
-        hideSpecialPanes();
-        terminalPane.setVisible(state);
+    public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {
     }
 
 }

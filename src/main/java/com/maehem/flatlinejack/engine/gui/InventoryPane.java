@@ -16,8 +16,12 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
+import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.GameState.Display;
+import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.widgets.ThingDetailPane;
 import java.io.InputStream;
 import javafx.geometry.Insets;
@@ -42,8 +46,10 @@ import javafx.scene.text.Text;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class InventoryPane extends BorderPane {
+public class InventoryPane extends BorderPane implements GameStateListener {
 
+    private static final Display display = Display.INVENTORY;
+    
     private static final String BTN_SELECTED_COLOR = "#444466";
     private static final String BTN_NORMAL_COLOR   = "#666666";
     private static final int N_COLS = 3;
@@ -52,11 +58,15 @@ public class InventoryPane extends BorderPane {
     private final ThingDetailPane detailPane;
     private final Player player;
     private final GridPane slots = new GridPane();
+    private final GameState gameState;
     
-    public InventoryPane(Player p) {
-        this.player = p;
+    public InventoryPane(GameState gs) {
+        this.gameState = gs;
+        this.player = gs.getPlayer();
         
-        detailPane = new ThingDetailPane(p);
+        gs.addListenter(this);
+        
+        detailPane = new ThingDetailPane(player);
         
         setBackground(new Background(new BackgroundFill(Color.SLATEGRAY, new CornerRadii(4), Insets.EMPTY)));
         this.setPadding(new Insets(16));
@@ -105,6 +115,8 @@ public class InventoryPane extends BorderPane {
         bottomPane.setAlignment(Pos.CENTER);
         FlowPane.setMargin(doneButton, new Insets(8));
         setBottom(bottomPane);
+        
+        setVisible(false);
     }
     
     /**
@@ -163,6 +175,26 @@ public class InventoryPane extends BorderPane {
         }
 
     }
+
+    @Override
+    public void gameStateVignetteChanged(GameState gs) {}
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) { }
+
+    @Override
+    public void gameStateShowDebug(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateDisplayChanged(GameState aThis, Display d) {
+        setVisible(d == display);
+        if ( d == display ) {
+            updateItemGrid();
+        }
+    }
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) { }
     
            
 }

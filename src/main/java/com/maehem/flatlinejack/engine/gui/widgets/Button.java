@@ -45,7 +45,7 @@ public class Button extends StackPane {
         icon.setPreserveRatio(true);
         icon.setFitWidth(h*0.66);
         
-        toggleHighlight(false);
+        showHighlight(false);
         
         getChildren().addAll(rect, icon);
 
@@ -57,8 +57,14 @@ public class Button extends StackPane {
             rect.setFill(Color.SLATEGRAY);
         });        
     }
+            
+
+    public void setGreyout( boolean g ) {
+        setDisable(g);
+        setOpacity(g?0.3:1.0);
+    }
     
-    public void toggleHighlight(boolean highlight) {
+    public void showHighlight(boolean highlight) {
         if ( highlight ) {
             setBorder(new Border(new BorderStroke(new Color(0.1,0.1,1.0,1.0), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(BTN_STROKE_W))));
         } else {

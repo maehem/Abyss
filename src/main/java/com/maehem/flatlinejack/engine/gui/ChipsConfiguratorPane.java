@@ -16,6 +16,9 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
+import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ChipDetailsPane;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ConfiguratorInventoryListView;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.InstalledChipsGridPane;
@@ -33,7 +36,9 @@ import javafx.scene.layout.VBox;
  *
  * @author mark
  */
-public class ChipsConfiguratorPane extends Pane {
+public class ChipsConfiguratorPane extends Pane implements GameStateListener {
+    private static final GameState.Display display = GameState.Display.CHIPS;
+    
     private static final double VIEW_W = 530;
     private static final double VIEW_X = 670;
     private static final String BG_IMAGE_FILE = "/ui/chips-configurator.png";
@@ -43,9 +48,13 @@ public class ChipsConfiguratorPane extends Pane {
     private final ChipDetailsPane details = new ChipDetailsPane(VIEW_W);
     // Chips inventory (scrollpane)
     private final ConfiguratorInventoryListView inventory = new ConfiguratorInventoryListView(VIEW_W);
+    private final GameState gameState;
     
 
-    public ChipsConfiguratorPane( int w, int h) {
+    public ChipsConfiguratorPane( GameState gs, int w, int h) {
+        this.gameState = gs;
+        gameState.addListenter(this);
+        
         this.setPrefSize(w, h);
         
         VBox content = new VBox(installedChips, details, inventory );
@@ -67,9 +76,29 @@ public class ChipsConfiguratorPane extends Pane {
                 )));
         
 
-        getChildren().add(content);        
+        getChildren().add(content);
+        
+        setVisible(false);
     }
-    
-    
+
+    @Override
+    public void gameStateVignetteChanged(GameState gs) {}
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) {}
+
+    @Override
+    public void gameStateShowDebug(GameState gs, boolean state) {}
+
+    @Override
+    public void gameStateDisplayChanged(GameState gs, GameState.Display d) {
+        setVisible(d == display);
+        if ( d == display ) {
+            //updateItemGrid();
+        }
+    }
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
     
 }

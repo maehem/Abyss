@@ -147,11 +147,11 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
         // Nothing happens.
     }
 
-    @Override
-    public void gameStateShowInventory(GameState gs, boolean state) {}
-
-    @Override
-    public void gameStateShowChips(GameState gs, boolean state) {}
+//    @Override
+//    public void gameStateShowInventory(GameState gs, boolean state) {}
+//
+//    @Override
+//    public void gameStateShowChips(GameState gs, boolean state) {}
 
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {}
@@ -159,8 +159,11 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
 
+//    @Override
+//    public void gameStateShowTerminal(GameState gs, boolean showTerminal) {}
+
     @Override
-    public void gameStateShowTerminal(GameState gs, boolean showTerminal) {}
+    public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {}
     
     
 }
