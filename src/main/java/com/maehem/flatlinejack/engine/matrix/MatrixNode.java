@@ -133,12 +133,15 @@ public abstract class MatrixNode extends Group {
      * from: https://stackoverflow.com/questions/30145414/rotate-a-3d-object-on-3-axis-in-javafx-properly
      * and:  https://github.com/jperedadnr/Leap3DFX    --  MIT License
      * 
+     * Replaced by: getTransforms().addAll( new Rotate(...) ) in most cases.
+     * 
+     * 
      * @param n
      * @param alf
      * @param bet
      * @param gam 
      */
-    private void matrixRotateNode(Node n, double alf, double bet, double gam) {
+    private static void matrixRotateNode(Node n, double alf, double bet, double gam) {
         double A11 = Math.cos(alf) * Math.cos(gam);
         double A12 = Math.cos(bet) * Math.sin(alf) + Math.cos(alf) * Math.sin(bet) * Math.sin(gam);
         double A13 = Math.sin(alf) * Math.sin(bet) - Math.cos(alf) * Math.cos(bet) * Math.sin(gam);
