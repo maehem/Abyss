@@ -17,6 +17,7 @@
 package com.maehem.flatlinejack.content.matrix.site;
 
 import com.maehem.flatlinejack.content.matrix.sitenode.HeatsinkNode;
+import com.maehem.flatlinejack.content.matrix.sitenode.SliceNode;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import java.util.ArrayList;
@@ -28,8 +29,8 @@ import java.util.ArrayList;
 public class DefaultSitesList extends ArrayList {
 
     public DefaultSitesList( GameState gs ) {
-        add(new MatrixSite(gs, 0x00202, HeatsinkNode.class, "" ));
-        add(new MatrixSite(gs, 0x00205, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00201, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00205, SliceNode.class, "" ));
         add(new MatrixSite(gs, 0x0020B, HeatsinkNode.class, "" ));
         add(new MatrixSite(gs, 0x00304, HeatsinkNode.class, "" ));
         add(new MatrixSite(gs, 0x0031A, HeatsinkNode.class, "" ));

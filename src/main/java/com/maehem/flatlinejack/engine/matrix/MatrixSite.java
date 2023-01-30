@@ -55,6 +55,8 @@ public class MatrixSite implements SoftwareUser {
     private int bottomBits = 0;
     private int leftBits = 0;
     
+    private boolean terminalAvailable = false;
+    
 
     public MatrixSite( GameState gs, int zone, int row, int col, Class<? extends MatrixNode> nodeClass, String nodeProperties) {
         this.gameState = gs;
@@ -88,7 +90,11 @@ public class MatrixSite implements SoftwareUser {
     
     // Terminal Site (after cracking)
     public boolean terminalAvailable() {
-        return getShieldValue() <= 0;
+        return terminalAvailable;
+    }
+    
+    public void setTerminalAvailable( boolean avail ) {
+        this.terminalAvailable = avail;
     }
     
     // Data state of the site.
@@ -111,6 +117,11 @@ public class MatrixSite implements SoftwareUser {
     // Attack Warez
     public List<SoftwareThing> getAttackTools() {
         return attackTools;
+    }
+    
+    public boolean isAttackable() {
+        LOGGER.log(Level.INFO, "Site is attackable: {0}", getAttackTools().isEmpty()?"no":"yes");
+        return !getAttackTools().isEmpty();
     }
                 
     // load()

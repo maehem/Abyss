@@ -64,6 +64,7 @@ public abstract class MatrixNode extends Group {
         //getChildren().add(shieldGroup);
         initStructure();  // The thing/building-like-thing in the center of the site.
         initShields();    // The ICE that protects the site.
+        initAttacks();
         
         // Groups must be added after init or weird visual things happen.
         // JavaFX bug?

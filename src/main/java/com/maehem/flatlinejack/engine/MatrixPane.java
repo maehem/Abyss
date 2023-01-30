@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.logging.Level;
 import javafx.animation.FadeTransition;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.AmbientLight;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
@@ -35,12 +37,20 @@ import javafx.scene.SceneAntialiasing;
 import javafx.scene.SubScene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Box;
 import javafx.scene.shape.DrawMode;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Translate;
@@ -51,6 +61,12 @@ import javafx.util.Duration;
  * @author mark
  */
 public class MatrixPane extends BorderPane {
+
+    private boolean showSoftwareTabs = false;
+    private boolean showTerminalTab;
+
+    final static double TERM_TAB_H = 180.0;
+    final static double TERM_TAB_W = 800.0;
 
     public enum Direction {
         LEFT, RIGHT, FORWARD, BACKWARD
@@ -77,6 +93,7 @@ public class MatrixPane extends BorderPane {
     private final Group siteGroup = new Group();
     private final Group hudGroup = new Group();
     private final HBox hudTabs = new HBox();
+    private final StackPane terminalTab = new StackPane();
 
     private final GameState gameState;
 
@@ -90,7 +107,7 @@ public class MatrixPane extends BorderPane {
         scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
-        camera.setNearClip(10);
+        camera.setNearClip(1);
         camera.setFarClip(2800.0);
         
         Group cameraHudGroup = new Group(camera, hudGroup);
@@ -324,6 +341,10 @@ public class MatrixPane extends BorderPane {
                 }
                 break;
         }
+        LOGGER.log(Level.INFO, "Site attackable: {0}", currentSite.isAttackable());
+        setShowSoftwareTabs(currentSite.isAttackable());
+        setShowTerminalTab(currentSite.terminalAvailable());
+        
     }
 
     /**
@@ -368,11 +389,13 @@ public class MatrixPane extends BorderPane {
                 tt.setByX(-nodeScaling * size);
                 tt.play();
                 //node.setTranslateX(-nodeScaling * size + node.getTranslateX());
+//                setShowSoftwareTabs(true);
                 break;
             case RIGHT: // When moving left
                 tt.setByX(nodeScaling * size);
                 tt.play();
                 //node.setTranslateX(nodeScaling * size + node.getTranslateX());
+//                setShowSoftwareTabs(false);
                 break;
 
         }
@@ -413,18 +436,32 @@ public class MatrixPane extends BorderPane {
     private void initHUD() {
         hudTabs.setSpacing(4);
         hudTabs.getTransforms().addAll(
-               // new Translate(-52.5, -101, -474),
-                new Translate(-121, 53, 270),
-                new Rotate(-45, Rotate.X_AXIS),
-                new Scale(0.2, 0.2)
+                new Translate(-608, -10, 0)  // More is down. -10 a bit showing.
         );
 
-        updateHud();
+        hudGroup.getTransforms().addAll(
+                new Translate(0, 7.20, 27),  // More is down
+                new Rotate(-45, Rotate.X_AXIS),
+                new Scale(0.02, 0.02)
+        );
+        
+        updateHudSoftwareTabs();
+        initTerminalTab();
         hudGroup.getChildren().add(hudTabs);
     }
 
-    public void updateHud() {
-        LOGGER.log(Level.INFO, "Update HUD");
+    private void setShowSoftwareTabs( boolean show ) {
+        if ( this.showSoftwareTabs == show ) return;
+        this.showSoftwareTabs = show;
+        
+        TranslateTransition tr = new TranslateTransition(new Duration(200), hudTabs);
+        tr.setByY(show?-100:100);
+        
+        tr.play();
+    }
+    
+    public void updateHudSoftwareTabs() {
+        LOGGER.log(Level.INFO, "Update HUD Software Tabs");
         DeckThing currentDeck = gameState.getPlayer().getCurrentDeck();
         hudTabs.getChildren().clear();
 
@@ -450,6 +487,67 @@ public class MatrixPane extends BorderPane {
         }
 
     }
+    
+    private void initTerminalTab() {
+        
+        final String FONT = "/fonts/VT323-Regular.ttf";
+        Font termFont = Font.loadFont(getClass().getResource(FONT).toExternalForm(),
+                32.0
+        );
+
+        terminalTab.setMinSize(TERM_TAB_W, TERM_TAB_H);
+        terminalTab.setBackground(new Background(new BackgroundFill(
+                Color.DARKGREY, 
+                new CornerRadii(20, 20, 0, 0, false), 
+                new Insets(4)
+        )));
+        terminalTab.setTranslateX(-TERM_TAB_W/2.0);
+        
+        Pane screenRect = new Pane();
+        screenRect.setPrefSize(TERM_TAB_W-50, TERM_TAB_H-50);
+        screenRect.setBackground(new Background(new BackgroundFill(
+                new Color(0.2,0.2,0.2,1.0), new CornerRadii(20), 
+                new Insets(10,20,0,20 )
+        )));
+        screenRect.setOnMouseClicked((t) -> {
+            LOGGER.log(Level.INFO, "User clicked open terminal.");
+        });
+        
+        Text termTitleText = new Text("Matrix Site Service Interface");
+        termTitleText.setFont(Font.font(28));
+        
+        Text initText = new Text(
+                "HeliOS 16.3.321b (GENERIC): 2047.08.23:00.21.00.123\n"
+               + "node-HR089JKJD# svcport -c -t init-term\n"
+               + "port 00048D5 open...  <tap or click to enter site>"
+        );
+        initText.setFont(termFont);
+        initText.setFill(Color.GREEN.brighter());
+        initText.setLineSpacing(0.0);
+        initText.setLayoutX(40);
+        initText.setLayoutY(50);
+        screenRect.getChildren().add( initText);
+        VBox termtabItems = new VBox(termTitleText,screenRect);
+        termtabItems.setFillWidth(true);
+        termtabItems.setAlignment(Pos.CENTER);
+        terminalTab.getChildren().add(termtabItems);
+                
+        hudGroup.getChildren().add(terminalTab);
+        
+        
+        setShowTerminalTab(true);
+    }
+    
+    private void setShowTerminalTab( boolean show ) {
+        if ( this.showTerminalTab == show ) return;
+        this.showTerminalTab = show;
+        
+        TranslateTransition tr = new TranslateTransition(new Duration(200), terminalTab);
+        tr.setByY(show?-TERM_TAB_H:TERM_TAB_H);
+        
+        tr.play();
+    }
+    
 
     private MatrixNode addNeighbor(MatrixSiteNeighbor n) {
         int neighbor = currentSite.getNeighbor(n);

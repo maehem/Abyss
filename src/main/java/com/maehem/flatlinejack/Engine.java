@@ -186,7 +186,7 @@ public class Engine extends Application implements GameStateListener {
         getGameState().load(STARTING_VIGNETTE);
         //getPlayer().loadState(getGameState());
         
-        matrixPane.updateHud();
+        matrixPane.updateHudSoftwareTabs();
         
         initHotKeys();
         initKeyInput();
