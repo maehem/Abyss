@@ -17,6 +17,7 @@
 package com.maehem.flatlinejack.engine.gui;
 
 import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
@@ -33,11 +34,13 @@ import javafx.util.Duration;
  *
  * @author mark
  */
-public class TerminalPane extends StackPane {
+public class TerminalPane extends StackPane implements GameStateListener {
+    private static final GameState.Display display = GameState.Display.TERMINAL;
 
     private BBSTerminal terminal;
 
     public TerminalPane(GameState gs, int w, int h) {
+        gs.addListenter(this);
         this.setPrefSize(w, h);
 
         setBackground(new Background(
@@ -75,6 +78,26 @@ public class TerminalPane extends StackPane {
             });
         } else {
             getChildren().add(t);
+        }
+    }
+
+    @Override
+    public void gameStateVignetteChanged(GameState gs) {    }
+
+    @Override
+    public void gameStatePropertyChanged(GameState gs, String propKey) {    }
+
+    @Override
+    public void gameStateShowDebug(GameState gs, boolean state) {    }
+
+    @Override
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {    }
+
+    @Override
+    public void gameStateDisplayChanged(GameState gs, GameState.Display d) {
+        setVisible(d == display);
+        if ( d == display ) {
+            //updateItemGrid();
         }
     }
 }
