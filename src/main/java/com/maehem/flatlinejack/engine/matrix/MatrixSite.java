@@ -21,6 +21,7 @@ import com.maehem.flatlinejack.engine.SoftwareThing;
 import com.maehem.flatlinejack.engine.EdgeMap;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.SoftwareUser;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -49,6 +50,8 @@ public class MatrixSite implements SoftwareUser {
     // Add to this list for tools to attack player with.
     // Usually added by MatrixNode at init().
     private final ArrayList<SoftwareThing> attackTools = new ArrayList<>();
+    
+    private Class<? extends BBSTerminal> terminal = null;
     
     private int topBits = 0;
     private int rightBits = 0;
@@ -95,6 +98,14 @@ public class MatrixSite implements SoftwareUser {
     
     public void setTerminalAvailable( boolean avail ) {
         this.terminalAvailable = avail;
+    }
+    
+    public Class<? extends BBSTerminal> getTerminal() {
+        return terminal;
+    }
+    
+    public void setTerminal( Class<? extends BBSTerminal> t ) {
+        terminal = t;
     }
     
     // Data state of the site.

@@ -20,7 +20,7 @@ import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import com.maehem.flatlinejack.Engine;
-import com.maehem.flatlinejack.content.matrix.site.DefaultSitesList;
+import com.maehem.flatlinejack.content.matrix.DefaultSitesList;
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.io.File;

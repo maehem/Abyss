@@ -23,6 +23,8 @@ import com.maehem.flatlinejack.engine.matrix.MatrixSiteNeighbor;
 import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import com.maehem.flatlinejack.engine.matrix.SoftwareTabNode;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -581,13 +583,34 @@ public class MatrixPane extends BorderPane implements GameStateListener {
         paneGroup.getChildren().add(r);
         st.setOnFinished((f) -> {
             paneGroup.getChildren().remove(r);
+            gameState.setCurrentTerminal(initTerminal(currentSite.getTerminal()));
             gameState.setShowing(GameState.Display.TERMINAL);
         });
         
         st.play();        
     }
     
-
+    private BBSTerminal initTerminal( Class<? extends BBSTerminal> t ) {
+        try {
+            //Class<? extends MatrixNode> c = site.getNodeClass();
+            //Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.matrix.sitenode." + site.getNodeClass().getSimpleName() );
+            Constructor<?> cons = t.getConstructor(GameState.class);
+            Object object = cons.newInstance(gameState );
+            LOGGER.log(Level.FINER, "Init Terminal: Loaded Terminal Node: {0}", t.getSimpleName());
+            return (BBSTerminal) object;
+        } catch ( //ClassNotFoundException |
+                 NoSuchMethodException
+                | SecurityException
+                | InstantiationException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException ex) {
+            ex.printStackTrace();
+        }
+        return null;
+        
+    }
+    
     private MatrixNode addNeighbor(MatrixSiteNeighbor n) {
         int neighbor = currentSite.getNeighbor(n);
         MatrixSite site = gameState.getSite(neighbor);

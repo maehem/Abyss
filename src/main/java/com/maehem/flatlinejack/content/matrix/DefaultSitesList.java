@@ -14,8 +14,9 @@
     License for the specific language governing permissions and limitations 
     under the License.
  */
-package com.maehem.flatlinejack.content.matrix.site;
+package com.maehem.flatlinejack.content.matrix;
 
+import com.maehem.flatlinejack.content.matrix.sitenode.AbyssNode;
 import com.maehem.flatlinejack.content.matrix.sitenode.HeatsinkNode;
 import com.maehem.flatlinejack.content.matrix.sitenode.SliceNode;
 import com.maehem.flatlinejack.engine.GameState;
@@ -30,9 +31,9 @@ public class DefaultSitesList extends ArrayList {
 
     public DefaultSitesList( GameState gs ) {
         add(new MatrixSite(gs, 0x00201, HeatsinkNode.class, "" ));
-        add(new MatrixSite(gs, 0x00205, SliceNode.class, "" ));
+        add(new MatrixSite(gs, 0x00205, SliceNode.class,    "" ));
         add(new MatrixSite(gs, 0x0020B, HeatsinkNode.class, "" ));
-        add(new MatrixSite(gs, 0x00304, HeatsinkNode.class, "" ));
+        add(new MatrixSite(gs, 0x00304, AbyssNode.class,    "" ));
         add(new MatrixSite(gs, 0x0031A, HeatsinkNode.class, "" ));
         add(new MatrixSite(gs, 0x00401, HeatsinkNode.class, "" ));
         add(new MatrixSite(gs, 0x00406, HeatsinkNode.class, "" ));
