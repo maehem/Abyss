@@ -41,7 +41,7 @@ import java.util.logging.Logger;
  *
  * @author Mark J Koch [maehem at GitHub]
  */
-public class GameState extends Properties {
+public final class GameState extends Properties {
 
     public enum Display { SPLASH, INVENTORY, CHIPS, TERMINAL, VIGNETTE, MATRIX }
     
@@ -58,9 +58,6 @@ public class GameState extends Properties {
 //            "110", "111"
 //    );
     private static final int N_ZONES = 5;
-//    private static final int N_ROWS = 10;
-//    private static final int N_COLS = 10;
-
     public static final int MAP_SIZE = 64; // Row or Cols
 
     private final Player player;
@@ -68,7 +65,6 @@ public class GameState extends Properties {
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
     private final ArrayList<MatrixSite> sites;
-    //private long[][][] siteEdges =  new long[N_ZONES][N_ROWS][N_COLS]; // Long T R B L ints
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
 
     private Vignette currentVignette;
@@ -158,11 +154,11 @@ public class GameState extends Properties {
                 String key = (String) t;
                 // Intake Vignette flag
                 if (key.startsWith(Vignette.PROP_PREFIX)) {
-                    LOGGER.log(Level.INFO, "Load Vignette prop: " + key);
+                    LOGGER.log(Level.INFO, "Load Vignette prop: {0}", key);
                     setProperty(key, ldProps.getProperty(key));
                 }
                 if (key.startsWith(NewsStory.PROP_PREFIX)) {
-                    LOGGER.log(Level.INFO, "Load NewsStory prop: " + key);
+                    LOGGER.log(Level.INFO, "Load NewsStory prop: {0}", key);
                     String uid = key.split("\\.")[1];
                     NewsStory newsStory = getNewsStory(uid);
                     if (newsStory != null) {
