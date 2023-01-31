@@ -36,7 +36,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Slider;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -89,22 +88,14 @@ public class DebugTab extends Group implements LogListener {
         this.messageLog = messageLog;
         messageLog.addListener(this);
 
-        //StackPane tab = initTabPane();
-        panel.setCenter(getMessagePane());
         panel.setRight(initControlsPane(gs));
         //Node tabClick = initTabClick();
+        panel.setCenter(getMessagePane());
 
-        // Drop shadow
-        //DropShadow ds = new DropShadow(30.0, new Color(0, 0, 0, 0.5));
-        //tab.setEffect(ds);
-
-        //panel.setEffect(ds);
         panel.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(CORNER_ARC), Insets.EMPTY)));
         panel.setBorder(new Border(new BorderStroke(Color.GREY, BorderStrokeStyle.NONE, CornerRadii.EMPTY, BorderWidths.FULL, new Insets(CORNER_ARC / 2))));
 
-        //getChildren().addAll(tab, panel, tabClick);
         getChildren().addAll(panel );
-
     }
 
     public void setShowing(boolean newValue) {
@@ -163,6 +154,7 @@ public class DebugTab extends Group implements LogListener {
         tf.setLineSpacing(10 / SIZE);
         // Cause the scroll to go to bottom whenever a new message happens.
         tf.getChildren().addListener((ListChangeListener<? super Node>) change -> {
+            logMessagePane.layout();
             logMessagePane.setVvalue(logMessagePane.getVmax());
         });
 
@@ -304,48 +296,14 @@ public class DebugTab extends Group implements LogListener {
 
         return p;
     }
-
+    
     public void reloadDebugLog() {
             // Clear and regenerate the TextFlow for the log messages.
             tf.getChildren().clear();
             messageLog.forEach((t) -> {
+                messageAdded(t);
                 //LOGGER.config("Log Record Level: " + t.getLevel().intValue());
-                int val = (int) (slider.getMax() - slider.getValue());
-                switch (val) {
-                    case 0:
-                        messageAdded(t);  // Level 300
-                        break;
-                    case 1:
-                        if (t.getLevel().intValue() >= 400) {
-                            messageAdded(t);
-                        }
-                        break;
-                    case 2:
-                        if (t.getLevel().intValue() >= 500) {
-                            messageAdded(t);
-                        }
-                        break;
-                    case 3:
-                        if (t.getLevel().intValue() >= 700) {
-                            messageAdded(t);
-                        }
-                        break;
-                    case 4:
-                        if (t.getLevel().intValue() >= 800) {
-                            messageAdded(t);
-                        }
-                        break;
-                    case 5:
-                        if (t.getLevel().intValue() >= 900) {
-                            messageAdded(t);
-                        }
-                        break;
-                    case 6:
-                        if (t.getLevel().intValue() >= 1000) {
-                            messageAdded(t);
-                        }
-                        break;
-                }
+
             });        
     }
     
@@ -359,6 +317,30 @@ public class DebugTab extends Group implements LogListener {
 
     @Override
     public void messageAdded(LogRecord record) {
+        int val = (int) (slider.getMax() - slider.getValue());
+        switch (val) {
+            case 0:
+                break;// Level 300.  Always continue. FINEST
+            case 1:
+                if (record.getLevel().intValue() >= 400)  break;
+                return;
+            case 2:
+                if (record.getLevel().intValue() >= 500) break;
+                return;
+            case 3:
+                if (record.getLevel().intValue() >= 700) break;
+                return;
+            case 4:
+                if (record.getLevel().intValue() >= 800) break;
+                return;
+            case 5:
+                if (record.getLevel().intValue() >= 900) break;
+                return;
+            case 6:
+                if (record.getLevel().intValue() >= 1000) break;
+                return;
+        }
+                
         String message;
         if (formatter != null) {
             message = MessageFormat.format(getFormatter().format(record), record.getParameters());
