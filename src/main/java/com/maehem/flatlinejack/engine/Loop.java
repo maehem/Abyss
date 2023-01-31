@@ -52,7 +52,9 @@ public class Loop extends AnimationTimer {
         // debug for gauge
         //scene.getPlayer().changeHealth(-1);
         GameState gs = engine.getGameState();
-        if (engine.getVignetteGroup().isVisible()) {
+        if ( engine.getMatrixPane().isVisible() ) {
+            engine.getMatrixPane().processEvents(input);
+        } else if (engine.getVignetteGroup().isVisible()) {
             Port nextRoom = gs.getCurrentVignette().processEvents(input);
             //engine.getGui().refresh();
             if (nextRoom != null) {
@@ -60,8 +62,6 @@ public class Loop extends AnimationTimer {
                 LOGGER.config("[Loop] Load next room.");
                 engine.notifyVignetteExit(nextRoom);
             }
-        } else if ( engine.getMatrixPane().isVisible() ) {
-            engine.getMatrixPane().processEvents(input);
         }
 
         lastTime = now;
