@@ -18,13 +18,13 @@ package com.maehem.flatlinejack;
 
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.debug.DebugTab;
-import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.Loop;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.MatrixPane;
+import com.maehem.flatlinejack.engine.VignetteTrigger;
 import com.maehem.flatlinejack.engine.gui.ChipsConfiguratorPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
@@ -185,7 +185,7 @@ public class Engine extends Application implements GameStateListener {
                 GameState.PROP_CURRENT_VIGNETTE, 
                 STARTING_VIGNETTE
         );
-        notifyVignetteExit(new Port(roomName));  // Just leveraging the Room Loading System here.
+        notifyVignetteExit(new VignetteTrigger(roomName));  // Just leveraging the Room Loading System here.
         // Finished setting up GUI
         //setShowing(matrixPane);
         //setShowing(vignetteGroup);
@@ -241,7 +241,7 @@ public class Engine extends Application implements GameStateListener {
         }
     }
 
-    public void notifyVignetteExit(Port nextRoom) {
+    public void notifyVignetteExit(VignetteTrigger nextRoom) {
         if (loop != null) {
             loop.stop();
         }
@@ -256,7 +256,7 @@ public class Engine extends Application implements GameStateListener {
         
         try {
             Class<?> c = Class.forName(getClass().getPackageName()+ ".content.vignette." + nextRoom.getDestination());
-            Constructor<?> cons = c.getConstructor(int.class, int.class, Port.class, Player.class);
+            Constructor<?> cons = c.getConstructor(int.class, int.class, VignetteTrigger.class, Player.class);
             Object object = cons.newInstance((int)(Vignette.NATIVE_WIDTH), (int)(Vignette.NATIVE_HEIGHT), nextRoom, getPlayer());
             setVignette((Vignette) object);
             LOGGER.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());

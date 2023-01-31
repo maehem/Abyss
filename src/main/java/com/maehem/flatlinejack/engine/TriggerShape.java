@@ -16,7 +16,6 @@
  */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.PoseSheet.Direction;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -25,7 +24,7 @@ import javafx.scene.shape.Rectangle;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class Port extends Rectangle {
+public class TriggerShape extends Rectangle {
 
     public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
     public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
@@ -35,17 +34,12 @@ public class Port extends Rectangle {
     private double rawW = 0.1;
     private double rawH = 0.1;
     
-    private String destination;
-    private double playerX = -1;
-    private double playerY = -1;
-    private Direction playerDir;
+//    private String destination;
+//    private double playerX = -1;
+//    private double playerY = -1;
+//    private Direction playerDir;
 
-    public Port(String vingette) {
-        // Dummy Port for providing a default vignette. (like at game start)
-        this(0, 0, 1, 1, -1, -1, Direction.RIGHT, vingette);
-    }
-
-    public Port(double x, double y, double w, double h, double px, double py, Direction pdir, String vignette) {
+    public TriggerShape(double x, double y, double w, double h) {
         super(x, y, w, h);
         this.rawX = x;
         this.rawY = y;
@@ -53,33 +47,29 @@ public class Port extends Rectangle {
         this.rawH = h;
         
         setFill(TRIGGER_FILL_DEFAULT);
-        setDestination(vignette);
 
-        this.playerX = px;
-        this.playerY = py;
-        this.playerDir = pdir;
     }
 
-    /**
-     * @return the @destination
-     */
-    public String getDestination() {
-        return destination;
-    }
-
-    /**
-     * @param desination the @destination to set
-     */
-    public final void setDestination(String desination) {
-        this.destination = desination;
-    }
-
+//    /**
+//     * @return the @destination
+//     */
+//    public String getDestination() {
+//        return destination;
+//    }
+//
+//    /**
+//     * @param desination the @destination to set
+//     */
+//    public final void setDestination(String desination) {
+//        this.destination = desination;
+//    }
+//
     public void updateTriggerState(boolean tActive) {
 
         if (tActive) {
-            setFill(Port.TRIGGER_FILL_ACTIVE);
+            setFill(TriggerShape.TRIGGER_FILL_ACTIVE);
         } else {
-            setFill(Port.TRIGGER_FILL_DEFAULT);
+            setFill(TriggerShape.TRIGGER_FILL_DEFAULT);
         }
     }
 
@@ -97,34 +87,34 @@ public class Port extends Rectangle {
         this.setHeight(scaleY * rawH);        
     }
         
-    /**
-     * @return the playerX
-     */
-    public double getPlayerX() {
-        //return scaleX*playerX;
-        return playerX;
-    }
-
-    /**
-     * @return the playerY
-     */
-    public double getPlayerY() {
-        //return scaleY*playerY;
-        return playerY;
-    }
-
-    /**
-     * @return the playerDir
-     */
-    public Direction getPlayerDir() {
-        return playerDir;
-    }
-
-    /**
-     * @param playerDir the playerDir to set
-     */
-    public void setPlayerDir(Direction playerDir) {
-        this.playerDir = playerDir;
-    }
+//    /**
+//     * @return the playerX
+//     */
+//    public double getPlayerX() {
+//        //return scaleX*playerX;
+//        return playerX;
+//    }
+//
+//    /**
+//     * @return the playerY
+//     */
+//    public double getPlayerY() {
+//        //return scaleY*playerY;
+//        return playerY;
+//    }
+//
+//    /**
+//     * @return the playerDir
+//     */
+//    public Direction getPlayerDir() {
+//        return playerDir;
+//    }
+//
+//    /**
+//     * @param playerDir the playerDir to set
+//     */
+//    public void setPlayerDir(Direction playerDir) {
+//        this.playerDir = playerDir;
+//    }
 
 }

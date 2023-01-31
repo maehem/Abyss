@@ -89,7 +89,6 @@ public class DebugTab extends Group implements LogListener {
         messageLog.addListener(this);
 
         panel.setRight(initControlsPane(gs));
-        //Node tabClick = initTabClick();
         panel.setCenter(getMessagePane());
 
         panel.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, new CornerRadii(CORNER_ARC), Insets.EMPTY)));
@@ -159,45 +158,6 @@ public class DebugTab extends Group implements LogListener {
         });
 
         return logMessagePane;
-    }
-
-//    public void logMessage(LogRecord record) {
-//    }
-
-    private StackPane initTabPane() {
-        StackPane tab = new StackPane();
-        // Cause the "bug" tab to appear at the bottom-right corner of the logging panel.
-        tab.setTranslateY(-CORNER_ARC);
-        tab.setTranslateX(-48 - CORNER_ARC);
-        tab.layoutYProperty().bind(panel.heightProperty());
-        tab.layoutXProperty().bind(panel.widthProperty());
-
-        Rectangle rectangle = new Rectangle(48, 48, Color.LIGHTGREY);
-        rectangle.setArcWidth(CORNER_ARC);
-        rectangle.setArcHeight(CORNER_ARC);
-        StackPane glyph = DebugTogglesPanel.createGlyph("/debug/glyphs/debug.png");
-        glyph.setBorder(new Border(new BorderStroke(null, BorderStrokeStyle.NONE, CornerRadii.EMPTY, BorderWidths.FULL, new Insets(CORNER_ARC, 0, 0, 0))));
-
-        tab.getChildren().addAll(rectangle, glyph);
-
-        return tab;
-    }
-
-    private Node initTabClick() {
-        // Tab click is a region that is at the same location as the tab
-        // but we place it on the topmost layer so that the panels drop shadow
-        // won't consume the mouse click.
-        Rectangle tabClick = new Rectangle(48, 48, new Color(0, 0, 0, 0));
-        tabClick.setOnMouseClicked((t) -> {
-            setShowing(!showing);
-        });
-        // Cause the "bug" tab to appear at the bottom-right corner of the logging panel.
-        tabClick.setTranslateY(-CORNER_ARC);
-        tabClick.setTranslateX(-48 - CORNER_ARC);
-        tabClick.layoutYProperty().bind(panel.heightProperty());
-        tabClick.layoutXProperty().bind(panel.widthProperty());
-
-        return tabClick;
     }
 
     private Node initControlsPane(GameState gs) {
@@ -289,7 +249,6 @@ public class DebugTab extends Group implements LogListener {
         //LOGGER.log(Level.CONFIG, "Slider value is: {0}", slider.getValue());
 
         VBox p = new VBox();
-        //slider.setBackground(new Background(new BackgroundFill(new Color(1,1,1,0), CornerRadii.EMPTY, new Insets(30))));
         p.getChildren().addAll(sliderLabel, slider);
         p.setSpacing(4);
         p.setAlignment(Pos.CENTER);
@@ -365,6 +324,5 @@ public class DebugTab extends Group implements LogListener {
         }
 
         tf.getChildren().add(messageText);
-        //logMessagePane.setVvalue(logMessagePane.getVmax());
     }
 }

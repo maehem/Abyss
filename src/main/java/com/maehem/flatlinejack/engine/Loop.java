@@ -55,7 +55,7 @@ public class Loop extends AnimationTimer {
         if ( engine.getMatrixPane().isVisible() ) {
             engine.getMatrixPane().processEvents(input);
         } else if (engine.getVignetteGroup().isVisible()) {
-            Port nextRoom = gs.getCurrentVignette().processEvents(input);
+            VignetteTrigger nextRoom = gs.getCurrentVignette().processEvents(input);
             //engine.getGui().refresh();
             if (nextRoom != null) {
                 // Save scene state.

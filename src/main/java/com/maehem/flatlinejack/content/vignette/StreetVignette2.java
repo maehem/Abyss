@@ -18,9 +18,9 @@ package com.maehem.flatlinejack.content.vignette;
 
 import com.maehem.flatlinejack.engine.Patch;
 import com.maehem.flatlinejack.engine.Player;
-import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
+import com.maehem.flatlinejack.engine.VignetteTrigger;
 import java.util.Properties;
 import javafx.geometry.Point2D;
 
@@ -48,7 +48,7 @@ public class StreetVignette2 extends Vignette {
             1140, 0, 500, 
             StreetVignette2.class.getResourceAsStream(DOOR_PATCH_IMAGE_FILENAME));
     
-    private static final Port rightDoor = new Port(
+    private static final VignetteTrigger rightDoor = new VignetteTrigger(
             0.89, 0.60, // Location
             0.016, 0.083, // Size
             PawnShopVignette.PLAYER_START.getX(), 
@@ -56,7 +56,7 @@ public class StreetVignette2 extends Vignette {
             PoseSheet.Direction.TOWARD, // Player position and orientation at destination
             "PawnShopVignette" // Destination
     );
-    private static final Port topDoor = new Port(
+    private static final VignetteTrigger topDoor = new VignetteTrigger(
             0.42, 0.44,
             0.063, 0.014,
             DonutShopVignette.PLAYER_START.getX(), 
@@ -65,7 +65,7 @@ public class StreetVignette2 extends Vignette {
             "DonutShopVignette"
     );
 
-    public StreetVignette2(int w, int h, Port prevPort, Player player) {
+    public StreetVignette2(int w, int h, VignetteTrigger prevPort, Player player) {
         super(w, h, CONTENT_BASE,prevPort, player, WALK_BOUNDARY);
     }
 

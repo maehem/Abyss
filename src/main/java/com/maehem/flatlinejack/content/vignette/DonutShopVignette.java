@@ -17,9 +17,9 @@
 package com.maehem.flatlinejack.content.vignette;
 
 import com.maehem.flatlinejack.engine.Player;
-import com.maehem.flatlinejack.engine.Port;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
+import com.maehem.flatlinejack.engine.VignetteTrigger;
 import java.util.Properties;
 import javafx.geometry.Point2D;
 
@@ -43,13 +43,13 @@ public class DonutShopVignette extends Vignette {
         0.21, 0.03,   // exit size
         0.43, 0.50    // player position at destination
     };
-    private static final Port exitPort = new Port(
+    private static final VignetteTrigger exitPort = new VignetteTrigger(
         0.38, 0.93,   // exit location
         0.21, 0.03,   // exit size
         0.43, 0.50,   // player position at destination
         PoseSheet.Direction.TOWARD, "StreetVignette2");
     
-    public DonutShopVignette(int w, int h, Port prevPort, Player player) {
+    public DonutShopVignette(int w, int h, VignetteTrigger prevPort, Player player) {
         super(w, h, CONTENT_BASE,prevPort, player,WALK_BOUNDARY);        
     }
 

@@ -27,7 +27,7 @@ import com.maehem.flatlinejack.engine.babble.DialogResponse;
 import com.maehem.flatlinejack.engine.babble.DialogResponseAction;
 import com.maehem.flatlinejack.engine.babble.DialogSheet;
 import com.maehem.flatlinejack.content.things.deck.KomodoDeckThing;
-import com.maehem.flatlinejack.engine.Port;
+import com.maehem.flatlinejack.engine.VignetteTrigger;
 import java.util.Properties;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
@@ -52,7 +52,7 @@ public class PawnShopVignette extends Vignette {
             0.08, 0.58,   0.02, 0.56,
             0.02, 0.50,   0.11, 0.50
     };
-    private static final Port leftDoor = new Port(
+    private static final VignetteTrigger leftDoor = new VignetteTrigger(
             0.02, 0.50,  // port XY location
             0.04, 0.06,  // port size
             0.72, 0.65,  // place player at this XY when they leave the pawn shop.        
@@ -75,7 +75,7 @@ public class PawnShopVignette extends Vignette {
      * @param prevPort where the player came from
      * @param player the @Player
      */
-    public PawnShopVignette(int w, int h, Port prevPort, Player player) {
+    public PawnShopVignette(int w, int h, VignetteTrigger prevPort, Player player) {
         super(w, h, CONTENT_BASE, prevPort, player, WALK_BOUNDARY);
         // Don't put things here.  Override @init() which is called during creation.
     }

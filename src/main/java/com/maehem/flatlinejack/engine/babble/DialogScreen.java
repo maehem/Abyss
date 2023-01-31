@@ -18,7 +18,7 @@ package com.maehem.flatlinejack.engine.babble;
 
 import com.maehem.flatlinejack.engine.Character;
 import com.maehem.flatlinejack.engine.Player;
-import com.maehem.flatlinejack.engine.Port;
+import com.maehem.flatlinejack.engine.VignetteTrigger;
 import java.util.ArrayList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -51,7 +51,7 @@ public class DialogScreen extends Group {
     private double boxY;
     private double boxW;
     private double boxH;
-    private Port port=null;
+    private VignetteTrigger port=null;
 
     public DialogScreen( Character npc) {
         this.npc = npc;
@@ -170,14 +170,14 @@ public class DialogScreen extends Group {
         dialogPane.getChildren().add(currentDialog);
     }
 
-    public void setExit( Port port) {
+    public void setExit( VignetteTrigger port) {
         this.port = port;
     }
     
     /**
      * @return the port
      */
-    public Port getExit() {
+    public VignetteTrigger getExit() {
         return port;
     }
 

@@ -63,7 +63,7 @@ public abstract class Vignette extends Pane {
     private final Group mainGroup = new Group(walkAreaCoords);
     private final Group fgGroup = new Group();
 
-    private final ArrayList<Port> doors = new ArrayList<>();
+    private final ArrayList<VignetteTrigger> doors = new ArrayList<>();
     private final ArrayList<Patch> patchList = new ArrayList<>();
     private final ArrayList<Character> characterList = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public abstract class Vignette extends Pane {
     private double debugOpacity = 0.7;
     public ResourceBundle bundle;
 
-    public Vignette(int w, int h, String assetFolderName, Port prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
+    public Vignette(int w, int h, String assetFolderName, VignetteTrigger prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
         this.width = w;
         this.height = h;
         this.assetFolderName = assetFolderName;
@@ -159,7 +159,7 @@ public abstract class Vignette extends Pane {
      * @param input list of keyboard events
      * @return next room to load or @null to remain in current room
      */
-    protected final Port processEvents(ArrayList<String> input) {
+    protected final VignetteTrigger processEvents(ArrayList<String> input) {
 
         if (dialogOverlay == null) {
             if (!input.isEmpty()) {
@@ -176,7 +176,7 @@ public abstract class Vignette extends Pane {
                 getFgGroup().setVisible(player.getLayoutY() < patch.getThreshold());
             });
 
-            for (Port door : doors) {
+            for (VignetteTrigger door : doors) {
                 boolean playerExited = player.colidesWith(door);
                 door.updateTriggerState(playerExited);
                 if (playerExited) {
@@ -212,7 +212,7 @@ public abstract class Vignette extends Pane {
                 removeNode(dialogOverlay);
 
                 // See if the dialog invoked a scene exit event.
-                Port exit = dialogOverlay.getExit();
+                VignetteTrigger exit = dialogOverlay.getExit();
                 dialogOverlay = null;
 
                 // If mode/dialog set the exit door then return that.
@@ -354,7 +354,7 @@ public abstract class Vignette extends Pane {
     /**
      * @return the doors
      */
-    public ArrayList<Port> getDoors() {
+    public ArrayList<VignetteTrigger> getDoors() {
         return doors;
     }
 
@@ -578,7 +578,7 @@ public abstract class Vignette extends Pane {
 //        return narrationPane;
 //    }
 
-    protected void addPort(Port port) {
+    protected void addPort(VignetteTrigger port) {
         port.setScale(getWidth(), getHeight());
         getDoors().add(port);
         getMainGroup().getChildren().add(port);
