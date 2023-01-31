@@ -192,16 +192,6 @@ public class Engine extends Application implements GameStateListener {
         gameState.setShowing(GameState.Display.MATRIX);
    }
 
-//    private void setShowing( Node n ) {
-//        splashScreen.setVisible(false);
-//        vignetteGroup.setVisible(false);
-//        chipsPane.setVisible(false);
-//        inventoryPane.setVisible(false);
-//        terminalPane.setVisible(false);
-//        matrixPane.setVisible(false);
-//        
-//        n.setVisible(true);
-//    }
     private void initDebugWindow() {
         DebugTab debugTab = new DebugTab( messageLog, gameState);
         debugTab.setFormatter(loggingHandler.getFormatter());
