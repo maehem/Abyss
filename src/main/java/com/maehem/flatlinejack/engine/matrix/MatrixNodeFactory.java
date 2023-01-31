@@ -16,12 +16,8 @@
  */
 package com.maehem.flatlinejack.engine.matrix;
 
-import com.maehem.flatlinejack.engine.matrix.MatrixSite;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
-import com.maehem.flatlinejack.Engine;
-import com.maehem.flatlinejack.engine.matrix.EmptyMatrixNode;
-import com.maehem.flatlinejack.engine.matrix.MatrixNode;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
