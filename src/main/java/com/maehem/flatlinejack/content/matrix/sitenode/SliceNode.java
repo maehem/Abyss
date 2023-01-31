@@ -45,13 +45,15 @@ public class SliceNode extends MatrixNode {
     public SliceNode(MatrixSite site, double size) {
         super(site, size);     
         
-        site.setTerminalAvailable(true);
         // TODO: Read the add-on properties string and do those things.
         // Comma separated list of custom values to apply.
         String nodeProperties = site.getNodeProperties();
         
         // Call init() if you overrode initStructure() or initShields()
         init();
+        
+        
+        site.setTerminalAvailable(false);
     }
     
     /**
