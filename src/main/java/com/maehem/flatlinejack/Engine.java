@@ -45,7 +45,6 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -83,8 +82,6 @@ public class Engine extends Application implements GameStateListener {
     private MatrixPane matrixPane;
     private InventoryPane inventoryPane;
     private ImageView splashScreen;
-
-    //public static final Logger log = Logger.getLogger("flatline");
 
     private static final int PRELOADER_SHOWTIME_MILLIS = 2000;
     // This is a class name.
@@ -158,23 +155,18 @@ public class Engine extends Application implements GameStateListener {
 
         // Inventory
         inventoryPane = new InventoryPane(gameState);
-        //inventoryPane.setVisible(gameState.inventoryShowing());
         
         // Chips  -- Confgurable Buffs
         chipsPane = new ChipsConfiguratorPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
-        //chipsPane.setVisible(gameState.chipsShowing());
-        
         
         // Terminal -- Base BBS style system
         terminalPane = new TerminalPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
-        //terminalPane.setVisible(false);
         terminalPane.setTerminal(new PublicTerminalSystem(gameState), false);
         
         // Deck Bench -- Configure your Deck with inventory components
         
         // Cyberspace  -- ROM Helper replaces Narration Window
         matrixPane = new MatrixPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
-        //matrixPane.setVisible(true);
         
         topArea.getChildren().addAll(vignetteGroup, //splashScreen,
                 chipsPane, inventoryPane, terminalPane, matrixPane
@@ -182,7 +174,6 @@ public class Engine extends Application implements GameStateListener {
         
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
-        //getPlayer().loadState(getGameState());
         
         matrixPane.updateHudSoftwareTabs();
         

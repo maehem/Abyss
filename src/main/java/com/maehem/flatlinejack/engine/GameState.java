@@ -81,13 +81,6 @@ public class GameState extends Properties {
     private Display showing = Display.SPLASH;
     private Display termPop = Display.VIGNETTE; // What to display if we leave terminal.
     
-    private boolean showSplash = false;
-    private boolean showInventory = false;
-    private boolean showChips = false;
-    private boolean showTerminal = false;
-    private boolean showMatrix = false;
-    private boolean showVignette = false;
-    
     private boolean showDebug = true;
 
     private final File gameSaveFile = new File(
@@ -109,12 +102,6 @@ public class GameState extends Properties {
         initMessages();
 
         sites = new DefaultSitesList(this);
-
-//        addSite(new MatrixSite(this, 0, 1, 1, HeatsinkNode.class));
-//        addSite(new MatrixSite(this, 0, 2, 5, HeatsinkNode.class));
-//        addSite(new MatrixSite(this, 0, 3, 8, HeatsinkNode.class));
-//        addSite(new MatrixSite(this, 0, 4, 2, HeatsinkNode.class));
-//        addSite(new MatrixSite(this, 0, 5, 3, HeatsinkNode.class));
     }
 
     @Override
@@ -285,40 +272,6 @@ public class GameState extends Properties {
         }
     }
 
-//    public void setShowInventory(boolean show) {
-//        this.showInventory = show;
-//        for (GameStateListener l : listeners) {
-//            l.gameStateShowInventory(this, showInventory);
-//        }
-//    }
-
-//    public boolean inventoryShowing() {
-//        return showInventory;
-//    }
-
-//    public void toggleInventoryShowing() {
-//        setShowChips(false);
-//        setShowTerminal(false);
-//        setShowInventory(!showInventory);
-//    }
-
-//    public void setShowChips(boolean show) {
-//        this.showChips = show;
-//        for (GameStateListener l : listeners) {
-//            l.gameStateShowChips(this, showChips);
-//        }
-//    }
-
-//    public boolean chipsShowing() {
-//        return showChips;
-//    }
-
-//    public void toggleChipsShowing() {
-//        setShowInventory(false);
-//        setShowTerminal(false);
-//        setShowChips(!showChips);
-//    }
-
     public void notifyPlayerStateChanged(String key) {
         for (GameStateListener l : listeners) {
             l.gameStatePropertyChanged(this, key);
@@ -335,13 +288,6 @@ public class GameState extends Properties {
     public void toggleDebugShowing() {
         setShowDebug(!showDebug);
     }
-
-//    public void setShowTerminal(boolean show) {
-//        this.showTerminal = show;
-//        for (GameStateListener l : listeners) {
-//            l.gameStateShowTerminal(this, showTerminal);
-//        }
-//    }
 
     public void setCurrentTerminal(BBSTerminal term) {
         LOGGER.log(Level.INFO, "Terminal changed from:{0} to: {1}",
@@ -365,12 +311,6 @@ public class GameState extends Properties {
     public BBSTerminal getTerminal() {
         return currentTerminal;
     }
-
-//    public void toggleTerminalShowing() {
-//        setShowInventory(false);
-//        setShowChips(false);
-//        setShowTerminal(!showTerminal);
-//    }
 
     public ArrayList<NewsStory> getNews() {
         return news;
@@ -405,17 +345,6 @@ public class GameState extends Properties {
 
     }
 
-//    /**
-//     * Set the default visible news stories. For first-time players.
-//     */
-//    private void setDefaultNewsStories() {
-//        for ( NewsStory ns : news ) {
-//            if ( DEFAULT_NEWS.contains(ns.getUid() ) ) {
-//                ns.setShow(true);
-//            }
-//        }
-//    }
-//    
     public NewsStory getNewsStory(String uid) {
         for (NewsStory ns : news) {
             if (uid.equals(ns.getUid())) {
@@ -554,17 +483,6 @@ public class GameState extends Properties {
             sites.add(site);
             return site;
         }
-        
-//        if (getSite(site.getIntAddress()) == null) {
-//            sites.add(site);
-//            LOGGER.log(Level.INFO, "Added site to list as {0} with int: {1}", new Object[]{site.getAddress(), site.getIntAddress()});
-//        } else {
-//            LOGGER.log(Level.SEVERE,
-//                    "Tried to add matrix site at existing address! {0}",
-//                    site.getAddress()
-//            );
-//        }
-//        return site;
     }
 
     private boolean siteExists( int address ) {

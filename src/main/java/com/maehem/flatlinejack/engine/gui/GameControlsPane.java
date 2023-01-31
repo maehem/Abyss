@@ -98,37 +98,12 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         }
     }
 
-//    @Override
-//    public void gameStateShowInventory(GameState gs, boolean state) {
-//        clearButtonHighlights();
-//        buttons.getInventoryButton().showHighlight(
-//                gs.inventoryShowing()
-//        );
-//    }
-
-//    @Override
-//    public void gameStateShowChips(GameState gs, boolean state) {
-//        clearButtonHighlights();
-//        buttons.getChipButton().showHighlight(
-//                gs.chipsShowing()
-//        );
-//        //TODO: Highlight the chips button.
-//    }
-
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {}
 
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
     
-//    private void clearButtonHighlights() {
-//        buttons.getInventoryButton().showHighlight(false);
-//        buttons.getChipButton().showHighlight(false);
-//        buttons.getRomButton().showHighlight(false);
-//        buttons.getTerminalButton().showHighlight(false);
-//        buttons.getSaveButton().showHighlight(false);
-//        buttons.getPowerButton().showHighlight(false);
-//    }
 
 //    @Override
 //    public void gameStateShowTerminal(GameState gs, boolean showTerminal) {

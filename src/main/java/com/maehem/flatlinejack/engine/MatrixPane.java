@@ -657,7 +657,6 @@ public class MatrixPane extends BorderPane implements GameStateListener {
     }
 
     private void initBackDrop() {
-        // Background   scene.setFill  image
         ImageView backdrop = backgroundImage();
         backdrop.getTransforms().addAll(
                 new Translate(
@@ -667,8 +666,6 @@ public class MatrixPane extends BorderPane implements GameStateListener {
                 ),
                 new Scale(3.0, 2.0)
         );
-//        backdrop.setScaleY(2.0);
-//        backdrop.setScaleX(3.0);
         root.getChildren().add(0, backdrop);
     }
 

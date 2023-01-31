@@ -64,7 +64,7 @@ public class Button extends StackPane {
         setOpacity(g?0.3:1.0);
     }
     
-    public void showHighlight(boolean highlight) {
+    public final void showHighlight(boolean highlight) {
         if ( highlight ) {
             setBorder(new Border(new BorderStroke(new Color(0.1,0.1,1.0,1.0), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(BTN_STROKE_W))));
         } else {

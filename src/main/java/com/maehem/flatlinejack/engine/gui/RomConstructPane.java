@@ -75,23 +75,12 @@ public class RomConstructPane extends GUIPane implements GameStateListener {
     public void gameStatePropertyChanged(GameState gs, String propKey) {
     }
 
-//    @Override
-//    public void gameStateShowInventory(GameState gs, boolean state) {
-//    }
-//
-//    @Override
-//    public void gameStateShowChips(GameState gs, boolean state) {
-//    }
-
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {
     }
 
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
-
-//    @Override
-//    public void gameStateShowTerminal(GameState aThis, boolean showTerminal) {}
 
     @Override
     public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {}
