@@ -360,6 +360,9 @@ public class MatrixPane extends BorderPane implements GameStateListener {
         }
         LOGGER.log(Level.INFO, "Site attackable: {0}", currentSite.isAttackable());
         setShowSoftwareTabs(currentSite.isAttackable());
+        LOGGER.log(Level.INFO, "Site terminal: [{0}] {1}", 
+                new Object[]{currentSite.getAddress(), currentSite.terminalAvailable()}
+        );
         setShowTerminalTab(currentSite.terminalAvailable());
         
     }
@@ -541,7 +544,7 @@ public class MatrixPane extends BorderPane implements GameStateListener {
         terminalTab.getChildren().add(termtabItems);
         hudGroup.getChildren().add(terminalTab);
         
-        setShowTerminalTab(true);
+        setShowTerminalTab(false);
         
         screenRect.setOnMouseClicked((t) -> {
             LOGGER.log(Level.INFO, "User clicked open terminal.");
