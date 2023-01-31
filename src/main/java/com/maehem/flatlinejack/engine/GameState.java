@@ -74,7 +74,7 @@ public final class GameState extends Properties {
 
     private ResourceBundle bundle;
 
-    private Display showing = Display.SPLASH;
+    private Display showing = Display.MATRIX;
     private Display termPop = Display.VIGNETTE; // What to display if we leave terminal.
     
     private boolean showDebug = true;
@@ -213,6 +213,12 @@ public final class GameState extends Properties {
     }
 
     public void setShowing ( Display d ) {
+        LOGGER.log(Level.INFO, "GameState set showing from: {0} to: {1}", new Object[]{showing.toString(), d.toString()});
+        if ( d == Display.TERMINAL ) {
+            // If the user goes into terminal, remember where to come back to.
+            // Should only ever be MATRIX or VIGNETTE
+            termPop = showing;
+        }
         showing = d;
         
         for (GameStateListener l : listeners) {
@@ -230,6 +236,7 @@ public final class GameState extends Properties {
     public void toggleShowing( Display d ){
         if ( showing == d) {
             // Hide it.
+            LOGGER.log(Level.INFO, "GameState: toggleShowing():  hide:" + showing);
             switch (d) {
                 case CHIPS:
                 case INVENTORY:
@@ -243,7 +250,9 @@ public final class GameState extends Properties {
             }
         } else {
             // Show it
+            LOGGER.log(Level.INFO, "GameState: toggleShowing():  show:" + d);
             if ( d == Display.TERMINAL || d == Display.SPLASH ) {
+                LOGGER.log(Level.INFO, "GameState: set termpop from: " + termPop + "to: " + showing );
                 termPop = showing;
             }
             setShowing(d);

@@ -35,7 +35,8 @@ import javafx.util.Duration;
  * @author mark
  */
 public class TerminalPane extends StackPane implements GameStateListener {
-    private static final GameState.Display display = GameState.Display.TERMINAL;
+
+    private static final GameState.Display DISPLAY = GameState.Display.TERMINAL;
 
     private BBSTerminal terminal;
 
@@ -60,44 +61,50 @@ public class TerminalPane extends StackPane implements GameStateListener {
     public void setTerminal(BBSTerminal t, boolean showTransistion) {
         this.terminal = t;
         getChildren().clear();
+        getChildren().add(t);
+    }
 
-        if (showTransistion) {
-            Rectangle r = new Rectangle(200, 100, Color.AZURE);
-            getChildren().add(r);
-            
-            ScaleTransition st = new ScaleTransition(new Duration(1000), r);
-            st.setCycleCount(1);
-            st.setToX(2.0);
-            st.setToY(2.0);
-            st.setInterpolator(Interpolator.LINEAR);
-            st.play();
-            
-            st.setOnFinished((tt) -> {
-                getChildren().remove(r);
-                getChildren().add(t);
-            });
-        } else {
-            getChildren().add(t);
-        }
+    private void animateTerminalOpen() {
+        double div = 50.0;
+        Rectangle r = new Rectangle(getWidth()/div, getHeight()/div, Color.GREEN);
+        getChildren().clear();
+        getChildren().add(r);
+
+        ScaleTransition st = new ScaleTransition(new Duration(2000), r);
+        st.setCycleCount(1);
+        st.setToX(div);
+        st.setToY(div);
+        st.setInterpolator(Interpolator.LINEAR);
+        st.play();
+
+        st.setOnFinished((tt) -> {
+            getChildren().remove(r);
+            getChildren().add(terminal);
+        });
     }
 
     @Override
-    public void gameStateVignetteChanged(GameState gs) {    }
+    public void gameStateVignetteChanged(GameState gs) {
+    }
 
     @Override
-    public void gameStatePropertyChanged(GameState gs, String propKey) {    }
+    public void gameStatePropertyChanged(GameState gs, String propKey) {
+    }
 
     @Override
-    public void gameStateShowDebug(GameState gs, boolean state) {    }
+    public void gameStateShowDebug(GameState gs, boolean state) {
+    }
 
     @Override
-    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {    }
+    public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {
+    }
 
     @Override
     public void gameStateDisplayChanged(GameState gs, GameState.Display d) {
-        setVisible(d == display);
-        if ( d == display ) {
+        setVisible(d == DISPLAY);
+        if (d == DISPLAY) {
             //updateItemGrid();
+            //animateTerminalOpen();
         }
     }
 }

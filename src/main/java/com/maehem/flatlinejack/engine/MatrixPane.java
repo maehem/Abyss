@@ -94,6 +94,7 @@ public class MatrixPane extends BorderPane implements GameStateListener {
     MatrixNode nodeSE;
     MatrixNode nodeSW;
 
+    private final StackPane paneGroup = new StackPane();
     private final Group root = new Group();
     private final Group siteGroup = new Group();
     private final Group hudGroup = new Group();
@@ -140,8 +141,12 @@ public class MatrixPane extends BorderPane implements GameStateListener {
         
 
         scene.setCamera(camera);
-        setCenter(scene);
+        paneGroup.getChildren().add(scene);
+        setCenter(paneGroup);
 
+        Rectangle r = new Rectangle(200, 100);
+        r.setFill(Color.RED);
+                
         initBackDrop();
         root.getChildren().add(siteGroup);
         initRoot();
@@ -559,45 +564,27 @@ public class MatrixPane extends BorderPane implements GameStateListener {
      * 
      */
     private void doTerminalOpenAnimation() {
-        double rectW = 400;
-        double rectH = 200;
-        double w = getWidth();
-        double h = getHeight();
-        double t = 3000.0;
-        double stepW = (w-rectW)/2.0/t;
-        double stepH = (h-rectH)/2.0/t;
-        double toScX = w/rectW;
-        double toScY = h/rectH;
+        double w = scene.getWidth();
+        double h = scene.getHeight();
+        double t = 1000.0;
         
-//        Rectangle r = new Rectangle(
-//                (w-rectW)/2, (h-rectH)*0.8, 
-//                rectW, rectH 
-//        );
-            Rectangle r = new Rectangle( -150, -100, 300, 200 );
-//                (w-rectW)/2, (h-rectH)*0.8, 
-//                rectW, rectH 
-//        );
-  //r.setTranslateZ(-200);
+         Rectangle r = new Rectangle( w, h );
          r.setFill(Color.BLACK);
         
         ScaleTransition st = new ScaleTransition(new Duration(t), r);
-        st.setToX(toScX);
-        st.setToY(toScY);
+        st.setFromX(0.01);
+        st.setFromY(0.01);
+        st.setToX(1.0);
+        st.setToY(1.0);
         st.setCycleCount(1);
         
-        TranslateTransition tt = new TranslateTransition(new Duration(t), r);
-        tt.setToX(0);
-        tt.setToY(0);
-        tt.setCycleCount(1);
-        
-        root.getChildren().add(0,r);
-        tt.setOnFinished((f) -> {
-            root.getChildren().remove(r);
+        paneGroup.getChildren().add(r);
+        st.setOnFinished((f) -> {
+            paneGroup.getChildren().remove(r);
+            gameState.setShowing(GameState.Display.TERMINAL);
         });
         
-//        st.play();
-//        tt.play();
-        
+        st.play();        
     }
     
 
