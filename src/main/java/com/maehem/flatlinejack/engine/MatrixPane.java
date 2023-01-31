@@ -568,21 +568,50 @@ public class MatrixPane extends BorderPane implements GameStateListener {
     private void doTerminalOpenAnimation() {
         double w = scene.getWidth();
         double h = scene.getHeight();
-        double t = 1000.0;
+        double t = 200.0;
         
-         Rectangle r = new Rectangle( w, h );
-         r.setFill(Color.BLACK);
+        Rectangle r = new Rectangle( w, h );
+        r.setFill(new Color(0.2,0.2,0.2,0.74));
+        Text text = new Text(
+                "[    0.000000] Machine model: Hokkaido Oni 4+ Model 6 Rev 1.4\n" +
+                "[    0.000012] hsv: UHSV not found.\n" +
+                "[    0.000026] Reserved memory: created CMA memory pool, size 256 PiB\n" +
+                "[    0.000027] OF: reserved mem: initialized node tinux,cma, shared-dma-pool\n" +
+                "[    0.000033] Zone ranges:\n" +
+                "[    0.000035]   DMA      [mem 0x0000000000000000-0x000000003fffffff]\n" +
+                "[    0.000086]   DMA32    [mem 0x0000000040000000-0x00000000ffffffff]\n" +
+                "[    0.000098]   Normal   [mem 0x0000000100000000-0x00000001ffffffff]\n" +
+                "[    0.000101] Movable zone start for each node\n" +
+                "[    0.000103] Early memory node ranges\n" +
+                "[    0.000103]   node   0: [mem 0x0000000000000000-0x000000001fffffff]\n" +
+                "[    0.000103]   node   0: [mem 0x0000000040000000-0x00000000fbffffff]\n" +
+                "[    0.000104]   node   0: [mem 0x0000000100000000-0x00000001ffffffff]\n" +
+                "[    0.000109] Initmem setup node 0 [mem 0x0000000000000000-0x00000001ffffffff]\n" +
+                "[    0.000111] On node 0 totalpages: 1949696\n" +
+                "[    0.000113]   DMA zone: 2048 pages used for memmap\n" +
+                "[    0.000114]   DMA zone: 0 pages reserved\n" +
+                "[    0.000120]   DMA zone: 131072 pages, LIFO batch:31\n" +
+                "[    0.000121]   DMA32 zone: 12288 pages used for memmap\n" +
+                "[    0.000121]   DMA32 zone: 770048 pages, LIFO batch:63\n" +
+                "[    0.000122]   Normal zone: 16384 pages used for memmap\n" +
+                "[    0.000126]   Normal zone: 1048576 pages, LIFO batch:63"
+         
+        );
+        text.setFill(new Color(0.2,1.0,0.2,0.7));
+        text.setFont(BBSTerminal.FONT);
         
-        ScaleTransition st = new ScaleTransition(new Duration(t), r);
+        StackPane tPane = new StackPane(r, text);
+        
+        ScaleTransition st = new ScaleTransition(new Duration(t), tPane);
         st.setFromX(0.01);
         st.setFromY(0.01);
         st.setToX(1.0);
         st.setToY(1.0);
         st.setCycleCount(1);
         
-        paneGroup.getChildren().add(r);
+        paneGroup.getChildren().add(tPane);
         st.setOnFinished((f) -> {
-            paneGroup.getChildren().remove(r);
+            paneGroup.getChildren().remove(tPane);
             gameState.setCurrentTerminal(initTerminal(currentSite.getTerminal()));
             gameState.setShowing(GameState.Display.TERMINAL);
         });
