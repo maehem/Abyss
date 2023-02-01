@@ -60,11 +60,11 @@ public final class GameState extends Properties {
     private static final int N_ZONES = 5;
     public static final int MAP_SIZE = 64; // Row or Cols
 
-    private final Player player;
+    private Player player;
     private final ArrayList<NewsStory> news = new ArrayList<>();
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
-    private final ArrayList<MatrixSite> sites;
+    private ArrayList<MatrixSite> sites;
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
 
     private Vignette currentVignette;
@@ -90,14 +90,16 @@ public final class GameState extends Properties {
     public boolean showWalkPerimeter = false;
 
     public GameState() {
+    }
+    
+    public void init() {
+        setProperty(PROP_CURRENT_DATE, START_DATE);
         this.player = new Player(this);
         this.currentTerminal = new PublicTerminalSystem(this);
+        this.sites = new DefaultSitesList(this);
 
-        setProperty(PROP_CURRENT_DATE, START_DATE);
         initNews();
         initMessages();
-
-        sites = new DefaultSitesList(this);
     }
 
     @Override
@@ -121,7 +123,7 @@ public final class GameState extends Properties {
             out = new FileOutputStream(gameSaveFile);
 
             store(out, "Game Save");
-            LOGGER.log(Level.WARNING, "Game State saved at: {0}", gameSaveFile.getAbsolutePath());
+            LOGGER.log(Level.INFO, "Game State saved at: {0}", gameSaveFile.getAbsolutePath());
         } catch (FileNotFoundException ex) {
             LOGGER.log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -154,11 +156,11 @@ public final class GameState extends Properties {
                 String key = (String) t;
                 // Intake Vignette flag
                 if (key.startsWith(Vignette.PROP_PREFIX)) {
-                    LOGGER.log(Level.INFO, "Load Vignette prop: {0}", key);
+                    LOGGER.log(Level.FINE, "Load Vignette prop: {0}", key);
                     setProperty(key, ldProps.getProperty(key));
                 }
                 if (key.startsWith(NewsStory.PROP_PREFIX)) {
-                    LOGGER.log(Level.INFO, "Load NewsStory prop: {0}", key);
+                    LOGGER.log(Level.FINE, "Load NewsStory prop: {0}", key);
                     String uid = key.split("\\.")[1];
                     NewsStory newsStory = getNewsStory(uid);
                     if (newsStory != null) {
@@ -213,7 +215,7 @@ public final class GameState extends Properties {
     }
 
     public void setShowing ( Display d ) {
-        LOGGER.log(Level.INFO, "GameState set showing from: {0} to: {1}", new Object[]{showing.toString(), d.toString()});
+        LOGGER.log(Level.FINER, "GameState set showing from: {0} to: {1}", new Object[]{showing.toString(), d.toString()});
         if ( d == Display.TERMINAL ) {
             // If the user goes into terminal, remember where to come back to.
             // Should only ever be MATRIX or VIGNETTE
@@ -236,7 +238,7 @@ public final class GameState extends Properties {
     public void toggleShowing( Display d ){
         if ( showing == d) {
             // Hide it.
-            LOGGER.log(Level.INFO, "GameState: toggleShowing():  hide:" + showing);
+            LOGGER.log(Level.FINER, "GameState: toggleShowing():  hide:{0}", showing);
             switch (d) {
                 case CHIPS:
                 case INVENTORY:
@@ -250,9 +252,9 @@ public final class GameState extends Properties {
             }
         } else {
             // Show it
-            LOGGER.log(Level.INFO, "GameState: toggleShowing():  show:" + d);
+            LOGGER.log(Level.FINER, "GameState: toggleShowing():  show:" + d);
             if ( d == Display.TERMINAL || d == Display.SPLASH ) {
-                LOGGER.log(Level.INFO, "GameState: set termpop from: " + termPop + "to: " + showing );
+                LOGGER.log(Level.FINER, "GameState: set termpop from: " + termPop + "to: " + showing );
                 termPop = showing;
             }
             setShowing(d);

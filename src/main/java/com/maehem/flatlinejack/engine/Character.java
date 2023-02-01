@@ -68,7 +68,7 @@ public class Character extends Group {
     }
     
     public Character( String name ) {
-        
+        LOGGER.log(Level.CONFIG, "{0}: Create character: {1}", new Object[]{getClass().getSimpleName(), name});
         this.name = name;
         
         // Fill the inventory with EmptyThing placeholders.
@@ -124,7 +124,7 @@ public class Character extends Group {
      * @param y range 0.0-1.0 (top to bottom(feet))
      */
     public final void setOrigin(double x, double y) {
-        LOGGER.log(Level.INFO, "character set origin: {0},{1}", new Object[]{x, y});
+        LOGGER.log(Level.FINE, "character set origin: {0},{1}", new Object[]{x, y});
         this.originX = x;
         this.originY = y;
         

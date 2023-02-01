@@ -107,6 +107,10 @@ public class Engine extends Application implements GameStateListener {
     // TODO:   Music track system
     //          - Blend music scene to scene
     
+    // TODO:   Cut Scenes
+    
+    
+    
     public Engine() {
         configureLogging();
         this.gameState = new GameState();
@@ -121,11 +125,12 @@ public class Engine extends Application implements GameStateListener {
 
         getGameState().addListenter(this);
         
-        LOGGER.info("Flatline Jack version:  0.0.0");
+        LOGGER.info("Flatline Engine version:  0.0.0");
         LOGGER.log(Level.INFO, "JavaFX Version: {0}", 
                 System.getProperties().get("javafx.runtime.version")
         );
         
+        gameState.init();
         
         splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
         //topArea.getChildren().add(splashScreen);
