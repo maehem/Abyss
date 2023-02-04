@@ -16,7 +16,6 @@
 */
 package com.maehem.flatlinejack.content.vignette;
 
-import com.maehem.flatlinejack.content.sites.AbyssSite;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.MatrixTrigger;
 import com.maehem.flatlinejack.engine.Player;
@@ -24,7 +23,6 @@ import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.TerminalTrigger;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.VignetteTrigger;
-import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.util.Properties;
 import javafx.geometry.Point2D;
 
@@ -43,11 +41,7 @@ public class DonutShopVignette extends Vignette {
                 0.59, 1.0,    0.38, 1.0,
                 0.38, 0.9,   0.08, 0.9
     };
-//    private static final double[] EXIT_POINTS = { 
-//        0.38, 0.93,   // exit location
-//        0.21, 0.03,   // exit size
-//        0.43, 0.50    // player position at destination
-//    };
+
     private static final VignetteTrigger exitPort = new VignetteTrigger(
         0.38, 0.93,   // exit location
         0.21, 0.03,   // exit size
@@ -62,8 +56,7 @@ public class DonutShopVignette extends Vignette {
     
     private static final TerminalTrigger terminal = new TerminalTrigger(
         0.28, 0.50,   // trigger location
-        0.05, 0.05,   // trigger size
-     AbyssSite.class
+        0.05, 0.05   // trigger size
     );
     
     public DonutShopVignette(GameState gs, VignetteTrigger prevPort, Player player) {
