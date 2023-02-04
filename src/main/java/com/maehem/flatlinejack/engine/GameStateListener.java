@@ -32,4 +32,6 @@ public interface GameStateListener {
     public void gameStateTerminalChanged( GameState gs, BBSTerminal term );
 
     public void gameStateDisplayChanged(GameState gs, GameState.Display d);
+    
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr );
 }

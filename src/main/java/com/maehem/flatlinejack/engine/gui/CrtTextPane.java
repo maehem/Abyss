@@ -155,6 +155,9 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
 
     @Override
     public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {}
+
+    @Override
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
     
     
 }

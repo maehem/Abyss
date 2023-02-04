@@ -261,8 +261,8 @@ public class Engine extends Application implements GameStateListener {
         
         try {
             Class<?> c = Class.forName(getClass().getPackageName()+ ".content.vignette." + nextRoom.getDestination());
-            Constructor<?> cons = c.getConstructor(int.class, int.class, VignetteTrigger.class, Player.class);
-            Object object = cons.newInstance((int)(Vignette.NATIVE_WIDTH), (int)(Vignette.NATIVE_HEIGHT), nextRoom, getPlayer());
+            Constructor<?> cons = c.getConstructor(GameState.class, VignetteTrigger.class, Player.class);
+            Object object = cons.newInstance( gameState, nextRoom, getPlayer());
             setVignette((Vignette) object);
             LOGGER.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());
         } catch (ClassNotFoundException | 
@@ -371,11 +371,11 @@ public class Engine extends Application implements GameStateListener {
     private void configureLogging() {
         loggingHandler.setFormatter(new LoggingFormatter());
         // Get the top most logger and add our handler.
-        LOGGER.setUseParentHandlers(true);  // Prevent INFO and HIGHER from going to stderr.
+        LOGGER.setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
         LOGGER.addHandler(loggingHandler);
 
         // For our java package only, log ony FINE and above.
-        LOGGER.setLevel(Level.FINEST);
+        LOGGER.setLevel(Level.FINE);
 
         //ConsoleHandler handler = new ConsoleHandler();
         // Add console handler as handler of logs
@@ -445,6 +445,7 @@ public class Engine extends Application implements GameStateListener {
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {
         terminalPane.setTerminal(term, true);
+        // TODO: see if terminal pane already handles or could handle this.
     }
 
 //    @Override
@@ -457,5 +458,8 @@ public class Engine extends Application implements GameStateListener {
     @Override
     public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {
     }
+
+    @Override
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
 
 }

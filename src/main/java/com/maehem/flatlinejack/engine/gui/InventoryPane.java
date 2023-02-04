@@ -195,6 +195,9 @@ public class InventoryPane extends BorderPane implements GameStateListener {
 
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) { }
+
+    @Override
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
     
            
 }

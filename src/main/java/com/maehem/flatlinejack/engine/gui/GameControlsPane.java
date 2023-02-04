@@ -159,5 +159,8 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         }
         
     }
+
+    @Override
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
     
 }

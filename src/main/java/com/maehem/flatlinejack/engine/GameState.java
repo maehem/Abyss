@@ -23,6 +23,7 @@ import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.content.matrix.DefaultSitesList;
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
+import com.maehem.flatlinejack.engine.matrix.MatrixSiteNeighbor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -69,6 +70,8 @@ public final class GameState extends Properties {
 
     private Vignette currentVignette;
     private BBSTerminal currentTerminal;
+    //private int currentMatrixAddress = 0x00305;
+    private MatrixSite currentMatrixSite;
     private int newsIndex = 0;
     private int messageIndex = 0;
 
@@ -98,6 +101,8 @@ public final class GameState extends Properties {
         this.currentTerminal = new PublicTerminalSystem(this);
         this.sites = new DefaultSitesList(this);
 
+        currentMatrixSite = getSite(0x00305);
+        
         initNews();
         initMessages();
     }
@@ -214,6 +219,22 @@ public final class GameState extends Properties {
         listeners.remove(l);
     }
 
+    public MatrixSite getCurrentMatrixSite() {
+        return currentMatrixSite;
+    }
+    
+    public void setCurrentMatrixSite( MatrixSite site ) {
+        this.currentMatrixSite = site;
+        for (GameStateListener l : listeners) {
+            l.gameStateMatrixSiteChanged(this, site.getIntAddress());
+        }
+        
+    }
+    
+    public void setCurrentMatrixSite( MatrixSiteNeighbor n ) {
+        setCurrentMatrixSite(getSite(getCurrentMatrixSite().getNeighbor(n)));
+    }
+    
     public void setShowing ( Display d ) {
         LOGGER.log(Level.FINER, "GameState set showing from: {0} to: {1}", new Object[]{showing.toString(), d.toString()});
         if ( d == Display.TERMINAL ) {
@@ -279,6 +300,14 @@ public final class GameState extends Properties {
         }
     }
 
+//    public int getCurrentMatrixAddress() {
+//        return currentMatrixAddress;
+//    }
+//    
+//    public void setCurrentMatrixAddress( int addr ) {
+//        this.currentMatrixAddress = addr;
+//    }
+//    
     public void notifyPlayerStateChanged(String key) {
         for (GameStateListener l : listeners) {
             l.gameStatePropertyChanged(this, key);

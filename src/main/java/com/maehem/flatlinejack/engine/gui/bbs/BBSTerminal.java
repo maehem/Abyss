@@ -52,6 +52,7 @@ public class BBSTerminal extends BorderPane {
             FONT_H
         );
 
+    // TODO: Don't need gameState,
     public BBSTerminal(GameState gs /*, int width, int height , int rows, int cols */) {
         
         setPadding(new Insets(16, 90, 16, 90)); //  T,R,B,L

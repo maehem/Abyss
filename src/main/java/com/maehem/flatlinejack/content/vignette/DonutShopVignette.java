@@ -16,6 +16,8 @@
 */
 package com.maehem.flatlinejack.content.vignette;
 
+import com.maehem.flatlinejack.engine.GameState;
+import com.maehem.flatlinejack.engine.MatrixTrigger;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.PoseSheet;
 import com.maehem.flatlinejack.engine.Vignette;
@@ -38,24 +40,31 @@ public class DonutShopVignette extends Vignette {
                 0.59, 1.0,    0.38, 1.0,
                 0.38, 0.9,   0.08, 0.9
     };
-    private static final double[] EXIT_POINTS = { 
-        0.38, 0.93,   // exit location
-        0.21, 0.03,   // exit size
-        0.43, 0.50    // player position at destination
-    };
+//    private static final double[] EXIT_POINTS = { 
+//        0.38, 0.93,   // exit location
+//        0.21, 0.03,   // exit size
+//        0.43, 0.50    // player position at destination
+//    };
     private static final VignetteTrigger exitPort = new VignetteTrigger(
         0.38, 0.93,   // exit location
         0.21, 0.03,   // exit size
         0.43, 0.50,   // player position at destination
         PoseSheet.Direction.TOWARD, "StreetVignette2");
     
-    public DonutShopVignette(int w, int h, VignetteTrigger prevPort, Player player) {
-        super(w, h, CONTENT_BASE,prevPort, player,WALK_BOUNDARY);        
+    private static final MatrixTrigger matrixJack = new MatrixTrigger(
+        0.58, 0.50,   // exit location
+        0.05, 0.05,   // exit size
+        0x00205 // matrix address
+    );
+    
+    public DonutShopVignette(GameState gs, VignetteTrigger prevPort, Player player) {
+        super(gs, CONTENT_BASE,prevPort, player,WALK_BOUNDARY);        
     }
 
     @Override
     protected void init() {        
         addPort(exitPort);
+        addJack( matrixJack );
     }
 
     @Override

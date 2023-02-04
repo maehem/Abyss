@@ -16,15 +16,18 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 
 /**
  * Doors and other transitions to other Vignettes.
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class TriggerShape extends Rectangle {
+public class TriggerShape extends Pane {
 
     public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
     public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
@@ -34,42 +37,48 @@ public class TriggerShape extends Rectangle {
     private double rawW = 0.1;
     private double rawH = 0.1;
     
+    private final Rectangle trigger;
+    private Color triggerColorDefault = TRIGGER_FILL_DEFAULT;
+    private Color triggerColorActive = TRIGGER_FILL_ACTIVE;
+    private Text label = new Text(getClass().getSimpleName());
 //    private String destination;
 //    private double playerX = -1;
 //    private double playerY = -1;
 //    private Direction playerDir;
 
+    /**
+     * Trigger shape as a x:1 ratio to the size of the scene.
+     * It will be scaled later to the size of the actual scene.
+     * 
+     * @param x positions relative to boundary  0.0-1.0
+     * @param y position relative to boundary  0.0-1.0
+     * @param w size relative to boundary  0.0-1.0
+     * @param h size relative to boundary  0.0-1.0
+     */
     public TriggerShape(double x, double y, double w, double h) {
-        super(x, y, w, h);
+        this.setPrefSize(w, h);
+        // Test border
+        //this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY,new  BorderWidths(4))));
+
+        label.setFill(Color.WHITE);
+        label.setTranslateY(-4.0);
+        this.trigger = new Rectangle(0, 0, w, h);
+        getChildren().addAll(trigger,label);
+        
         this.rawX = x;
         this.rawY = y;
         this.rawW = w;
         this.rawH = h;
-        
-        setFill(TRIGGER_FILL_DEFAULT);
 
+        updateTriggerState(false);
     }
 
-//    /**
-//     * @return the @destination
-//     */
-//    public String getDestination() {
-//        return destination;
-//    }
-//
-//    /**
-//     * @param desination the @destination to set
-//     */
-//    public final void setDestination(String desination) {
-//        this.destination = desination;
-//    }
-//
-    public void updateTriggerState(boolean tActive) {
+    public final void updateTriggerState(boolean tActive) {
 
         if (tActive) {
-            setFill(TriggerShape.TRIGGER_FILL_ACTIVE);
+            trigger.setFill(triggerColorActive);
         } else {
-            setFill(TriggerShape.TRIGGER_FILL_DEFAULT);
+            trigger.setFill(triggerColorDefault);
         }
     }
 
@@ -84,37 +93,36 @@ public class TriggerShape extends Rectangle {
         this.setLayoutY(scaleY * rawY);
         
         this.setWidth( scaleX * rawW);
-        this.setHeight(scaleY * rawH);        
-    }
+        this.setHeight(scaleY * rawH);
         
-//    /**
-//     * @return the playerX
-//     */
-//    public double getPlayerX() {
-//        //return scaleX*playerX;
-//        return playerX;
-//    }
-//
-//    /**
-//     * @return the playerY
-//     */
-//    public double getPlayerY() {
-//        //return scaleY*playerY;
-//        return playerY;
-//    }
-//
-//    /**
-//     * @return the playerDir
-//     */
-//    public Direction getPlayerDir() {
-//        return playerDir;
-//    }
-//
-//    /**
-//     * @param playerDir the playerDir to set
-//     */
-//    public void setPlayerDir(Direction playerDir) {
-//        this.playerDir = playerDir;
-//    }
+        this.setMinWidth(scaleX*rawW);
+        this.setMinHeight(scaleY*rawH);
+        
+        // Trigger is the size of out pane.
+        trigger.setWidth(scaleX * rawW);
+        trigger.setHeight(scaleY * rawH);
+    }
+    
+    public Shape getTriggerShape() {
+        return trigger;
+    }
+   
+    /**
+     * @param c the triggerColorDefault to set
+     */
+    public void setTriggerColorDefault(Color c) {
+        this.triggerColorDefault = c;
+    }
 
+    /**
+     * @param c the triggerColorActive to set
+     */
+    public void setTriggerColorActive(Color c) {
+        this.triggerColorActive = c;
+    }
+
+    public void setShowDebug( boolean show ) {
+        trigger.setOpacity(show?1.0:0.0);
+        label.setVisible(show);
+    }
 }

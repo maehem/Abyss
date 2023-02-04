@@ -16,6 +16,7 @@
 */
 package com.maehem.flatlinejack.content.vignette;
 
+import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.Patch;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.PoseSheet;
@@ -65,8 +66,8 @@ public class StreetVignette2 extends Vignette {
             "DonutShopVignette"
     );
 
-    public StreetVignette2(int w, int h, VignetteTrigger prevPort, Player player) {
-        super(w, h, CONTENT_BASE,prevPort, player, WALK_BOUNDARY);
+    public StreetVignette2(GameState gs, VignetteTrigger prevPort, Player player) {
+        super(gs, CONTENT_BASE,prevPort, player, WALK_BOUNDARY);
     }
 
     @Override

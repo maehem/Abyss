@@ -309,4 +309,7 @@ public class Player extends Character implements GameStateListener {
     @Override
     public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {}
 
+    @Override
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
+
 }

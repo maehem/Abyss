@@ -19,16 +19,12 @@ package com.maehem.flatlinejack.engine.gui;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
-import javafx.animation.Interpolator;
-import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 
 /**
  *
@@ -64,24 +60,24 @@ public class TerminalPane extends StackPane implements GameStateListener {
         getChildren().add(t);
     }
 
-    private void animateTerminalOpen() {
-        double div = 50.0;
-        Rectangle r = new Rectangle(getWidth()/div, getHeight()/div, Color.GREEN);
-        getChildren().clear();
-        getChildren().add(r);
-
-        ScaleTransition st = new ScaleTransition(new Duration(2000), r);
-        st.setCycleCount(1);
-        st.setToX(div);
-        st.setToY(div);
-        st.setInterpolator(Interpolator.LINEAR);
-        st.play();
-
-        st.setOnFinished((tt) -> {
-            getChildren().remove(r);
-            getChildren().add(terminal);
-        });
-    }
+//    private void animateTerminalOpen() {
+//        double div = 50.0;
+//        Rectangle r = new Rectangle(getWidth()/div, getHeight()/div, Color.GREEN);
+//        getChildren().clear();
+//        getChildren().add(r);
+//
+//        ScaleTransition st = new ScaleTransition(new Duration(2000), r);
+//        st.setCycleCount(1);
+//        st.setToX(div);
+//        st.setToY(div);
+//        st.setInterpolator(Interpolator.LINEAR);
+//        st.play();
+//
+//        st.setOnFinished((tt) -> {
+//            getChildren().remove(r);
+//            getChildren().add(terminal);
+//        });
+//    }
 
     @Override
     public void gameStateVignetteChanged(GameState gs) {
@@ -107,4 +103,7 @@ public class TerminalPane extends StackPane implements GameStateListener {
             //animateTerminalOpen();
         }
     }
+
+    @Override
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
 }

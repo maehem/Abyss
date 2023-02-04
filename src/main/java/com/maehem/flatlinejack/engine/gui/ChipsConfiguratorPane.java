@@ -100,5 +100,8 @@ public class ChipsConfiguratorPane extends Pane implements GameStateListener {
 
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
+
+    @Override
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
     
 }

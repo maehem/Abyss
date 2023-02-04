@@ -48,6 +48,17 @@ public abstract class Vignette extends Pane {
     public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
     public static final int NATIVE_HEIGHT = 720; // Native height of PNG background.
 
+    private final GameState gameState;
+    private final Group walkAreaCoords = new Group();
+    private final Group bgGroup = new Group();
+    private final Group mainGroup = new Group(walkAreaCoords);
+    private final Group fgGroup = new Group();
+
+    private final ArrayList<VignetteTrigger> doors = new ArrayList<>();
+    private final ArrayList<MatrixTrigger>   jacks = new ArrayList<>();
+    private final ArrayList<Patch> patchList = new ArrayList<>();
+    private final ArrayList<Character> characterList = new ArrayList<>();
+    
     private double playerScale = DEFAULT_SCALE;
     private double horizon = DEFAULT_HORIZON;
     private final Player player;
@@ -55,34 +66,28 @@ public abstract class Vignette extends Pane {
     protected boolean showWalk = false;
     private boolean showHearing = false;
     private Polygon walkArea;
-    private final Group walkAreaCoords = new Group();
     private boolean playerTalkToNPC = false;
+    private boolean playerJackToMatrix = false;
     private final String assetFolderName;
     Group layerStack = new Group();
-    private final Group bgGroup = new Group();
-    private final Group mainGroup = new Group(walkAreaCoords);
-    private final Group fgGroup = new Group();
-
-    private final ArrayList<VignetteTrigger> doors = new ArrayList<>();
-    private final ArrayList<Patch> patchList = new ArrayList<>();
-    private final ArrayList<Character> characterList = new ArrayList<>();
 
     private String name = "<unnamed>";
-    private final double width;
-    private final double height;
+//    private final double width;
+//    private final double height;
     private DialogScreen dialogOverlay;
     private double debugOpacity = 0.7;
     public ResourceBundle bundle;
 
-    public Vignette(int w, int h, String assetFolderName, VignetteTrigger prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
-        this.width = w;
-        this.height = h;
+    public Vignette(GameState gs, String assetFolderName, VignetteTrigger prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
+        this.gameState = gs;
+//        this.width = w;
+//        this.height = h;
         this.assetFolderName = assetFolderName;
         this.player = player;
 
-        this.setWidth(width);
-        this.setHeight(height);
-        this.setClip(new Rectangle(width, height));
+        this.setWidth(NATIVE_WIDTH);
+        this.setHeight(NATIVE_HEIGHT);
+        this.setClip(new Rectangle(NATIVE_WIDTH, NATIVE_HEIGHT));
         
         LOGGER.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
@@ -147,6 +152,10 @@ public abstract class Vignette extends Pane {
 
     public abstract String getPropName();
 
+    public final GameState getGameState() {
+        return gameState;
+    }
+    
     /**
      * @return the player
      */
@@ -177,13 +186,34 @@ public abstract class Vignette extends Pane {
             });
 
             for (VignetteTrigger door : doors) {
-                boolean playerExited = player.colidesWith(door);
+                boolean playerExited = player.colidesWith(door.getTriggerShape());
                 door.updateTriggerState(playerExited);
                 if (playerExited) {
                     // Return the players pose skin back to default.
                     getPlayer().useDefaultSkin();
                     LOGGER.config("player triggered door.");
                     return door;
+                }
+            }
+
+            for (MatrixTrigger trig : jacks) {
+                boolean playerCanMatrix = player.colidesWith(trig.getTriggerShape());
+                trig.updateTriggerState(playerCanMatrix);
+                trig.showJackInIcon(playerCanMatrix);
+                if (playerCanMatrix) {
+                    // Show a Matrix clickable at this location.
+                    // If user clicks it:
+                    // Tell gameState to enter matrix
+                    if ( playerJackToMatrix || trig.isJacking() ) {
+                        LOGGER.config("player triggered matrix.");
+                        playerJackToMatrix = false;
+                        trig.setJacking(false);
+                        gameState.setCurrentMatrixSite(
+                                gameState.getSite(trig.getDestination())
+                        );
+                        // We're in.  "We know Morphius, STFU".
+                        gameState.setShowing(GameState.Display.MATRIX);
+                    }
                 }
             }
 
@@ -283,6 +313,11 @@ public abstract class Vignette extends Pane {
             playerTalkToNPC = true;
             LOGGER.config("User talked to NPC.");
         }
+        if (input.contains("M")) {
+            input.remove("M");
+            playerJackToMatrix = true;
+            LOGGER.config("User jacked into matrix.");
+        }
     }
 
     protected final void debugCollisionBounds(boolean show) {
@@ -298,7 +333,14 @@ public abstract class Vignette extends Pane {
         walkAreaCoords.setOpacity(show ? debugOpacity : 0.0);
         getFgGroup().setOpacity(show ? 0.5 : 1.0); // Wings translucent when debuging.
         getDoors().forEach((door) -> {
-            door.setOpacity(show ? debugOpacity : 0.0);
+            //door.setOpacity(show ? debugOpacity : 0.0);
+            //door.getTriggerShape().setOpacity(show ? debugOpacity:0.0);
+            door.setShowDebug(show);
+        });
+        jacks.forEach((jack) -> {
+            //door.setOpacity(show ? debugOpacity : 0.0);
+            //jack.getTriggerShape().setOpacity(show ? debugOpacity:0.0);
+            jack.setShowDebug(show);
         });
 
         // Display box around patches when showing collision bounds.
@@ -356,6 +398,13 @@ public abstract class Vignette extends Pane {
      */
     public ArrayList<VignetteTrigger> getDoors() {
         return doors;
+    }
+
+    /**
+     * @return the doors
+     */
+    public ArrayList<MatrixTrigger> getJacks() {
+        return jacks;
     }
 
     /**
@@ -582,6 +631,12 @@ public abstract class Vignette extends Pane {
         port.setScale(getWidth(), getHeight());
         getDoors().add(port);
         getMainGroup().getChildren().add(port);
+    }
+
+    protected void addJack(MatrixTrigger jack) {
+        jack.setScale(getWidth(), getHeight());
+        getJacks().add(jack);
+        getMainGroup().getChildren().add(jack);
     }
 
     protected void addPatch(Patch patch) {
