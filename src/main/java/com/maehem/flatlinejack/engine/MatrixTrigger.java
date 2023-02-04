@@ -16,10 +16,6 @@
  */
 package com.maehem.flatlinejack.engine;
 
-import static com.maehem.flatlinejack.Engine.LOGGER;
-import java.util.logging.Level;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 
@@ -35,7 +31,7 @@ public class MatrixTrigger extends TriggerShape {
 //    public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
 //    public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
     
-    private ImageView jackIcon = new ImageView();
+    //private ImageView jackIcon = new ImageView();
     private int destination;
     private boolean jacking = false;
 
@@ -50,7 +46,8 @@ public class MatrixTrigger extends TriggerShape {
         setTriggerColorDefault(TRIGGER_FILL);
         
         setDestination(matrixAddress);
-        initJackIcon();
+        //initJackIcon();
+        setClickIcon( JACK_ICON_IMAGE_FILENAME, 0.0, -200.0 );
     }
 
     /**
@@ -67,33 +64,33 @@ public class MatrixTrigger extends TriggerShape {
         this.destination = matrixAddress;
     }
 
-    private void initJackIcon() {        
-        jackIcon = new ImageView();
-        jackIcon.setImage(new Image(getClass().getResourceAsStream(JACK_ICON_IMAGE_FILENAME)));
-        jackIcon.setPreserveRatio(true);
-        jackIcon.setFitWidth(50);
-        jackIcon.setX(0);
-        jackIcon.setY(-200);
-        
-        getChildren().add(jackIcon);        
-        
-        jackIcon.setOnMouseClicked((event) -> {
-            LOGGER.log(Level.INFO, "Opacity = {0}", jackIcon.getOpacity());
-            event.consume();
-            if ( jackIcon.getOpacity() > 0.0 ) {
-                setJacking(true);
-            }
-        });
-        
-        showJackInIcon(false);
-    }
+//    private void initJackIcon() {        
+//        jackIcon = new ImageView();
+//        jackIcon.setImage(new Image(getClass().getResourceAsStream(JACK_ICON_IMAGE_FILENAME)));
+//        jackIcon.setPreserveRatio(true);
+//        jackIcon.setFitWidth(50);
+//        jackIcon.setX(0);
+//        jackIcon.setY(-200);
+//        
+//        getChildren().add(jackIcon);        
+//        
+//        jackIcon.setOnMouseClicked((event) -> {
+//            LOGGER.log(Level.INFO, "Opacity = {0}", jackIcon.getOpacity());
+//            event.consume();
+//            if ( jackIcon.getOpacity() > 0.0 ) {
+//                setJacking(true);
+//            }
+//        });
+//        
+//        showJackInIcon(false);
+//    }
     
-    public void showJackInIcon(boolean show) {
-        jackIcon.setOpacity(show ? 1.0 : 0.0);
-        if ( !show ) {
-            setJacking(false);
-        }
-    }
+//    public void showJackInIcon(boolean show) {
+//        jackIcon.setOpacity(show ? 1.0 : 0.0);
+//        if ( !show ) {
+//            setJacking(false);
+//        }
+//    }
     
     public boolean isJacking() {
         return jacking;
@@ -101,5 +98,22 @@ public class MatrixTrigger extends TriggerShape {
     
     public void setJacking( boolean state ) {
         this.jacking = state;
+    }
+    
+    @Override
+    public void onIconShowing(boolean show) {
+        if ( !show ) {
+            // Only turn off jacking if it was already on.
+            setJacking(false);
+        }
+    }
+    
+    /**
+     * User clicked the action icon.  Do something.
+     * 
+     */
+    @Override
+    public void onClick() {
+        setJacking(true);
     }
 }

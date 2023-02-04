@@ -36,7 +36,7 @@ public class TerminalTrigger extends TriggerShape {
 //    public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
 //    public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
     
-    private ImageView icon = new ImageView();
+    //private ImageView icon = new ImageView();
     private Class<? extends BBSTerminal>destination = null; // Would load the Public Page
     private boolean usingTerminal = false;
 
@@ -51,7 +51,8 @@ public class TerminalTrigger extends TriggerShape {
         setTriggerColorDefault(TRIGGER_FILL);
         
         //setDestination(terminal);
-        initIcon();
+        //initIcon();
+        setClickIcon(ICON_IMAGE_FILENAME, 0.0, -200.0);
     }
     
     public TerminalTrigger(double x, double y, double w, double h, Class<? extends BBSTerminal> terminal) {
@@ -73,39 +74,46 @@ public class TerminalTrigger extends TriggerShape {
         this.destination = terminal;
     }
 
-    private void initIcon() {        
-        icon = new ImageView();
-        icon.setImage(new Image(getClass().getResourceAsStream(ICON_IMAGE_FILENAME)));
-        icon.setPreserveRatio(true);
-        icon.setFitWidth(50);
-        icon.setX(0);
-        icon.setY(-200);
-        
-        getChildren().add(icon);        
-        
-        icon.setOnMouseClicked((event) -> {
-            LOGGER.log(Level.INFO, "Opacity = {0}", icon.getOpacity());
-            event.consume();
-            if ( icon.getOpacity() > 0.0 ) {
-                setUsingTerminal(true);
-            }
-        });
-        
-        showIcon(false);
-    }
+//    private void initIcon() {        
+//        icon = new ImageView();
+//        icon.setImage(new Image(getClass().getResourceAsStream(ICON_IMAGE_FILENAME)));
+//        icon.setPreserveRatio(true);
+//        icon.setFitWidth(50);
+//        icon.setX(0);
+//        icon.setY(-200);
+//        
+//        getChildren().add(icon);        
+//        
+//        icon.setOnMouseClicked((event) -> {
+//            LOGGER.log(Level.INFO, "Opacity = {0}", icon.getOpacity());
+//            event.consume();
+//            if ( icon.getOpacity() > 0.0 ) {
+//                setUsingTerminal(true);
+//            }
+//        });
+//        
+//        showIcon(false);
+//    }
     
-    public void showIcon(boolean show) {
-        icon.setVisible(show);
-        if ( !show ) {
-            setUsingTerminal(false);
-        }
-    }
     
     public boolean isUsingTerminal() {
         return usingTerminal;
     }
+
+    @Override
+    public void onClick() {
+        setUsingTerminal(true);
+    }
+    
     
     public void setUsingTerminal( boolean state ) {
         this.usingTerminal = state;
+    }
+    
+    @Override
+    public void onIconShowing(boolean show) {
+        if ( !show ) {
+            setUsingTerminal(false);
+        }
     }
 }

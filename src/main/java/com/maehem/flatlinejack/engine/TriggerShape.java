@@ -16,6 +16,10 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import static com.maehem.flatlinejack.Engine.LOGGER;
+import java.util.logging.Level;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -41,6 +45,8 @@ public class TriggerShape extends Pane {
     private Color triggerColorDefault = TRIGGER_FILL_DEFAULT;
     private Color triggerColorActive = TRIGGER_FILL_ACTIVE;
     private Text label = new Text(getClass().getSimpleName());
+    private ImageView icon = null;
+
 //    private String destination;
 //    private double playerX = -1;
 //    private double playerY = -1;
@@ -125,4 +131,42 @@ public class TriggerShape extends Pane {
         trigger.setOpacity(show?1.0:0.0);
         label.setVisible(show);
     }
+
+    public void setClickIcon(String iconPath, double offX, double offY) {
+        icon = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
+        icon.setPreserveRatio(true);
+        icon.setFitWidth(50);
+        icon.setX(offX);
+        icon.setY(offY);
+        
+        getChildren().add(icon);        
+        
+        icon.setOnMouseClicked((event) -> {
+            LOGGER.log(Level.INFO, "Opacity = {0}", icon.getOpacity());
+            event.consume();
+            if ( icon.isVisible() ) {
+                //setJacking(true);
+                onClick();
+            }
+        });
+        
+        showIcon(false);
+    }
+    
+    /**
+     * Override this method to do something when user clicks trigger icon.
+     * 
+     */
+    public void onClick() {}
+    
+    public void onIconShowing( boolean showing ) {}
+    
+    public void showIcon(boolean show) {
+        icon.setVisible(show);
+        onIconShowing(show); // Inform sub-class that icon visibility changed.
+//        if ( !show ) {
+//            setUsingTerminal(false);
+//        }
+    }
+    
 }

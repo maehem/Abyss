@@ -203,7 +203,7 @@ public abstract class Vignette extends Pane {
             for (MatrixTrigger trig : jacks) {
                 boolean playerCanMatrix = player.colidesWith(trig.getTriggerShape());
                 trig.updateTriggerState(playerCanMatrix);
-                trig.showJackInIcon(playerCanMatrix);
+                trig.showIcon(playerCanMatrix);
                 if (playerCanMatrix) {
                     // Show a Matrix clickable at this location.
                     // If user clicks it:
