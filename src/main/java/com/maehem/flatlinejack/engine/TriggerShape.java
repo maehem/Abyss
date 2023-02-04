@@ -154,19 +154,25 @@ public class TriggerShape extends Pane {
     }
     
     /**
-     * Override this method to do something when user clicks trigger icon.
+     * Sets visibility of the clickable icon. Informs sub-class via @onIconShowing() of state change.
+     * 
+     * @param show 
+     */
+    public void showIcon(boolean show) {
+        icon.setVisible(show);
+        onIconShowing(show); // Inform sub-class that icon visibility changed.
+    }
+    
+    /**
+     * Override this method to do something when user clicks visible trigger icon.
      * 
      */
     public void onClick() {}
     
+    /**
+     * Inform sub-sclass that trigger icon is showing and clickable.
+     * @param showing 
+     */
     public void onIconShowing( boolean showing ) {}
-    
-    public void showIcon(boolean show) {
-        icon.setVisible(show);
-        onIconShowing(show); // Inform sub-class that icon visibility changed.
-//        if ( !show ) {
-//            setUsingTerminal(false);
-//        }
-    }
     
 }

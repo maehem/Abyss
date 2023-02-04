@@ -24,14 +24,6 @@ import com.maehem.flatlinejack.engine.PoseSheet.Direction;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class VignetteTrigger extends TriggerShape {
-
-//    public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
-//    public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
-
-//    private double rawX = 0.0;
-//    private double rawY = 0.0;
-//    private double rawW = 0.1;
-//    private double rawH = 0.1;
     
     private String destination;
     private double playerX = -1;
@@ -45,10 +37,6 @@ public class VignetteTrigger extends TriggerShape {
 
     public VignetteTrigger(double x, double y, double w, double h, double px, double py, Direction pdir, String vignette) {
         super(x, y, w, h);
-//        this.rawX = x;
-//        this.rawY = y;
-//        this.rawW = w;
-//        this.rawH = h;
         
         setDestination(vignette);
 
@@ -71,30 +59,6 @@ public class VignetteTrigger extends TriggerShape {
         this.destination = desination;
     }
 
-//    @Override
-//    public void updateTriggerState(boolean tActive) {
-//
-//        if (tActive) {
-//            setFill(VignetteTrigger.TRIGGER_FILL_ACTIVE);
-//        } else {
-//            setFill(VignetteTrigger.TRIGGER_FILL_DEFAULT);
-//        }
-//    }
-
-//    /**
-//     * 
-//     * @param scaleX usually the width of the @Scene
-//     * @param scaleY usually the height of the @Scene
-//     */
-//    public void setScale( double scaleX, double scaleY ) {
-//
-//        this.setLayoutX(scaleX * rawX);
-//        this.setLayoutY(scaleY * rawY);
-//        
-//        this.setWidth( scaleX * rawW);
-//        this.setHeight(scaleY * rawH);        
-//    }
-        
     /**
      * @return the playerX
      */

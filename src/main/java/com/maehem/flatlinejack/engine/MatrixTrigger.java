@@ -20,7 +20,7 @@ import javafx.scene.paint.Color;
 
 
 /**
- * Doors and other transitions to other Vignettes.
+ * Trigger to Matrix Sites.
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
@@ -28,17 +28,9 @@ public class MatrixTrigger extends TriggerShape {
 
     private static final Color TRIGGER_FILL = Color.FORESTGREEN;
     private static final String JACK_ICON_IMAGE_FILENAME = "/icons/jack-icon.png";
-//    public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
-//    public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
     
-    //private ImageView jackIcon = new ImageView();
     private int destination;
     private boolean jacking = false;
-
-//    public MatrixTrigger(String vingette) {
-//        // Dummy Port for providing a default vignette. (like at game start)
-//        this(0, 0, 1, 1, vingette);
-//    }
 
     public MatrixTrigger(double x, double y, double w, double h, int matrixAddress) {
         super(x, y, w, h);
@@ -46,7 +38,7 @@ public class MatrixTrigger extends TriggerShape {
         setTriggerColorDefault(TRIGGER_FILL);
         
         setDestination(matrixAddress);
-        //initJackIcon();
+
         setClickIcon( JACK_ICON_IMAGE_FILENAME, 0.0, -200.0 );
     }
 
@@ -63,34 +55,6 @@ public class MatrixTrigger extends TriggerShape {
     public final void setDestination(int matrixAddress) {
         this.destination = matrixAddress;
     }
-
-//    private void initJackIcon() {        
-//        jackIcon = new ImageView();
-//        jackIcon.setImage(new Image(getClass().getResourceAsStream(JACK_ICON_IMAGE_FILENAME)));
-//        jackIcon.setPreserveRatio(true);
-//        jackIcon.setFitWidth(50);
-//        jackIcon.setX(0);
-//        jackIcon.setY(-200);
-//        
-//        getChildren().add(jackIcon);        
-//        
-//        jackIcon.setOnMouseClicked((event) -> {
-//            LOGGER.log(Level.INFO, "Opacity = {0}", jackIcon.getOpacity());
-//            event.consume();
-//            if ( jackIcon.getOpacity() > 0.0 ) {
-//                setJacking(true);
-//            }
-//        });
-//        
-//        showJackInIcon(false);
-//    }
-    
-//    public void showJackInIcon(boolean show) {
-//        jackIcon.setOpacity(show ? 1.0 : 0.0);
-//        if ( !show ) {
-//            setJacking(false);
-//        }
-//    }
     
     public boolean isJacking() {
         return jacking;

@@ -16,16 +16,12 @@
  */
 package com.maehem.flatlinejack.engine;
 
-import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
-import java.util.logging.Level;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 
 
 /**
- * Doors and other transitions to other Vignettes.
+ * Trigger to terminals.
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
@@ -33,25 +29,15 @@ public class TerminalTrigger extends TriggerShape {
 
     private static final Color TRIGGER_FILL = Color.HOTPINK;
     private static final String ICON_IMAGE_FILENAME = "/icons/command-line.png";
-//    public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
-//    public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
-    
-    //private ImageView icon = new ImageView();
+
     private Class<? extends BBSTerminal>destination = null; // Would load the Public Page
     private boolean usingTerminal = false;
-
-//    public MatrixTrigger(String vingette) {
-//        // Dummy Port for providing a default vignette. (like at game start)
-//        this(0, 0, 1, 1, vingette);
-//    }
 
     public TerminalTrigger(double x, double y, double w, double h) {
         super(x, y, w, h);
         
         setTriggerColorDefault(TRIGGER_FILL);
         
-        //setDestination(terminal);
-        //initIcon();
         setClickIcon(ICON_IMAGE_FILENAME, 0.0, -200.0);
     }
     
@@ -74,40 +60,17 @@ public class TerminalTrigger extends TriggerShape {
         this.destination = terminal;
     }
 
-//    private void initIcon() {        
-//        icon = new ImageView();
-//        icon.setImage(new Image(getClass().getResourceAsStream(ICON_IMAGE_FILENAME)));
-//        icon.setPreserveRatio(true);
-//        icon.setFitWidth(50);
-//        icon.setX(0);
-//        icon.setY(-200);
-//        
-//        getChildren().add(icon);        
-//        
-//        icon.setOnMouseClicked((event) -> {
-//            LOGGER.log(Level.INFO, "Opacity = {0}", icon.getOpacity());
-//            event.consume();
-//            if ( icon.getOpacity() > 0.0 ) {
-//                setUsingTerminal(true);
-//            }
-//        });
-//        
-//        showIcon(false);
-//    }
-    
-    
     public boolean isUsingTerminal() {
         return usingTerminal;
+    }
+    
+    public void setUsingTerminal( boolean state ) {
+        this.usingTerminal = state;
     }
 
     @Override
     public void onClick() {
         setUsingTerminal(true);
-    }
-    
-    
-    public void setUsingTerminal( boolean state ) {
-        this.usingTerminal = state;
     }
     
     @Override
