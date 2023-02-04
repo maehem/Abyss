@@ -16,12 +16,15 @@
 */
 package com.maehem.flatlinejack.content.vignette;
 
+import com.maehem.flatlinejack.content.sites.AbyssSite;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.MatrixTrigger;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.PoseSheet;
+import com.maehem.flatlinejack.engine.TerminalTrigger;
 import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.VignetteTrigger;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.util.Properties;
 import javafx.geometry.Point2D;
 
@@ -52,9 +55,15 @@ public class DonutShopVignette extends Vignette {
         PoseSheet.Direction.TOWARD, "StreetVignette2");
     
     private static final MatrixTrigger matrixJack = new MatrixTrigger(
-        0.58, 0.50,   // exit location
-        0.05, 0.05,   // exit size
+        0.58, 0.50,   // trigger location
+        0.05, 0.05,   // trigger size
         0x00205 // matrix address
+    );
+    
+    private static final TerminalTrigger terminal = new TerminalTrigger(
+        0.28, 0.50,   // trigger location
+        0.05, 0.05,   // trigger size
+     AbyssSite.class
     );
     
     public DonutShopVignette(GameState gs, VignetteTrigger prevPort, Player player) {
@@ -65,6 +74,7 @@ public class DonutShopVignette extends Vignette {
     protected void init() {        
         addPort(exitPort);
         addJack( matrixJack );
+        addTerminal( terminal );
     }
 
     @Override

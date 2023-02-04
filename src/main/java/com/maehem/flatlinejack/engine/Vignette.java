@@ -17,7 +17,9 @@
 package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
+import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
+import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
@@ -56,6 +58,7 @@ public abstract class Vignette extends Pane {
 
     private final ArrayList<VignetteTrigger> doors = new ArrayList<>();
     private final ArrayList<MatrixTrigger>   jacks = new ArrayList<>();
+    private final ArrayList<TerminalTrigger> terminals = new ArrayList<>();
     private final ArrayList<Patch> patchList = new ArrayList<>();
     private final ArrayList<Character> characterList = new ArrayList<>();
     
@@ -68,6 +71,7 @@ public abstract class Vignette extends Pane {
     private Polygon walkArea;
     private boolean playerTalkToNPC = false;
     private boolean playerJackToMatrix = false;
+    private boolean playerUseTerminal = false;
     private final String assetFolderName;
     Group layerStack = new Group();
 
@@ -217,6 +221,30 @@ public abstract class Vignette extends Pane {
                 }
             }
 
+            for (TerminalTrigger trig : terminals) {
+                boolean playerCanTerminal = player.colidesWith(trig.getTriggerShape());
+                trig.updateTriggerState(playerCanTerminal);
+                trig.showIcon(playerCanTerminal);
+                if (playerCanTerminal) {
+                    // Show a Matrix clickable at this location.
+                    // If user clicks it:
+                    // Tell gameState to enter matrix
+                    if ( playerUseTerminal || trig.isUsingTerminal()) {
+                        LOGGER.config("player triggered terminal.");
+                        playerUseTerminal = false;
+                        trig.setUsingTerminal(false);
+                        Class<? extends BBSTerminal> destination = trig.getDestination();
+                        if ( destination == null ) {
+                            gameState.setCurrentTerminal(new PublicTerminalSystem(gameState));
+                        } else {
+                            // Load the class
+                            gameState.setCurrentTerminal(BBSTerminal.createTerminal(destination, gameState));
+                        }
+                        gameState.setShowing(GameState.Display.TERMINAL);
+                    }
+                }
+            }
+
             getCharacterList().forEach((Character npc) -> {
                 // Show dialog if player can hear.
                 if (npc.canHear(player.getHearingBoundary())) {
@@ -318,6 +346,11 @@ public abstract class Vignette extends Pane {
             playerJackToMatrix = true;
             LOGGER.config("User jacked into matrix.");
         }
+        if (input.contains("B")) {
+            input.remove("B");
+            playerUseTerminal = true;
+            LOGGER.config("User used terminal.");
+        }
     }
 
     protected final void debugCollisionBounds(boolean show) {
@@ -333,14 +366,13 @@ public abstract class Vignette extends Pane {
         walkAreaCoords.setOpacity(show ? debugOpacity : 0.0);
         getFgGroup().setOpacity(show ? 0.5 : 1.0); // Wings translucent when debuging.
         getDoors().forEach((door) -> {
-            //door.setOpacity(show ? debugOpacity : 0.0);
-            //door.getTriggerShape().setOpacity(show ? debugOpacity:0.0);
             door.setShowDebug(show);
         });
         jacks.forEach((jack) -> {
-            //door.setOpacity(show ? debugOpacity : 0.0);
-            //jack.getTriggerShape().setOpacity(show ? debugOpacity:0.0);
             jack.setShowDebug(show);
+        });
+        terminals.forEach((terminal) -> {
+            terminal.setShowDebug(show);
         });
 
         // Display box around patches when showing collision bounds.
@@ -405,6 +437,13 @@ public abstract class Vignette extends Pane {
      */
     public ArrayList<MatrixTrigger> getJacks() {
         return jacks;
+    }
+
+    /**
+     * @return the terminals
+     */
+    public ArrayList<TerminalTrigger> getTerminals() {
+        return terminals;
     }
 
     /**
@@ -637,6 +676,12 @@ public abstract class Vignette extends Pane {
         jack.setScale(getWidth(), getHeight());
         getJacks().add(jack);
         getMainGroup().getChildren().add(jack);
+    }
+
+    protected void addTerminal(TerminalTrigger terminal) {
+        terminal.setScale(getWidth(), getHeight());
+        getTerminals().add(terminal);
+        getMainGroup().getChildren().add(terminal);
     }
 
     protected void addPatch(Patch patch) {
