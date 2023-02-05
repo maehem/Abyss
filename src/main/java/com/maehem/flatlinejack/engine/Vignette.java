@@ -16,6 +16,7 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.content.sites.PublicTerminalSystem;
 import com.maehem.flatlinejack.engine.babble.DialogScreen;
@@ -32,7 +33,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -42,13 +42,13 @@ import javafx.scene.text.Text;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public abstract class Vignette extends Pane {
+public abstract class Vignette extends ViewPane {
 
     public static final String PROP_PREFIX = "vignette.";
     public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
     public static final double DEFAULT_HORIZON = 0.24;  // Place horizon this far down from screen top.  0.0 - 1.0
-    public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
-    public static final int NATIVE_HEIGHT = 720; // Native height of PNG background.
+    //public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
+    //public static final int NATIVE_HEIGHT = 720; // Native height of PNG background.
 
     private final GameState gameState;
     private final Group walkAreaCoords = new Group();
@@ -89,9 +89,9 @@ public abstract class Vignette extends Pane {
         this.assetFolderName = assetFolderName;
         this.player = player;
 
-        this.setWidth(NATIVE_WIDTH);
-        this.setHeight(NATIVE_HEIGHT);
-        this.setClip(new Rectangle(NATIVE_WIDTH, NATIVE_HEIGHT));
+        this.setWidth(WIDTH);
+        this.setHeight(HEIGHT);
+        this.setClip(new Rectangle(WIDTH, HEIGHT));
         
         LOGGER.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 

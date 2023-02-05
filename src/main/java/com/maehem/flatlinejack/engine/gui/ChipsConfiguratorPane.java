@@ -18,6 +18,7 @@ package com.maehem.flatlinejack.engine.gui;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ChipDetailsPane;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ConfiguratorInventoryListView;
@@ -51,11 +52,11 @@ public class ChipsConfiguratorPane extends Pane implements GameStateListener {
     private final GameState gameState;
     
 
-    public ChipsConfiguratorPane( GameState gs, int w, int h) {
+    public ChipsConfiguratorPane( GameState gs ) {  //, int w, int h) {
         this.gameState = gs;
         gameState.addListenter(this);
         
-        this.setPrefSize(w, h);
+        this.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
         
         VBox content = new VBox(installedChips, details, inventory );
         content.setLayoutX(VIEW_X);

@@ -24,6 +24,7 @@ import com.maehem.flatlinejack.engine.Vignette;
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.MatrixPane;
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import com.maehem.flatlinejack.engine.VignetteTrigger;
 import com.maehem.flatlinejack.engine.gui.ChipsConfiguratorPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
@@ -120,7 +121,7 @@ public class Engine extends Application implements GameStateListener {
     @Override
     public void start(Stage window) {
         this.window = window;
-        topArea.setPrefSize(Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        topArea.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
         initDebugWindow();
 
         getGameState().addListenter(this);
@@ -142,10 +143,10 @@ public class Engine extends Application implements GameStateListener {
             Platform.exit();
         });
         
-        gameControls = new GameControlsPane(getGameState(), Vignette.NATIVE_WIDTH/2);
-        narrationPane = new CrtTextPane(getGameState(), Vignette.NATIVE_WIDTH/2);     
+        gameControls = new GameControlsPane(getGameState(), ViewPane.WIDTH/2);
+        narrationPane = new CrtTextPane(getGameState(), ViewPane.WIDTH/2);     
         // ROM Adviser -- Hint System and Third Hand
-        romPane = new RomConstructPane(getGameState(), Vignette.NATIVE_WIDTH/2);
+        romPane = new RomConstructPane(getGameState(), ViewPane.WIDTH/2);
         StackPane rightPane = new StackPane(narrationPane,romPane);
         
         
@@ -162,16 +163,16 @@ public class Engine extends Application implements GameStateListener {
         inventoryPane = new InventoryPane(gameState);
         
         // Chips  -- Confgurable Buffs
-        chipsPane = new ChipsConfiguratorPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        chipsPane = new ChipsConfiguratorPane(gameState); //, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
         
         // Terminal -- Base BBS style system
-        terminalPane = new TerminalPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        terminalPane = new TerminalPane(gameState ); //, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
         terminalPane.setTerminal(new PublicTerminalSystem(gameState), false);
         
         // Deck Bench -- Configure your Deck with inventory components
         
         // Cyberspace  -- ROM Helper replaces Narration Window
-        matrixPane = new MatrixPane(gameState, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        matrixPane = new MatrixPane(gameState );  ///, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
         
         topArea.getChildren().addAll(vignetteGroup, //splashScreen,
                 chipsPane, inventoryPane, terminalPane, matrixPane
@@ -353,11 +354,11 @@ public class Engine extends Application implements GameStateListener {
     }
     
     private void configureGuiLayout() {
-        topArea.setPrefWidth(Vignette.NATIVE_WIDTH);
+        topArea.setPrefWidth(ViewPane.WIDTH);
         topArea.setScaleX(SCALE);
         topArea.setScaleY(SCALE);
         
-        bottomArea.setPrefWidth(Vignette.NATIVE_WIDTH);
+        bottomArea.setPrefWidth(ViewPane.WIDTH);
         bottomArea.setScaleX(SCALE);
         bottomArea.setScaleY(SCALE);
         

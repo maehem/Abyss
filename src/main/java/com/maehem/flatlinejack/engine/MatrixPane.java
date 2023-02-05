@@ -16,6 +16,7 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.matrix.MatrixNodeFactory;
@@ -109,14 +110,14 @@ public class MatrixPane extends BorderPane implements GameStateListener {
     private final double nodeScaling = 0.333;
     private final double size = 1280;
 
-    public MatrixPane(GameState gs, double width, double height) {
+    public MatrixPane(GameState gs) { // , double width, double height) {
         this.gameState = gs;
         gameState.addListenter(this);
         previousSite = gameState.getCurrentMatrixSite();
         
         //currentSite = gs.getSite(0x00101); // For now
 
-        scene = new SubScene(root, width, height, true, SceneAntialiasing.BALANCED);
+        scene = new SubScene(root, ViewPane.WIDTH, ViewPane.HEIGHT, true, SceneAntialiasing.BALANCED);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setNearClip(1);

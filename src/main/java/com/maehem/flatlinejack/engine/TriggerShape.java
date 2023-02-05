@@ -16,11 +16,18 @@
  */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import static com.maehem.flatlinejack.Engine.LOGGER;
 import java.util.logging.Level;
+import javafx.geometry.Insets;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -45,8 +52,11 @@ public class TriggerShape extends Pane {
     private Color triggerColorDefault = TRIGGER_FILL_DEFAULT;
     private Color triggerColorActive = TRIGGER_FILL_ACTIVE;
     private Text label = new Text(getClass().getSimpleName());
-    private ImageView icon = null;
+    private StackPane icon = null;
 
+    private double scaleX = 1.0; // ScreenW. Use setScale() to input actual value.
+    private double scaleY = 1.0; // ScreenH.  ^       ^        ^
+    
     /**
      * Trigger shape as a x:1 ratio to the size of the scene.
      * It will be scaled later to the size of the actual scene.
@@ -87,7 +97,9 @@ public class TriggerShape extends Pane {
      * @param scaleY usually the height of the @Scene
      */
     public void setScale( double scaleX, double scaleY ) {
-
+        this.scaleX = scaleX;
+        this.scaleY = scaleY;
+        
         this.setLayoutX(scaleX * rawX);
         this.setLayoutY(scaleY * rawY);
         
@@ -126,13 +138,23 @@ public class TriggerShape extends Pane {
     }
 
     public void setClickIcon(String iconPath, double offX, double offY) {
-        icon = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
-        icon.setPreserveRatio(true);
-        icon.setFitWidth(50);
-        icon.setX(offX);
-        icon.setY(offY);
+        double rad = ViewPane.WIDTH * 0.01; // Pane arc and drop shadow rad+offset
+        Color dropShadow = new Color(0.0,0.0,0.0,0.3);
         
-        getChildren().add(icon);        
+        ImageView iconImg = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
+        icon = new StackPane(iconImg);
+        icon.setMinSize(ViewPane.WIDTH*0.08, ViewPane.HEIGHT*0.08);
+        icon.setBackground(new Background(
+                new BackgroundFill(Color.DARKGRAY, new CornerRadii(rad), Insets.EMPTY))
+        );
+        
+        iconImg.setPreserveRatio(true);
+        iconImg.setFitWidth(icon.getMinHeight()*0.85);
+        icon.setTranslateX(offX);
+        icon.setTranslateY(offY);
+        icon.setEffect(new DropShadow(rad*2.0, rad/2.0, rad/2.0, dropShadow));
+        
+        getChildren().addAll(icon);        
         
         icon.setOnMouseClicked((event) -> {
             LOGGER.log(Level.INFO, "Opacity = {0}", icon.getOpacity());

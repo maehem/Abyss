@@ -18,6 +18,7 @@ package com.maehem.flatlinejack.engine.gui;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
@@ -36,9 +37,9 @@ public class TerminalPane extends StackPane implements GameStateListener {
 
     private BBSTerminal terminal;
 
-    public TerminalPane(GameState gs, int w, int h) {
+    public TerminalPane(GameState gs) { //, int w, int h) {
         gs.addListenter(this);
-        this.setPrefSize(w, h);
+        this.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
 
         setBackground(new Background(
                 new BackgroundFill(Color.BLACK,
