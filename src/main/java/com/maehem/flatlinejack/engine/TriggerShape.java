@@ -47,11 +47,6 @@ public class TriggerShape extends Pane {
     private Text label = new Text(getClass().getSimpleName());
     private ImageView icon = null;
 
-//    private String destination;
-//    private double playerX = -1;
-//    private double playerY = -1;
-//    private Direction playerDir;
-
     /**
      * Trigger shape as a x:1 ratio to the size of the scene.
      * It will be scaled later to the size of the actual scene.
@@ -63,9 +58,7 @@ public class TriggerShape extends Pane {
      */
     public TriggerShape(double x, double y, double w, double h) {
         this.setPrefSize(w, h);
-        // Test border
-        //this.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY,new  BorderWidths(4))));
-
+        
         label.setFill(Color.WHITE);
         label.setTranslateY(-4.0);
         this.trigger = new Rectangle(0, 0, w, h);
@@ -170,7 +163,9 @@ public class TriggerShape extends Pane {
     public void onClick() {}
     
     /**
-     * Inform sub-sclass that trigger icon is showing and clickable.
+     * Inform sub-class that trigger icon is showing and clickable.
+     * Override to be informed of the icon visibility state.
+     * 
      * @param showing 
      */
     public void onIconShowing( boolean showing ) {}
