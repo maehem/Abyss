@@ -43,19 +43,19 @@ public class TriggerShape extends Pane {
     public static final Color TRIGGER_FILL_DEFAULT = Color.GOLD;
     public static final Color TRIGGER_FILL_ACTIVE = Color.RED;
 
-    private double rawX = 0.0;
-    private double rawY = 0.0;
-    private double rawW = 0.1;
-    private double rawH = 0.1;
+//    private double rawX = 0.0;
+//    private double rawY = 0.0;
+//    private double rawW = 0.1;
+//    private double rawH = 0.1;
     
     private final Rectangle trigger;
     private Color triggerColorDefault = TRIGGER_FILL_DEFAULT;
     private Color triggerColorActive = TRIGGER_FILL_ACTIVE;
-    private Text label = new Text(getClass().getSimpleName());
+    private final Text label = new Text(getClass().getSimpleName());
     private StackPane icon = null;
 
-    private double scaleX = 1.0; // ScreenW. Use setScale() to input actual value.
-    private double scaleY = 1.0; // ScreenH.  ^       ^        ^
+    //private double scaleX = 1.0; // ScreenW. Use setScale() to input actual value.
+    //private double scaleY = 1.0; // ScreenH.  ^       ^        ^
     
     /**
      * Trigger shape as a x:1 ratio to the size of the scene.
@@ -67,18 +67,22 @@ public class TriggerShape extends Pane {
      * @param h size relative to boundary  0.0-1.0
      */
     public TriggerShape(double x, double y, double w, double h) {
-        this.setPrefSize(w, h);
+        this.setPrefSize(ViewPane.WIDTH * w, ViewPane.HEIGHT * h);
+        this.setLayoutX( ViewPane.WIDTH * x);
+        this.setLayoutY( ViewPane.HEIGHT * y);
         
         label.setFill(Color.WHITE);
         label.setTranslateY(-4.0);
-        this.trigger = new Rectangle(0, 0, w, h);
+        this.trigger = new Rectangle(0, 0, 
+                ViewPane.WIDTH*w, ViewPane.HEIGHT*h
+        );
         getChildren().addAll(trigger,label);
         
-        this.rawX = x;
-        this.rawY = y;
-        this.rawW = w;
-        this.rawH = h;
-
+//        this.rawX = x;
+//        this.rawY = y;
+//        this.rawW = w;
+//        this.rawH = h;
+        
         updateTriggerState(false);
     }
 
@@ -91,28 +95,28 @@ public class TriggerShape extends Pane {
         }
     }
 
-    /**
-     * 
-     * @param scaleX usually the width of the @Scene
-     * @param scaleY usually the height of the @Scene
-     */
-    public void setScale( double scaleX, double scaleY ) {
-        this.scaleX = scaleX;
-        this.scaleY = scaleY;
-        
-        this.setLayoutX(scaleX * rawX);
-        this.setLayoutY(scaleY * rawY);
-        
-        this.setWidth( scaleX * rawW);
-        this.setHeight(scaleY * rawH);
-        
-        this.setMinWidth(scaleX*rawW);
-        this.setMinHeight(scaleY*rawH);
-        
-        // Trigger is the size of out pane.
-        trigger.setWidth(scaleX * rawW);
-        trigger.setHeight(scaleY * rawH);
-    }
+//    /**
+//     * 
+//     * @param scaleX usually the width of the @Scene
+//     * @param scaleY usually the height of the @Scene
+//     */
+//    public void setScale( double scaleX, double scaleY ) {
+//        this.scaleX = scaleX;
+//        this.scaleY = scaleY;
+//        
+//        this.setLayoutX(scaleX * rawX);
+//        this.setLayoutY(scaleY * rawY);
+//        
+//        this.setWidth( scaleX * rawW);
+//        this.setHeight(scaleY * rawH);
+//        
+//        this.setMinWidth(scaleX*rawW);
+//        this.setMinHeight(scaleY*rawH);
+//        
+//        // Trigger is the size of out pane.
+//        trigger.setWidth(scaleX * rawW);
+//        trigger.setHeight(scaleY * rawH);
+//    }
     
     public Shape getTriggerShape() {
         return trigger;

@@ -66,7 +66,7 @@ import javafx.util.Duration;
  *
  * @author mark
  */
-public class MatrixPane extends BorderPane implements GameStateListener {
+public class MatrixPane extends ViewPane implements GameStateListener {
 
     private static final GameState.Display display = GameState.Display.MATRIX;
     
@@ -80,6 +80,8 @@ public class MatrixPane extends BorderPane implements GameStateListener {
         LEFT, RIGHT, FORWARD, BACKWARD
     }
 
+    private boolean scooted = false;
+    
     private final SubScene scene;
 
     private MatrixSite previousSite; // used to track when we get change events.
@@ -112,12 +114,11 @@ public class MatrixPane extends BorderPane implements GameStateListener {
 
     public MatrixPane(GameState gs) { // , double width, double height) {
         this.gameState = gs;
+        this.setPrefSize(WIDTH, HEIGHT);
         gameState.addListenter(this);
         previousSite = gameState.getCurrentMatrixSite();
         
-        //currentSite = gs.getSite(0x00101); // For now
-
-        scene = new SubScene(root, ViewPane.WIDTH, ViewPane.HEIGHT, true, SceneAntialiasing.BALANCED);
+        scene = new SubScene(root, WIDTH, HEIGHT, true, SceneAntialiasing.BALANCED);
 
         PerspectiveCamera camera = new PerspectiveCamera(true);
         camera.setNearClip(1);
@@ -146,7 +147,8 @@ public class MatrixPane extends BorderPane implements GameStateListener {
 
         scene.setCamera(camera);
         paneGroup.getChildren().add(scene);
-        setCenter(paneGroup);
+        //setCenter(paneGroup);
+        getChildren().add(paneGroup);
 
         Rectangle r = new Rectangle(200, 100);
         r.setFill(Color.RED);
@@ -162,9 +164,9 @@ public class MatrixPane extends BorderPane implements GameStateListener {
 
     }
 
-    private MatrixSite getCurrentSite() {
-        return gameState.getCurrentMatrixSite();
-    }
+//    private MatrixSite getCurrentSite() {
+//        return gameState.getCurrentMatrixSite();
+//    }
     
     void processEvents(ArrayList<String> input) {
         if (input.contains("LEFT")) {
@@ -229,7 +231,8 @@ public class MatrixPane extends BorderPane implements GameStateListener {
 
                     // Update current site and get it.
                     //currentSite = gameState.getSite(currentSite.getNeighbor(MatrixSiteNeighbor.S));
-                    previousSite = gameState.getCurrentMatrixSite();
+                    //previousSite = gameState.getCurrentMatrixSite();
+                    scooted = true;
                     gameState.setCurrentMatrixSite( MatrixSiteNeighbor.S );
                     //LOGGER.log(Level.INFO, "Current Site is: {0}:{1}", new Object[]{currentSite.getRow(), currentSite.getCol()});
                     // Generate new sites ahead of current site.
@@ -276,7 +279,8 @@ public class MatrixPane extends BorderPane implements GameStateListener {
 
                     // Update current site and get it.
                     //currentSite = gameState.getSite(currentSite.getNeighbor(MatrixSiteNeighbor.N));
-                    previousSite = gameState.getCurrentMatrixSite();
+                    //previousSite = gameState.getCurrentMatrixSite();
+                    scooted = true;
                     gameState.setCurrentMatrixSite( MatrixSiteNeighbor.N );
                     //LOGGER.log(Level.INFO, "Current Site is: {0}:{1}", new Object[]{currentSite.getRow(), currentSite.getCol()});
 
@@ -317,7 +321,8 @@ public class MatrixPane extends BorderPane implements GameStateListener {
                     nodeS = nodeSW;
                     // Generate new sites left of current site.
                     //currentSite = gameState.getSite(currentSite.getNeighbor(MatrixSiteNeighbor.W));
-                    previousSite = gameState.getCurrentMatrixSite();
+                    //previousSite = gameState.getCurrentMatrixSite();
+                    scooted = true;
                     gameState.setCurrentMatrixSite( MatrixSiteNeighbor.W );
                     //LOGGER.log(Level.INFO, "Current Site is: {0}:{1}", new Object[]{currentSite.getRow(), currentSite.getCol()});
 
@@ -361,8 +366,10 @@ public class MatrixPane extends BorderPane implements GameStateListener {
 
                     // Generate new sites right of current site.
                     //currentSite = gameState.getSite(currentSite.getNeighbor(MatrixSiteNeighbor.E));
-                    previousSite = gameState.getCurrentMatrixSite();
+                    //previousSite = gameState.getCurrentMatrixSite();
+                    scooted = true;
                     gameState.setCurrentMatrixSite( MatrixSiteNeighbor.E );
+                    
                     //LOGGER.log(Level.INFO, "Current Site is: {0}:{1}", new Object[]{currentSite.getRow(), currentSite.getCol()});
 
                     nodeNE = tempNE;
@@ -454,6 +461,7 @@ public class MatrixPane extends BorderPane implements GameStateListener {
     }
     
     private void updateSiteNodes() {
+        LOGGER.log(Level.INFO, "Rebuild Site Nodes.");
         siteGroup.getChildren().clear();
         
         //nodeCenter = new HeatsinkNode(currentSite, nodeScaling * size);
@@ -768,8 +776,11 @@ public class MatrixPane extends BorderPane implements GameStateListener {
 
     @Override
     public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {
-        if ( previousSite == gs.getCurrentMatrixSite() ) return;  // That was us, ignore.
-        
+        //if ( previousSite == gs.getCurrentMatrixSite() ) return;  // That was us, ignore.
+        if ( scooted ) {
+            scooted = false; // We moved, causing this event, but we don't rebuild the view.
+            return;
+        }
         // Someone else changed out location. Update visuals.
         updateSiteNodes();
         updateHUDshowState();

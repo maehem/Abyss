@@ -667,19 +667,19 @@ public abstract class Vignette extends ViewPane {
 //    }
 
     protected void addPort(VignetteTrigger port) {
-        port.setScale(getWidth(), getHeight());
+        //port.setScale(getWidth(), getHeight());
         getDoors().add(port);
         getMainGroup().getChildren().add(port);
     }
 
     protected void addJack(MatrixTrigger jack) {
-        jack.setScale(getWidth(), getHeight());
+        //jack.setScale(getWidth(), getHeight());
         getJacks().add(jack);
         getMainGroup().getChildren().add(jack);
     }
 
     protected void addTerminal(TerminalTrigger terminal) {
-        terminal.setScale(getWidth(), getHeight());
+        //terminal.setScale(getWidth(), getHeight());
         getTerminals().add(terminal);
         getMainGroup().getChildren().add(terminal);
     }
