@@ -76,18 +76,18 @@ public class ThingDetailPane extends FlowPane {
         this.setAlignment(Pos.TOP_CENTER);
         this.setColumnHalignment(HPos.CENTER);
 
-        detailImageView.setFitWidth(160);
+        detailImageView.setFitWidth(ViewPane.WIDTH/4.5);
         detailImageView.setPreserveRatio(true);
 
-        name.setFont(new Font(25));
+        name.setFont(new Font(ViewPane.HEIGHT*0.05));
         name.setTextAlignment(TextAlignment.CENTER);
         name.setFill(new Color(0, 0, 0, 0.5));
 
-        useButton = new javafx.scene.control.Button("Use");
-        giveButton = new javafx.scene.control.Button("Give");
-        deleteButton = new javafx.scene.control.Button("Delete");
-        repairButton = new javafx.scene.control.Button("Repair");
-
+        useButton = createButton("Use");
+        giveButton = createButton("Give");
+        deleteButton = createButton("Delete");
+        repairButton = createButton("Repair");
+        
         HBox buttonPane = new HBox(8, useButton, giveButton, deleteButton, repairButton);
         buttonPane.setAlignment(Pos.BOTTOM_CENTER);
         this.getChildren().addAll(detailImageView, name, buttonPane);
@@ -95,6 +95,12 @@ public class ThingDetailPane extends FlowPane {
         clearThing();
     }
 
+    private static final javafx.scene.control.Button createButton( String text ) {
+        Button b = new javafx.scene.control.Button(text);
+        b.setFont(Font.font(ViewPane.HEIGHT * 0.03));
+        return b;
+    }
+    
     public void showThing(Thing t) {
         this.currentThing = t;
         String iconPath = t.getIconPath();
@@ -112,6 +118,7 @@ public class ThingDetailPane extends FlowPane {
         }
 
         thingCustomDetailsPane = getDetailPane(t);
+        //thingCustomDetailsPane.setPrefWidth(ViewPane.WIDTH/4.0);
 
         getChildren().add(getChildren().lastIndexOf(name) + 1, thingCustomDetailsPane);
 
