@@ -41,7 +41,7 @@ public class Character extends Group {
 
     private static final String TALK_ICON_IMAGE_FILENAME = "/icons/talk-icon.png";
 
-    public static final int INVENTORY_SIZE = 12;
+    public static final int INVENTORY_SIZE = 35;
     //public static final double SHEET_SCALE = 0.5;
     
     private final ArrayList<Thing> inventory = new ArrayList<>(INVENTORY_SIZE);

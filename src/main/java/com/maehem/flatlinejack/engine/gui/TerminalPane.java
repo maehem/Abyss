@@ -31,15 +31,16 @@ import javafx.scene.paint.Color;
  *
  * @author mark
  */
-public class TerminalPane extends StackPane implements GameStateListener {
+public class TerminalPane extends ViewPane implements GameStateListener {
 
     private static final GameState.Display DISPLAY = GameState.Display.TERMINAL;
 
     private BBSTerminal terminal;
+    private final StackPane contentPane = new StackPane();
 
     public TerminalPane(GameState gs) { //, int w, int h) {
         gs.addListenter(this);
-        this.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
+        //this.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
 
         setBackground(new Background(
                 new BackgroundFill(Color.BLACK,
@@ -47,7 +48,9 @@ public class TerminalPane extends StackPane implements GameStateListener {
                         Insets.EMPTY)
         ));
         terminal = new BBSTerminal(gs); //, w, h, 25, 80);
-        getChildren().add(terminal);
+        contentPane.getChildren().add(terminal);
+        contentPane.setPrefSize(WIDTH, HEIGHT);
+        getChildren().add(contentPane);
         setVisible(false);
     }
 
@@ -57,8 +60,8 @@ public class TerminalPane extends StackPane implements GameStateListener {
 
     public void setTerminal(BBSTerminal t, boolean showTransistion) {
         this.terminal = t;
-        getChildren().clear();
-        getChildren().add(t);
+        contentPane.getChildren().clear();
+        contentPane.getChildren().add(t);
     }
 
 //    private void animateTerminalOpen() {

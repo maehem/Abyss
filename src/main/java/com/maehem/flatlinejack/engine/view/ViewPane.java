@@ -25,5 +25,10 @@ import javafx.scene.layout.Pane;
 public class ViewPane extends Pane {
     public static final int WIDTH = 1280; // Native width of viual game pane.
     public static final int HEIGHT = 720; // Native height of visual game pane.
+
+    public ViewPane() {
+        setPrefSize(WIDTH, HEIGHT);
+    }
+    
     
 }

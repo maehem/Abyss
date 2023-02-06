@@ -30,14 +30,13 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 
 /**
  *
  * @author mark
  */
-public class ChipsConfiguratorPane extends Pane implements GameStateListener {
+public class ChipsConfiguratorPane extends ViewPane implements GameStateListener {
     private static final GameState.Display display = GameState.Display.CHIPS;
     
     private static final double VIEW_W = 530;

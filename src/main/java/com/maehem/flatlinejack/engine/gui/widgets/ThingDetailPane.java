@@ -19,6 +19,7 @@ package com.maehem.flatlinejack.engine.gui.widgets;
 import com.maehem.flatlinejack.engine.EmptyThing;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -70,8 +71,8 @@ public class ThingDetailPane extends FlowPane {
                 new CornerRadii(4),
                 BorderWidths.DEFAULT
         )));
-        this.setMaxHeight(300);
-        this.setPrefWidth(400);
+        this.setMaxHeight(ViewPane.HEIGHT);
+        this.setPrefWidth(ViewPane.WIDTH/3.33);
         this.setAlignment(Pos.TOP_CENTER);
         this.setColumnHalignment(HPos.CENTER);
 

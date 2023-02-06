@@ -23,6 +23,7 @@ import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.widgets.ThingDetailPane;
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import java.io.InputStream;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -40,21 +41,23 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class InventoryPane extends BorderPane implements GameStateListener {
+public class InventoryPane extends ViewPane implements GameStateListener {
 
     private static final Display display = Display.INVENTORY;
     
     private static final String BTN_SELECTED_COLOR = "#444466";
     private static final String BTN_NORMAL_COLOR   = "#666666";
-    private static final int N_COLS = 3;
+    private static final int N_COLS = 7;
     private static final int MARGIN = 12;
-    public static final int CELL_SIZE = 64;
+    public static final int CELL_SIZE = 96;
+    private final BorderPane contentArea = new BorderPane();
     private final ThingDetailPane detailPane;
     private final Player player;
     private final GridPane slots = new GridPane();
@@ -63,6 +66,8 @@ public class InventoryPane extends BorderPane implements GameStateListener {
     public InventoryPane(GameState gs) {
         this.gameState = gs;
         this.player = gs.getPlayer();
+        
+        contentArea.setPrefSize(WIDTH, HEIGHT);
         
         gs.addListenter(this);
         
@@ -93,28 +98,31 @@ public class InventoryPane extends BorderPane implements GameStateListener {
 //            col++;
 //        }
         Text text = new Text("Inventory");
+        text.setFont(Font.font(ViewPane.HEIGHT*0.03));
         FlowPane topPane = new FlowPane(Orientation.HORIZONTAL, text);
         topPane.setAlignment(Pos.CENTER);
-        setTop(topPane);
         
-        setCenter(slots);
-        
-        setLeft(  new Rectangle(MARGIN, MARGIN, Color.TRANSPARENT));
+        contentArea.setTop(topPane);
+        contentArea.setCenter(slots);
+        contentArea.setLeft(  new Rectangle(MARGIN, MARGIN, Color.TRANSPARENT));
+        contentArea.setRight( detailPane);
         
         // Right - Item Detail View
         BorderPane.setMargin(detailPane, new Insets(MARGIN));
         BorderPane.setMargin(slots, new Insets(MARGIN));
-        setRight( detailPane);
         
         Button doneButton = new Button("Done");
+        doneButton.setFont(Font.font(ViewPane.HEIGHT*0.03));
         doneButton.setOnMouseClicked((event) -> {
-            this.setVisible(false);
+            gs.toggleShowing(display);
         });
         
         FlowPane bottomPane = new FlowPane(Orientation.HORIZONTAL, doneButton);
         bottomPane.setAlignment(Pos.CENTER);
         FlowPane.setMargin(doneButton, new Insets(8));
-        setBottom(bottomPane);
+        contentArea.setBottom(bottomPane);
+        
+        getChildren().add(contentArea);
         
         setVisible(false);
     }
