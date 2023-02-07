@@ -20,9 +20,7 @@ import com.maehem.flatlinejack.engine.EmptyThing;
 import com.maehem.flatlinejack.engine.Player;
 import com.maehem.flatlinejack.engine.Thing;
 import com.maehem.flatlinejack.engine.view.ViewPane;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -51,7 +49,7 @@ public class ThingDetailPane extends VBox {
     private final ImageView detailImageView = new ImageView();
     private final Text name = new Text();
 
-    private Thing currentThing = null;
+    //private Thing currentThing = null;
 
     private Pane thingCustomDetailsPane;
     private final Button useButton;
@@ -109,7 +107,7 @@ public class ThingDetailPane extends VBox {
     }
     
     public void showThing(Thing t) {
-        this.currentThing = t;
+        //this.currentThing = t;
         String iconPath = t.getIconPath();
         if (iconPath != null) {
             detailImageView.setImage(
@@ -139,7 +137,7 @@ public class ThingDetailPane extends VBox {
     }
 
     public final void clearThing() {
-        currentThing = null;
+        //currentThing = null;
         detailImageView.setImage(null);
         name.setText("");
 
