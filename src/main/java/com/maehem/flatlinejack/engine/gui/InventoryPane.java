@@ -35,7 +35,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -74,7 +78,7 @@ public class InventoryPane extends ViewPane implements GameStateListener {
         detailPane = new ThingDetailPane(player);
         
         setBackground(new Background(new BackgroundFill(Color.SLATEGRAY, new CornerRadii(4), Insets.EMPTY)));
-        this.setPadding(new Insets(16));
+        this.setPadding(new Insets(8));
         
         
         // Make this a floating window that the user can pin?
@@ -98,7 +102,8 @@ public class InventoryPane extends ViewPane implements GameStateListener {
 //            col++;
 //        }
         Text text = new Text("Inventory");
-        text.setFont(Font.font(ViewPane.HEIGHT*0.03));
+        text.setFont(Font.font(ViewPane.HEIGHT*0.05));
+        text.setFill(new Color(0.0,0.0,0.0,0.5));
         FlowPane topPane = new FlowPane(Orientation.HORIZONTAL, text);
         topPane.setAlignment(Pos.CENTER);
         
@@ -106,6 +111,8 @@ public class InventoryPane extends ViewPane implements GameStateListener {
         contentArea.setCenter(slots);
         contentArea.setLeft(  new Rectangle(MARGIN, MARGIN, Color.TRANSPARENT));
         contentArea.setRight( detailPane);
+        
+        //detailPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
         
         // Right - Item Detail View
         BorderPane.setMargin(detailPane, new Insets(MARGIN));

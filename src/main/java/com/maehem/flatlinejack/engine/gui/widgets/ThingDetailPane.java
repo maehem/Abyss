@@ -35,6 +35,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -44,7 +46,7 @@ import javafx.scene.text.TextAlignment;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class ThingDetailPane extends FlowPane {
+public class ThingDetailPane extends VBox {
 
     private final ImageView detailImageView = new ImageView();
     private final Text name = new Text();
@@ -61,10 +63,11 @@ public class ThingDetailPane extends FlowPane {
     public ThingDetailPane(Player p) {
         this.player = p;
 
-        this.setOrientation(Orientation.VERTICAL);
-        this.setVgap(4);
-        this.setHgap(4);
-        this.setPadding(new Insets(8));
+        //this.setOrientation(Orientation.VERTICAL);
+        //this.setVgap(4);
+        //this.setHgap(4);
+        this.setSpacing(2);
+        this.setPadding(new Insets(4));
         this.setBorder(new Border(new BorderStroke(
                 new Color(0, 0, 0, 0.5),
                 BorderStrokeStyle.SOLID,
@@ -72,14 +75,15 @@ public class ThingDetailPane extends FlowPane {
                 BorderWidths.DEFAULT
         )));
         this.setMaxHeight(ViewPane.HEIGHT);
-        this.setPrefWidth(ViewPane.WIDTH/3.33);
+        this.setPrefWidth(ViewPane.WIDTH*0.35);
         this.setAlignment(Pos.TOP_CENTER);
-        this.setColumnHalignment(HPos.CENTER);
+        //this.setColumnHalignment(HPos.CENTER);
 
-        detailImageView.setFitWidth(ViewPane.WIDTH/4.5);
+        detailImageView.setFitWidth(ViewPane.WIDTH/4);
         detailImageView.setPreserveRatio(true);
+        
 
-        name.setFont(new Font(ViewPane.HEIGHT*0.05));
+        name.setFont(new Font(ViewPane.HEIGHT*0.04));
         name.setTextAlignment(TextAlignment.CENTER);
         name.setFill(new Color(0, 0, 0, 0.5));
 
@@ -90,14 +94,17 @@ public class ThingDetailPane extends FlowPane {
         
         HBox buttonPane = new HBox(8, useButton, giveButton, deleteButton, repairButton);
         buttonPane.setAlignment(Pos.BOTTOM_CENTER);
-        this.getChildren().addAll(detailImageView, name, buttonPane);
+        Pane spacer = new Pane();
+        spacer.setPrefSize(10, 10);
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        this.getChildren().addAll(detailImageView, name, spacer, buttonPane);
 
         clearThing();
     }
 
-    private static final javafx.scene.control.Button createButton( String text ) {
+    private static javafx.scene.control.Button createButton( String text ) {
         Button b = new javafx.scene.control.Button(text);
-        b.setFont(Font.font(ViewPane.HEIGHT * 0.03));
+        b.setFont(Font.font(ViewPane.HEIGHT * 0.028));
         return b;
     }
     
@@ -131,7 +138,7 @@ public class ThingDetailPane extends FlowPane {
 
     }
 
-    public void clearThing() {
+    public final void clearThing() {
         currentThing = null;
         detailImageView.setImage(null);
         name.setText("");
@@ -151,14 +158,27 @@ public class ThingDetailPane extends FlowPane {
         FlowPane detailPane = new FlowPane();
         detailPane.setAlignment(Pos.TOP_CENTER);
         if (!(t instanceof EmptyThing)) {
-            HBox gaugePane = new HBox(new Gauge(
+//            HBox gaugePane = new HBox(new Gauge(
+//                    "Condition:",
+//                    ViewPane.WIDTH*0.2, ViewPane.HEIGHT*0.06,
+//                    t.getCondition(),
+//                    t.getMaxCondition(),
+//                    Gauge.ValueLabel.OVERLAY_CENTERED
+//            ));
+//            
+//            detailPane.getChildren().add(gaugePane);
+            
+            detailPane.getChildren().add(new Gauge(
                     "Condition:",
-                    100, 20,
+                    ViewPane.WIDTH*0.2, ViewPane.HEIGHT*0.04,
                     t.getCondition(),
                     t.getMaxCondition(),
-                    Gauge.ValueLabel.OVERLAY_CENTERED
+                    Gauge.ValueLabel.OVERLAY_CENTERED)
+            );
+            detailPane.getChildren().add(new Indicator("Value:",
+                    ViewPane.HEIGHT*0.04,
+                    "$" + t.getValue()
             ));
-            detailPane.getChildren().add(gaugePane);
         }
         
         return detailPane;

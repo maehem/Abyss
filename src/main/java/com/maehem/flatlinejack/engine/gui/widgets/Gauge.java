@@ -21,6 +21,11 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -55,7 +60,9 @@ public class Gauge extends HBox {
     public Gauge(double w, double h, double value, double maxValue, ValueLabel pos) {
         this.maxValue = maxValue;
         pb.setStyle("-fx-accent: gray");
+        pb.setPrefSize(w, h);
 
+        //setPrefSize(w, h);
         setValue(value);
         setSpacing(h * 0.2);
         setAlignment(Pos.CENTER_LEFT);
@@ -119,7 +126,7 @@ public class Gauge extends HBox {
         this(w, h, value, maxValue, valLabel);
 
         //pb.setLayoutX(h);
-        pb.setPrefSize(w, h);
+        //pb.setPrefSize(w, h);
 
         // Icon Image
         ImageView icon = new ImageView();
