@@ -14,11 +14,10 @@
     License for the specific language governing permissions and limitations 
     under the License.
 */
-package com.maehem.flatlinejack.engine.gui;
+package com.maehem.flatlinejack.engine.view;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
-import com.maehem.flatlinejack.engine.view.ViewPane;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ChipDetailsPane;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ConfiguratorInventoryListView;
