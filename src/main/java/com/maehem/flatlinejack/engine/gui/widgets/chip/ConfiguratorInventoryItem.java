@@ -16,7 +16,10 @@
 */
 package com.maehem.flatlinejack.engine.gui.widgets.chip;
 
+import com.maehem.flatlinejack.engine.SkillChipThing;
 import javafx.geometry.Insets;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -31,6 +34,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 
@@ -40,19 +44,19 @@ import javafx.scene.text.TextFlow;
  */
 public class ConfiguratorInventoryItem extends HBox {
 
-    private final double GLYPH_DIM = 30;
+    private final double GLYPH_DIM = 40;
     
-    public ConfiguratorInventoryItem() {
+    public ConfiguratorInventoryItem(SkillChipThing t) {
         setBackground(new Background(new BackgroundFill(
                 Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
         )));
         //setPadding(new Insets(1));
-        setBorder(new Border(new BorderStroke(
-                Color.RED, 
-                BorderStrokeStyle.SOLID, 
-                new CornerRadii(4), 
-                new BorderWidths(2)
-        )));
+//        setBorder(new Border(new BorderStroke(
+//                Color.RED, 
+//                BorderStrokeStyle.SOLID, 
+//                new CornerRadii(4), 
+//                new BorderWidths(2)
+//        )));
         setSpacing(10);
         
         StackPane slotId = new StackPane();
@@ -71,28 +75,34 @@ public class ConfiguratorInventoryItem extends HBox {
         )));
         Text slotN = new Text("0");
         slotN.setFill(new Color(0.76,0.76,0.76,1.0));
-        slotN.setFont(new Font(20));
+        slotN.setFont(new Font(GLYPH_DIM*0.6));
         slotId.getChildren().add(slotN);
         
-        Text titleText = new Text("Title Text ABCD");
-        titleText.setFill(Color.GREEN);
-        titleText.setFont(new Font(24));
+        Text titleText = new Text(t.getName());
+        titleText.setFill(Color.SPRINGGREEN);
+        titleText.setFont(new Font(GLYPH_DIM*0.6));
         TextFlow titleFlow = new TextFlow(titleText);
+        titleFlow.setTextAlignment(TextAlignment.CENTER);
         
-        Pane itemIcon = new Pane();
+        Image icon = new Image(getClass().getResourceAsStream(t.getIconPath()));
+        ImageView itemIconView = new ImageView(icon);
+        itemIconView.setFitHeight(GLYPH_DIM*0.94);
+        itemIconView.setPreserveRatio(true);
+        StackPane itemIcon = new StackPane(itemIconView);
         itemIcon.setPrefSize(GLYPH_DIM, GLYPH_DIM);
         itemIcon.setMinSize(GLYPH_DIM, GLYPH_DIM);
         itemIcon.setMaxSize(GLYPH_DIM, GLYPH_DIM);
+        
         itemIcon.setBackground(new Background(new BackgroundFill(
                 Color.DARKOLIVEGREEN, 
                 new CornerRadii(5), 
                 Insets.EMPTY)));
-        itemIcon.setBorder(new Border(new BorderStroke(
-                new Color(0.16,0.16,0.16,1.0), 
-                BorderStrokeStyle.SOLID, 
-                new CornerRadii(0,5,5,0,false), 
-                new BorderWidths(0,0,0,8)
-        )));
+//        itemIcon.setBorder(new Border(new BorderStroke(
+//                new Color(0.16,0.16,0.16,1.0), 
+//                BorderStrokeStyle.SOLID, 
+//                new CornerRadii(0,5,5,0,false), 
+//                new BorderWidths(0,0,0,8)
+//        )));
         
 //        setMargin(slotId, new Insets(4));
 //        setMargin(itemIcon, new Insets(4));

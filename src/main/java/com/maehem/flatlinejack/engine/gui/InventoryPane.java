@@ -35,11 +35,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -195,7 +191,9 @@ public class InventoryPane extends ViewPane implements GameStateListener {
     public void gameStateVignetteChanged(GameState gs) {}
 
     @Override
-    public void gameStatePropertyChanged(GameState gs, String propKey) { }
+    public void gameStatePropertyChanged(GameState gs, String propKey) { 
+        updateItemGrid();
+    }
 
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {}

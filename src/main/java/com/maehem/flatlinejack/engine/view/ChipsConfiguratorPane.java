@@ -46,7 +46,7 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
     // Chip detail
     private final ChipDetailsPane details = new ChipDetailsPane(VIEW_W);
     // Chips inventory (scrollpane)
-    private final ConfiguratorInventoryListView inventory = new ConfiguratorInventoryListView(VIEW_W);
+    private final ConfiguratorInventoryListView inventory; //= new ConfiguratorInventoryListView(VIEW_W);
     private final GameState gameState;
     
 
@@ -55,6 +55,7 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
         gameState.addListenter(this);
         
         this.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
+        inventory = new ConfiguratorInventoryListView(VIEW_W, gs.getPlayer() );
         
         VBox content = new VBox(installedChips, details, inventory );
         content.setLayoutX(VIEW_X);
@@ -94,6 +95,7 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
         setVisible(d == display);
         if ( d == display ) {
             //updateItemGrid();
+            inventory.refresh();
         }
     }
 

@@ -464,7 +464,7 @@ public class Character extends Group {
      * 
      * @param thing to be added
      */
-    private void addInventoryItem(Thing thing) {
+    public void addInventoryItem(Thing thing) {
 //        for ( int i=0; i<inventory.length; i++) {
 //            if ( inventory[i] == null ) {
 //                inventory[i] = thing;
@@ -473,6 +473,10 @@ public class Character extends Group {
 //        }
         for( int i=0;  i<inventory.size(); i++ ) {
             if ( inventory.get(i) instanceof EmptyThing) {
+                LOGGER.log(Level.INFO, 
+                        "Inventory Item: {0} changed from EmptyThing to {1}", 
+                        new Object[]{i, thing.getClass().getSimpleName()}
+                );
                 inventory.set(i, thing);  
                 break;
             }

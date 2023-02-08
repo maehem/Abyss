@@ -73,10 +73,10 @@ public abstract class SkillChipThing extends Thing {
         conditionGauge.setValue(condition);
     }
 
-    @Override
-    public String getIconPath() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+//    @Override
+//    public String getIconPath() {
+//        
+//    }
 
     @Override
     public String getPackage() {

@@ -16,7 +16,10 @@
  */
 package com.maehem.flatlinejack.engine.gui.widgets.chip;
 
-import javafx.beans.value.ChangeListener;
+import com.maehem.flatlinejack.engine.Character;
+import com.maehem.flatlinejack.engine.SkillChipThing;
+import com.maehem.flatlinejack.engine.Thing;
+import java.util.ArrayList;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
@@ -38,8 +41,13 @@ import javafx.scene.text.TextAlignment;
  */
 public class ConfiguratorInventoryListView extends VBox {
 
-    public ConfiguratorInventoryListView(double w) {
-        setPrefSize(w, w * 0.36);
+    private final Character character;
+    private final VBox inventoryItems = new VBox();
+
+    public ConfiguratorInventoryListView(double w, Character c) {
+        setPrefSize(w, w * 0.42);
+        this.character = c;
+
         setBackground(new Background(new BackgroundFill(
                 new Color(0.1, 0.1, 0.1, 1.0),
                 new CornerRadii(20),
@@ -55,49 +63,76 @@ public class ConfiguratorInventoryListView extends VBox {
         textArea.setAlignment(Pos.CENTER);
         textArea.setPadding(new Insets(0, 0, 6, 0));
 
-
-        VBox inventoryItems = new VBox();
+        //inventoryItems.setMinHeight(getPrefHeight());
         inventoryItems.setFillWidth(true);
         inventoryItems.setSpacing(4);
-        inventoryItems.setBackground(new Background( new BackgroundFill(
-                new Color(0.1, 0.1, 0.1, 1.0),
+        inventoryItems.setBackground(Background.EMPTY);
+        inventoryItems.setBackground(new Background(new BackgroundFill(
+                new Color(0.2, 0.2, 0.2, 1.0),
                 CornerRadii.EMPTY,
                 Insets.EMPTY
         )));
-        
-
-        ConfiguratorInventoryItem i1 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i2 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i3 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i4 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i5 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i6 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i7 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i8 = new ConfiguratorInventoryItem();
-        ConfiguratorInventoryItem i9 = new ConfiguratorInventoryItem();
-
-        inventoryItems.getChildren().addAll(i1, i2, i3, i4, i5, i6, i7, i8, i9);
+        refresh();
 
         ScrollPane sp = new ScrollPane(inventoryItems);
 //        sp.setBackground(new Background(new BackgroundFill(
 //                Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
 //        )));
-        sp.setBackground(Background.EMPTY);
-        
+        sp.setFitToHeight(true);
+        sp.setFitToWidth(true);
+        sp.setMinHeight(getPrefHeight()
+                - textArea.getBoundsInLocal().getHeight()
+                - getPadding().getTop()
+                - getPadding().getBottom()
+        );
+        //sp.setBackground(Background.EMPTY);
+        sp.setBackground(new Background(new BackgroundFill(
+                new Color(0.1, 0.1, 0.1, 1.0),
+                CornerRadii.EMPTY,
+                Insets.EMPTY
+        )));
+
         // Cause the items list to resize to the ScrollPane content width.
         sp.viewportBoundsProperty().addListener((
-                ObservableValue<? extends Bounds> observableValue, 
-                Bounds oldBounds, Bounds newBounds
-        ) -> {
+                ObservableValue<? extends Bounds> observableValue,
+                Bounds oldBounds, Bounds newBounds) -> {
             inventoryItems.setMaxWidth(newBounds.getWidth());
             inventoryItems.setMinWidth(newBounds.getWidth());
         });
-        
 
         // TODO: Style scroll bar: requires CSS
-        
-        
         getChildren().addAll(textArea, sp);
-   }
+    }
 
+    public final void refresh() {
+        inventoryItems.getChildren().clear();
+        ArrayList<Thing> items = character.getAInventory();
+
+        items.forEach((t) -> {
+            if (t instanceof SkillChipThing) {
+                ConfiguratorInventoryItem item = new ConfiguratorInventoryItem((SkillChipThing) t);
+                inventoryItems.getChildren().addAll(item);
+
+            }
+        });
+        if (inventoryItems.getChildren().isEmpty()) {
+            Text t = new Text("You have no Skill Chips.");
+            t.setFont(Font.font(getPrefWidth()*0.05));
+            t.setFill(new Color(1.0,1.0,1.0,0.5));
+            inventoryItems.getChildren().add(t);
+            inventoryItems.setAlignment(Pos.CENTER);
+        }
+//        ConfiguratorInventoryItem i1 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i2 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i3 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i4 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i5 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i6 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i7 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i8 = new ConfiguratorInventoryItem();
+//        ConfiguratorInventoryItem i9 = new ConfiguratorInventoryItem();
+//
+//        inventoryItems.getChildren().addAll(i1, i2, i3, i4, i5, i6, i7, i8, i9);
+        inventoryItems.requestLayout();
+    }
 }
