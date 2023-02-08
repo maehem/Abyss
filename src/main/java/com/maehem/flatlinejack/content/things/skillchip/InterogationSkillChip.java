@@ -35,6 +35,11 @@ public class InterogationSkillChip extends SkillChipThing {
     public String getIconPath() {
         return ICON_PATH;
     }
-    
+
+    @Override
+    public String getDescription() {
+        return "Get to the best answers when asking questions much faster " +
+                "than the old way.  Your new charm will have them confessing.";
+    }
     
 }

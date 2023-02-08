@@ -31,4 +31,11 @@ public class ColdFireRamThing extends RamThing {
         setCondition(1000);
     }
 
+    @Override
+    public String getDescription() {
+        return "The coolest RAM burns with a blue light. Cold fire will " +
+                "light the way to the hardest to crack sites on the Matrix.";
+    }
+
+    
 }

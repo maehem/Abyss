@@ -44,5 +44,12 @@ public class KomodoDeckThing extends DeckThing {
     public String getIconPath() {
         return ICON_PATH;
     }
+
+    @Override
+    public String getDescription() {
+        return "You say Komado, we say Komodo. Who could ask for anything " +
+                "more?  Just kidding, this is junk, find a better deck already.";
+    }
+    
     
 }

@@ -41,6 +41,13 @@ public class BubbleSpray1SoftwareThing extends SoftwareThing {
     public String getIconPath() {
         return "/content/things/software/bubble-spray_1.png";
     }
-    
-    
+
+    @Override
+    public String getDescription() {
+        return "BubbleSpray cleans those dirty sites to a completely unsecure " +
+                "luster.  Waltz right in without soiling your new spats.  May " +
+                "contain chemicals known in the state of Alaska to cause uncontrolable " +
+                "urges to dance in the streets.";
+    }
+        
 }

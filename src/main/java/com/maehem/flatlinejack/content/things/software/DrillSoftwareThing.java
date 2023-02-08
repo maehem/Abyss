@@ -43,6 +43,13 @@ public class DrillSoftwareThing extends SoftwareThing {
     public String getIconPath() {
         return "/content/things/software/drill_5.png";
     }
+
+    @Override
+    public String getDescription() {
+        return  "Drill version 5.6.23.  For hard to reach bits. Uses Karбide™ " +
+                "Packet Sniffer technology to sus out those stubborn countermeasure " + 
+                "shields. Not approved for civilian use. May cause skin irritation.";
+    }
     
     
 }

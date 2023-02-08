@@ -41,5 +41,12 @@ public class BackOffice3SoftwareThing extends SoftwareThing {
     public String getIconPath() {
         return "/content/things/software/back-office_3.png";
     }
+
+    @Override
+    public String getDescription() {
+        return "Back Office 3.3.1 brings your favorite productity app to the " +
+                "year 2047.  Business up front, party in the rear.";
+    }
+    
     
 }

@@ -35,5 +35,11 @@ public class NegotiationSkillChip extends SkillChipThing {
     public String getIconPath() {
         return ICON_PATH;
     }
+
+    @Override
+    public String getDescription() {
+        return "Increase your chances of getting a good deal on that new " +
+                "peice of gear you've been wanting.";
+    }
     
 }

@@ -16,7 +16,6 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.RamThing;
 import java.util.Properties;
 
 /**
@@ -34,5 +33,11 @@ public class EmptyRamThing extends RamThing {
     public Properties saveProperties() {
         return new Properties();
     }
+
+    @Override
+    public String getDescription() {
+        return "Empty RAM Thing.";
+    }
+    
     
 }

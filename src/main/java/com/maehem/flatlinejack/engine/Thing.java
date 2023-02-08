@@ -70,6 +70,8 @@ public abstract class Thing {
     
     public abstract String getPackage();
     
+    public abstract String getDescription();
+    
     /**
      * Save important state values on game save.<p>
      *

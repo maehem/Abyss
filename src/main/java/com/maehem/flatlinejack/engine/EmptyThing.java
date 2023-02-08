@@ -16,7 +16,6 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.Thing;
 import java.util.Properties;
 
 /**
@@ -57,5 +56,11 @@ public class EmptyThing extends Thing {
     public String getPackage() {
         return "";
     }
+
+    @Override
+    public String getDescription() {
+        return "Empty Thing";
+    }
+    
     
 }

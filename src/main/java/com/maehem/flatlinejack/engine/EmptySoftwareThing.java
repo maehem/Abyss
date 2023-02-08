@@ -52,6 +52,11 @@ public class EmptySoftwareThing extends SoftwareThing {
     public String getIconPath() {
         return "/icons/empty-software-thing.png";
     }
+
+    @Override
+    public String getDescription() {
+        return "Empty Software Thing";
+    }
     
     
     
