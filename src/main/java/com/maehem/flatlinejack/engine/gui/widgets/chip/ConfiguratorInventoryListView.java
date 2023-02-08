@@ -27,6 +27,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -43,6 +47,19 @@ public class ConfiguratorInventoryListView extends VBox {
 
     private final Character character;
     private final VBox inventoryItems = new VBox();
+
+    private final Border DARK_BORDER = new Border(new BorderStroke(
+            Color.BLACK,
+            BorderStrokeStyle.SOLID,
+            new CornerRadii(4),
+            new BorderWidths(2)
+    ));
+    private final Border SELECTED_BORDER = new Border(new BorderStroke(
+            Color.RED,
+            BorderStrokeStyle.SOLID,
+            new CornerRadii(4),
+            new BorderWidths(2)
+    ));
 
     public ConfiguratorInventoryListView(double w, Character c) {
         setPrefSize(w, w * 0.42);
@@ -63,7 +80,6 @@ public class ConfiguratorInventoryListView extends VBox {
         textArea.setAlignment(Pos.CENTER);
         textArea.setPadding(new Insets(0, 0, 6, 0));
 
-        //inventoryItems.setMinHeight(getPrefHeight());
         inventoryItems.setFillWidth(true);
         inventoryItems.setSpacing(4);
         inventoryItems.setBackground(Background.EMPTY);
@@ -75,9 +91,6 @@ public class ConfiguratorInventoryListView extends VBox {
         refresh();
 
         ScrollPane sp = new ScrollPane(inventoryItems);
-//        sp.setBackground(new Background(new BackgroundFill(
-//                Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
-//        )));
         sp.setFitToHeight(true);
         sp.setFitToWidth(true);
         sp.setMinHeight(getPrefHeight()
@@ -85,7 +98,6 @@ public class ConfiguratorInventoryListView extends VBox {
                 - getPadding().getTop()
                 - getPadding().getBottom()
         );
-        //sp.setBackground(Background.EMPTY);
         sp.setBackground(new Background(new BackgroundFill(
                 new Color(0.1, 0.1, 0.1, 1.0),
                 CornerRadii.EMPTY,
@@ -111,14 +123,22 @@ public class ConfiguratorInventoryListView extends VBox {
         items.forEach((t) -> {
             if (t instanceof SkillChipThing) {
                 ConfiguratorInventoryItem item = new ConfiguratorInventoryItem((SkillChipThing) t);
+                item.setBorder(DARK_BORDER);
                 inventoryItems.getChildren().addAll(item);
-
+                item.setOnMouseClicked((tt) -> {
+                    inventoryItems.getChildren().forEach((ii) -> {
+                        if (ii instanceof ConfiguratorInventoryItem) {
+                            ((ConfiguratorInventoryItem) ii).setBorder(DARK_BORDER);
+                        }
+                    });
+                    item.setBorder(SELECTED_BORDER);
+                });
             }
         });
         if (inventoryItems.getChildren().isEmpty()) {
             Text t = new Text("You have no Skill Chips.");
-            t.setFont(Font.font(getPrefWidth()*0.05));
-            t.setFill(new Color(1.0,1.0,1.0,0.5));
+            t.setFont(Font.font(getPrefWidth() * 0.05));
+            t.setFill(new Color(1.0, 1.0, 1.0, 0.5));
             inventoryItems.getChildren().add(t);
             inventoryItems.setAlignment(Pos.CENTER);
         }

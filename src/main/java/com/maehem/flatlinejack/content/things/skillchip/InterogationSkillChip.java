@@ -25,9 +25,16 @@ import com.maehem.flatlinejack.engine.SkillChipThing;
  */
 public class InterogationSkillChip extends SkillChipThing {
     public static final String NAME = "Interogation";
+    public static final String ICON_PATH = "/content/things/deck1-thing.png";
 
     public InterogationSkillChip() {
         super(NAME);
     }
-        
+
+    @Override
+    public String getIconPath() {
+        return ICON_PATH;
+    }
+    
+    
 }

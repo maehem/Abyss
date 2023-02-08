@@ -25,9 +25,15 @@ import com.maehem.flatlinejack.engine.SkillChipThing;
  */
 public class NegotiationSkillChip extends SkillChipThing {
     public static final String NAME = "Negotiaton";
+    public static final String ICON_PATH = "/content/things/deck1-thing.png";
 
     public NegotiationSkillChip() {
         super(NAME);
+    }
+    
+    @Override
+    public String getIconPath() {
+        return ICON_PATH;
     }
     
 }

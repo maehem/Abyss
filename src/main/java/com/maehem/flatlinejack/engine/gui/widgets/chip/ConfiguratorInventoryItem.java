@@ -50,13 +50,6 @@ public class ConfiguratorInventoryItem extends HBox {
         setBackground(new Background(new BackgroundFill(
                 Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
         )));
-        //setPadding(new Insets(1));
-//        setBorder(new Border(new BorderStroke(
-//                Color.RED, 
-//                BorderStrokeStyle.SOLID, 
-//                new CornerRadii(4), 
-//                new BorderWidths(2)
-//        )));
         setSpacing(10);
         
         StackPane slotId = new StackPane();
@@ -92,23 +85,14 @@ public class ConfiguratorInventoryItem extends HBox {
         itemIcon.setPrefSize(GLYPH_DIM, GLYPH_DIM);
         itemIcon.setMinSize(GLYPH_DIM, GLYPH_DIM);
         itemIcon.setMaxSize(GLYPH_DIM, GLYPH_DIM);
-        
         itemIcon.setBackground(new Background(new BackgroundFill(
                 Color.DARKOLIVEGREEN, 
                 new CornerRadii(5), 
-                Insets.EMPTY)));
-//        itemIcon.setBorder(new Border(new BorderStroke(
-//                new Color(0.16,0.16,0.16,1.0), 
-//                BorderStrokeStyle.SOLID, 
-//                new CornerRadii(0,5,5,0,false), 
-//                new BorderWidths(0,0,0,8)
-//        )));
-        
-//        setMargin(slotId, new Insets(4));
-//        setMargin(itemIcon, new Insets(4));
+                Insets.EMPTY)));        
         
         Pane spacer = new Pane();
         HBox.setHgrow(spacer, Priority.ALWAYS);
+        
         getChildren().addAll(slotId, titleFlow, spacer, itemIcon);
     }
     
