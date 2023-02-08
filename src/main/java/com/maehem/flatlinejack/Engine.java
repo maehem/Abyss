@@ -132,7 +132,7 @@ public class Engine extends Application implements GameStateListener {
         );
         
         gameState.init();
-        
+
         splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/content/splash.png")));
         //topArea.getChildren().add(splashScreen);
 
@@ -180,7 +180,7 @@ public class Engine extends Application implements GameStateListener {
         
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
-        
+
         matrixPane.updateHudSoftwareTabs();
         
         initHotKeys();
