@@ -33,8 +33,6 @@ import javafx.scene.paint.Color;
  */
 public class InstalledChipsGridPane extends GridPane {
 
-//    private final GridPane buffView2 = new GridPane();
-    //private final TilePane buffView2 = new TilePane();
     ChipsConfigurationListener configListener;
     Player player;
     InstalledChipStatsPane chip1;
@@ -46,7 +44,6 @@ public class InstalledChipsGridPane extends GridPane {
         this.configListener = listener;
         this.player = p;
 
-        //this.setPrefSize(w, h);
         setBackground(new Background(new BackgroundFill(
                 new Color(0.1, 0.1, 0.1, 1.0),
                 new CornerRadii(20),
@@ -56,8 +53,6 @@ public class InstalledChipsGridPane extends GridPane {
         setPrefSize(w, 166);
         setHgap(8);
         setVgap(8);
-        //setLayoutX(VIEW_X);
-        //setLayoutY(70);
 
         chip1 = new InstalledChipStatsPane(player, 0);
         chip2 = new InstalledChipStatsPane(player, 1);

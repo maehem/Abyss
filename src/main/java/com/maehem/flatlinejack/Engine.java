@@ -114,6 +114,10 @@ public class Engine extends Application implements GameStateListener {
     
     public Engine() {
         configureLogging();
+        
+        // TRUE for debug.
+        LOGGER.setUseParentHandlers(true);  // Prevent INFO and HIGHER from going to stderr.
+
         this.gameState = new GameState();
 
     }

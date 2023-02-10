@@ -59,9 +59,6 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
         this.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
         inventory = new ConfiguratorInventoryListView(VIEW_W, gs.getPlayer(), this );
         installedChips = new InstalledChipsGridPane( VIEW_W, 2*VIEW_W/3, gs.getPlayer(), this);
-        //installedChips.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-        //details.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
-
 
         VBox content = new VBox(installedChips, details, inventory );
         //content.setSpacing(20);
@@ -81,7 +78,6 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
                         BackgroundPosition.CENTER, 
                         BackgroundSize.DEFAULT
                 )));
-        //content.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
 
         getChildren().add(content);
         
@@ -103,6 +99,7 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
         if ( d == display ) {
             //updateItemGrid();
             inventory.refresh(null);
+            installedChips.refresh(null);
         }
     }
 

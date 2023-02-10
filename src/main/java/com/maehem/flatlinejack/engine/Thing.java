@@ -13,17 +13,21 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.engine;
 
+import com.maehem.flatlinejack.Engine;
 import static com.maehem.flatlinejack.Engine.LOGGER;
+import static com.maehem.flatlinejack.engine.Player.INVENTORY_KEY;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import java.util.Properties;
 import java.util.logging.Level;
 import javafx.scene.paint.Color;
 
 /**
- * Thing  -- an inventory item or functional object used in the game.
+ * Thing -- an inventory item or functional object used in the game.
  *
  * @author Mark J Koch [ @maehem on GitHub ]
  */
@@ -34,16 +38,17 @@ public abstract class Thing {
     protected static final int CONDITION_DEFAULT = 1000;
     protected static final int CONDITION_MAX = DeckThing.CONDITION_DEFAULT;
     protected static final String PROPERTY_CONDITION = "condition";
-    
+
     private String name;
     private Color color = Color.DARKGREY;
     private int value;
     private int repairSkill;
     private int condition = CONDITION_DEFAULT;
 
-    public Thing() {}
-    
-    public Thing( String name ) {
+    public Thing() {
+    }
+
+    public Thing(String name) {
         this.name = name;
         this.value = DEFAULT_VALUE;
     }
@@ -65,23 +70,23 @@ public abstract class Thing {
     public Color getColor() {
         return color;
     }
-    
+
     public void setColor(Color c) {
         this.color = c;
     }
-    
+
     public int getValue() {
         return value;
     }
-    
-    public void setValue( int value ) {
+
+    public void setValue(int value) {
         this.value = value;
     }
-    
+
     public abstract String getPackage();
-    
+
     public abstract String getDescription();
-    
+
     /**
      * Save important state values on game save.<p>
      *
@@ -93,7 +98,7 @@ public abstract class Thing {
      */
     public void saveState(String key, Properties p) {
         //String key = GameState.PLAYER_INVENTORY + "." + slot;
-        if ( name == null ) {
+        if (name == null) {
             return;
         }
         LOGGER.log(Level.INFO, "Save " + getClass().getSimpleName());
@@ -101,13 +106,13 @@ public abstract class Thing {
 //        if ( getValue() != DEFAULT_VALUE ) {
 //            p.setProperty(key + ".value", String.valueOf(getValue()));
 //        }
-        if ( getCondition() != getMaxCondition() ) {
+        if (getCondition() != getMaxCondition()) {
             p.setProperty(key + "." + PROPERTY_CONDITION, String.valueOf(condition));
             LOGGER.log(Level.INFO, getClass().getSimpleName() + ":: Save property: " + PROPERTY_CONDITION + " = " + getCondition());
         } else {
             LOGGER.log(Level.INFO, "    condition is: " + getCondition() + " which is the default of: " + CONDITION_MAX);
         }
-        
+
         // Gather any custom value from subclass and store those too.
         Properties saveProperties = saveProperties();
         saveProperties.forEach(
@@ -134,9 +139,9 @@ public abstract class Thing {
 //        )));
 
         LOGGER.log(Level.INFO, "Thing.loadState():  Loading props for:{0} with name: {1}", new Object[]{keyPrefix, getName()});
-        
+
         String conditionValue = p.getProperty(keyPrefix + "." + PROPERTY_CONDITION);
-        if ( conditionValue != null ) {
+        if (conditionValue != null) {
             setCondition(Integer.parseInt(conditionValue));
             LOGGER.log(Level.FINER, "{0}:: Load property: " + PROPERTY_CONDITION + " = {1}", new Object[]{getClass().getSimpleName(), getCondition()});
         }
@@ -150,17 +155,16 @@ public abstract class Thing {
             String itemKey = (String) k;
             if (itemKey.startsWith(keyPrefix + ".")
                     && !itemKey.startsWith(keyPrefix + ".name")
-                    && !itemKey.startsWith(keyPrefix + ".class")
-            ) {
+                    && !itemKey.startsWith(keyPrefix + ".class")) {
                 String shortKey = itemKey.substring(keyPrefix.length() + 1);  // Plus one is for dot-separator character
                 //LOG.log(Level.INFO, "    mainKey: {0}    longKey: {1} ==> shortKey: {2}", new Object[]{keyPrefix, k,shortKey});
                 sp.setProperty(shortKey, (String) v);
             }
         });
-        if ( !sp.isEmpty() ) {
-                LOGGER.log(Level.FINER, "    {0} .: {1} :. has {2} properties to process.", 
-                        new Object[]{keyPrefix,getClass().getSimpleName(),sp.size()});
-                LOGGER.log(Level.FINEST, "        {0}", sp.toString());
+        if (!sp.isEmpty()) {
+            LOGGER.log(Level.FINER, "    {0} .: {1} :. has {2} properties to process.",
+                    new Object[]{keyPrefix, getClass().getSimpleName(), sp.size()});
+            LOGGER.log(Level.FINEST, "        {0}", sp.toString());
         }
         loadProperties(sp);
     }
@@ -189,21 +193,21 @@ public abstract class Thing {
     public abstract void loadProperties(Properties p);
 
     public abstract String getIconPath();
-    
+
     public int getCondition() {
         return condition;
     }
 
     public void setCondition(Integer condition) {
         this.condition = condition;
-        if ( condition > getMaxCondition() ) {
+        if (condition > getMaxCondition()) {
             this.condition = getMaxCondition();
         }
     }
-    
+
     /**
-     * Get the max condition acheivable.  Subclasses should override this.
-     * 
+     * Get the max condition acheivable. Subclasses should override this.
+     *
      * @return maximum possible condition value
      */
     public int getMaxCondition() {
@@ -213,8 +217,8 @@ public abstract class Thing {
     public boolean repairable() {
         return false;
     }
-    
-    public boolean canRepair( Character c) {
+
+    public boolean canRepair(Character c) {
         return false;
     }
 
@@ -255,5 +259,38 @@ public abstract class Thing {
             this.condition = getMaxCondition();
         }
     }
-    
+
+    public static final Thing factory( String key, Properties p ) {
+        //String key = INVENTORY_KEY + "." + i;
+        //LOGGER.log(Level.INFO, "Player Inventory Item: " + key);
+        String itemClass = p.getProperty(key + ".class");
+        if (itemClass != null) {
+            try {
+                Class<?> c = Class.forName(Engine.class.getPackageName() + ".content.things." + itemClass);
+                Constructor<?> cons = c.getConstructor();
+                Thing object = (Thing) cons.newInstance();
+                //setAInventory(i, object);
+                LOGGER.log(Level.FINER, "    {0}", key);
+                //getAInventory().set(i, object);
+                object.loadState(p, key);
+                return object;
+            } catch (ClassNotFoundException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (IllegalArgumentException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (InvocationTargetException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (NoSuchMethodException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (SecurityException ex) {
+                LOGGER.log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return null;
+    }
 }
