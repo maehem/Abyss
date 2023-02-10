@@ -83,18 +83,6 @@ public class ChipDetailsPane extends HBox {
         removeButton.setImage(removeImg);
         removeButton.setOpacity(0.5);
         removeButton.setVisible(false);
-//        setPadding(new Insets(18, 80, 32, 30));
-        // Image for neck.
-//        Image bgImage = new Image(getClass().getResourceAsStream(BG_IMAGE_FILE));
-        //setPrefSize(w, w*0.4);
-//        setPrefSize(w, bgImage.getHeight());
-//        setBackground(new Background(new BackgroundImage(
-//                bgImage,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundRepeat.NO_REPEAT,
-//                BackgroundPosition.CENTER,
-//                BackgroundSize.DEFAULT
-//        )));
         setSpacing(8);
         Pane installRemoveButton = new Pane(installButton, removeButton);
         installRemoveButton.setBackground(new Background(new BackgroundFill(
@@ -133,7 +121,6 @@ public class ChipDetailsPane extends HBox {
             chipsListener.chipMoved(t);
         });
         removeButton.setVisible(!chipIsInventory);
-        
     }
 
     private Pane chipDetails() {
@@ -148,10 +135,6 @@ public class ChipDetailsPane extends HBox {
         thePane.setMaxHeight(bgView.getFitHeight()-44);
         thePane.setLayoutX(20);
         thePane.setLayoutY(20);
-        //thePane.setPrefSize(300, 100);
-        //thePane.setMaxSize(width-30, 100);
-        //Pane.setMargin(thePane, new Insets(36, 70, 40, 40));
-        //thePane.setPadding(new Insets(18, 80, 32, 30));
         thePane.setBackground(new Background(new BackgroundFill(
                 new Color(0.15, 0.15, 0.15, 1.0),
                 new CornerRadii(12), Insets.EMPTY
@@ -224,7 +207,6 @@ public class ChipDetailsPane extends HBox {
 
         HBox topArea = new HBox(slotId, titleText);
         thePane.setTop(topArea);
-        //thePane.setLeft(slotId);
         thePane.setCenter(centerArea);
         thePane.setRight(itemIconPane);
         thePane.setBottom(buffBar);
@@ -258,18 +240,6 @@ public class ChipDetailsPane extends HBox {
 
         buff.setPrefSize(width * 0.19, 32);
         buff.setAlignment(Pos.CENTER);
-//        Color condColor;
-//        if ( condition > 80 ) {
-//            condColor = Color.GREY;
-//        } else if ( condition > 60 ) {
-//            condColor = Color.YELLOW;
-//        } else if ( condition > 40 ) {
-//            condColor = Color.ORANGE;
-//        } else if ( condition > 10 ) {
-//            condColor = Color.RED;
-//        } else {
-//            condColor = Color.DARKGREY.darker();
-//        }
 
         buff.setBackground(new Background(new BackgroundFill(
                 c,
