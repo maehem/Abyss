@@ -24,20 +24,24 @@ import javafx.scene.paint.Color;
  * 
  * @author mark
  */
-public class NegotiationSkillChip extends SkillChipThing {
-    public static final String NAME = "Negotiation";
-    public static final Color  COLOR = Color.PAPAYAWHIP;
+public class EdgeRunnerSkillChip extends SkillChipThing {
+    public static final String NAME = "EdgeRunner";
+    public static final Color  COLOR = Color.FUCHSIA;
     public static final String ICON_PATH = "/content/things/deck1-thing.png";
     public static final String DESCRIPTION = 
-            "Increase your chances of getting a good deal on that new " +
-            "peice of gear you've been wanting. Go ahead and try it out!";
+            "Gain the edge against AIs and site defenses. Recover faster " +
+            "after a battle. Software degrades slower. More text for you " +
+            "to read.";
 
-    public NegotiationSkillChip() {
+    public EdgeRunnerSkillChip() {
         super(NAME);
         setColor(COLOR);
-        addBuff(Buff.NEGOTIATE, 100);
+        addBuff( Buff.EVASION, 173 );
+        addBuff( Buff.HACKING, 342 );
+        addBuff( Buff.SOFTWARE, 122 );
+        addBuff( Buff.CRYPTO, 853 );
     }
-    
+
     @Override
     public String getIconPath() {
         return ICON_PATH;

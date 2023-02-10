@@ -13,21 +13,17 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
     License for the specific language governing permissions and limitations 
     under the License.
-*/
+ */
 package com.maehem.flatlinejack.engine.gui.widgets.chip;
 
-import com.maehem.flatlinejack.engine.gui.widgets.chip.InstalledChipStatsPane;
+import com.maehem.flatlinejack.engine.Player;
+import com.maehem.flatlinejack.engine.SkillChipThing;
+import com.maehem.flatlinejack.engine.gui.ChipsConfigurationListener;
 import javafx.geometry.Insets;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.paint.Color;
 
@@ -36,16 +32,24 @@ import javafx.scene.paint.Color;
  * @author mark
  */
 public class InstalledChipsGridPane extends GridPane {
-    
+
 //    private final GridPane buffView2 = new GridPane();
     //private final TilePane buffView2 = new TilePane();
+    ChipsConfigurationListener configListener;
+    Player player;
+    InstalledChipStatsPane chip1;
+    InstalledChipStatsPane chip2;
+    InstalledChipStatsPane chip3;
+    InstalledChipStatsPane chip4;
 
-    public InstalledChipsGridPane( double w, double h ) {
+    public InstalledChipsGridPane(double w, double h, Player p, ChipsConfigurationListener listener) {
+        this.configListener = listener;
+        this.player = p;
+
         //this.setPrefSize(w, h);
-                
         setBackground(new Background(new BackgroundFill(
-                new Color(0.1,0.1,0.1,1.0), 
-                new CornerRadii(20), 
+                new Color(0.1, 0.1, 0.1, 1.0),
+                new CornerRadii(20),
                 Insets.EMPTY
         )));
         setPadding(new Insets(10));
@@ -54,27 +58,32 @@ public class InstalledChipsGridPane extends GridPane {
         setVgap(8);
         //setLayoutX(VIEW_X);
         //setLayoutY(70);
-        
-        InstalledChipStatsPane chip1 = new InstalledChipStatsPane();
-        InstalledChipStatsPane chip2 = new InstalledChipStatsPane();
-        InstalledChipStatsPane chip3 = new InstalledChipStatsPane();
-        InstalledChipStatsPane chip4 = new InstalledChipStatsPane();
-        
+
+        chip1 = new InstalledChipStatsPane(player, 0);
+        chip2 = new InstalledChipStatsPane(player, 1);
+        chip3 = new InstalledChipStatsPane(player, 2);
+        chip4 = new InstalledChipStatsPane(player, 3);
+
         GridPane.setHgrow(chip1, Priority.ALWAYS);
         GridPane.setHgrow(chip2, Priority.ALWAYS);
         GridPane.setHgrow(chip3, Priority.ALWAYS);
         GridPane.setHgrow(chip4, Priority.ALWAYS);
-        
+
         GridPane.setVgrow(chip1, Priority.ALWAYS);
         GridPane.setVgrow(chip2, Priority.ALWAYS);
         GridPane.setVgrow(chip3, Priority.ALWAYS);
         GridPane.setVgrow(chip4, Priority.ALWAYS);
-        
-        
+
         addRow(0, chip1, chip2);
         addRow(1, chip3, chip4);
-        
+
     }
-    
-    
+
+    public void refresh(SkillChipThing t) {
+        chip1.refresh();
+        chip2.refresh();
+        chip3.refresh();
+        chip4.refresh();
+    }
+
 }

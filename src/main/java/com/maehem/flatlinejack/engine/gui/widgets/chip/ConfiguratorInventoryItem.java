@@ -46,11 +46,25 @@ public class ConfiguratorInventoryItem extends HBox {
 
     private final double GLYPH_DIM = 40;
     
+    private final Border DARK_BORDER = new Border(new BorderStroke(
+            Color.BLACK,
+            BorderStrokeStyle.SOLID,
+            new CornerRadii(4),
+            new BorderWidths(2)
+    ));
+    private final Border SELECTED_BORDER = new Border(new BorderStroke(
+            Color.RED,
+            BorderStrokeStyle.SOLID,
+            new CornerRadii(4),
+            new BorderWidths(2)
+    ));
+
     public ConfiguratorInventoryItem(SkillChipThing t) {
         setBackground(new Background(new BackgroundFill(
                 Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY
         )));
         setSpacing(10);
+        setSelected(false);
         
         StackPane slotId = new StackPane();
         slotId.setPrefSize(GLYPH_DIM, GLYPH_DIM);
@@ -86,7 +100,7 @@ public class ConfiguratorInventoryItem extends HBox {
         itemIcon.setMinSize(GLYPH_DIM, GLYPH_DIM);
         itemIcon.setMaxSize(GLYPH_DIM, GLYPH_DIM);
         itemIcon.setBackground(new Background(new BackgroundFill(
-                Color.DARKOLIVEGREEN, 
+                t.getColor(), 
                 new CornerRadii(5), 
                 Insets.EMPTY)));        
         
@@ -94,6 +108,14 @@ public class ConfiguratorInventoryItem extends HBox {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         
         getChildren().addAll(slotId, titleFlow, spacer, itemIcon);
+    }
+    
+    public final void setSelected( boolean selected ) {
+        if (selected) {
+            setBorder(SELECTED_BORDER);
+        } else {
+            setBorder(DARK_BORDER);
+        }
     }
     
 }

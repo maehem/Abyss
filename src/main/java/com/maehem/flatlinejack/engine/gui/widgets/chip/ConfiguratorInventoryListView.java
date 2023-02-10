@@ -38,6 +38,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import com.maehem.flatlinejack.engine.gui.ChipsConfigurationListener;
 
 /**
  *
@@ -48,22 +49,25 @@ public class ConfiguratorInventoryListView extends VBox {
     private final Character character;
     private final VBox inventoryItems = new VBox();
 
-    private final Border DARK_BORDER = new Border(new BorderStroke(
-            Color.BLACK,
-            BorderStrokeStyle.SOLID,
-            new CornerRadii(4),
-            new BorderWidths(2)
-    ));
-    private final Border SELECTED_BORDER = new Border(new BorderStroke(
-            Color.RED,
-            BorderStrokeStyle.SOLID,
-            new CornerRadii(4),
-            new BorderWidths(2)
-    ));
+//    private final Border DARK_BORDER = new Border(new BorderStroke(
+//            Color.BLACK,
+//            BorderStrokeStyle.SOLID,
+//            new CornerRadii(4),
+//            new BorderWidths(2)
+//    ));
+//    private final Border SELECTED_BORDER = new Border(new BorderStroke(
+//            Color.RED,
+//            BorderStrokeStyle.SOLID,
+//            new CornerRadii(4),
+//            new BorderWidths(2)
+//    ));
 
-    public ConfiguratorInventoryListView(double w, Character c) {
+    private final ChipsConfigurationListener selectionListener;
+    
+    public ConfiguratorInventoryListView(double w, Character c, ChipsConfigurationListener listener) {
         setPrefSize(w, w * 0.42);
         this.character = c;
+        this.selectionListener = listener;
 
         setBackground(new Background(new BackgroundFill(
                 new Color(0.1, 0.1, 0.1, 1.0),
@@ -80,15 +84,15 @@ public class ConfiguratorInventoryListView extends VBox {
         textArea.setAlignment(Pos.CENTER);
         textArea.setPadding(new Insets(0, 0, 6, 0));
 
-        inventoryItems.setFillWidth(true);
+        //inventoryItems.setFillWidth(true);
         inventoryItems.setSpacing(4);
-        inventoryItems.setBackground(Background.EMPTY);
+        //inventoryItems.setBackground(Background.EMPTY);
         inventoryItems.setBackground(new Background(new BackgroundFill(
                 new Color(0.2, 0.2, 0.2, 1.0),
                 CornerRadii.EMPTY,
                 Insets.EMPTY
         )));
-        refresh();
+        refresh(null);
 
         ScrollPane sp = new ScrollPane(inventoryItems);
         sp.setFitToHeight(true);
@@ -116,22 +120,29 @@ public class ConfiguratorInventoryListView extends VBox {
         getChildren().addAll(textArea, sp);
     }
 
-    public final void refresh() {
+    public final void refresh( SkillChipThing selectedThing ) {
         inventoryItems.getChildren().clear();
         ArrayList<Thing> items = character.getAInventory();
 
         items.forEach((t) -> {
             if (t instanceof SkillChipThing) {
                 ConfiguratorInventoryItem item = new ConfiguratorInventoryItem((SkillChipThing) t);
-                item.setBorder(DARK_BORDER);
+                if ( selectedThing != null && selectedThing == t ) {
+                    item.setSelected(true);
+                }
+                //item.setBorder(DARK_BORDER);
                 inventoryItems.getChildren().addAll(item);
+                
+                // Change border when clicked
                 item.setOnMouseClicked((tt) -> {
+                    // Clear border highlights
                     inventoryItems.getChildren().forEach((ii) -> {
                         if (ii instanceof ConfiguratorInventoryItem) {
-                            ((ConfiguratorInventoryItem) ii).setBorder(DARK_BORDER);
+                            ((ConfiguratorInventoryItem) ii).setSelected(false);
                         }
                     });
-                    item.setBorder(SELECTED_BORDER);
+                    item.setSelected(true);
+                    selectionListener.thingSelected((SkillChipThing) t);
                 });
             }
         });
@@ -155,4 +166,5 @@ public class ConfiguratorInventoryListView extends VBox {
 //        inventoryItems.getChildren().addAll(i1, i2, i3, i4, i5, i6, i7, i8, i9);
         inventoryItems.requestLayout();
     }
+
 }

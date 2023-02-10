@@ -20,6 +20,7 @@ import static com.maehem.flatlinejack.Engine.LOGGER;
 
 import java.util.Properties;
 import java.util.logging.Level;
+import javafx.scene.paint.Color;
 
 /**
  * Thing  -- an inventory item or functional object used in the game.
@@ -35,6 +36,7 @@ public abstract class Thing {
     protected static final String PROPERTY_CONDITION = "condition";
     
     private String name;
+    private Color color = Color.DARKGREY;
     private int value;
     private int repairSkill;
     private int condition = CONDITION_DEFAULT;
@@ -60,6 +62,14 @@ public abstract class Thing {
         this.name = name;
     }
 
+    public Color getColor() {
+        return color;
+    }
+    
+    public void setColor(Color c) {
+        this.color = c;
+    }
+    
     public int getValue() {
         return value;
     }

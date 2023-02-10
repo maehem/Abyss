@@ -16,25 +16,58 @@
 */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.engine.gui.widgets.Gauge;
-import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import javafx.scene.paint.Color;
 
 /**
  *
  * @author mark
  */
 public abstract class SkillChipThing extends Thing {
+    public enum Buff {      // Value range 1-999  - represents 1-99.9 percent in most cases.
 
-    private static final String PROPERTY_CONDITION = "condition";
-    private static final int CONDITION_DEFAULT = 1000;
+        NEGOTIATE("NEGO", Color.ALICEBLUE),     // Get better price when purchasing
+        INTERROGATE("INTR", Color.SPRINGGREEN),  // Get better answers when asking NPCs
+        CRYPTO("CRYP", Color.BISQUE ),          // Terminal passwords are easier, partially shown
+        MUSIC("MUSI", Color.BLANCHEDALMOND),       // Music instruments will sound more melodic when you encounter them.
+        SOFTWARE("SOFT", Color.CHARTREUSE),    // Software description will fill in.
+        DEBUG("DEBG", Color.CHOCOLATE),       // Broken things may become repairable.
+        REPAIR("REPR", Color.FUCHSIA),      // Condition will increase faster with each attempt
+        HACKING("HACK", Color.GOLD),     // Matrix sites will have more crit attacks.
+        EVASION("EVAD", Color.KHAKI),     // Disengage from an AI easier.
+        RECOVERY("RECO", Color.ROSYBROWN);     // Recover health and constitution faster.
+        
+        private final String mnemonic;
+        private final Color color;
+        
+        Buff(String mnem, Color color) {
+            this.mnemonic = mnem;
+            this.color = color;
+        }
+        
+        public String mnemonic() {
+            return mnemonic;
+        }
+        
+        public Color color() {
+            return color;
+        }
+    }
+    
+    private EnumMap<Buff,Integer> buffs = new EnumMap<>(Buff.class);
 
-    private Integer condition = CONDITION_DEFAULT;
-    private final ArrayList<SoftwareThing> slots = new ArrayList<>();
-    private final Gauge conditionGauge = new Gauge(
-            "Condition:", 100, 20, 600, CONDITION_DEFAULT,
-            Gauge.ValueLabel.NONE
-    );
+
+    //private static final String PROPERTY_CONDITION = "condition";
+
+//    private Integer condition = CONDITION_DEFAULT;
+    //private final ArrayList<SoftwareThing> slots = new ArrayList<>();
+//    private final Gauge conditionGauge = new Gauge(
+//            "Condition:", 100, 20, 600, CONDITION_DEFAULT,
+//            Gauge.ValueLabel.NONE
+//    );
     //private FlowPane detailPane;
 
     // <protected>??? Used by settings loaders
@@ -44,39 +77,31 @@ public abstract class SkillChipThing extends Thing {
         super(name);
     }
     
+    public void addBuff( Buff b, Integer val ) {
+        buffs.put(b, val);
+    }
+    
+    public Set<Map.Entry<Buff, Integer>> getBuffs() {
+        return buffs.entrySet();
+    }
+    
     @Override
     public Properties saveProperties() {
         Properties p = new Properties();
-        p.setProperty(PROPERTY_CONDITION, condition.toString());
+        //p.setProperty(PROPERTY_CONDITION, condition.toString());
         
         return p;
     }
     
     @Override
     public void loadProperties(Properties p) {
-        setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
+        //setCondition(Integer.valueOf(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_MAX))));
     }
 
-//    @Override
-//    public Pane getDetailPane() {        
-//        if (detailPane == null ) {
-//            HBox gaugePane = new HBox(conditionGauge);
-//            detailPane = new FlowPane(gaugePane);
-//            detailPane.setAlignment(Pos.TOP_CENTER);
-//        }
-//        
-//        return detailPane;
-//    }
-    
-    public void setCondition(Integer condition) {
-        this.condition = condition;
-        conditionGauge.setValue(condition);
+    @Override
+    public int getMaxCondition() {
+        return 1000;
     }
-
-//    @Override
-//    public String getIconPath() {
-//        
-//    }
 
     @Override
     public String getPackage() {

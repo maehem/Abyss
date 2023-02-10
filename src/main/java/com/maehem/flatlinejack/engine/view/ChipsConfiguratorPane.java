@@ -18,6 +18,7 @@ package com.maehem.flatlinejack.engine.view;
 
 import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
+import com.maehem.flatlinejack.engine.SkillChipThing;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ChipDetailsPane;
 import com.maehem.flatlinejack.engine.gui.widgets.chip.ConfiguratorInventoryListView;
@@ -30,21 +31,22 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.VBox;
+import com.maehem.flatlinejack.engine.gui.ChipsConfigurationListener;
 
 /**
  *
  * @author mark
  */
-public class ChipsConfiguratorPane extends ViewPane implements GameStateListener {
+public class ChipsConfiguratorPane extends ViewPane implements GameStateListener, ChipsConfigurationListener {
     private static final GameState.Display display = GameState.Display.CHIPS;
     
     private static final double VIEW_W = 530;
-    private static final double VIEW_X = 670;
+    private static final double VIEW_X = 650;
     private static final String BG_IMAGE_FILE = "/ui/chips-configurator.png";
     
-    private final InstalledChipsGridPane installedChips = new InstalledChipsGridPane( VIEW_W, 2*VIEW_W/3);
+    private final InstalledChipsGridPane installedChips; // = new InstalledChipsGridPane( VIEW_W, 2*VIEW_W/3, this);
     // Chip detail
-    private final ChipDetailsPane details = new ChipDetailsPane(VIEW_W);
+    private final ChipDetailsPane details = new ChipDetailsPane(VIEW_W, this);
     // Chips inventory (scrollpane)
     private final ConfiguratorInventoryListView inventory; //= new ConfiguratorInventoryListView(VIEW_W);
     private final GameState gameState;
@@ -55,15 +57,20 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
         gameState.addListenter(this);
         
         this.setPrefSize(ViewPane.WIDTH, ViewPane.HEIGHT);
-        inventory = new ConfiguratorInventoryListView(VIEW_W, gs.getPlayer() );
-        
+        inventory = new ConfiguratorInventoryListView(VIEW_W, gs.getPlayer(), this );
+        installedChips = new InstalledChipsGridPane( VIEW_W, 2*VIEW_W/3, gs.getPlayer(), this);
+        //installedChips.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+        //details.setBorder(new Border(new BorderStroke(Color.GREEN, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
+
+
         VBox content = new VBox(installedChips, details, inventory );
+        //content.setSpacing(20);
         content.setLayoutX(VIEW_X);
         content.setLayoutY(70);
-        content.setSpacing(0);
+        //content.setSpacing(0);
         
-        VBox.setMargin(installedChips, new Insets(0,0,0,20));
-        VBox.setMargin(inventory, new Insets(0,0,0,20));
+        VBox.setMargin(installedChips, new Insets(0,20,10,20));
+        VBox.setMargin(inventory, new Insets(10,20,0,20));
                 
         // Image for neck.
         Image bgImage = new Image( getClass().getResourceAsStream(BG_IMAGE_FILE));
@@ -74,7 +81,7 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
                         BackgroundPosition.CENTER, 
                         BackgroundSize.DEFAULT
                 )));
-        
+        //content.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(3))));
 
         getChildren().add(content);
         
@@ -95,7 +102,7 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
         setVisible(d == display);
         if ( d == display ) {
             //updateItemGrid();
-            inventory.refresh();
+            inventory.refresh(null);
         }
     }
 
@@ -104,5 +111,18 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
 
     @Override
     public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
+
+    @Override
+    public void thingSelected(SkillChipThing t) {
+        details.updateChipDetails((SkillChipThing) t, gameState.getPlayer());
+    }
+
+    @Override
+    public void chipMoved(SkillChipThing t) {
+        // Refresh and reselect
+        inventory.refresh(t);
+        
+        installedChips.refresh(t);
+    }
     
 }

@@ -17,6 +17,7 @@
 package com.maehem.flatlinejack.content.things.skillchip;
 
 import com.maehem.flatlinejack.engine.SkillChipThing;
+import javafx.scene.paint.Color;
 
 /**
  * Improves the ability to ask questions and get better answers sooner.
@@ -24,11 +25,18 @@ import com.maehem.flatlinejack.engine.SkillChipThing;
  * @author mark
  */
 public class InterogationSkillChip extends SkillChipThing {
-    public static final String NAME = "Interogation";
+    public static final String NAME = "Interrogation";
+    public static final Color  COLOR = Color.CHARTREUSE;
     public static final String ICON_PATH = "/content/things/deck1-thing.png";
+    public static final String DESCRIPTION = 
+            "Get to the best answers when asking questions much faster " +
+            "than the old way.  Your new charm will have them confessing " +
+            "to things they never did.";
 
     public InterogationSkillChip() {
         super(NAME);
+        setColor(COLOR);
+        addBuff( Buff.INTERROGATE, 200 );
     }
 
     @Override
@@ -38,8 +46,7 @@ public class InterogationSkillChip extends SkillChipThing {
 
     @Override
     public String getDescription() {
-        return "Get to the best answers when asking questions much faster " +
-                "than the old way.  Your new charm will have them confessing.";
+        return DESCRIPTION;
     }
     
 }

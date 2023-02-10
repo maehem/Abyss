@@ -55,6 +55,7 @@ public class Player extends Character implements GameStateListener {
     private int constitution = PLAYER_CONSTITUTION_MAX;
     
     private DeckThing currentDeck = null;
+    private SkillChipThing chipSlots[] = new SkillChipThing[4]; // Player can install four chips.
     
     private final GameState gameState;
 
@@ -208,6 +209,48 @@ public class Player extends Character implements GameStateListener {
             // TODO Unregister current deck.
         }
         this.currentDeck = d;
+    }
+    
+    public SkillChipThing[] getChipSlots() {
+        return chipSlots;
+    }
+    
+    /**
+     * Install chip from inventory into player head.
+     * 
+     * @param t
+     * @return 
+     */
+    public int installChip( SkillChipThing t ) {
+        if ( getAInventory().contains(t) && chipSlotAvailable() ) {
+            for ( int i=0; i< chipSlots.length; i++ ) {
+                if ( chipSlots[i] == null ) {
+                    chipSlots[i] = t;
+                    getAInventory().remove(t);
+                    LOGGER.log(Level.FINER, "player chip install success: t: " + t.getName() + " s: " + i);
+                    return i;
+                }
+            }
+        }
+        LOGGER.log(Level.WARNING, "Player chip was not installed!");
+        return -1;
+    }
+    
+    public boolean removeChip( int slotNum ) {
+        if ( chipSlots[slotNum ] != null ) {
+            chipSlots[slotNum] = null;
+            return true;
+        }
+        return false; // Nothing was removed.
+    }
+    
+    public boolean chipSlotAvailable() {
+        for (SkillChipThing chipSlot : chipSlots) {
+            if (chipSlot == null) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
