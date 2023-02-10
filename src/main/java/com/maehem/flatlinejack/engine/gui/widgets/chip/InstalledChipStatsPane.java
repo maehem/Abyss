@@ -22,7 +22,6 @@ import com.maehem.flatlinejack.engine.SkillChipThing.Buff;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -84,12 +83,6 @@ public class InstalledChipStatsPane extends HBox {
 
         setBorder(DEFAULT_BORDER);
         
-//        setBorder(new Border(new BorderStroke(
-//                Color.LIGHTCYAN, 
-//                BorderStrokeStyle.SOLID, 
-//                new CornerRadii(10),
-//                new BorderWidths(2))));
-        //setPadding(new Insets(2));
         setFillHeight(true);
 
         SkillChipThing chip = p.getChipSlots()[slot];
@@ -99,47 +92,16 @@ public class InstalledChipStatsPane extends HBox {
         title.setFill(Color.SPRINGGREEN);
         TextFlow textFlow = new TextFlow(title);
         textFlow.setPadding(new Insets(0, 0, 0, 8));
-        //getChildren().add(title);
 
-//        Pane separator = new Pane();
-//        separator.setPrefSize(10, 10);
-//        HBox.setHgrow(separator, Priority.ALWAYS);
         iconPane.setPrefSize(ICON_D, ICON_D);
         iconPane.setMaxSize(ICON_D, ICON_D);
-        //HBox topArea = new HBox( title, separator, iconPane);
-        //setTop(topArea);
 
-        // Long Desc.
-//        Text desc = new Text(
-//            "Skill Chip description. This is a long description of what "
-//                + "the skill chip does."
-//        );
-//        desc.setWrappingWidth(TEXT_W);
-//        desc.setTextAlignment(TextAlignment.JUSTIFY);
-//        
-//        desc.setFill(Color.BISQUE);
-//        // Buffs (1-4)
-//        HBox buffBar = new HBox(
-//                makeBuffPane("XYZC", "123", 81),
-//                makeBuffPane("TRSD", "88", 61),
-//                makeBuffPane("JIBN", "634", 41),
-//                makeBuffPane("LEJC", "23", 11)
-//        );
-//        buffBar.setSpacing(3);
-//        buffBar.setPadding(new Insets(8,0,0,0));
-//        //setCenter(desc);
-//        //setRight(iconPane);
-//        setBottom(buffBar);
         buffPane.setHgap(2);
         buffPane.setVgap(2);
         buffPane.setPadding(new Insets(0, 2, 2, 8));
-        //buffPane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        //GridPane.setHgrow(buffPane, Priority.ALWAYS);
-        //GridPane.setVgrow(buffPane, Priority.ALWAYS);
 
         VBox leftArea = new VBox(textFlow, buffPane);
 
-        //HBox.setHgrow(buffPane, Priority.ALWAYS);
         HBox.setHgrow(leftArea, Priority.ALWAYS);
         getChildren().addAll(leftArea, iconPane);
 
@@ -168,18 +130,6 @@ public class InstalledChipStatsPane extends HBox {
         if ( t != null ) {
             List<Entry<Buff, Integer>> entries = t.getBuffs().stream().map(Map.Entry::copyOf).toList();
         
-        
-//        new E
-//        Entry<Buff, Integer>[] buffs.toArray() = buffs.toArray(new Entry<Buff, Integer>[0]);
-//        for ( i=0; i<buffs.size(); i++ ) {
-//            buffs.
-//            Node bPane = makeBuffPane(
-//                    buff.getKey().mnemonic(), 
-//                    String.valueOf(buff.getValue()), 
-//                    buff.getKey().color()
-//            );
-//            buffPane.add(this, i/2, i%2);
-//        };
             for ( ; i<entries.size(); i++ ) {
                 Entry<Buff, Integer> buff = entries.get(i);
                 Node bPane = makeBuffPane(
@@ -189,20 +139,10 @@ public class InstalledChipStatsPane extends HBox {
                 );
                 buffPane.add(bPane, i/2, i%2);
             }
-
-//        buffPane.addRow(0,
-//                makeBuffPane("XYZC", "123", Color.ALICEBLUE),
-//                makeBuffPane("TRSD", "88", Color.AQUAMARINE)
-//        );
-//        buffPane.addRow(1,
-//                makeBuffPane("HJJK", "275", Color.DARKORANGE),
-//                makeBuffPane("MUBN", "63", Color.INDIGO)
-//        );
         }
         
         // Fill in remaining buffs with blanks.
         for ( ; i<4; i++ ) {
-            //Entry<Buff, Integer> buff = entries.get(i);
             Node bPane = makeBuffPane( "----", "---", UNSELECTED_COLOR_1 );
             buffPane.add(bPane, i/2, i%2);
         }
@@ -214,22 +154,7 @@ public class InstalledChipStatsPane extends HBox {
         buff.setPrefSize(80, 60);
 
         buff.setFillHeight(true);
-        //GridPane.setHgrow(buff, Priority.ALWAYS);
-        //buff.setPrefSize(TEXT_W/4, 16);
         buff.setAlignment(Pos.CENTER);
-//        Color condColor;
-//        if ( condition > 80 ) {
-//            condColor = Color.LIGHTGREEN;
-//        } else if ( condition > 60 ) {
-//            condColor = Color.LIGHTYELLOW;
-//        } else if ( condition > 40 ) {
-//            condColor = Color.LIGHTSALMON;
-//        } else if ( condition > 10 ) {
-//            condColor = Color.LIGHTCORAL;
-//        } else {
-//            condColor = Color.DARKGREY.darker();
-//        }
-
         buff.setBackground(new Background(new BackgroundFill(
                 c,
                 new CornerRadii(3),
