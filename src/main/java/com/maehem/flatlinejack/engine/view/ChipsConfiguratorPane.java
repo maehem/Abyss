@@ -118,7 +118,7 @@ public class ChipsConfiguratorPane extends ViewPane implements GameStateListener
     public void chipMoved(SkillChipThing t) {
         // Refresh and reselect
         inventory.refresh(t);
-        
+        details.updateChipDetails(t, gameState.getPlayer());
         installedChips.refresh(t);
     }
     

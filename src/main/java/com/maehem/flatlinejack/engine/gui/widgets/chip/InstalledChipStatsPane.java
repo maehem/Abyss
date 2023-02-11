@@ -81,11 +81,11 @@ public class InstalledChipStatsPane extends HBox {
         this.player = p;
         this.slot = slot;
 
-        setBorder(DEFAULT_BORDER);
+        setSelected(false);
         
         setFillHeight(true);
 
-        SkillChipThing chip = p.getChipSlots()[slot];
+        //SkillChipThing chip = p.getChipSlots()[slot];
 
         // Title, Short Desc.  Image
         title.setFont(new Font(18));
@@ -169,6 +169,18 @@ public class InstalledChipStatsPane extends HBox {
         buff.getChildren().addAll(nameLbl, valLbl);
 
         return buff;
+    }
+    
+    public void setSelected( boolean selected ) {
+        setBorder(selected?SELECTED_BORDER:DEFAULT_BORDER);
+    }
+    
+    public boolean isSelected() {
+        return getBorder() == SELECTED_BORDER;
+    }
+
+    public SkillChipThing getChip() {
+        return player.getChipSlots()[slot];
     }
 
 }

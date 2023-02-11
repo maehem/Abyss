@@ -33,12 +33,12 @@ import javafx.scene.paint.Color;
  */
 public class InstalledChipsGridPane extends GridPane {
 
-    ChipsConfigurationListener configListener;
-    Player player;
-    InstalledChipStatsPane chip1;
-    InstalledChipStatsPane chip2;
-    InstalledChipStatsPane chip3;
-    InstalledChipStatsPane chip4;
+    private final ChipsConfigurationListener configListener;
+    private final Player player;
+    private final InstalledChipStatsPane chip1;
+    private final InstalledChipStatsPane chip2;
+    private final InstalledChipStatsPane chip3;
+    private final InstalledChipStatsPane chip4;
 
     public InstalledChipsGridPane(double w, double h, Player p, ChipsConfigurationListener listener) {
         this.configListener = listener;
@@ -72,6 +72,18 @@ public class InstalledChipsGridPane extends GridPane {
         addRow(0, chip1, chip2);
         addRow(1, chip3, chip4);
 
+        chip1.setOnMouseClicked((t) -> {
+            clearSelected(chip1);
+        });
+        chip2.setOnMouseClicked((t) -> {
+            clearSelected(chip2);
+        });
+        chip3.setOnMouseClicked((t) -> {
+            clearSelected(chip3);
+        });
+        chip4.setOnMouseClicked((t) -> {
+            clearSelected(chip4);
+        });
     }
 
     public void refresh(SkillChipThing t) {
@@ -81,4 +93,15 @@ public class InstalledChipsGridPane extends GridPane {
         chip4.refresh();
     }
 
+    private void clearSelected(InstalledChipStatsPane sel) {
+        chip1.setSelected(false);
+        chip2.setSelected(false);
+        chip3.setSelected(false);
+        chip4.setSelected(false);
+        
+        if ( sel != null ) {
+            sel.setSelected(true);
+            configListener.thingSelected(sel.getChip());
+        }
+    }
 }

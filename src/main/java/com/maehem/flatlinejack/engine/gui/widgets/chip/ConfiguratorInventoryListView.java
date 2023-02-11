@@ -27,10 +27,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -84,8 +80,11 @@ public class ConfiguratorInventoryListView extends VBox {
         textArea.setAlignment(Pos.CENTER);
         textArea.setPadding(new Insets(0, 0, 6, 0));
 
+        VBox.getVgrow(inventoryItems);
         //inventoryItems.setFillWidth(true);
         inventoryItems.setSpacing(4);
+        //inventoryItems.setAlignment(Pos.TOP_CENTER);
+        //inventoryItems.setMinHeight(300);
         //inventoryItems.setBackground(Background.EMPTY);
         inventoryItems.setBackground(new Background(new BackgroundFill(
                 new Color(0.2, 0.2, 0.2, 1.0),

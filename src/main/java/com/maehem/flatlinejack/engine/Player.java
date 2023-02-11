@@ -242,6 +242,7 @@ public class Player extends Character implements GameStateListener {
 
     public boolean removeChip(int slotNum) {
         if (chipSlots[slotNum] != null) {
+            getAInventory().add(chipSlots[slotNum]);
             chipSlots[slotNum] = null;
             return true;
         }
@@ -255,6 +256,14 @@ public class Player extends Character implements GameStateListener {
             }
         }
         return false;
+    }
+    
+    public int getSlotFor(SkillChipThing t) {
+        for ( int i=0; i<chipSlots.length; i++  ) {
+            if ( chipSlots[i] == t ) return i;
+        }
+        
+        return -1;
     }
 
     /**
@@ -391,5 +400,6 @@ public class Player extends Character implements GameStateListener {
     @Override
     public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {
     }
+
 
 }

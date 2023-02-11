@@ -67,16 +67,19 @@ public class ChipDetailsPane extends HBox {
     Pane itemIconPane = new StackPane();
     private final ImageView installButton = new ImageView();
     private final ImageView removeButton = new ImageView();
-    
-     private final HBox buffBar = new HBox();
-     private final ChipsConfigurationListener chipsListener;
+    private final Image bgImage = new Image(getClass().getResourceAsStream(BG_IMAGE_FILE));
+    private final ImageView bgView = new ImageView(bgImage);
+    private final BorderPane thePane = new BorderPane();
+
+    private final HBox buffBar = new HBox();
+    private final ChipsConfigurationListener chipsListener;
 
     public ChipDetailsPane(double w, ChipsConfigurationListener listener) {
         this.width = w;
         this.chipsListener = listener;
-        
+
         Image installImg = new Image(getClass().getResourceAsStream("/ui/install-button.png"));
-        Image removeImg = new Image(getClass().getResourceAsStream("/ui/install-button.png"));
+        Image removeImg = new Image(getClass().getResourceAsStream("/ui/remove-button.png"));
         installButton.setImage(installImg);
         installButton.setOpacity(0.5);
         installButton.setVisible(false);
@@ -86,53 +89,78 @@ public class ChipDetailsPane extends HBox {
         setSpacing(8);
         Pane installRemoveButton = new Pane(installButton, removeButton);
         installRemoveButton.setBackground(new Background(new BackgroundFill(
-                Color.DARKGREY, 
-                new CornerRadii(0,10,10,0, false),
+                Color.DARKGREY,
+                new CornerRadii(0, 10, 10, 0, false),
                 Insets.EMPTY
         )));
         installRemoveButton.setPrefSize(60, 100);
-        installRemoveButton.setEffect(new InnerShadow(20, -8, 4, new Color(0.0,0.0,0.0,0.4)));
+        installRemoveButton.setEffect(new InnerShadow(20, -8, 4, new Color(0.0, 0.0, 0.0, 0.4)));
         HBox.setMargin(installRemoveButton, new Insets(20, 0, 20, 0));
         Pane chipDetails = chipDetails();
-        getChildren().addAll(installRemoveButton,chipDetails);//, spacer);
+        getChildren().addAll(installRemoveButton, chipDetails);//, spacer);
     }
 
     public void updateChipDetails(SkillChipThing t, Player p) {
-        titleText.setText(t.getName());
-        descText.setText(t.getDescription());
-        itemIconPane.setBackground(new Background(new BackgroundFill(
-                t.getColor(),
-                new CornerRadii(12),
-                Insets.EMPTY)));
-        updateBuffBar(t);
-        Image icon = new Image(getClass().getResourceAsStream(t.getIconPath()));
-        ImageView itemIconView = new ImageView(icon);
-        itemIconView.setFitWidth(ICON_SIZE*0.9);
-        itemIconView.setPreserveRatio(true);
-        itemIconPane.getChildren().clear();
-        itemIconPane.getChildren().add(itemIconView);
-        boolean chipIsInventory = p.getAInventory().contains(t);
-        installButton.setVisible(chipIsInventory);
-        installButton.setOnMouseClicked((tt) -> {
-            int chipNum = p.installChip(t);
-            if ( chipNum >= 0 ) {
-                LOGGER.log(Level.INFO, "Installed chip " + t.getName() + " in slot " + chipNum );
-            }
-            chipsListener.chipMoved(t);
-        });
-        removeButton.setVisible(!chipIsInventory);
+        if (t != null) {
+            bgView.setOpacity(1.0);
+            thePane.setOpacity(1.0);
+            titleText.setText(t.getName());
+            descText.setText(t.getDescription());
+            itemIconPane.setBackground(new Background(new BackgroundFill(
+                    t.getColor(),
+                    new CornerRadii(12),
+                    Insets.EMPTY)));
+            updateBuffBar(t);
+            Image icon = new Image(getClass().getResourceAsStream(t.getIconPath()));
+            ImageView itemIconView = new ImageView(icon);
+            itemIconView.setFitWidth(ICON_SIZE * 0.9);
+            itemIconView.setPreserveRatio(true);
+            itemIconPane.getChildren().clear();
+            itemIconPane.getChildren().add(itemIconView);
+            boolean chipIsInventory = p.getAInventory().contains(t);
+            installButton.setVisible(chipIsInventory);
+            installButton.setOnMouseClicked((tt) -> {
+                int chipNum = p.installChip(t);
+                if (chipNum >= 0) {
+                    LOGGER.log(Level.INFO, "Installed chip " + t.getName() + " in slot " + chipNum);
+                }
+                chipsListener.chipMoved(t);
+            });
+            removeButton.setVisible(!chipIsInventory);
+            removeButton.setOnMouseClicked((tt) -> {
+                int slotNum = p.getSlotFor(t);
+                if ( slotNum > 0 ) {
+                    p.removeChip(slotNum);
+                    if (slotNum >= 0) {
+                        LOGGER.log(Level.INFO, "Removed chip " + t.getName() + " in slot " + slotNum);
+                    }
+                    chipsListener.chipMoved(t);
+                }
+            });
+        } else {
+            // Clear the details.
+            bgView.setOpacity(0.5);
+            thePane.setOpacity(0.5);
+            titleText.setText("");
+            descText.setText("");
+            itemIconPane.getChildren().clear();
+            itemIconPane.setBackground(new Background(new BackgroundFill(
+                    new Color(0.1,0.1,0.1,0.5),
+                    new CornerRadii(12),
+                    Insets.EMPTY)));
+            installButton.setVisible(false);
+            removeButton.setVisible(false);
+            updateBuffBar(null);
+        }
     }
 
     private Pane chipDetails() {
-        Image bgImage = new Image(getClass().getResourceAsStream(BG_IMAGE_FILE));
-        ImageView bgView = new ImageView(bgImage);
         bgView.setFitWidth(width);
         bgView.setPreserveRatio(true);
-        bgView.setEffect(new DropShadow(20, 10, 10, new Color(0.0,0.0,0.0,0.4)));
+        bgView.setEffect(new DropShadow(20, 10, 10, new Color(0.0, 0.0, 0.0, 0.4)));
 
-        BorderPane thePane = new BorderPane();
-        thePane.setMaxWidth(width-80);
-        thePane.setMaxHeight(bgView.getFitHeight()-44);
+        thePane.setMaxWidth(width - 80);
+        thePane.setMaxHeight(bgView.getFitHeight() - 44);
         thePane.setLayoutX(20);
         thePane.setLayoutY(20);
         thePane.setBackground(new Background(new BackgroundFill(
@@ -185,10 +213,6 @@ public class ChipDetailsPane extends HBox {
         itemIconPane.setPrefSize(ICON_SIZE, ICON_SIZE);
         itemIconPane.setMinSize(ICON_SIZE, ICON_SIZE);
         itemIconPane.setMaxSize(ICON_SIZE, ICON_SIZE);
-        itemIconPane.setBackground(new Background(new BackgroundFill(
-                Color.DARKOLIVEGREEN,
-                new CornerRadii(9),
-                Insets.EMPTY)));
         itemIconPane.setBorder(new Border(new BorderStroke(
                 Color.DARKGREY.darker(),
                 BorderStrokeStyle.SOLID,
@@ -211,7 +235,7 @@ public class ChipDetailsPane extends HBox {
         thePane.setRight(itemIconPane);
         thePane.setBottom(buffBar);
 
-        return new Pane(bgView ,thePane);
+        return new Pane(bgView, thePane);
     }
 
     private void updateBuffBar(SkillChipThing t) {
