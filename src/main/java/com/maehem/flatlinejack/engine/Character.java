@@ -448,6 +448,16 @@ public class Character extends Group {
         inventory.set(index, thing);
     }
     
+    public boolean isInventoryFull() {
+        // Fill the inventory with EmptyThing placeholders.
+        for ( int i=0; i < inventory.size(); i++ ) {
+            if ( inventory.get(i) instanceof EmptyThing ) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     /**
      * Transfer an item from one character/player to another.
      * 

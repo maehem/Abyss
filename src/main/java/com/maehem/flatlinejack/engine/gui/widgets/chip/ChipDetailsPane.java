@@ -97,10 +97,11 @@ public class ChipDetailsPane extends HBox {
         installRemoveButton.setEffect(new InnerShadow(20, -8, 4, new Color(0.0, 0.0, 0.0, 0.4)));
         HBox.setMargin(installRemoveButton, new Insets(20, 0, 20, 0));
         Pane chipDetails = chipDetails();
+        updateChipDetails(null, null);
         getChildren().addAll(installRemoveButton, chipDetails);//, spacer);
     }
 
-    public void updateChipDetails(SkillChipThing t, Player p) {
+    public final void updateChipDetails(SkillChipThing t, Player p) {
         if (t != null) {
             bgView.setOpacity(1.0);
             thePane.setOpacity(1.0);
@@ -119,24 +120,38 @@ public class ChipDetailsPane extends HBox {
             itemIconPane.getChildren().add(itemIconView);
             boolean chipIsInventory = p.getAInventory().contains(t);
             installButton.setVisible(chipIsInventory);
-            installButton.setOnMouseClicked((tt) -> {
-                int chipNum = p.installChip(t);
-                if (chipNum >= 0) {
-                    LOGGER.log(Level.INFO, "Installed chip " + t.getName() + " in slot " + chipNum);
-                }
-                chipsListener.chipMoved(t);
-            });
-            removeButton.setVisible(!chipIsInventory);
-            removeButton.setOnMouseClicked((tt) -> {
-                int slotNum = p.getSlotFor(t);
-                if ( slotNum > 0 ) {
-                    p.removeChip(slotNum);
-                    if (slotNum >= 0) {
-                        LOGGER.log(Level.INFO, "Removed chip " + t.getName() + " in slot " + slotNum);
+            if (p.chipSlotAvailable()) {
+                installButton.setOnMouseClicked((tt) -> {
+                    int chipNum = p.installChip(t);
+                    if (chipNum >= 0) {
+                        LOGGER.log(Level.INFO,
+                                "Installed chip {0} in slot {1}",
+                                new Object[]{t.getName(), chipNum});
                     }
                     chipsListener.chipMoved(t);
-                }
-            });
+                });
+            } else {
+                installButton.setVisible(false);
+                // TODO: "Full" image.
+            }
+            if (!p.isInventoryFull()) {
+                removeButton.setVisible(!chipIsInventory);
+                removeButton.setOnMouseClicked((tt) -> {
+                    LOGGER.log(Level.INFO, "User clicked remove chip.");
+                    int slotNum = p.getSlotFor(t);
+                    if (slotNum >= 0) {
+                        if (p.removeChip(slotNum)) {
+                            LOGGER.log(Level.INFO,
+                                    "Removed chip {0} in slot {1}",
+                                    new Object[]{t.getName(), slotNum});
+                            chipsListener.chipMoved(t);
+                        }
+                    }
+                });
+            } else {
+                removeButton.setVisible(false);
+                // TODO: Display a "forbidden" "inventory full" image.
+            }
         } else {
             // Clear the details.
             bgView.setOpacity(0.5);
@@ -145,7 +160,7 @@ public class ChipDetailsPane extends HBox {
             descText.setText("");
             itemIconPane.getChildren().clear();
             itemIconPane.setBackground(new Background(new BackgroundFill(
-                    new Color(0.1,0.1,0.1,0.5),
+                    new Color(0.1, 0.1, 0.1, 0.5),
                     new CornerRadii(12),
                     Insets.EMPTY)));
             installButton.setVisible(false);
@@ -157,7 +172,8 @@ public class ChipDetailsPane extends HBox {
     private Pane chipDetails() {
         bgView.setFitWidth(width);
         bgView.setPreserveRatio(true);
-        bgView.setEffect(new DropShadow(20, 10, 10, new Color(0.0, 0.0, 0.0, 0.4)));
+        bgView.setEffect(new DropShadow(20, 10, 10,
+                new Color(0.0, 0.0, 0.0, 0.4)));
 
         thePane.setMaxWidth(width - 80);
         thePane.setMaxHeight(bgView.getFitHeight() - 44);
