@@ -18,11 +18,7 @@ package com.maehem.flatlinejack.engine;
 
 import static com.maehem.flatlinejack.Engine.LOGGER;
 
-import com.maehem.flatlinejack.Engine;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -58,7 +54,7 @@ public class Player extends Character implements GameStateListener {
     private int constitution = PLAYER_CONSTITUTION_MAX;
 
     private DeckThing currentDeck = null;
-    private SkillChipThing chipSlots[] = new SkillChipThing[4]; // Player can install four chips.
+    private final SkillChipThing chipSlots[] = new SkillChipThing[4]; // Player can install four chips.
 
     private final GameState gameState;
 
@@ -66,7 +62,6 @@ public class Player extends Character implements GameStateListener {
         super(PLAYER_NAME_DEFAULT);
         this.gameState = gs;
         gs.addListenter(this);
-        //setName(PLAYER_NAME_DEFAULT);
     }
 
     /**
@@ -192,7 +187,7 @@ public class Player extends Character implements GameStateListener {
      * @param money the money player has in bank
      */
     public void setBankMoney(int money) {
-        this.bankMoney = bankMoney;
+        this.bankMoney = money;
         gameState.notifyPlayerStateChanged(BANK_MONEY_KEY);
     }
 
@@ -234,7 +229,9 @@ public class Player extends Character implements GameStateListener {
                 if (chipSlots[i] == null) {
                     chipSlots[i] = t;
                     getAInventory().remove(t);
-                    LOGGER.log(Level.FINER, "player chip install success: t: " + t.getName() + " s: " + i);
+                    LOGGER.log(Level.FINER, 
+                            "player chip install success: t: {0} s: {1}", 
+                            new Object[]{t.getName(), i});
                     return i;
                 }
             }
@@ -269,9 +266,7 @@ public class Player extends Character implements GameStateListener {
     public int getSkill(SkillChipThing.Buff skill) {
         int total = 0;
         for ( SkillChipThing t: getChipSlots() ) {
-            Iterator<Map.Entry<SkillChipThing.Buff, Integer>> iterator = t.getBuffs().iterator();
-            while ( iterator.hasNext() ) {
-                Map.Entry<SkillChipThing.Buff, Integer> next = iterator.next();
+            for (Map.Entry<SkillChipThing.Buff, Integer> next : t.getBuffs()) {
                 if ( next.getKey() == skill ) {
                     total += next.getValue();
                 }
@@ -337,7 +332,7 @@ public class Player extends Character implements GameStateListener {
         LOGGER.log(Level.INFO, "Load Inventory Items");
         for (int i = 0; i < getAInventory().size(); i++) {
             String key = INVENTORY_KEY + "." + i;
-            LOGGER.log(Level.FINE, "    Player Inventory Item: " + key);
+            LOGGER.log(Level.FINE, "    Player Inventory Item: {0}", key);
             
             String itemClass = p.getProperty(key + ".class");
             if (itemClass != null) {
@@ -349,7 +344,7 @@ public class Player extends Character implements GameStateListener {
         LOGGER.log(Level.INFO, "Load Instelled Skill Chips");
         for (int i = 0; i < chipSlots.length; i++) {
             String key = CHIP_SLOTS_KEY + "." + i;
-            LOGGER.log(Level.INFO, "    Player Skill Chip: " + key);
+            LOGGER.log(Level.INFO, "    Player Skill Chip: {0}", key);
             
             String itemClass = p.getProperty(key + ".class");
             if (itemClass != null) {
