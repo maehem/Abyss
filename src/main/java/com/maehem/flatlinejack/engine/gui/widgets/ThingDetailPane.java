@@ -23,8 +23,11 @@ import com.maehem.flatlinejack.engine.view.ViewPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
@@ -36,6 +39,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -81,9 +87,9 @@ public class ThingDetailPane extends VBox {
         detailImageView.setPreserveRatio(true);
         
 
-        name.setFont(new Font(ViewPane.HEIGHT*0.04));
+        name.setFont(new Font(ViewPane.HEIGHT*0.06));
         name.setTextAlignment(TextAlignment.CENTER);
-        name.setFill(new Color(0, 0, 0, 0.5));
+        name.setFill(new Color(0, 0, 0, 0.7));
 
         useButton = createButton("Use");
         giveButton = createButton("Give");
@@ -97,6 +103,9 @@ public class ThingDetailPane extends VBox {
         VBox.setVgrow(spacer, Priority.ALWAYS);
         this.getChildren().addAll(detailImageView, name, spacer, buttonPane);
 
+        Stop[] stops = new Stop[] { new Stop(0, Color.BLACK), new Stop(1, Color.DARKGREY)};
+        LinearGradient lg1 = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+        setBackground(new Background(new BackgroundFill(lg1, CornerRadii.EMPTY, Insets.EMPTY)));
         clearThing();
     }
 
@@ -113,8 +122,10 @@ public class ThingDetailPane extends VBox {
             detailImageView.setImage(
                     new Image(getClass().getResourceAsStream(iconPath))
             );
+            detailImageView.setEffect(new DropShadow(50, t.getColor()));
         } else {
             detailImageView.setImage(null);
+            detailImageView.setEffect(null);
         }
         name.setText(t.getName());
 
