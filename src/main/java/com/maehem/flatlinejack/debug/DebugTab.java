@@ -45,10 +45,8 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -63,17 +61,17 @@ import javafx.util.StringConverter;
  */
 public class DebugTab extends Group implements LogListener {
 
-    private static final Logger LOGGER = Logger.getLogger(DebugTab.class.getName());
+    private final static double SIZE = 10;
+    private final Font FONT = Font.loadFont(
+            getClass().getResourceAsStream("/fonts/OxygenMono-Regular.ttf"), SIZE);
 
     public static final double CORNER_ARC = 10;
     public static final double HEIGHT = 700;
     public static final double WIDTH = 100;
 
-    final static String FAMILY = "Helvetica";
-    final static double SIZE = 12;
-    final Font REGULAR = Font.font(FAMILY, SIZE);
-    final Font ITALIC = Font.font(FAMILY, FontPosture.ITALIC, SIZE);
-    final Font BOLD = Font.font(FAMILY, FontWeight.BOLD, SIZE);
+    final Font REGULAR = FONT;
+    final Font ITALIC = Font.font(FONT.getFamily(), FontPosture.ITALIC, SIZE);
+    final Font BOLD = Font.font(FONT.getFamily(), FontWeight.BOLD, SIZE);
     TextFlow tf = new TextFlow();
 
     private Formatter formatter = null;
@@ -315,11 +313,17 @@ public class DebugTab extends Group implements LogListener {
             messageText.setFill(Color.ORANGE);
             messageText.setFont(BOLD);
         } else if (record.getLevel() == Level.INFO) {
-            messageText.setFill(Color.LIGHTGREEN);
+            messageText.setFill(Color.SPRINGGREEN);
         } else if (record.getLevel() == Level.CONFIG) {
-            messageText.setFill(Color.SLATEGRAY.brighter());
+            messageText.setFill(Color.LIGHTGREEN);
+        } else if (record.getLevel() == Level.FINE) {
+            messageText.setFill(Color.LIGHTGRAY);
+            messageText.setFont(ITALIC);
+        } else if (record.getLevel() == Level.FINER) {
+            messageText.setFill(Color.DARKGREY);
+            messageText.setFont(ITALIC);
         } else {
-            messageText.setFill(Color.GRAY);
+            messageText.setFill(Color.DARKGREY.darker());
             messageText.setFont(ITALIC);
         }
 

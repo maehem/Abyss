@@ -28,7 +28,6 @@ import com.maehem.flatlinejack.engine.view.ViewPane;
 import com.maehem.flatlinejack.engine.VignetteTrigger;
 import com.maehem.flatlinejack.engine.view.ChipsConfiguratorPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
-import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
 import com.maehem.flatlinejack.engine.gui.NarrationPane;
 import com.maehem.flatlinejack.engine.gui.RomConstructPane;
@@ -71,6 +70,8 @@ import javafx.stage.Stage;
 public class Engine extends Application implements GameStateListener {
 
     public static final Logger LOGGER = Logger.getLogger("com.maehem.flatlinejack");
+    public static final String VERSION = "0.0.0";
+    
     //private double SCALE = 0.75;
     private static final double SCALE = 0.66;
     
@@ -117,7 +118,7 @@ public class Engine extends Application implements GameStateListener {
         configureLogging();
         
         // TRUE for debug.
-        LOGGER.setUseParentHandlers(true);  // Prevent INFO and HIGHER from going to stderr.
+        LOGGER.setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
 
         this.gameState = new GameState();
 
@@ -131,10 +132,15 @@ public class Engine extends Application implements GameStateListener {
 
         getGameState().addListenter(this);
         
-        LOGGER.info("Flatline Engine version:  0.0.0");
+        LOGGER.info("Flatline Engine version:  " + VERSION);
         LOGGER.log(Level.INFO, "JavaFX Version: {0}", 
                 System.getProperties().get("javafx.runtime.version")
         );
+        
+        LOGGER.fine("Fine log message.");
+        LOGGER.finer("Finer log message.");
+        LOGGER.finest("Finest log message.");
+        
         
         gameState.init();
 
@@ -149,12 +155,12 @@ public class Engine extends Application implements GameStateListener {
         });
         
         gameControls = new GameControlsPane(getGameState(), ViewPane.WIDTH/2);
-        //narrationPane = new CrtTextPane(getGameState(), ViewPane.WIDTH/2);     
+
+        // Narration - Shares space with ROM, but only one is visible at a time.
         narrationPane = new NarrationPane(ViewPane.WIDTH/2);     
         // ROM Adviser -- Hint System and Third Hand
         romPane = new RomConstructPane(getGameState(), ViewPane.WIDTH/2);
         StackPane rightPane = new StackPane(narrationPane,romPane);
-        
         
         narrationPane.setVisible(true);
         romPane.setVisible(false);
@@ -162,17 +168,16 @@ public class Engine extends Application implements GameStateListener {
         
         configureGuiLayout();
         
-        // Show the window so that other GUI elements know the screen size.
-        window.show();
+        window.show(); // Show the window so that other GUI elements can layout().
 
         // Inventory
         inventoryPane = new InventoryPane(gameState);
         
         // Chips  -- Confgurable Buffs
-        chipsPane = new ChipsConfiguratorPane(gameState); //, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        chipsPane = new ChipsConfiguratorPane(gameState);
         
         // Terminal -- Base BBS style system
-        terminalPane = new TerminalPane(gameState ); //, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        terminalPane = new TerminalPane(gameState );
         terminalPane.setTerminal(new PublicTerminalSystem(gameState), false);
         
         // Deck Bench -- Configure your Deck with inventory components
@@ -187,7 +192,7 @@ public class Engine extends Application implements GameStateListener {
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
 
-        matrixPane.updateHudSoftwareTabs();
+        matrixPane.updateHudSoftwareTabs(); /// Might not need this here.
         
         initHotKeys();
         initKeyInput();
@@ -198,10 +203,7 @@ public class Engine extends Application implements GameStateListener {
                 STARTING_VIGNETTE
         );
         notifyVignetteExit(new VignetteTrigger(roomName));  // Just leveraging the Room Loading System here.
-        // Finished setting up GUI
-        //setShowing(matrixPane);
-        //setShowing(vignetteGroup);
-        gameState.setShowing(GameState.Display.MATRIX);
+        gameState.setShowing(GameState.Display.VIGNETTE);
    }
 
     private void initDebugWindow() {
@@ -382,7 +384,7 @@ public class Engine extends Application implements GameStateListener {
         LOGGER.addHandler(loggingHandler);
 
         // For our java package only, log ony FINE and above.
-        LOGGER.setLevel(Level.FINE);
+        LOGGER.setLevel(Level.FINEST);
 
         //ConsoleHandler handler = new ConsoleHandler();
         // Add console handler as handler of logs
