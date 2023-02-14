@@ -30,7 +30,7 @@ public class KomodoDeckThing extends DeckThing {
     public static final int RAM_SLOTS = 8;
     public static final int REPAIR_SKILL_MIN = 10;
     
-    public static final String ICON_PATH = "/content/things/deck1-thing.png";
+    public static final String ICON_PATH = "/content/things/deck/2600-thing.png";
     
     public KomodoDeckThing() {
         super(  DEFAULT_NAME,
