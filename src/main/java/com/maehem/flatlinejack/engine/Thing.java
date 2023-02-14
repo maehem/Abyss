@@ -16,9 +16,9 @@
  */
 package com.maehem.flatlinejack.engine;
 
-import com.maehem.flatlinejack.Engine;
 import static com.maehem.flatlinejack.Engine.LOGGER;
-import static com.maehem.flatlinejack.engine.Player.INVENTORY_KEY;
+
+import com.maehem.flatlinejack.Engine;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -32,7 +32,6 @@ import javafx.scene.paint.Color;
  * @author Mark J Koch [ @maehem on GitHub ]
  */
 public abstract class Thing {
-    //private final static Logger LOG = Logger.getLogger(Thing.class.getName());
 
     public final static int DEFAULT_VALUE = 0;
     protected static final int CONDITION_DEFAULT = 1000;
@@ -101,16 +100,16 @@ public abstract class Thing {
         if (name == null) {
             return;
         }
-        LOGGER.log(Level.INFO, "Save " + getClass().getSimpleName());
+        LOGGER.log(Level.INFO, "Save {0}", getClass().getSimpleName());
         p.setProperty(key + ".class", getPackage() + "." + getClass().getSimpleName());
 //        if ( getValue() != DEFAULT_VALUE ) {
 //            p.setProperty(key + ".value", String.valueOf(getValue()));
 //        }
         if (getCondition() != getMaxCondition()) {
             p.setProperty(key + "." + PROPERTY_CONDITION, String.valueOf(condition));
-            LOGGER.log(Level.INFO, getClass().getSimpleName() + ":: Save property: " + PROPERTY_CONDITION + " = " + getCondition());
+            LOGGER.log(Level.INFO, "{0}:: Save property: " + PROPERTY_CONDITION + " = {1}", new Object[]{getClass().getSimpleName(), getCondition()});
         } else {
-            LOGGER.log(Level.INFO, "    condition is: " + getCondition() + " which is the default of: " + CONDITION_MAX);
+            LOGGER.log(Level.INFO, "    condition is: {0} which is the default of: {1}", new Object[]{getCondition(), CONDITION_MAX});
         }
 
         // Gather any custom value from subclass and store those too.
@@ -142,7 +141,7 @@ public abstract class Thing {
 
         String conditionValue = p.getProperty(keyPrefix + "." + PROPERTY_CONDITION);
         if (conditionValue != null) {
-            setCondition(Integer.parseInt(conditionValue));
+            setCondition(Integer.valueOf(conditionValue));
             LOGGER.log(Level.FINER, "{0}:: Load property: " + PROPERTY_CONDITION + " = {1}", new Object[]{getClass().getSimpleName(), getCondition()});
         }
 
