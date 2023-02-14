@@ -38,11 +38,13 @@ import javafx.scene.layout.StackPane;
  */
 public class GameControlsPane extends GUIPane implements GameStateListener {
     private final StackPane decoBox = new DecoBox();
-    private final OLEDStatusScreen status = new OLEDStatusScreen();
+    private final OLEDStatusScreen status; //
     private final GUIButtonsPane buttons = new GUIButtonsPane();
     
     public GameControlsPane( GameState gs, double width ) {
         gs.addListenter(this);
+        
+        status = new OLEDStatusScreen(gs);
         
         setPrefWidth(width);
         setPadding(new Insets(6));
@@ -53,41 +55,40 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         
         // Respond to button clicks
         buttons.getInventoryButton().setOnMouseClicked((MouseEvent t) -> {
-            LOGGER.log(Level.INFO, "User clicked Inventory button.");
+            LOGGER.log(Level.FINER, "User clicked Inventory button.");
             gs.toggleShowing(GameState.Display.INVENTORY);
         });
         buttons.getChipButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked Chip button.");
+            LOGGER.log(Level.FINER, "User clicked Chip button.");
             gs.toggleShowing(GameState.Display.CHIPS);
         });
         buttons.getRomButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked ROM button.");
+            LOGGER.log(Level.FINER, "User clicked ROM button.");
         });
         buttons.getTerminalButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked Terminal button.");
+            LOGGER.log(Level.FINER, "User clicked Terminal button.");
             gs.toggleShowing(GameState.Display.TERMINAL);
         });
         buttons.getMatrixButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked Matrix button.");
+            LOGGER.log(Level.FINER, "User clicked Matrix button.");
             gs.toggleShowing(GameState.Display.MATRIX);
         });
         buttons.getSaveButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked Save button.");
+            LOGGER.log(Level.FINER, "User clicked Save button.");
             gs.quickSave();
         });
         buttons.getSettingsButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked Debug button.");
+            LOGGER.log(Level.FINER, "User clicked Debug button.");
             gs.toggleDebugShowing();
         });
         buttons.getPowerButton().setOnMouseClicked((t) -> {
-            LOGGER.log(Level.INFO, "User clicked Power button.");
+            LOGGER.log(Level.FINER, "User clicked Power button.");
         });
     }
 
     
     @Override
     public void gameStateVignetteChanged(GameState gs) {
-        //buttons.setMoney(String.valueOf(gs.getPlayer().getMoney()));
     }
 
     @Override

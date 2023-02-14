@@ -45,8 +45,8 @@ public class Player extends Character implements GameStateListener {
     public static final long PLAYER_ID = 89472940724234l;
     public static final int PLAYER_MONEY_AMOUNT_DEFAULT = 23;
     public static final int PLAYER_BANK_MONEY_AMOUNT_DEFAULT = 3041;
-    public static final int PLAYER_HEALTH_MAX = 1000;
-    public static final int PLAYER_CONSTITUTION_MAX = 1000;
+    public static final int PLAYER_HEALTH_MAX = 999;
+    public static final int PLAYER_CONSTITUTION_MAX = 999;
 
     private int money = PLAYER_MONEY_AMOUNT_DEFAULT;
     private int bankMoney = PLAYER_BANK_MONEY_AMOUNT_DEFAULT;
@@ -99,7 +99,13 @@ public class Player extends Character implements GameStateListener {
      * @param health the health to set
      */
     public void setHealth(int health) {
-        this.health = health;
+        if ( health > PLAYER_HEALTH_MAX ) {
+            this.health = PLAYER_HEALTH_MAX;
+        } else if ( health < 0 ) {
+            this.health = 0;
+        } else {
+            this.health = health;
+        }
         gameState.notifyPlayerStateChanged(HEALTH_KEY);
     }
 
@@ -131,7 +137,13 @@ public class Player extends Character implements GameStateListener {
      * @param constitution the constitution to set
      */
     public void setConstitution(int constitution) {
-        this.constitution = constitution;
+        if ( constitution > PLAYER_CONSTITUTION_MAX ) {
+            this.constitution = PLAYER_CONSTITUTION_MAX;
+        } else if ( constitution < 0 ) {
+            this.constitution = 0;
+        } else {
+            this.constitution = constitution;
+        }
         gameState.notifyPlayerStateChanged(CONSTITUTION_KEY);
     }
 
@@ -275,6 +287,7 @@ public class Player extends Character implements GameStateListener {
     public int getSkill(SkillChipThing.Buff skill) {
         int total = 0;
         for ( SkillChipThing t: getChipSlots() ) {
+            if ( t == null ) continue;
             for (Map.Entry<SkillChipThing.Buff, Integer> next : t.getBuffs()) {
                 if ( next.getKey() == skill ) {
                     total += next.getValue();

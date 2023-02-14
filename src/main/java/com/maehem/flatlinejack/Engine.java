@@ -30,6 +30,7 @@ import com.maehem.flatlinejack.engine.view.ChipsConfiguratorPane;
 import com.maehem.flatlinejack.engine.gui.InventoryPane;
 import com.maehem.flatlinejack.engine.gui.CrtTextPane;
 import com.maehem.flatlinejack.engine.gui.GameControlsPane;
+import com.maehem.flatlinejack.engine.gui.NarrationPane;
 import com.maehem.flatlinejack.engine.gui.RomConstructPane;
 import com.maehem.flatlinejack.engine.gui.TerminalPane;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
@@ -75,7 +76,7 @@ public class Engine extends Application implements GameStateListener {
     
     private final Group vignetteGroup = new Group();
     private final StackPane topArea = new StackPane();
-    private CrtTextPane narrationPane;
+    private NarrationPane narrationPane;
     private RomConstructPane romPane;
     private GameControlsPane gameControls;
     private ChipsConfiguratorPane chipsPane;
@@ -148,14 +149,15 @@ public class Engine extends Application implements GameStateListener {
         });
         
         gameControls = new GameControlsPane(getGameState(), ViewPane.WIDTH/2);
-        narrationPane = new CrtTextPane(getGameState(), ViewPane.WIDTH/2);     
+        //narrationPane = new CrtTextPane(getGameState(), ViewPane.WIDTH/2);     
+        narrationPane = new NarrationPane(ViewPane.WIDTH/2);     
         // ROM Adviser -- Hint System and Third Hand
         romPane = new RomConstructPane(getGameState(), ViewPane.WIDTH/2);
         StackPane rightPane = new StackPane(narrationPane,romPane);
         
         
-        narrationPane.setVisible(false);
-        
+        narrationPane.setVisible(true);
+        romPane.setVisible(false);
         bottomArea.getChildren().addAll(gameControls ,rightPane  );
         
         configureGuiLayout();
@@ -412,7 +414,10 @@ public class Engine extends Application implements GameStateListener {
     }
 
     @Override
-    public void gameStateVignetteChanged(GameState gs) { }
+    public void gameStateVignetteChanged(GameState gs) {
+        narrationPane.setTitle(gs.getCurrentVignette().getName());
+        narrationPane.setText(gs.getCurrentVignette().getNarration());
+    }
 
     @Override
     public void gameStatePropertyChanged(GameState gs, String propKey) {}

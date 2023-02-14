@@ -16,12 +16,12 @@
 */
 package com.maehem.flatlinejack.engine.gui.widgets;
 
+import com.maehem.flatlinejack.engine.GameState;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 
 /**
  *
@@ -32,15 +32,17 @@ public class DateTimeWidget extends HBox {
     private final Font  font;
     private final Text  text = new Text();
 
-    public DateTimeWidget( double height ) {
+    public DateTimeWidget( double height, Color c ) {
         setAlignment(Pos.CENTER);
         font = Font.loadFont(
             PixelGaugeWidget.class.getResourceAsStream("/fonts/DotMatrix-Bold.ttf"), height);
         text.setFont(font);
-        //text.setTextAlignment(TextAlignment.CENTER);
         text.setText("2044/11/24  22:22");
-        text.setFill(Color.LIGHTBLUE);
+        text.setFill(c);
         getChildren().add(text);
     }
     
+    public void refresh( GameState gs ) {
+        text.setText(gs.getProperty(GameState.PROP_CURRENT_DATE));
+    }
 }

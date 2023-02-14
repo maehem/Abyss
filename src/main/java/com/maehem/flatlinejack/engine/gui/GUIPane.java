@@ -16,6 +16,7 @@
 */
 package com.maehem.flatlinejack.engine.gui;
 
+import com.maehem.flatlinejack.engine.view.ViewPane;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -44,6 +45,7 @@ public class GUIPane extends HBox {
                 new BorderWidths(10.0)
         )));
         setSpacing(8);
+        setPrefHeight(ViewPane.HEIGHT/3);
     }
     
 }

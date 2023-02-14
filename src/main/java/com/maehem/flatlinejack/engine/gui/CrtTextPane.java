@@ -20,6 +20,7 @@ import com.maehem.flatlinejack.engine.GameState;
 import com.maehem.flatlinejack.engine.GameStateListener;
 import com.maehem.flatlinejack.engine.gui.bbs.BBSTerminal;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
@@ -28,8 +29,12 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -40,27 +45,39 @@ import javafx.scene.transform.Scale;
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
 public class CrtTextPane extends GUIPane implements GameStateListener {
-    private static final String SCREEN_FONT = "/fonts/VT323-Regular.ttf";
-    private static final double SCREEN_FONT_H = 37;
+    private static final String TITLE_FONT_PATH = "/fonts/whitrabt.ttf";
+    private static final String CRT_FONT_PATH = "/fonts/VT323-Regular.ttf";
+    private static final double CRT_FONT_H = 64;
+    private static final double TITLE_FONT_H = 30;
     private static final double SCREEN_LINE_SPACE = -7.171; // default is 0.0
-    private static final Color SCREEN_BG_COLOR = new Color(0.1, 0.1, 0.1, 1.0);
+    private static final Color SCREEN_BG_COLOR = new Color(0.15, 0.15, 0.15, 1.0);
     private static final Color SCREEN_FG_COLOR = new Color(0.1, 1.0, 0.1, 1.0);
-    private final static double CRT_HEIGHT = 400;
-    private final static double CRT_WIDTH = 1024;
+    private final static double CRT_HEIGHT = 340;
+    private final static double CRT_WIDTH = 1000;
 
-    private final Font FONT = Font.loadFont(
-            this.getClass().getResource(SCREEN_FONT).toExternalForm(),
-            SCREEN_FONT_H
+    private final Font CRT_FONT = Font.loadFont(
+            this.getClass().getResource(CRT_FONT_PATH).toExternalForm(),
+            CRT_FONT_H
+    );
+    private final Font TITLE_FONT = Font.loadFont(
+            this.getClass().getResource(TITLE_FONT_PATH).toExternalForm(),
+            TITLE_FONT_H
     );
     private final Text t = new Text();
+    private final Text titleText = new Text("Title Text");
     
     private final TextFlow flow = new TextFlow(t);
     private final double scale;
     
     public CrtTextPane(GameState gs, double width) {
         gs.addListenter(this);
-        
+        titleText.setFont(TITLE_FONT);
+        HBox titleArea = new HBox(titleText);
+        titleArea.setAlignment(Pos.CENTER);
+        titleArea.setPadding(new Insets(4));
         StackPane contentPane = new StackPane();
+        //VBox ccontentPane = new VBox(/*titleArea,*/ contentPane);
+        //VBox.setVgrow(contentPane, Priority.ALWAYS);
         getChildren().add(contentPane);
         
         scale = width/CRT_WIDTH;
@@ -85,12 +102,12 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
         Scale xf = new Scale();
         xf.setPivotX(0);
         xf.setPivotY(0);
-        flow.getTransforms().add(xf);
         xf.setX(scale);
-        xf.setY(scale);
+        xf.setY(scale*0.8);
+        flow.getTransforms().add(xf);
         
         t.setFill(SCREEN_FG_COLOR);
-        t.setFont(FONT);
+        t.setFont(CRT_FONT);
         setText("Narration Area.\n\tHello\nSuper long text stuff, I can see my house from here!\n" +
                 "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+{}[]|\\" +
                 "\n" +
@@ -124,22 +141,27 @@ public class CrtTextPane extends GUIPane implements GameStateListener {
         //scanLines.setPreserveRatio(true);
         //scanLines.setLayoutX(20);
         //scanLines.setLayoutY(21);
-        contentPane.getChildren().addAll(flowGroup , scanLinesGroup ); // ,scanLines);
+        Rectangle r = new Rectangle(CRT_WIDTH*scale, CRT_HEIGHT*scale);
+        r.setArcHeight(100);
+        r.setArcWidth(100);
+        contentPane.setClip(r);
+        contentPane.getChildren().addAll(flowGroup /*, scanLinesGroup*/ ); // ,scanLines);
         
     }
     
+    private final void setTitle( String title ) {
+        titleText.setText(title);
+    }
+    
     private final void setText( String text ) {
-        //Text t = new Text(text);
         t.setText(text);
-        //ObservableList<Node> children = flow.getChildren();
-        //children.clear();
-        //children.add(t);
     }
 
     @Override
     public void gameStateVignetteChanged(GameState gs) {
         // Load the new vignette text.
         setText(gs.getCurrentVignette().getNarration());
+        setTitle(gs.getCurrentVignette().getName());
     }
 
     @Override

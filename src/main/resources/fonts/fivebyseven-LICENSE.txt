@@ -1,0 +1,7 @@
+fivebyseven.ttf
+
+From:  https://curiouser.cheshireeng.com/2016/03/21/releasing-some-fonts/
+
+Font License
+This font is licensed for use under the Creative Commons Attribution 4.0 International License (CC-BY).
+https://creativecommons.org/licenses/by/4.0/
