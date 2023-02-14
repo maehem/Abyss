@@ -26,6 +26,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -113,9 +115,15 @@ public class InstalledChipStatsPane extends HBox {
         if (t == null) {
             title.setText("");
             fillBuffPane(null);
+            iconPane.getChildren().clear();
             iconPane.setBackground(DEFAULT_ICON_BACKGROUND);
         } else {
             title.setText(t.getName());
+            Image iconImage = new Image(getClass().getResourceAsStream(t.getIconPath() ));
+            ImageView iv = new ImageView(iconImage);
+            iv.setFitHeight(ICON_D);
+            iv.setPreserveRatio(true);
+            iconPane.getChildren().add(iv);
             iconPane.setBackground(new Background(new BackgroundFill(
                     t.getColor(),
                     new CornerRadii(10),
