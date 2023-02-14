@@ -27,6 +27,8 @@ import javafx.scene.paint.Color;
  * @author mark
  */
 public abstract class SkillChipThing extends Thing {
+    public static final String ICON_PATH = "/ui/skillchip-thing.png";
+
     public enum Buff {      // Value range 1-999  - represents 1-99.9 percent in most cases.
 
         NEGOTIATE("NEGO", Color.ALICEBLUE),     // Get better price when purchasing
@@ -108,4 +110,9 @@ public abstract class SkillChipThing extends Thing {
         return "skillchip";
     }
     
+    @Override
+    public String getIconPath() {
+        return ICON_PATH;
+    }
+
 }

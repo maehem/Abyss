@@ -27,7 +27,6 @@ import javafx.scene.paint.Color;
 public class InterogationSkillChip extends SkillChipThing {
     public static final String NAME = "Interrogation";
     public static final Color  COLOR = Color.CHARTREUSE;
-    public static final String ICON_PATH = "/content/things/deck1-thing.png";
     public static final String DESCRIPTION = 
             "Get to the best answers when asking questions much faster " +
             "than the old way.  Your new charm will have them confessing " +
@@ -37,11 +36,6 @@ public class InterogationSkillChip extends SkillChipThing {
         super(NAME);
         setColor(COLOR);
         addBuff( Buff.INTERROGATE, 200 );
-    }
-
-    @Override
-    public String getIconPath() {
-        return ICON_PATH;
     }
 
     @Override

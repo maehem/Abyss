@@ -27,7 +27,6 @@ import javafx.scene.paint.Color;
 public class EdgeRunnerSkillChip extends SkillChipThing {
     public static final String NAME = "EdgeRunner";
     public static final Color  COLOR = Color.FUCHSIA;
-    public static final String ICON_PATH = "/content/things/deck1-thing.png";
     public static final String DESCRIPTION = 
             "Gain the edge against AIs and site defenses. Recover faster " +
             "after a battle. Software degrades slower. More text for you " +
@@ -40,11 +39,6 @@ public class EdgeRunnerSkillChip extends SkillChipThing {
         addBuff( Buff.HACKING, 342 );
         addBuff( Buff.SOFTWARE, 122 );
         addBuff( Buff.CRYPTO, 853 );
-    }
-
-    @Override
-    public String getIconPath() {
-        return ICON_PATH;
     }
 
     @Override

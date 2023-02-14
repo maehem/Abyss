@@ -27,7 +27,6 @@ import javafx.scene.paint.Color;
 public class NegotiationSkillChip extends SkillChipThing {
     public static final String NAME = "Negotiation";
     public static final Color  COLOR = Color.PAPAYAWHIP;
-    public static final String ICON_PATH = "/content/things/deck1-thing.png";
     public static final String DESCRIPTION = 
             "Increase your chances of getting a good deal on that new " +
             "peice of gear you've been wanting. Go ahead and try it out!";
@@ -38,11 +37,6 @@ public class NegotiationSkillChip extends SkillChipThing {
         addBuff(Buff.NEGOTIATE, 100);
     }
     
-    @Override
-    public String getIconPath() {
-        return ICON_PATH;
-    }
-
     @Override
     public String getDescription() {
         return DESCRIPTION;
