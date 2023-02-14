@@ -59,7 +59,7 @@ public abstract class SkillChipThing extends Thing {
         }
     }
     
-    private EnumMap<Buff,Integer> buffs = new EnumMap<>(Buff.class);
+    private final EnumMap<Buff,Integer> buffs = new EnumMap<>(Buff.class);
 
 
     //private static final String PROPERTY_CONDITION = "condition";
