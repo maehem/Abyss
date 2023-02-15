@@ -17,27 +17,30 @@
 package com.maehem.flatlinejack.content.things.deck;
 
 import com.maehem.flatlinejack.engine.DeckThing;
+import javafx.scene.paint.Color;
 
 /**
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class KomodoDeckThing extends DeckThing {
-    public static final String DEFAULT_NAME = "Komodo Spark M3";
-    public static final int BASE_RAM = 128;
-    public static final int BASE_SHIELD = 200;
-    public static final int SOFTWARE_CAPACITY = 8;
+public class HanafudaDeckThing extends DeckThing {
+    public static final String DEFAULT_NAME = "Hanafuda Sheika Slate Model 1";
+    public static final Color COLOR = Color.CORNFLOWERBLUE;
+    public static final int BASE_RAM = 256;
+    public static final int BASE_SHIELD = 270;
+    public static final int SOFTWARE_CAPACITY = 12;
     public static final int RAM_SLOTS = 8;
-    public static final int REPAIR_SKILL_MIN = 6;
+    public static final int REPAIR_SKILL_MIN = 10;
     
-    public static final String ICON_PATH = "/content/things/deck/2600-thing.png";
+    public static final String ICON_PATH = "/content/things/deck/NES-thing.png";
     
-    public KomodoDeckThing() {
+    public HanafudaDeckThing() {
         super(  DEFAULT_NAME,
                 BASE_RAM, BASE_SHIELD, 
                 SOFTWARE_CAPACITY, RAM_SLOTS
         );
         setRepairSkill(REPAIR_SKILL_MIN);
+        setColor(COLOR);
     }
 
     @Override
@@ -47,8 +50,9 @@ public class KomodoDeckThing extends DeckThing {
 
     @Override
     public String getDescription() {
-        return "You say Komado, we say Komodo. Who could ask for anything " +
-                "more?  Just kidding, this is junk, find a better deck already.";
+        return "This limited edition hardware has a few surpises in it. " +
+                "More RAM than the average matrix deck and an always on light " +
+                "that says 'Turbo'";
     }
     
     
