@@ -69,6 +69,7 @@ public class InventoryPane extends ViewPane implements GameStateListener {
 //    private static final String BTN_NORMAL_COLOR   = "#666666";
     private static final int N_COLS = 7;
     private static final int MARGIN = 12;
+    private static final double SLOT_GAP = 20.0;
     public static final int CELL_SIZE = 96;
     private final BorderPane contentArea = new BorderPane();
     private final ThingDetailPane detailPane;
@@ -92,8 +93,8 @@ public class InventoryPane extends ViewPane implements GameStateListener {
         // Make this a floating window that the user can pin?
         //  When not pinned, it slides out from the side?
         // Inventory Slots
-        slots.setVgap(MARGIN);
-        slots.setHgap(MARGIN);
+        slots.setVgap(SLOT_GAP);
+        slots.setHgap(SLOT_GAP);
 
         updateItemGrid();
 //        for( Thing t: player.getAInventory() ) {
@@ -121,8 +122,8 @@ public class InventoryPane extends ViewPane implements GameStateListener {
 
         //detailPane.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(2))));
         // Right - Item Detail View
-        BorderPane.setMargin(detailPane, new Insets(MARGIN));
-        BorderPane.setMargin(slots, new Insets(MARGIN));
+        BorderPane.setMargin(detailPane, new Insets(MARGIN, MARGIN, MARGIN, 0));
+        BorderPane.setMargin(slots, new Insets(2*MARGIN, 0, MARGIN, 0));
 
         Button doneButton = new Button("Done");
         doneButton.setFont(Font.font(ViewPane.HEIGHT * 0.03));

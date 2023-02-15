@@ -67,9 +67,6 @@ public class ThingDetailPane extends VBox {
     public ThingDetailPane(Player p) {
         this.player = p;
 
-        //this.setOrientation(Orientation.VERTICAL);
-        //this.setVgap(4);
-        //this.setHgap(4);
         this.setSpacing(2);
         this.setPadding(new Insets(4));
         this.setBorder(new Border(new BorderStroke(
@@ -81,13 +78,11 @@ public class ThingDetailPane extends VBox {
         this.setMaxHeight(ViewPane.HEIGHT);
         this.setPrefWidth(ViewPane.WIDTH*0.35);
         this.setAlignment(Pos.TOP_CENTER);
-        //this.setColumnHalignment(HPos.CENTER);
 
         detailImageView.setFitWidth(ViewPane.WIDTH/4);
         detailImageView.setPreserveRatio(true);
         
 
-        name.setFont(new Font(ViewPane.HEIGHT*0.06));
         name.setTextAlignment(TextAlignment.CENTER);
         name.setFill(new Color(0, 0, 0, 0.7));
 
@@ -127,6 +122,13 @@ public class ThingDetailPane extends VBox {
             detailImageView.setImage(null);
             detailImageView.setEffect(null);
         }
+        String nameString  = t.getName();
+        if ( nameString.length() > 20 ) {
+            name.setFont(new Font(ViewPane.HEIGHT*0.04));
+        } else {
+            name.setFont(new Font(ViewPane.HEIGHT*0.06));            
+        }
+        
         name.setText(t.getName());
 
         if (thingCustomDetailsPane != null) {
