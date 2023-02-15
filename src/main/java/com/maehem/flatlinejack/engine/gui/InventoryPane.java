@@ -52,7 +52,7 @@ import javafx.scene.text.Text;
  *
  * @author Mark J Koch [flatlinejack at maehem dot com]
  */
-public class InventoryPane extends ViewPane implements GameStateListener {
+public final class InventoryPane extends ViewPane implements GameStateListener {
 
     private static final Display DISPLAY = Display.INVENTORY;
     private static final BorderWidths ITEM_BORDER_WIDTH =new BorderWidths(4.0);
@@ -149,13 +149,11 @@ public class InventoryPane extends ViewPane implements GameStateListener {
      */
     private void highlightItem(Button b) {
         for (Node n : slots.getChildrenUnmodifiable()) {
-            if (n instanceof Button) {
-                if ((Button) n == b) {
-                    //n.setStyle("-fx-base: " + BTN_SELECTED_COLOR + ";");
+            if (n instanceof Button button) {
+                if (button == b) {
                     b.setBorder(SEL_BORDER);
                 } else {
-                    //n.setStyle("-fx-base: " + BTN_NORMAL_COLOR + ";");
-                    ((Button)n).setBorder(UNSEL_BORDER);
+                    button.setBorder(UNSEL_BORDER);
                 }
             }
         }
