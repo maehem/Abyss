@@ -43,6 +43,10 @@ import java.util.logging.Logger;
  */
 public final class GameState extends Properties {
 
+    private String shortName;
+    private String longName;
+    private String version;
+
     public enum Display { SPLASH, INVENTORY, CHIPS, TERMINAL, VIGNETTE, MATRIX }
     
     // KEYS
@@ -81,12 +85,13 @@ public final class GameState extends Properties {
     
     private boolean showDebug = true;
 
-    private final File gameSaveFile = new File(
-            System.getProperty("user.home")
-            + File.separator + "Documents"
-            + File.separator + "Abyss"
-            + File.separator + "save-0.properties"
-    );
+    private File gameSaveFile = null;
+//    private File gameSaveFile = new File(
+//            System.getProperty("user.home")
+//            + File.separator + "Documents"
+//            + File.separator + "Abyss"
+//            + File.separator + "save-0.properties"
+//    );
 
     // Debug toggles
     public boolean showWalkPerimeter = false;
@@ -95,6 +100,34 @@ public final class GameState extends Properties {
     private ResourceLoader contentLoader;
 
     public GameState() {
+    }
+    
+    public String getShortGameName() {
+        return shortName;
+    }
+    
+    public String getLongGameName() {
+        return longName;
+    }
+    
+    public void setGameName( String shortName, String longName ) {
+        this.shortName = shortName;
+        this.longName = longName;
+        
+        gameSaveFile = new File(
+            System.getProperty("user.home")
+            + File.separator + "Documents"
+            + File.separator + shortName
+            + File.separator + "save-0.properties"
+        );
+    }
+    
+    public String getGameVersion() {
+        return version;
+    }
+    
+    public void setGameVersion( String versionString ) {
+        this.version = versionString;
     }
     
     public void setSites( SitesList sl ) {
@@ -111,8 +144,9 @@ public final class GameState extends Properties {
     }
     
     public void init() {
-        //this.contentPack = new ChibaCityBlues();
-        
+        if ( gameSaveFile == null ) {
+            LOGGER.log(Level.SEVERE, "Game name was not set by content pack! There will be issues...");
+        }
         setProperty(PROP_CURRENT_DATE, START_DATE);
         this.player = new Player(this);
         this.currentTerminal = new PublicTerminalSystem(this);
