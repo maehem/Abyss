@@ -117,19 +117,12 @@ public class Engine extends Application implements GameStateListener {
     
     
     public Engine( ) {
-        initEngine();
-        this.gameState = new GameState();
-    }
-
-    public final void initEngine() {
         configureLogging();
         
         // TRUE for debug.
         LOGGER.setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
+        this.gameState = new GameState();
 
-        
-
-        // TODO: Set the default sites list.
     }
     
     
@@ -145,6 +138,7 @@ public class Engine extends Application implements GameStateListener {
         LOGGER.log(Level.INFO, "JavaFX Version: {0}", 
                 System.getProperties().get("javafx.runtime.version")
         );
+        LOGGER.log(Level.INFO, "Game: {0} {1}", new Object[]{gameState.getLongGameName(), gameState.getGameVersion()});
         
         LOGGER.fine("Fine log message.");
         LOGGER.finer("Finer log message.");
