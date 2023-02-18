@@ -19,7 +19,6 @@ package com.maehem.abyss.engine;
 import com.maehem.abyss.engine.view.ViewPane;
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.babble.DialogPane;
-import com.maehem.abyss.engine.babble.DialogScreen;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.bbs.PublicTerminalSystem;
 import java.io.InputStream;
