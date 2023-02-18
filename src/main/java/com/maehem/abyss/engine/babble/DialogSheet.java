@@ -18,6 +18,7 @@ package com.maehem.abyss.engine.babble;
 
 import javafx.geometry.Pos;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -29,7 +30,7 @@ import javafx.scene.text.Text;
  *
  * @author Mark J Koch [@maehem on GitHub]
  */
-public class DialogSheet extends VBox implements DialogResponseAction {
+public class DialogSheet extends HBox implements DialogResponseAction {
 
     private final Text dialogText;
     private final Rectangle dialogTextRect = new Rectangle();

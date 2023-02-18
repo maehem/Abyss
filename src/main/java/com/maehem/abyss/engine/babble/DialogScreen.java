@@ -68,11 +68,11 @@ public class DialogScreen extends Group {
         this.width = width;
         this.height = height;
         
-        this.boxX = width/4;
-        this.boxY = height/4;
+        this.boxX = width/3;
+        this.boxY = height/3;
         
-        this.boxW = width/2;
-        this.boxH = height/2;
+        this.boxW = width/3;
+        this.boxH = height/3;
         
         Rectangle rect = new Rectangle(width, height);
         rect.setFill(Color.BLACK);
@@ -103,7 +103,7 @@ public class DialogScreen extends Group {
         cameoFrame.setStroke(Color.DARKGREEN);
         cameoFrame.setFill(Color.TRANSPARENT);
         
-        Rectangle closeRect = new Rectangle(20, 20, Color.DARKSLATEGRAY);
+        Rectangle closeRect = new Rectangle(40, 40, Color.DARKSLATEGRAY);
         closeRect.setX(boxX+boxW-20);
         closeRect.setY(boxY);
         closeRect.setOnMouseClicked((event) -> {

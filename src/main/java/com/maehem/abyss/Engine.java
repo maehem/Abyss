@@ -265,11 +265,13 @@ public class Engine extends Application implements GameStateListener {
         // Player - stop doing any movement/actions
         gameState.getPlayer().stopAnimating();
         
-        // Save relevant game data/goals from scene?
-        Vignette currentVignette = gameState.getCurrentVignette();
-        if ( currentVignette != null ) {
-            currentVignette.saveState(getGameState());
-        }
+        
+// Don't do this.  GameState should already have info on vignette changes.
+//        // Save relevant game data/goals from scene?
+//        Vignette currentVignette = gameState.getCurrentVignette();
+//        if ( currentVignette != null ) {
+//            currentVignette.saveState(getGameState());
+//        }
         
         try {
             String packageName = gameState.getContentPack().getClass().getPackageName();

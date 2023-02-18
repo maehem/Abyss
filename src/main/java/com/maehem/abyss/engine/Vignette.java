@@ -18,6 +18,7 @@ package com.maehem.abyss.engine;
 
 import com.maehem.abyss.engine.view.ViewPane;
 import static com.maehem.abyss.Engine.LOGGER;
+import com.maehem.abyss.engine.babble.DialogPane;
 import com.maehem.abyss.engine.babble.DialogScreen;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.bbs.PublicTerminalSystem;
@@ -78,9 +79,10 @@ public abstract class Vignette extends ViewPane {
     private String name = "<unnamed>";
 //    private final double width;
 //    private final double height;
-    private DialogScreen dialogOverlay;
+    //private DialogScreen dialogOverlay;
     private double debugOpacity = 0.7;
     public ResourceBundle bundle;
+    private DialogPane dialogPane;
 
     public Vignette(GameState gs, String assetFolderName, VignetteTrigger prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
         this.gameState = gs;
@@ -142,7 +144,10 @@ public abstract class Vignette extends ViewPane {
         debugHearingBounds(showHearing);
 
         setOnMouseClicked((event) -> {
-            if (dialogOverlay == null) { // As long as dialog is not showing.
+//            if (dialogOverlay == null) { // As long as dialog is not showing.
+//                player.walkToward(event.getX(), event.getY(), walkArea);
+//            }
+            if (dialogPane == null || !dialogPane.isVisible() ) { // As long as dialog is not showing.
                 player.walkToward(event.getX(), event.getY(), walkArea);
             }
             event.consume();
@@ -169,13 +174,15 @@ public abstract class Vignette extends ViewPane {
     }
 
     /**
-     *
+     * If showing, Called by loop every tick.
+     * 
      * @param input list of keyboard events
      * @return next room to load or @null to remain in current room
      */
     protected final VignetteTrigger processEvents(ArrayList<String> input) {
 
-        if (dialogOverlay == null) {
+//        if (dialogOverlay == null) {
+        if (dialogPane == null || !dialogPane.isVisible() ) {
             if (!input.isEmpty()) {
                 LOGGER.log(Level.FINE, "vignette process input event:  {0}", input.toString());
 
@@ -257,22 +264,51 @@ public abstract class Vignette extends ViewPane {
                 } else {
                     npc.showTalkIcon(false);
                 }
-                if (npc.isTalking() && !npc.getDialog().isActionDone()) {
-                    //mode = new DialogScreen(player, npc, width, height);
-                    dialogOverlay = npc.getDialog();
-                    addNode(dialogOverlay);
-                    dialogOverlay.toFront();
+//                if (npc.isTalking() && !npc.getDialog().isActionDone()) {
+//                    //mode = new DialogScreen(player, npc, width, height);
+//                    dialogOverlay = npc.getDialog();
+//                    dialogOverlay2 = npc.getDialogPane();
+//                    //addNode(dialogOverlay);
+//                    addNode(dialogOverlay2);
+//                    
+//                    dialogOverlay.toFront();
+//                    dialogOverlay2.toFront();
+//                    
+//                    LOGGER.warning("Show Dialog Mode.");
+//                }
+                if (npc.isTalking() && !npc.getDialogPane().isActionDone()) {
+                    if ( dialogPane == null ) {
+                        dialogPane = npc.getDialogPane();
+                        addNode(dialogPane);
+                    }
+                    dialogPane.setVisible(true);
+                    dialogPane.toFront();
+                    
                     LOGGER.warning("Show Dialog Mode.");
+                } else if (npc.isTalking() && npc.getDialogPane().isActionDone()) {
+                    LOGGER.log(Level.WARNING, "NPC is talking but the action is marked as done.");
                 }
             });
         } else {
             // Alternate mode is overlayed like a DialogScreen.  Handle that.
-            if (dialogOverlay.isActionDone()) {
-                removeNode(dialogOverlay);
+//            if (dialogOverlay.isActionDone()) {
+//                removeNode(dialogOverlay);
+//
+//                // See if the dialog invoked a scene exit event.
+//                VignetteTrigger exit = dialogOverlay.getExit();
+//                dialogOverlay = null;
+//
+//                // If mode/dialog set the exit door then return that.
+//                if (exit != null) {
+//                    return exit;
+//                }
+//            }
+            if (dialogPane.isActionDone()) {
+                removeNode(dialogPane);
 
                 // See if the dialog invoked a scene exit event.
-                VignetteTrigger exit = dialogOverlay.getExit();
-                dialogOverlay = null;
+                VignetteTrigger exit = dialogPane.getExit();
+                dialogPane = null;
 
                 // If mode/dialog set the exit door then return that.
                 if (exit != null) {
@@ -340,7 +376,7 @@ public abstract class Vignette extends ViewPane {
         if (input.contains("T")) {
             input.remove("T");
             playerTalkToNPC = true;
-            LOGGER.config("User talked to NPC.");
+            LOGGER.config("Player has requested talking to NPC.");
         }
         if (input.contains("M")) {
             input.remove("M");
@@ -454,6 +490,7 @@ public abstract class Vignette extends ViewPane {
      * @param xyArray list of X/Y pair doubles.
      */
     public final void setWalkArea( double[] xyArray ) {
+        
         //setWalkAreaOld(WALK_AREA); // set custom walk area
         double waPx[] = new double[xyArray.length];
         
@@ -478,11 +515,18 @@ public abstract class Vignette extends ViewPane {
         for (int i = 0; i < points.size(); i += 2) {
             double vX = points.get(i);
             double vY = points.get(i+1);
-            String xS = String.valueOf(points.get(i));
-            String yS = String.valueOf(points.get(i+1));
+            double pX = points.get(i);
+            double pY = points.get(i+1);
+            //String xS = String.format(String.valueOf(pX), "%4.0f" );
+            //String yS = String.format(String.valueOf(pY), "%4.0f" );
+            String xS = String.valueOf((int)pX);
+            String yS = String.valueOf((int)pY);
+            String xP = String.format(String.valueOf(pX/getWidth()), "%4.3f" );
+            String yP = String.format(String.valueOf(pY/getHeight()), "%4.3f" );
+            
             Text t = new Text(
                     vX, vY,
-                    xS.substring(0, xS.lastIndexOf('.')) + "," + yS.substring(0,yS.lastIndexOf('.'))
+                    xS + "," + yS + " (" +  xP + "," + yP + ")"
             );
             t.setFill(Color.LIGHTGREEN);
             walkAreaCoords.getChildren().add(t);

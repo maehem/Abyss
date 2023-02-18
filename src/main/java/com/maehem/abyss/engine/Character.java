@@ -17,8 +17,8 @@
 package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
+import com.maehem.abyss.engine.babble.DialogPane;
 
-import com.maehem.abyss.engine.babble.DialogScreen;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -59,9 +59,10 @@ public class Character extends Group {
     private long lastTime = 0;
     private final long TWAIT = 40000000;
     
-    private final DialogScreen dialogScreen;
+    //private final DialogScreen dialogScreen;
     private double originX;
     private double originY;
+    private final DialogPane dialogPane;
 
     public Character() {
         this("???");        
@@ -87,7 +88,8 @@ public class Character extends Group {
         initFeetBoundary();
         initTalkIcon();
         
-        dialogScreen = new DialogScreen(this);    
+        //dialogScreen = new DialogScreen(this);
+        dialogPane = new DialogPane(this);
     }
 
 //    private Node bindBox( String label, DoubleProperty n1, DoubleProperty n2 ) {
@@ -170,13 +172,13 @@ public class Character extends Group {
         talkIcon = new ImageView();
         talkIcon.setImage(new Image(getClass().getResourceAsStream(TALK_ICON_IMAGE_FILENAME)));
         talkIcon.setPreserveRatio(true);
-        talkIcon.setFitWidth(clipW/3);
+        talkIcon.setFitWidth(clipW/2);
         talkIcon.setX(clipW-talkIcon.getFitWidth());
         
         // Display the talk icon such that the pointy bit is at mouth level.
         talkIcon.setY(-talkIcon.getBoundsInLocal().getHeight()/2);
         
-        getChildren().add(talkIcon);        
+        getChildren().add(talkIcon);    
         
         talkIcon.setOnMouseClicked((event) -> {
             LOGGER.log(Level.WARNING, "Opacity = {0}", talkIcon.getOpacity());
@@ -235,7 +237,7 @@ public class Character extends Group {
     public void setScale(double scale) {
         // TODO:  refactor feet origin into new scale
         setScaleX(scale);
-        setScaleY(scale);        
+        setScaleY(scale);
         updateOrigin();
 
 //        Bounds b = getBoundsInParent();
@@ -375,6 +377,9 @@ public class Character extends Group {
      * @param talking the talking to set
      */
     public void setTalking(boolean talking) {
+        if ( talking != this.talking ) {
+            LOGGER.log(Level.INFO, "Talking to NPC [{0}] set to {1}", new Object[]{getName(), talking});
+        }
         this.talking = talking;
     }
 
@@ -415,8 +420,12 @@ public class Character extends Group {
         initTalkIcon();
     }
 
-    public DialogScreen getDialog() {
-        return dialogScreen;                
+//    public DialogScreen getDialog() {
+//        return dialogScreen;                
+//    }
+    
+    public DialogPane getDialogPane() {
+        return dialogPane;                
     }
     
     /**
