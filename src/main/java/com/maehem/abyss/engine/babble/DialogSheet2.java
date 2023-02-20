@@ -96,6 +96,9 @@ public class DialogSheet2 implements DialogResponseAction {
 ////        });        
 //    }
 
+    /**
+     * Updates the current dialog sheet to this sheet.
+     */
     @Override
     public void doResponseAction() {
         dialogPane.setCurrentDialogSheet(this);
