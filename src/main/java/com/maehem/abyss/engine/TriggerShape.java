@@ -20,6 +20,7 @@ import com.maehem.abyss.engine.view.ViewPane;
 import static com.maehem.abyss.Engine.LOGGER;
 import java.util.logging.Level;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -52,7 +53,7 @@ public class TriggerShape extends Pane {
     private Color triggerColorDefault = TRIGGER_FILL_DEFAULT;
     private Color triggerColorActive = TRIGGER_FILL_ACTIVE;
     private final Text label = new Text(getClass().getSimpleName());
-    private StackPane icon = null;
+    private final StackPane icon = new StackPane();
 
     //private double scaleX = 1.0; // ScreenW. Use setScale() to input actual value.
     //private double scaleY = 1.0; // ScreenH.  ^       ^        ^
@@ -76,7 +77,7 @@ public class TriggerShape extends Pane {
         this.trigger = new Rectangle(0, 0, 
                 ViewPane.WIDTH*w, ViewPane.HEIGHT*h
         );
-        getChildren().addAll(trigger,label);
+        getChildren().addAll(trigger,label, icon);
         
 //        this.rawX = x;
 //        this.rawY = y;
@@ -141,13 +142,19 @@ public class TriggerShape extends Pane {
         label.setVisible(show);
     }
 
+    public Pane getIcon() {
+        return icon;
+    }
+    
     public void setClickIcon(String iconPath, double offX, double offY) {
         double rad = ViewPane.WIDTH * 0.01; // Pane arc and drop shadow rad+offset
-        Color dropShadow = new Color(0.0,0.0,0.0,0.3);
+        Color dropShadow = new Color(0.0,0.0,0.0,0.4);
         
         ImageView iconImg = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
-        icon = new StackPane(iconImg);
-        icon.setMinSize(ViewPane.WIDTH*0.08, ViewPane.HEIGHT*0.08);
+        //icon = new StackPane(iconImg);
+        icon.getChildren().clear();
+        icon.getChildren().add(iconImg);
+        icon.setMinSize(ViewPane.WIDTH*0.10, ViewPane.HEIGHT*0.10);
         icon.setBackground(new Background(
                 new BackgroundFill(Color.DARKGRAY, new CornerRadii(rad), Insets.EMPTY))
         );
@@ -156,9 +163,9 @@ public class TriggerShape extends Pane {
         iconImg.setFitWidth(icon.getMinHeight()*0.85);
         icon.setTranslateX(offX);
         icon.setTranslateY(offY);
-        icon.setEffect(new DropShadow(rad*2.0, rad/2.0, rad/2.0, dropShadow));
+        icon.setEffect(new DropShadow(rad*4.0, rad/2.0, rad/2.0, dropShadow));
         
-        getChildren().addAll(icon);        
+        //getChildren().addAll(icon);        
         
         icon.setOnMouseClicked((event) -> {
             LOGGER.log(Level.INFO, "Opacity = {0}", icon.getOpacity());

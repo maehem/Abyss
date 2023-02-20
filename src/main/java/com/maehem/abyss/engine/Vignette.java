@@ -52,9 +52,10 @@ public abstract class Vignette extends ViewPane {
 
     private final GameState gameState;
     private final Group walkAreaCoords = new Group();
-    private final Group bgGroup = new Group();
-    private final Group mainGroup = new Group(walkAreaCoords);
-    private final Group fgGroup = new Group();
+    private final Group skylineGroup = new Group(); // Scene sky
+    private final Group bgGroup = new Group(); // Scene backdrop
+    private final Group mainGroup = new Group(walkAreaCoords); // Character/player. All collisions.
+    private final Group fgGroup = new Group(); // Foreground decorations.
 
     private final ArrayList<VignetteTrigger> doors = new ArrayList<>();
     private final ArrayList<MatrixTrigger>   jacks = new ArrayList<>();
@@ -82,11 +83,10 @@ public abstract class Vignette extends ViewPane {
     private double debugOpacity = 0.7;
     public ResourceBundle bundle;
     private DialogPane dialogPane;
+    private int moveDistanceRL = 20;
 
     public Vignette(GameState gs, String assetFolderName, VignetteTrigger prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
         this.gameState = gs;
-//        this.width = w;
-//        this.height = h;
         this.assetFolderName = assetFolderName;
         this.player = player;
 
@@ -97,12 +97,11 @@ public abstract class Vignette extends ViewPane {
         LOGGER.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
         getChildren().add(layerStack);
+        addNode(skylineGroup);
         addNode(bgGroup);
         addNode(mainGroup);
         addNode(fgGroup);
         
-        //addNode(narrationPane);
-
         setWalkArea(walkBoundary);
 
         getMainGroup().getChildren().addAll(getPlayer());
@@ -330,12 +329,12 @@ public abstract class Vignette extends ViewPane {
     private void processUDLR(ArrayList<String> input) {
         if (input.contains("LEFT")) {
             input.remove("LEFT");
-            player.moveLeft(11, walkArea);
+            player.moveLeft(moveDistanceRL, walkArea);
         }
 
         if (input.contains("RIGHT")) {
             input.remove("RIGHT");
-            player.moveRight(11, walkArea);
+            player.moveRight(moveDistanceRL, walkArea);
         }
 
         if (input.contains("UP")) {
@@ -445,6 +444,14 @@ public abstract class Vignette extends ViewPane {
      */
     public Group getBgGroup() {
         return bgGroup;
+    }
+    
+    /**
+     *
+     * @return the bgGroup
+     */
+    public Group getSkylineGroup() {
+        return skylineGroup;
     }
 
     /**

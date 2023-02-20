@@ -17,6 +17,9 @@
 package com.maehem.abyss.engine;
 
 import com.maehem.abyss.engine.PoseSheet.Direction;
+import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Doors and other transitions to other Vignettes.
@@ -25,6 +28,8 @@ import com.maehem.abyss.engine.PoseSheet.Direction;
  */
 public class VignetteTrigger extends TriggerShape {
     
+    public static final boolean SHOW_TRIGGER = true;
+    
     private String destination;
     private double playerX = -1;
     private double playerY = -1;
@@ -32,14 +37,22 @@ public class VignetteTrigger extends TriggerShape {
 
     public VignetteTrigger(String vingette) {
         // Dummy Port for providing a default vignette. (like at game start)
-        this(0, 0, 1, 1, -1, -1, Direction.RIGHT, vingette);
+        this(0, 0, 1, 1, false, -1, -1, Direction.RIGHT, vingette);
     }
 
     public VignetteTrigger(double x, double y, double w, double h, double px, double py, Direction pdir, String vignette) {
+        this(x,y,w,h, false,px,py,pdir,vignette);
+    }
+
+    public VignetteTrigger(double x, double y, double w, double h, boolean showTrigger, double px, double py, Direction pdir, String vignette) {
         super(x, y, w, h);
         
         setDestination(vignette);
-
+        
+        if ( showTrigger ) {
+            setIconNode( 0, 0);
+        }
+        
         this.playerX = px;
         this.playerY = py;
         this.playerDir = pdir;
@@ -88,5 +101,14 @@ public class VignetteTrigger extends TriggerShape {
     public void setPlayerDir(Direction playerDir) {
         this.playerDir = playerDir;
     }
-
+    
+    public final void setIconNode( double offX, double offY ) {
+        Rectangle r = new Rectangle(getPrefWidth(), getPrefHeight(), new Color(1.0,1.0,1.0,0.3));
+        getIcon().getChildren().clear();
+        getIcon().getChildren().add(r);
+        getIcon().setLayoutX(offX);
+        getIcon().setLayoutY(offY);
+        requestLayout();
+    }
+    
 }
