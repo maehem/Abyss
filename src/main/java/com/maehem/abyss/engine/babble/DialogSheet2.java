@@ -28,33 +28,8 @@ public class DialogSheet2 implements DialogResponseAction {
     private String dialogText = "Dialog text.";
     private final ArrayList<DialogResponse2> response = new ArrayList<>();
     
-//    private final Rectangle dialogTextRect = new Rectangle();
-//    //private final ArrayList<DialogResponse> responses = new ArrayList<>();
-//    private double width;
-//    private double height;
-//    private final double MARGIN = 30;
-//    private final FlowPane responsePane = new FlowPane(10, 10);
-
     public DialogSheet2(DialogPane dialogPane) {
-        this.dialogPane = dialogPane;
-        
-        //dialogText = new Text("404\n");
-//        dialogText.setX(boxX+30);
-//        dialogText.setY(boxY+30);
-        //dialogText.setFont(new Font(20.0));
-        
-        //dialogTextRect.setFill(Color.TRANSPARENT);
-        
-        // Debug rect
-        //dialogTextRect.setStrokeWidth(2.0);
-        //dialogTextRect.setStroke(Color.RED);
-        
-        //setAlignment(Pos.CENTER);
-        //responsePane.setAlignment(Pos.CENTER);
-        
-        //StackPane dialogTextPane = new StackPane(dialogTextRect,dialogText);
-                
-        //getChildren().addAll(dialogTextPane, responsePane);
+        this.dialogPane = dialogPane;        
     }
     
     public String getDialogText(){
@@ -77,25 +52,6 @@ public class DialogSheet2 implements DialogResponseAction {
         return response.remove(d);
     }
 
-//    void setGeometry(double x, double y, double width, double height) {
-//        this.width = width;
-//        this.height = height;
-//        //setLayoutX(x+width*0.1);
-//        //setLayoutY(y+height*0.1);
-//        
-//        dialogTextRect.setWidth(width*0.8);
-//        dialogTextRect.setHeight(height/2);
-//        //dialogText.setX(MARGIN);
-//        //dialogText.setY(MARGIN);
-//        dialogText.setFont(new Font(MARGIN));
-//        
-////        double w = width*0.7;
-////        double h = height/9;
-////        responses.forEach((r) -> {
-////            r.setGeometry(w, h);
-////        });        
-//    }
-
     /**
      * Updates the current dialog sheet to this sheet.
      */
@@ -109,5 +65,9 @@ public class DialogSheet2 implements DialogResponseAction {
      */
     public DialogPane getDialogPane() {
         return dialogPane;
+    }
+
+    public void clearReponses() {
+        response.clear();
     }
 }
