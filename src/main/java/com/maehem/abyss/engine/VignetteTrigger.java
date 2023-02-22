@@ -17,7 +17,6 @@
 package com.maehem.abyss.engine;
 
 import com.maehem.abyss.engine.PoseSheet.Direction;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
