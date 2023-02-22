@@ -21,6 +21,7 @@ import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.babble.DialogPane;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.bbs.PublicTerminalSystem;
+import com.maehem.abyss.engine.gui.GiveCreditsPane;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
@@ -28,6 +29,7 @@ import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -56,6 +58,7 @@ public abstract class Vignette extends ViewPane {
     private final Group bgGroup = new Group(); // Scene backdrop
     private final Group mainGroup = new Group(walkAreaCoords); // Character/player. All collisions.
     private final Group fgGroup = new Group(); // Foreground decorations.
+    private final GiveCreditsPane giveCredits;
 
     private final ArrayList<VignetteTrigger> doors = new ArrayList<>();
     private final ArrayList<MatrixTrigger>   jacks = new ArrayList<>();
@@ -151,6 +154,11 @@ public abstract class Vignette extends ViewPane {
             event.consume();
         });
 
+        giveCredits = new GiveCreditsPane(gameState);
+        
+        getChildren().add(giveCredits);
+        giveCredits.setVisible(false);
+        
         LOGGER.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
@@ -255,12 +263,14 @@ public abstract class Vignette extends ViewPane {
                 // Show dialog if player can hear.
                 if (npc.canHear(player.getHearingBoundary())) {
                     npc.showTalkIcon(true);
+                    //gameState.setProperty(GameState.EPHEMERAL_KEY + ".npc", npc.getName());
                     if (playerTalkToNPC) {
                         npc.setTalking(true);
                         playerTalkToNPC = false;  // Consume event.
                     }
                 } else {
                     npc.showTalkIcon(false);
+                    //gameState.remove(GameState.EPHEMERAL_KEY + ".npc");
                 }
 //                if (npc.isTalking() && !npc.getDialog().isActionDone()) {
 //                    //mode = new DialogScreen(player, npc, width, height);
@@ -745,5 +755,10 @@ public abstract class Vignette extends ViewPane {
     
     public String getNarration() {
         return bundle.getString("narration");
+    }
+
+    public void setGiveMoneyShowing(int amount, String title, EventHandler handler) {
+        // Show pane for transering money to npc.
+        giveCredits.show(amount, title, handler);
     }
 }
