@@ -86,7 +86,6 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
         });
     }
 
-    
     @Override
     public void gameStateVignetteChanged(GameState gs) {
     }
@@ -94,8 +93,7 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
     @Override
     public void gameStatePropertyChanged(GameState gs, String propKey) {
         switch( propKey ) {
-            case Player.MONEY_KEY:
-                buttons.setMoney(gs.getProperty(propKey));
+            case Player.MONEY_KEY -> buttons.setMoney(gs.getProperty(propKey));
         }
     }
 
@@ -105,12 +103,6 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
     @Override
     public void gameStateTerminalChanged(GameState gs, BBSTerminal term) {}
     
-
-//    @Override
-//    public void gameStateShowTerminal(GameState gs, boolean showTerminal) {
-//        buttons.getTerminalButton().showHighlight( showTerminal );
-//    }
-
     /**
      * Highlight some buttons when their content is displayed.
      * 
@@ -156,9 +148,7 @@ public class GameControlsPane extends GUIPane implements GameStateListener {
                 buttons.getSaveButton().setDisable(false);
                 buttons.getSettingsButton().setDisable(false);
                 break;
-                
         }
-        
     }
 
     @Override
