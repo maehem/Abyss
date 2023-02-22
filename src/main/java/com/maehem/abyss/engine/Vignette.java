@@ -131,12 +131,16 @@ public abstract class Vignette extends ViewPane {
         // Example: Player left through right door and you want them to appear in the next
         // vignette's left side.
         if (prevPort != null && prevPort.getPlayerX() >= 0 && prevPort.getPlayerY() >= 0) {
-            LOGGER.log(Level.INFO, "set player xy override: {0},{1}", new Object[]{prevPort.getPlayerX(), prevPort.getPlayerY()});
+            LOGGER.log(Level.FINE, "set player xy override: {0},{1}", new Object[]{prevPort.getPlayerX(), prevPort.getPlayerY()});
             setPlayerPosition(new Point2D(prevPort.getPlayerX(), prevPort.getPlayerY()));
             player.setDirection(prevPort.getPlayerDir());
         } else {
-            //LOGGER.log(Level.INFO, "Set player position to: {0},{1}", new Object[]{0.5, 0.66});
-            setPlayerPosition(new Point2D(0.5, 0.66));
+            Point2D pp = getDefaultPlayerPosition();
+            LOGGER.log(Level.FINER, 
+                    "Set default player position to: {0},{1}", 
+                    new Object[]{pp.getX(), pp.getY()}
+            );
+            setPlayerPosition(pp);
             player.setDirection(PoseSheet.Direction.TOWARD);
         }
 
@@ -167,6 +171,8 @@ public abstract class Vignette extends ViewPane {
     protected abstract void loop();
 
     public abstract String getPropName();
+    
+    public abstract Point2D getDefaultPlayerPosition();
 
     public final GameState getGameState() {
         return gameState;
