@@ -52,6 +52,7 @@ public final class GameState extends Properties {
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
     public static final String PROP_CURRENT_DATE = "game.date";
+    public static final String EPHEMERAL_KEY = "ephemeral";  // Temp state that is not saved in a file.
 
     private static final String START_DATE = "2057/02/01 05:01";
 
@@ -68,6 +69,8 @@ public final class GameState extends Properties {
     private final ArrayList<NewsStory> news = new ArrayList<>();
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
+    private final Properties ephemerals = new Properties();
+    
     private SitesList sites;
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
 
@@ -162,6 +165,8 @@ public final class GameState extends Properties {
     public String getProperty(String key) {
         if (key.startsWith(Player.PLAYER_KEY)) {
             return player.getProperty(key);
+        } if (key.startsWith(EPHEMERAL_KEY)) {
+            return ephemerals.getProperty(key);
         } else {
             return super.getProperty(key);
         }
@@ -261,13 +266,36 @@ public final class GameState extends Properties {
 
     @Override
     public synchronized Object setProperty(String key, String value) {
-        Object prevVal = super.setProperty(key, value);
+        Object prevVal;
+        if (key.startsWith(EPHEMERAL_KEY)) {
+            prevVal = ephemerals.setProperty(key, value);
+        } else {
+            prevVal = super.setProperty(key, value);
+        }
+        
         for (GameStateListener l : listeners) {
             l.gameStatePropertyChanged(this, key);
         }
-
         return prevVal;
     }
+
+    @Override
+    public synchronized Object remove(Object key) {
+        Object prevVal;
+        String kkey = (String) key;
+        if (kkey.startsWith(EPHEMERAL_KEY)) {
+            prevVal = ephemerals.remove(key);
+        } else {
+            prevVal = super.remove(key);
+        }
+        
+        for (GameStateListener l : listeners) {
+            l.gameStatePropertyChanged(this, kkey);
+        }
+        return prevVal;
+    }
+    
+    
 
     // TODO:  Listener is misspelled.
     public void addListenter(GameStateListener l) {
@@ -385,7 +413,7 @@ public final class GameState extends Properties {
     }
 
     public void setCurrentTerminal(BBSTerminal term) {
-        LOGGER.log(Level.INFO, "Terminal changed from:{0} to: {1}",
+        LOGGER.log(Level.CONFIG, "Terminal changed from:{0} to: {1}",
                 new Object[]{
                     currentTerminal.getClass().getSimpleName(),
                     term.getClass().getSimpleName()
