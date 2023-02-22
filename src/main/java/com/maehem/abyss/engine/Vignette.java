@@ -149,9 +149,6 @@ public abstract class Vignette extends ViewPane {
         debugHearingBounds(showHearing);
 
         setOnMouseClicked((event) -> {
-//            if (dialogOverlay == null) { // As long as dialog is not showing.
-//                player.walkToward(event.getX(), event.getY(), walkArea);
-//            }
             if (dialogPane == null || !dialogPane.isVisible() ) { // As long as dialog is not showing.
                 player.walkToward(event.getX(), event.getY(), walkArea);
             }
