@@ -204,7 +204,7 @@ public class Character extends Group {
         showTalkIcon(false);
     }
     
-    public void moveRight(int i, Shape safeZone) {
+    public boolean moveRight(int i, Shape safeZone) {
         // Try moving our shape to the new location.
         setLayoutX(getLayoutX() + i);
 
@@ -212,38 +212,46 @@ public class Character extends Group {
         if (Shape.intersect(feetBoundary, safeZone).getBoundsInLocal().getWidth() > 0) {
             getPoseSheet().setDirection(PoseSheet.Direction.RIGHT);
             getPoseSheet().nextPose();
+            return true;
         } else {
             setLayoutX(getLayoutX() - i); // Nope. Put it back
+            return false;
         }
     }
 
-    public void moveLeft(int i, Shape safeZone) {
+    public boolean moveLeft(int i, Shape safeZone) {
         setLayoutX(getLayoutX() - i);
         if (Shape.intersect(feetBoundary, safeZone).getBoundsInLocal().getWidth() > 0) {
             getPoseSheet().setDirection(PoseSheet.Direction.LEFT);
             getPoseSheet().nextPose();
+            return true;
         } else {
             setLayoutX(getLayoutX() + i); // Put it back
+            return false;
         }
     }
 
-    public void moveUp(int i, Shape safeZone) {
+    public boolean moveUp(int i, Shape safeZone) {
         setLayoutY(getLayoutY() - i);
         if (Shape.intersect(feetBoundary, safeZone).getBoundsInLocal().getWidth() > 0) {
             getPoseSheet().setDirection(PoseSheet.Direction.AWAY);
             getPoseSheet().nextPose();
+            return true;
         } else {
             setLayoutY(getLayoutY() + i); // Put it back
+            return false;
         }
     }
 
-    public void moveDown(int i, Shape safeZone) {
+    public boolean moveDown(int i, Shape safeZone) {
         setLayoutY(getLayoutY() + i);
         if (Shape.intersect(feetBoundary, safeZone).getBoundsInLocal().getWidth() > 0) {
             getPoseSheet().setDirection(PoseSheet.Direction.TOWARD);
             getPoseSheet().nextPose();
+            return true;
         } else {
             setLayoutY(getLayoutY() - i); // Put it back
+            return false;
         }
     }
 
@@ -336,20 +344,32 @@ public class Character extends Group {
 
                 // Figure out if we are moving left or right
                 if (getLayoutX() < x) {
-                    LOGGER.finest("Moving Right");
-                    moveRight(12, pBounds);
+                    if (moveRight(12, pBounds)) {
+                        LOGGER.finest("Moved Right");
+                    } else {
+                        stopAnimating();
+                    }
                 } else if (getLayoutX() > x) {
-                    LOGGER.finest("Moving Left");
-                    moveLeft(12, pBounds);
+                    if ( moveLeft(12, pBounds) ) {
+                        LOGGER.finest("Moved Left");
+                    } else {
+                        stopAnimating();
+                    }
                 }
 
                 // Figure out if we are moving up or down
                 if (getLayoutY() < y) {
-                    LOGGER.finest("Moving Down");
-                    moveDown(4, pBounds);
+                    if ( moveDown(4, pBounds) ) {
+                        LOGGER.finest("Moved Down");
+                    } else {
+                        stopAnimating();
+                    }
                 } else if (getLayoutY() > y) {
-                    LOGGER.finest("Moving Up");
-                    moveUp(4, pBounds);
+                    if ( moveUp(4, pBounds) ) {
+                        LOGGER.finest("Moved Up");
+                    } else {
+                        stopAnimating();
+                    }
                 }
 
                 lastTime = now;
