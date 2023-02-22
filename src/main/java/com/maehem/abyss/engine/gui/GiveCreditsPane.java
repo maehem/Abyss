@@ -18,10 +18,8 @@ package com.maehem.abyss.engine.gui;
 
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.GameState;
-import com.maehem.abyss.engine.Player;
 import com.maehem.abyss.engine.view.ViewPane;
 import java.util.logging.Level;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -93,7 +91,7 @@ public class GiveCreditsPane extends BorderPane {
         // TODO bind value field proper value to okButton enabled.
         
         okButton.setOnAction((t) -> {
-            LOGGER.log(Level.INFO, "Give amount: " + giveAmountField.getText());
+            LOGGER.log(Level.INFO, "Give amount: {0}", giveAmountField.getText());
             try {
                 if (successAction == null) {
                     LOGGER.warning("GiveCreditsPane: Success action is null!");
@@ -124,8 +122,8 @@ public class GiveCreditsPane extends BorderPane {
     /**
      * 
      * @param amount to deduct from player account.
-     * @param key to set in GameState upon success
-     * @param val value for key to setin GameState upon success.
+     * @param titleString text to display at top of popup
+     * @param successAction execute this code on proper @amount given.
      */
     public void show( int amount, String titleString, EventHandler successAction ) {
         giveAmountField.setText(String.valueOf(amount));
