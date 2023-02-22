@@ -28,6 +28,7 @@ import javafx.scene.layout.VBox;
  */
 public class GUIButtonsPane extends DecoBox {
     private final static double BUTTON_SIZE = 48;
+    private final static double MONEY_WIDGET_SIZE = 30;
 
     private final String INV_ICON_PATH = "/icons/inventory-icon.png";
     private final String CHIP_ICON_PATH = "/icons/microchip-icon.png";
@@ -51,7 +52,7 @@ public class GUIButtonsPane extends DecoBox {
     public GUIButtonsPane() {
         setPrefWidth(300);
         
-        money = new DSEG7Display(0, 0, 200, 30, '$', "1234567890");
+        money = new DSEG7Display(0, 0, 200, MONEY_WIDGET_SIZE, '$', "1234567890");
         FlowPane moneyPane = new FlowPane(money);
         moneyPane.setAlignment(Pos.CENTER);
         
