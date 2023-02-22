@@ -166,6 +166,11 @@ public class Character extends Group {
         getChildren().add(getHearingBoundary());        
     }
     
+    public void setAllowTalk(boolean allow ) {
+        this.allowTalk = allow;
+        this.setTalking(false);
+    }
+    
     final void initTalkIcon() {
         double clipW = getPoseSheet().getWidth();
         
@@ -180,12 +185,20 @@ public class Character extends Group {
         
         getChildren().add(talkIcon);    
         
+        
+//        talkIcon.setOnMouseClicked((event) -> {
+//            LOGGER.log(Level.WARNING, "Opacity = {0}", talkIcon.getOpacity());
+//            event.consume();
+//            if ( talkIcon.getOpacity() > 0.0 ) {
+//                setTalking(true);
+//            }
+//        });
         talkIcon.setOnMouseClicked((event) -> {
-            LOGGER.log(Level.WARNING, "Opacity = {0}", talkIcon.getOpacity());
+            LOGGER.log(Level.WARNING, "Talk Icon clicked");
             event.consume();
-            if ( talkIcon.getOpacity() > 0.0 ) {
-                setTalking(true);
-            }
+            //if ( talkIcon.getOpacity() > 0.0 ) {
+                if ( allowTalk ) setTalking(true);
+            //}
         });
         
         showTalkIcon(false);
@@ -256,6 +269,7 @@ public class Character extends Group {
     }
     
     public boolean canHear(Shape s) {
+        if ( !allowTalk ) return false;
         return Shape.intersect(getHearingBoundary(), s).getBoundsInLocal().getWidth() > 0;
     }
 
@@ -268,10 +282,20 @@ public class Character extends Group {
     }
     
     public void showTalkIcon(boolean show) {
-        talkIcon.setOpacity(show ? 1.0 : 0.0);
+//        talkIcon.setOpacity(show ? 1.0 : 0.0);
+//        if ( !show ) {
+//            setTalking(false);
+//        }
+
+        if ( allowTalk ) {
+            talkIcon.setVisible(show);
+        } else {
+            talkIcon.setVisible(false);
+        }
         if ( !show ) {
             setTalking(false);
         }
+
     }
     
     public void stopAnimating() {
@@ -377,10 +401,17 @@ public class Character extends Group {
      * @param talking the talking to set
      */
     public void setTalking(boolean talking) {
-        if ( talking != this.talking ) {
-            LOGGER.log(Level.INFO, "Talking to NPC [{0}] set to {1}", new Object[]{getName(), talking});
-        }
-        this.talking = talking;
+        if (allowTalk) {
+            if (talking != this.talking) {
+                LOGGER.log(Level.INFO, "Talking to NPC [{0}] set to {1}", new Object[]{getName(), talking});
+            }
+            this.talking = talking;
+        } else {
+            if ( talking ) {
+                LOGGER.log(Level.WARNING, "Tried to set talk on character " + getName() + " they are not allowed to talk!");
+            }
+            this.talking = false;
+       }
     }
 
     /**
