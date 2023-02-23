@@ -26,13 +26,14 @@ import javafx.scene.shape.Rectangle;
  * @author Mark J Koch [@maehem on GitHub]
  */
 public class VignetteTrigger extends TriggerShape {
-    
+
     public static final boolean SHOW_TRIGGER = true;
     
     private String destination;
     private double playerX = -1;
     private double playerY = -1;
     private Direction playerDir;
+    private boolean locked = false;
 
     public VignetteTrigger(String vingette) {
         // Dummy Port for providing a default vignette. (like at game start)
@@ -99,6 +100,20 @@ public class VignetteTrigger extends TriggerShape {
      */
     public void setPlayerDir(Direction playerDir) {
         this.playerDir = playerDir;
+    }
+    
+    /**
+     * @return the locked
+     */
+    public boolean isLocked() {
+        return locked;
+    }
+
+    /**
+     * @param locked the locked to set
+     */
+    public void setLocked(boolean locked) {
+        this.locked = locked;
     }
     
     public final void setIconNode( double offX, double offY ) {

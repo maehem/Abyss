@@ -24,9 +24,11 @@ import com.maehem.abyss.engine.bbs.PublicTerminalSystem;
 import com.maehem.abyss.engine.gui.GiveCreditsPane;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.logging.Level;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -47,6 +49,8 @@ import javafx.scene.text.Text;
 public abstract class Vignette extends ViewPane {
 
     public static final String PROP_PREFIX = "vignette.";
+    public enum RoomState { VISITED, LOCKED }
+    
     public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
     public static final double DEFAULT_HORIZON = 0.24;  // Place horizon this far down from screen top.  0.0 - 1.0
     //public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
@@ -160,6 +164,9 @@ public abstract class Vignette extends ViewPane {
         getChildren().add(giveCredits);
         giveCredits.setVisible(false);
         
+        String prefix = PROP_PREFIX + getPropName();
+        getGameState().setProperty(prefix, RoomState.VISITED.name());        
+        
         LOGGER.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
@@ -167,7 +174,10 @@ public abstract class Vignette extends ViewPane {
 
     protected abstract void loop();
 
-    public abstract String getPropName();
+    //public abstract String getPropName();
+    public String getPropName() {
+        return getClass().getSimpleName();
+    }
     
     public abstract Point2D getDefaultPlayerPosition();
 
@@ -190,7 +200,6 @@ public abstract class Vignette extends ViewPane {
      */
     protected final VignetteTrigger processEvents(ArrayList<String> input) {
 
-//        if (dialogOverlay == null) {
         if (dialogPane == null || !dialogPane.isVisible() ) {
             if (!input.isEmpty()) {
                 LOGGER.log(Level.FINE, "vignette process input event:  {0}", input.toString());
@@ -207,13 +216,18 @@ public abstract class Vignette extends ViewPane {
             });
 
             for (VignetteTrigger door : doors) {
-                boolean playerExited = player.colidesWith(door.getTriggerShape());
-                door.updateTriggerState(playerExited);
-                if (playerExited) {
-                    // Return the players pose skin back to default.
-                    getPlayer().useDefaultSkin();
-                    LOGGER.config("player triggered door.");
-                    return door;
+                boolean playerTriggered = player.colidesWith(door.getTriggerShape());
+                door.updateTriggerState(playerTriggered);
+                
+                if (playerTriggered) {
+                    if (!door.isLocked()) {
+                        // Return the players pose skin back to default.
+                        getPlayer().useDefaultSkin();
+                        LOGGER.config("player triggered door.");
+                        return door;
+                    } else {
+                        LOGGER.log(Level.INFO, "Door to {0} is locked.", door.getDestination());
+                    }
                 }
             }
 
@@ -679,7 +693,7 @@ public abstract class Vignette extends ViewPane {
         player.saveState(p);
         // save local settings
         String prefix = PROP_PREFIX + getPropName();
-        p.setProperty(prefix, "visited");
+//        p.setProperty(prefix, "visited");
         // Gather any custom value from subclass and store those too.
         Properties childProperties = saveProperties();
         childProperties.forEach(
@@ -691,15 +705,31 @@ public abstract class Vignette extends ViewPane {
 
     public void loadState(Properties p) {
         // load vignette parent properties.
-
 //        if (!p.containsKey(PROP_PREFIX + getPropName())) {
 //            // Pop the narration pane if this vignette has never been saved.
 //            // which means the player has not yet been here.
 //            narrationPane.pop();
 //        }
 
+        // Check for doors that are marked as locked.
+        p.entrySet().forEach((t) -> {
+            String key = (String) t.getKey();
+            String prefix = PROP_PREFIX + getPropName() + ".door";
+            if ( key.startsWith(prefix)) {
+                String val = (String)t.getValue();
+                //LOGGER.log(Level.WARNING, "Found key [{0}] = {1}", new Object[]{key, val});
+                String doorName = key.substring(prefix.length() + 1);
+                //LOGGER.log(Level.INFO, "    ====> Door Name: [{0}]", doorName);
+                doors.forEach((d) -> {
+                    if ( d.getDestination().equals(doorName) ) {
+                        d.setLocked(val.equals(Vignette.RoomState.LOCKED.name()));
+                    }
+                });
+            }
+        });
+        
         // load child properties
-        loadProperties(p);
+        loadProperties(p); // Overridden by sub-class.
     }
 
     /**
