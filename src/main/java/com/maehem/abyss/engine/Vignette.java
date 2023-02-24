@@ -40,6 +40,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
@@ -554,14 +555,17 @@ public abstract class Vignette extends ViewPane {
             //String yS = String.format(String.valueOf(pY), "%4.0f" );
             String xS = String.valueOf((int)pX);
             String yS = String.valueOf((int)pY);
-            String xP = String.format(String.valueOf(pX/getWidth()), "%4.3f" );
-            String yP = String.format(String.valueOf(pY/getHeight()), "%4.3f" );
+            //String xP = String.format(String.valueOf(pX/getWidth()), "%4.3f" );
+            //String yP = String.format(String.valueOf(pY/getHeight()), "%4.3f" );
+            String xP = String.format("%4.3f", pX/getWidth()  );
+            String yP = String.format("%4.3f", pY/getHeight() );
             
             Text t = new Text(
                     vX, vY,
                     xS + "," + yS + " (" +  xP + "," + yP + ")"
             );
             t.setFill(Color.LIGHTGREEN);
+            t.setFont(Font.font(14));
             walkAreaCoords.getChildren().add(t);
         }
 
