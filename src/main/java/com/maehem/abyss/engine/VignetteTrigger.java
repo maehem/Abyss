@@ -117,7 +117,7 @@ public class VignetteTrigger extends TriggerShape {
     }
     
     public final void setIconNode( double offX, double offY ) {
-        Rectangle r = new Rectangle(getPrefWidth(), getPrefHeight(), new Color(1.0,1.0,1.0,0.3));
+        Rectangle r = new Rectangle(getPrefWidth(), getPrefHeight(), new Color(1.0,1.0,1.0,0.2));
         getIcon().getChildren().clear();
         getIcon().getChildren().add(r);
         getIcon().setLayoutX(offX);
