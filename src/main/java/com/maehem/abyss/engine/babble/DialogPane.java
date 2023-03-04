@@ -61,7 +61,8 @@ public class DialogPane extends BorderPane {
     private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.9);
     private final static Color DROP_COLOR_AB = new Color(0.0, 0.0, 0.0, 0.4);
     private final static double DROP_SPREAD = 50.0;
-    private final double CAMEO_H = 180;
+    private static final double CAMEO_H = 180;
+    private static final String CLOSE_X_PATH = "/ui/panel-close-x.png";
 
     private final ArrayList<DialogSheet2> dialogList = new ArrayList<>();
     private DialogSheet2 currentDialogSheet;
@@ -181,13 +182,12 @@ public class DialogPane extends BorderPane {
         AnchorPane.setLeftAnchor(cameoViewPane, 0.0);
         AnchorPane.setBottomAnchor(cameoViewPane, 0.0);
 
+        ImageView closeX = new ImageView(new Image(getClass().getResourceAsStream(CLOSE_X_PATH)));
         // Close Dialog control 'X' (upper right of pane.)
-        Rectangle closeRect = new Rectangle(40, 40, Color.RED);
-        //closeRect.setX(getPrefWidth()-40);
-        //closeRect.setY(0);
-        AnchorPane.setRightAnchor(closeRect, 0.0);
-        AnchorPane.setBottomAnchor(closeRect, 0.0);
-        closeRect.setOnMouseClicked((event) -> {
+        //Rectangle closeRect = new Rectangle(40, 40, Color.RED);
+        AnchorPane.setRightAnchor(closeX, 0.0);
+        AnchorPane.setBottomAnchor(closeX, 0.0);
+        closeX.setOnMouseClicked((event) -> {
             event.consume();
             doCloseDialog();
             //npc.setTalking(false);
@@ -197,7 +197,7 @@ public class DialogPane extends BorderPane {
         });
 
         //cameoViewPane.getChildren().add(cameoFrame);
-        AnchorPane topArea = new AnchorPane(cameoViewPane, closeRect);
+        AnchorPane topArea = new AnchorPane(cameoViewPane, closeX);
         setTop(topArea);
         setCenter(leftArea);
         setRight(answerButtonsBox);
