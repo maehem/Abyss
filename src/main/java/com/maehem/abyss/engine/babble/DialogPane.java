@@ -56,7 +56,8 @@ import javafx.scene.text.TextFlow;
  */
 public class DialogPane extends BorderPane {
 
-    public final static double FONT_SIZE = 33;
+    public final static String FONT_PATH = "/fonts/PatrickHand-Regular.ttf";
+    public final static double FONT_SIZE = 38;
     private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.9);
     private final static Color DROP_COLOR_AB = new Color(0.0, 0.0, 0.0, 0.4);
     private final static double DROP_SPREAD = 50.0;
@@ -69,6 +70,9 @@ public class DialogPane extends BorderPane {
     private boolean actionDone;
     private final Character npc;
     private Player player;
+    private final Font DIALOG_FONT;
+    private final Font DIALOG_NAME_FONT;
+    private final Font ANSWER_FONT;
 
     //private final FlowPane dialogPane = new FlowPane();
 //    private double width=0;
@@ -95,6 +99,9 @@ public class DialogPane extends BorderPane {
 
     public DialogPane(Character npc) {
         this.npc = npc;
+        this.DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
+        this.DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE*1.3);
+        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE*0.7);
         setPrefSize(ViewPane.WIDTH * 0.7, ViewPane.HEIGHT * 0.8);
         setMinSize(ViewPane.WIDTH * 0.7, ViewPane.HEIGHT * 0.8);
         setLayoutX(ViewPane.WIDTH * 0.15);
@@ -104,16 +111,19 @@ public class DialogPane extends BorderPane {
 
         HBox nameBox = new HBox(nameText);
         nameBox.setPadding(new Insets(FONT_SIZE / 2));
-        nameText.setFont(Font.font(FONT_SIZE * 1.3));
+        nameText.setFont(DIALOG_NAME_FONT);
         nameText.setText(npc.getName());
-
-        dialogText.setFont(Font.font(FONT_SIZE));
+        nameBox.setAlignment(Pos.CENTER);
+        
+        dialogText.setFont(DIALOG_FONT);
 
         TextFlow dialogTextFlow = new TextFlow(dialogText);
-        dialogTextFlow.setPadding(new Insets(FONT_SIZE));
+        dialogTextFlow.setPadding(new Insets(0,FONT_SIZE,0,FONT_SIZE));
         dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
+        dialogTextFlow.setLineSpacing(-FONT_SIZE*0.33);
         //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
         VBox leftArea = new VBox(nameBox, dialogTextFlow);
+        leftArea.setAlignment(Pos.TOP_CENTER);
         leftArea.setFillWidth(true);
         leftArea.setBackground(new Background(new BackgroundFill(
                 Color.GRAY,
@@ -329,15 +339,16 @@ public class DialogPane extends BorderPane {
         });
     }
 
-    private static Button responseButton(DialogResponse2 response) {
+    private Button responseButton(DialogResponse2 response) {
         Text bText = new Text(response.getText());
         bText.setWrappingWidth(ViewPane.WIDTH * 0.27);
+        bText.setTextAlignment(TextAlignment.CENTER);
         //Button b = new Button(response.getText());
         Button b = new Button("",bText);
-        b.setFont(Font.font(FONT_SIZE * 0.7));
-        bText.setFont(Font.font(FONT_SIZE * 0.8));
+        //b.setFont(Font.font(FONT_SIZE * 0.7));
+        bText.setFont(ANSWER_FONT);
         b.setBorder(new Border(
-                new BorderStroke(Color.RED,
+                new BorderStroke(Color.MAGENTA.darker().darker(),
                         BorderStrokeStyle.SOLID,
                         new CornerRadii(FONT_SIZE / 2),
                         new BorderWidths(2)
