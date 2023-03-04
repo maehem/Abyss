@@ -42,7 +42,7 @@ public class Character extends Group {
     private static final String TALK_ICON_IMAGE_FILENAME = "/icons/talk-icon.png";
 
     public static final int INVENTORY_SIZE = 35;
-    //public static final double SHEET_SCALE = 0.5;
+    private static final double CAMEO_H = 120;
     
     private final ArrayList<Thing> inventory = new ArrayList<>(INVENTORY_SIZE);
 
@@ -63,6 +63,8 @@ public class Character extends Group {
     private double originX;
     private double originY;
     private final DialogPane dialogPane;
+    //private ImageView cameoView;
+    private Image cameoImage;
 
     public Character() {
         this("???");        
@@ -456,7 +458,19 @@ public class Character extends Group {
         setDefaultHearingBoundary();
         initTalkIcon();
     }
+    
+    public void setCameo(InputStream is) {
+        //cameoView = new ImageView(new Image(is));
+        //cameoView.setFitHeight(CAMEO_H);
+        //cameoView.setPreserveRatio(true);
+        cameoImage = new Image(is);
+        dialogPane.setCameo(cameoImage);
+    }
 
+    public Image getCameo() {
+        return cameoImage;
+    }
+    
     void setDirection(PoseSheet.Direction playerDir) {
         getPoseSheet().setDirection(playerDir); 
     }

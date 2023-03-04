@@ -16,15 +16,19 @@
  */
 package com.maehem.abyss.engine.babble;
 
+import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.Character;
 import com.maehem.abyss.engine.Player;
 import com.maehem.abyss.engine.VignetteTrigger;
 import com.maehem.abyss.engine.view.ViewPane;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -36,6 +40,8 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -50,8 +56,11 @@ import javafx.scene.text.TextFlow;
  */
 public class DialogPane extends BorderPane {
 
-    public final static double FONT_SIZE = 30;
-    public final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.7);
+    public final static double FONT_SIZE = 33;
+    private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.9);
+    private final static Color DROP_COLOR_AB = new Color(0.0, 0.0, 0.0, 0.4);
+    private final static double DROP_SPREAD = 50.0;
+    private final double CAMEO_H = 180;
 
     private final ArrayList<DialogSheet2> dialogList = new ArrayList<>();
     private DialogSheet2 currentDialogSheet;
@@ -81,6 +90,8 @@ public class DialogPane extends BorderPane {
             + "Dialog Text. Hello. I am a pretty pony."
     );
     private final VBox answerButtonsBox = new VBox();
+    private ImageView cameoView;
+    private final Pane cameoViewPane;
 
     public DialogPane(Character npc) {
         this.npc = npc;
@@ -89,7 +100,7 @@ public class DialogPane extends BorderPane {
         setLayoutX(ViewPane.WIDTH * 0.15);
         setLayoutY(ViewPane.HEIGHT * 0.1);
         //setBackground(new Background(new BackgroundFill(Color.GRAY, new CornerRadii(20), Insets.EMPTY)));
-        setEffect(new DropShadow(40, DROP_COLOR));
+        setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
 
         HBox nameBox = new HBox(nameText);
         nameBox.setPadding(new Insets(FONT_SIZE / 2));
@@ -127,7 +138,8 @@ public class DialogPane extends BorderPane {
         answerButtonsBox.setPadding(new Insets(FONT_SIZE / 2.0));
         answerButtonsBox.setSpacing(FONT_SIZE / 2.0);
         answerButtonsBox.setAlignment(Pos.CENTER);
-        answerButtonsBox.setEffect(new DropShadow(30, 0, 0, DROP_COLOR));
+        //answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, 0, 0, DROP_COLOR));
+        answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR_AB));
         // 
 //        BorderPane answerPane = new BorderPane(answerButtonsBox);
 //        answerPane.setPrefSize(getPrefWidth()*0.4, getPrefHeight());
@@ -135,20 +147,29 @@ public class DialogPane extends BorderPane {
 //        answerPane.setBackground(new Background(new BackgroundFill(Color.GOLD, CornerRadii.EMPTY, Insets.EMPTY)));
 
         //HBox hBox = new HBox(leftArea, answerButtonsBox);
-        setCenter(leftArea);
-        setRight(answerButtonsBox);
 
         // Image of NPC as cameo cropped view
         ImageView npcView = npc.getPoseSheet().getCameo();
-        npcView.setY(-npcView.getBoundsInLocal().getHeight());
-        npcView.setX(0);
+        cameoView = new ImageView(npc.getCameo());
+        if ( cameoView == null ) {
+            LOGGER.log(Level.INFO, "NPC cameo was null.");
+            cameoView = npcView;
+        }
+        //npcView.setY(-npcView.getBoundsInLocal().getHeight());
+        npcView.setY(0);
+        npcView.setX(-CAMEO_H/2);
+        npcView.setFitHeight(CAMEO_H);
+        npcView.setPreserveRatio(true);
 
-        Rectangle cameoFrame = new Rectangle(npcView.getX(), npcView.getY(), npcView.getViewport().getWidth(), npcView.getViewport().getHeight());
-        cameoFrame.setStrokeWidth(10.0);
-        cameoFrame.setStroke(Color.DARKGREEN);
-        cameoFrame.setFill(Color.TRANSPARENT);
-        AnchorPane.setLeftAnchor(cameoFrame, 0.0);
-        AnchorPane.setBottomAnchor(cameoFrame, 0.0);
+        cameoViewPane = new StackPane(npcView);
+        cameoViewPane.setPrefSize(CAMEO_H, CAMEO_H);
+        cameoViewPane.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
+        //Rectangle cameoFrame = new Rectangle(npcView.getX(), npcView.getY(), npcView.getViewport().getWidth(), npcView.getViewport().getHeight());
+        //cameoFrame.setStrokeWidth(10.0);
+        //cameoFrame.setStroke(Color.DARKGREEN);
+        //cameoFrame.setFill(Color.TRANSPARENT);
+        AnchorPane.setLeftAnchor(cameoViewPane, 0.0);
+        AnchorPane.setBottomAnchor(cameoViewPane, 0.0);
 
         // Close Dialog control 'X' (upper right of pane.)
         Rectangle closeRect = new Rectangle(40, 40, Color.RED);
@@ -165,10 +186,25 @@ public class DialogPane extends BorderPane {
             //setActionDone(false);
         });
 
-        AnchorPane topArea = new AnchorPane(cameoFrame, closeRect);
+        //cameoViewPane.getChildren().add(cameoFrame);
+        AnchorPane topArea = new AnchorPane(cameoViewPane, closeRect);
         setTop(topArea);
+        setCenter(leftArea);
+        setRight(answerButtonsBox);
     }
 
+    public void setCameo( Image iv ) {
+        cameoView.setImage(iv);
+        cameoView.setViewport(new Rectangle2D(0, 0, iv.getWidth(), iv.getHeight()));
+        cameoView.setPreserveRatio(true);
+        cameoView.setFitHeight(CAMEO_H);
+        //cameoView.setX(0);
+        
+        cameoViewPane.getChildren().clear();
+        cameoViewPane.getChildren().add(cameoView);
+        
+    }
+        
 //    /**
 //     * Initialize the geometry of the dialog screen.  
 //     * Called by Vignette once the screen geometry is known.
@@ -294,8 +330,12 @@ public class DialogPane extends BorderPane {
     }
 
     private static Button responseButton(DialogResponse2 response) {
-        Button b = new Button(response.getText());
+        Text bText = new Text(response.getText());
+        bText.setWrappingWidth(ViewPane.WIDTH * 0.27);
+        //Button b = new Button(response.getText());
+        Button b = new Button("",bText);
         b.setFont(Font.font(FONT_SIZE * 0.7));
+        bText.setFont(Font.font(FONT_SIZE * 0.8));
         b.setBorder(new Border(
                 new BorderStroke(Color.RED,
                         BorderStrokeStyle.SOLID,
