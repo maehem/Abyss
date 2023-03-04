@@ -90,7 +90,7 @@ public class Engine extends Application implements GameStateListener {
 
     private static final int PRELOADER_SHOWTIME_MILLIS = 2000;
     // This is a class name.
-    private static final String STARTING_VIGNETTE = "StreetVignette2";
+    private static final String STARTING_VIGNETTE = "ChatsuboBarVignette";
 
     private Stage window;
     private Loop loop;   // Game logic Loop
