@@ -93,31 +93,6 @@ public class Character extends Group {
         //dialogScreen = new DialogScreen(this);
         dialogPane = new DialogPane(this);
     }
-
-//    private Node bindBox( String label, DoubleProperty n1, DoubleProperty n2 ) {
-//        Color fill = Color.WHITESMOKE;
-//        Font f = new Font(4.0);
-//        
-//        Text labelText = new Text(label + ": ");
-//        labelText.setFont(f);
-//        labelText.setFill(fill);
-//        
-//        Text n1Text = new Text();
-//        n1Text.textProperty().bind(n1.asString());
-//        n1Text.setFont(f);
-//        n1Text.setFill(fill);
-//        
-//        Text comma = new Text(",");
-//        comma.setFill(fill);
-//        comma.setFont(f);
-//        
-//        Text n2Text = new Text();
-//        n2Text.textProperty().bind(n2.asString());
-//        n2Text.setFill(fill);
-//        n2Text.setFont(f);
-//        
-//        return new HBox(labelText, n1Text, comma, n2Text);
-//    }
         
     /**
      * Translate the character image so that the center (layoutX/Y)
@@ -187,14 +162,6 @@ public class Character extends Group {
         
         getChildren().add(talkIcon);    
         
-        
-//        talkIcon.setOnMouseClicked((event) -> {
-//            LOGGER.log(Level.WARNING, "Opacity = {0}", talkIcon.getOpacity());
-//            event.consume();
-//            if ( talkIcon.getOpacity() > 0.0 ) {
-//                setTalking(true);
-//            }
-//        });
         talkIcon.setOnMouseClicked((event) -> {
             LOGGER.log(Level.WARNING, "Talk Icon clicked");
             event.consume();
@@ -262,15 +229,6 @@ public class Character extends Group {
         setScaleX(scale);
         setScaleY(scale);
         updateOrigin();
-
-//        Bounds b = getBoundsInParent();
-//        LOGGER.log(Level.CONFIG, "scale: {0}  lay:{1},{2}  tran:{3},{4}  size:{5}x{6}", 
-//                new Object[]{getScaleX(), 
-//                    getLayoutX(),getLayoutY(), 
-//                    getTranslateX(), getTranslateY(),
-//                    b.getWidth(), b.getHeight()
-//                }
-//        );
     }
 
     public boolean colidesWith(Shape s) {
@@ -292,11 +250,6 @@ public class Character extends Group {
     }
     
     public void showTalkIcon(boolean show) {
-//        talkIcon.setOpacity(show ? 1.0 : 0.0);
-//        if ( !show ) {
-//            setTalking(false);
-//        }
-
         if ( allowTalk ) {
             talkIcon.setVisible(show);
         } else {
@@ -305,7 +258,6 @@ public class Character extends Group {
         if ( !show ) {
             setTalking(false);
         }
-
     }
     
     public void stopAnimating() {
