@@ -45,7 +45,7 @@ public class PoseSheet extends ImageView {
     }   
 
     public final void setDefaultSheet() {
-        setSkin( PoseSheet.class.getResourceAsStream("/walk/pose-sheet.png"), 04, 12);                
+        setSkin( PoseSheet.class.getResourceAsStream("/walk/pose-sheet-manequin.png"), 04, 12);                
     }
     
     public double getHeight() {
