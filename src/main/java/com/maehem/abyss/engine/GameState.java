@@ -46,6 +46,7 @@ public final class GameState extends Properties {
     private String shortName;
     private String longName;
     private String version;
+    private PublicTerminalSystem publicTerminal;
 
     public enum Display { SPLASH, INVENTORY, CHIPS, TERMINAL, VIGNETTE, MATRIX }
     
@@ -152,7 +153,8 @@ public final class GameState extends Properties {
         }
         setProperty(PROP_CURRENT_DATE, START_DATE);
         this.player = new Player(this);
-        this.currentTerminal = new PublicTerminalSystem(this);
+        this.publicTerminal = new PublicTerminalSystem(this);
+        this.currentTerminal = publicTerminal;
         //this.sites = new DefaultSitesList(this);
 
         currentMatrixSite = getSite(0x00305);
@@ -644,6 +646,10 @@ public final class GameState extends Properties {
 
     public EdgeMap getMatrixMap() {
         return matrixEdges;
+    }
+    
+    public BBSTerminal getPublicTerminal() {
+        return publicTerminal;
     }
 
 }

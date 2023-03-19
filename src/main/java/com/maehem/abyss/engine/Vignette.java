@@ -20,7 +20,6 @@ import com.maehem.abyss.engine.view.ViewPane;
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.babble.DialogPane;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
-import com.maehem.abyss.engine.bbs.PublicTerminalSystem;
 import com.maehem.abyss.engine.gui.GiveCreditsPane;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -222,10 +221,10 @@ public abstract class Vignette extends ViewPane {
                     if (!door.isLocked()) {
                         // Return the players pose skin back to default.
                         getPlayer().useDefaultSkin();
-                        LOGGER.config("player triggered door.");
+                        LOGGER.fine("player triggered door.");
                         return door;
                     } else {
-                        LOGGER.log(Level.INFO, "Door to {0} is locked.", door.getDestination());
+                        LOGGER.log(Level.FINE, "Door to {0} is locked.", door.getDestination());
                     }
                 }
             }
@@ -239,7 +238,7 @@ public abstract class Vignette extends ViewPane {
                     // If user clicks it:
                     // Tell gameState to enter matrix
                     if ( playerJackToMatrix || trig.isJacking() ) {
-                        LOGGER.config("player triggered matrix.");
+                        LOGGER.fine("player triggered matrix.");
                         playerJackToMatrix = false;
                         trig.setJacking(false);
                         gameState.setCurrentMatrixSite(
@@ -265,7 +264,7 @@ public abstract class Vignette extends ViewPane {
                         trig.setUsingTerminal(false);
                         Class<? extends BBSTerminal> destination = trig.getDestination();
                         if ( destination == null ) {
-                            gameState.setCurrentTerminal(new PublicTerminalSystem(gameState));
+                            gameState.setCurrentTerminal(gameState.getPublicTerminal());
                         } else {
                             // Load the class
                             gameState.setCurrentTerminal(BBSTerminal.createTerminal(destination, gameState));

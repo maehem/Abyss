@@ -181,7 +181,7 @@ public class Engine extends Application implements GameStateListener {
         
         // Terminal -- Base BBS style system
         terminalPane = new TerminalPane(gameState );
-        terminalPane.setTerminal(new PublicTerminalSystem(gameState), false);
+        terminalPane.setTerminal(gameState.getPublicTerminal(), false);
         
         // Deck Bench -- Configure your Deck with inventory components
         
@@ -340,12 +340,12 @@ public class Engine extends Application implements GameStateListener {
     }
 
     public void doSave() {
-        GameState gameState = getGameState();
+        GameState gs = getGameState();
         // Push all state values into game state.
-        gameState.getCurrentVignette().saveState(gameState);
+        gs.getCurrentVignette().saveState(gs);
 
         // Save the file.
-        gameState.quickSave();
+        gs.quickSave();
     }
 
     public void doExit() {

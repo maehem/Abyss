@@ -80,4 +80,20 @@ public class PublicTerminalSystem extends BBSTerminal {
         
     }
     
+    public BBSTerminal getBanking() {
+        return banking;
+    }
+    
+    public BBSTerminal getNews() {
+        return news;
+    }
+    
+    public BBSTerminal getBulletin() {
+        return bulletin;
+    }
+    
+    public BBSTerminal getHelp() {
+        return help;
+    }
+    
 }
