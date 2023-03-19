@@ -32,27 +32,38 @@ import javafx.scene.layout.VBox;
  */
 public class CityBanking extends BBSTerminal {
 
+    private final VBox content;
+
     public CityBanking(GameState gs) {
         super(gs);
         Player player = gs.getPlayer();
         
         setHeader(new BBSHeader(FONT, SiteHeader.BANK_CITY));
         
-        VBox content = new VBox();
+        content = new VBox();
+        updateContent(gs);
+        setBody(BBSTerminal.centeredNode(content));
+        setFooter(new BBSText(FONT,
+                  "Bank of the City"
+        ));
+    }
+
+    @Override
+    public void updateContent(GameState gs) {
+        super.updateContent(gs); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/OverriddenMethodBody
+
+        content.getChildren().clear();
         content.getChildren().add(new BBSText(FONT, 
-                "   Name: " + Player.PLAYER_NAME_LONG 
-                +"    ID: " + Player.PLAYER_ID ));
+                "   Name: " + gs.getPlayer().getName() +
+                "     ID: " + gs.getPlayer().getAccountId() ));
         content.getChildren().add(new BBSText(FONT, " "));
         content.getChildren().add(new BBSMoneyTransferWidget(FONT, gs));
         content.getChildren().add(new BBSText(FONT, " "));
         content.getChildren().add( 
                 new BBSGotoButton(FONT, "DONE", gs, PublicTerminalSystem.class)
         );
-        
-        setBody(BBSTerminal.centeredNode(content));
-        setFooter(new BBSText(FONT,
-                  "Bank of the City"
-        ));
     }
+    
+    
     
 }

@@ -47,7 +47,7 @@ public class Character extends Group {
     private final ArrayList<Thing> inventory = new ArrayList<>(INVENTORY_SIZE);
 
     private String name;
-    private long accountId;
+    private String accountId = "0000000"; // Only used by some characters.
     private PoseSheet poseSheet;
     private Rectangle feetBoundary;
     private Ellipse hearingBoundary;
@@ -68,13 +68,12 @@ public class Character extends Group {
     private Image cameoImage;
 
     public Character() {
-        this("???", 0l);        
+        this("???");        
     }
     
-    public Character( String name, long id ) {
+    public Character( String name ) {
         LOGGER.log(Level.CONFIG, "{0}: Create character: {1}", new Object[]{getClass().getSimpleName(), name});
         this.name = name;
-        this.accountId = id;
         
         // Fill the inventory with EmptyThing placeholders.
         for ( int i=0; i< INVENTORY_SIZE; i++ ) {
@@ -128,11 +127,11 @@ public class Character extends Group {
         
     }
     
-    public long getAccountId() {
+    public String getAccountId() {
         return accountId;
     }
     
-    public void setAccountId( long id ) {
+    public void setAccountId( String id ) {
         this.accountId = id;
     }
     
@@ -150,7 +149,8 @@ public class Character extends Group {
         getHearingBoundary().setStroke(Color.HONEYDEW);
         getHearingBoundary().setFill(Color.TRANSPARENT);
         
-        getChildren().add(getHearingBoundary());        
+        getChildren().add(getHearingBoundary());
+        showHearingBounds(false);
     }
     
     public void setAllowTalk(boolean allow ) {
