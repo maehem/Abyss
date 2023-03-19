@@ -47,6 +47,7 @@ public class Character extends Group {
     private final ArrayList<Thing> inventory = new ArrayList<>(INVENTORY_SIZE);
 
     private String name;
+    private long accountId;
     private PoseSheet poseSheet;
     private Rectangle feetBoundary;
     private Ellipse hearingBoundary;
@@ -67,12 +68,13 @@ public class Character extends Group {
     private Image cameoImage;
 
     public Character() {
-        this("???");        
+        this("???", 0l);        
     }
     
-    public Character( String name ) {
+    public Character( String name, long id ) {
         LOGGER.log(Level.CONFIG, "{0}: Create character: {1}", new Object[]{getClass().getSimpleName(), name});
         this.name = name;
+        this.accountId = id;
         
         // Fill the inventory with EmptyThing placeholders.
         for ( int i=0; i< INVENTORY_SIZE; i++ ) {
@@ -124,6 +126,14 @@ public class Character extends Group {
         setTranslateX( ((-pW + bW)/2 - bW * originX ));
         setTranslateY( ((-pH + bH)/2 - bH * originY ));
         
+    }
+    
+    public long getAccountId() {
+        return accountId;
+    }
+    
+    public void setAccountId( long id ) {
+        this.accountId = id;
     }
     
     public final void setDefaultHearingBoundary() {

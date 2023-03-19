@@ -594,6 +594,12 @@ public final class GameState extends Properties {
         this.messageIndex = idx;
     }
 
+    public void initHelp(ResourceBundle bundle) {
+        LOGGER.fine("Initialize Help System");
+
+        getPublicTerminal().getHelp().setBundle(bundle);
+    }
+
     public final MatrixSite addSite(MatrixSite site) {
         if ( siteExists(site.getIntAddress())) {
             LOGGER.log(Level.SEVERE,
@@ -648,7 +654,7 @@ public final class GameState extends Properties {
         return matrixEdges;
     }
     
-    public BBSTerminal getPublicTerminal() {
+    public PublicTerminalSystem getPublicTerminal() {
         return publicTerminal;
     }
 

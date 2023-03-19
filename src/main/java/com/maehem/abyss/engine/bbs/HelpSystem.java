@@ -40,7 +40,8 @@ public class HelpSystem extends BBSTerminal {
     private static final String BACK_BTN_TXT = "\u25c4\u25c4\u25c4 BACK";
     private static final String DONE_BTN_TXT = "DONE";
     
-    private final String bPath = "messages.bbs.help";
+    private final String bundlePath = "messages.bbs.help";
+    private ResourceBundle bundle = ResourceBundle.getBundle(bundlePath);
     private String currentKey = "help";
     private final GameState gameState;
     private final BBSTerminal parent;
@@ -59,10 +60,14 @@ public class HelpSystem extends BBSTerminal {
         ));
     }
     
+    public void setBundle( ResourceBundle bundle ) {
+        this.bundle = bundle;
+        updateContent(gameState);
+    }
+    
     @Override
     public final void updateContent(GameState gs) {
         try {
-            ResourceBundle bundle = ResourceBundle.getBundle(bPath);
             BBSText titleText = new BBSText(FONT, 
                     bundle.getString(currentKey + "." + "title"),
                     BBSText.Shade.LIGHTER
@@ -117,7 +122,7 @@ public class HelpSystem extends BBSTerminal {
         } catch (MissingResourceException ex) {
             LOGGER.log(Level.WARNING,
                     "Unable to locate help system resource bundle at: {0}", 
-                    bPath
+                    bundlePath
             );
 
             // TODO:  maybe load a default bundle here.

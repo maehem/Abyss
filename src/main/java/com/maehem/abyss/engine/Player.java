@@ -59,7 +59,7 @@ public class Player extends Character implements GameStateListener {
     private final GameState gameState;
 
     public Player(GameState gs) {
-        super(PLAYER_NAME_DEFAULT);
+        super(PLAYER_NAME_DEFAULT, PLAYER_ID);
         this.gameState = gs;
         gs.addListenter(this);
     }

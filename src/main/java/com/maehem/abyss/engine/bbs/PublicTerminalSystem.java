@@ -40,7 +40,7 @@ public class PublicTerminalSystem extends BBSTerminal {
     private final BBSTerminal banking;
     private final BBSTerminal news;
     private final BBSTerminal bulletin;
-    private final BBSTerminal help;
+    private final HelpSystem help;
     
     public PublicTerminalSystem(GameState gs) {
         super(gs);
@@ -92,7 +92,7 @@ public class PublicTerminalSystem extends BBSTerminal {
         return bulletin;
     }
     
-    public BBSTerminal getHelp() {
+    public HelpSystem getHelp() {
         return help;
     }
     
