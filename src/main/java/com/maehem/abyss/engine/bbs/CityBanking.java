@@ -36,7 +36,7 @@ public class CityBanking extends BBSTerminal {
         super(gs);
         Player player = gs.getPlayer();
         
-        setHeader(new BBSHeader(FONT, SiteHeader.BANK_MARZ));
+        setHeader(new BBSHeader(FONT, SiteHeader.BANK_CITY));
         
         VBox content = new VBox();
         content.getChildren().add(new BBSText(FONT, 
@@ -51,7 +51,7 @@ public class CityBanking extends BBSTerminal {
         
         setBody(BBSTerminal.centeredNode(content));
         setFooter(new BBSText(FONT,
-                  "Bank of the Mojave Area Residential Zone"
+                  "Bank of the City"
         ));
     }
     
