@@ -43,8 +43,8 @@ public class Player extends Character implements GameStateListener {
     public static final String PLAYER_NAME_DEFAULT = "Jack";
     public static final String PLAYER_NAME_LONG = "Jack Erek Morse";
     public static final long PLAYER_ID = 89472940724234l;
-    public static final int PLAYER_MONEY_AMOUNT_DEFAULT = 23;
-    public static final int PLAYER_BANK_MONEY_AMOUNT_DEFAULT = 3041;
+    public static final int PLAYER_MONEY_AMOUNT_DEFAULT = 2;
+    public static final int PLAYER_BANK_MONEY_AMOUNT_DEFAULT = 100;
     public static final int PLAYER_HEALTH_MAX = 999;
     public static final int PLAYER_CONSTITUTION_MAX = 999;
 
@@ -313,6 +313,7 @@ public class Player extends Character implements GameStateListener {
     public void saveState(Properties p) {
         p.setProperty(NAME_KEY, getName());
         p.setProperty(MONEY_KEY, String.valueOf(getMoney()));
+        p.setProperty(BANK_MONEY_KEY, String.valueOf(getBankMoney()));
         p.setProperty(HEALTH_KEY, String.valueOf(getHealth()));
         p.setProperty(CONSTITUTION_KEY, String.valueOf(getConstitution()));
         if (currentDeck != null) {
@@ -348,6 +349,7 @@ public class Player extends Character implements GameStateListener {
         LOGGER.log(Level.INFO, "Initialize player settings from save file.");
         setName(p.getProperty(NAME_KEY, "Jack"));
         setMoney(Integer.parseInt(p.getProperty(MONEY_KEY, String.valueOf(PLAYER_MONEY_AMOUNT_DEFAULT))));
+        setBankMoney(Integer.parseInt(p.getProperty(BANK_MONEY_KEY, String.valueOf(PLAYER_BANK_MONEY_AMOUNT_DEFAULT))));
         setHealth(Integer.parseInt(p.getProperty(HEALTH_KEY, String.valueOf(PLAYER_HEALTH_MAX))));
         setConstitution(Integer.parseInt(p.getProperty(CONSTITUTION_KEY, String.valueOf(PLAYER_CONSTITUTION_MAX))));
 
