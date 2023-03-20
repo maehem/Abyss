@@ -32,7 +32,6 @@ import com.maehem.abyss.engine.gui.NarrationPane;
 import com.maehem.abyss.engine.gui.RomConstructPane;
 import com.maehem.abyss.engine.gui.TerminalPane;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
-import com.maehem.abyss.engine.bbs.PublicTerminalSystem;
 import com.maehem.abyss.logging.LoggingFormatter;
 import com.maehem.abyss.logging.LoggingHandler;
 import com.maehem.abyss.logging.LoggingMessageList;
