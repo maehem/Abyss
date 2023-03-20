@@ -799,6 +799,6 @@ public abstract class Vignette extends ViewPane {
 
     public void setGiveMoneyShowing(int amount, String title, EventHandler handler) {
         // Show pane for transering money to npc.
-        giveCredits.show(amount, title, handler);
+        giveCredits.show(amount, gameState.getPlayer().getMoney(), title, handler);
     }
 }

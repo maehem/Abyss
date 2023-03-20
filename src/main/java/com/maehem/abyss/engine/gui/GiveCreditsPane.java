@@ -42,10 +42,11 @@ import javafx.scene.text.Text;
  */
 public class GiveCreditsPane extends BorderPane {
 
-    private final double TEXT_SIZE = 30.0;
+    private final double TEXT_SIZE = 28.0;
     
     private final GameState gameState;
-    TextField giveAmountField = new TextField();
+    private final TextField giveAmountField = new TextField();
+    private final Text playerBalanceText = paneText("1234567");
     //private String successKey;
     //private String successValue;
     private final Text titleText;
@@ -62,7 +63,7 @@ public class GiveCreditsPane extends BorderPane {
         GridPane gp = new GridPane();
         
         gp.add(paneText("Credits:"), 0, 0, 1, 1);
-        gp.add(paneText(String.valueOf(gs.getPlayer().getMoney())), 1, 0, 1, 1);
+        gp.add(playerBalanceText, 1, 0, 1, 1);
         gp.add(paneText("Give:"), 0, 1, 1, 1);
         gp.add(giveAmountField, 1, 1, 1, 1);
         giveAmountField.setFont(Font.font(TEXT_SIZE));
@@ -122,11 +123,13 @@ public class GiveCreditsPane extends BorderPane {
     /**
      * 
      * @param amount to deduct from player account.
+     * @param playerBalance player's current balance
      * @param titleString text to display at top of popup
      * @param successAction execute this code on proper @amount given.
      */
-    public void show( int amount, String titleString, EventHandler successAction ) {
+    public void show( int amount, int playerBalance, String titleString, EventHandler successAction ) {
         giveAmountField.setText(String.valueOf(amount));
+        playerBalanceText.setText(String.valueOf(playerBalance ));
         titleText.setText(titleString);
         this.successAction = successAction;
         //successKey = key;
