@@ -26,7 +26,6 @@ import java.text.MessageFormat;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 import javafx.animation.AnimationTimer;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
@@ -79,7 +78,7 @@ public class DebugTab extends Group implements LogListener {
     BorderPane panel = new BorderPane();
     private boolean showing = false;
     private final LoggingMessageList messageLog;
-    private Slider slider;
+    private final Slider slider = new Slider(0, 6, 3);
     private ScrollPane logMessagePane;
 
     public DebugTab(LoggingMessageList messageLog, GameState gs) {
@@ -177,7 +176,7 @@ public class DebugTab extends Group implements LogListener {
         Text sliderLabel = new Text("Logging\nLevel");
         sliderLabel.setFont(new Font(10));
         sliderLabel.setTextAlignment(TextAlignment.CENTER);
-        slider = new Slider(0, 6, 6);
+        //slider = new Slider(0, 6, 6);
         slider.setOrientation(Orientation.VERTICAL);
         slider.setShowTickLabels(true);
         slider.setShowTickMarks(true);
