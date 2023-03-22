@@ -57,7 +57,7 @@ import javafx.scene.text.TextFlow;
 public class DialogPane extends BorderPane {
 
     public final static String FONT_PATH = "/fonts/PatrickHand-Regular.ttf";
-    public final static double FONT_SIZE = 38;
+    public final static double FONT_SIZE = 36;
     private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.9);
     private final static Color DROP_COLOR_AB = new Color(0.0, 0.0, 0.0, 0.4);
     private final static double DROP_SPREAD = 50.0;
@@ -97,15 +97,23 @@ public class DialogPane extends BorderPane {
     private final VBox answerButtonsBox = new VBox();
     private ImageView cameoView;
     private final Pane cameoViewPane;
+    private String[] vars = null;
 
+    
+    /**
+     *
+     * @param npc NPC the player is talking to.
+     * @param vars vars to replace in text stings. i.e. $0, $1, etc.
+     */
     public DialogPane(Character npc) {
         this.npc = npc;
+        
         this.DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
         this.DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE*1.3);
-        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE*0.7);
-        setPrefSize(ViewPane.WIDTH * 0.7, ViewPane.HEIGHT * 0.8);
-        setMinSize(ViewPane.WIDTH * 0.7, ViewPane.HEIGHT * 0.8);
-        setLayoutX(ViewPane.WIDTH * 0.15);
+        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE*0.65);
+        setPrefSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
+        setMinSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
+        setLayoutX(ViewPane.WIDTH * 0.08);
         setLayoutY(ViewPane.HEIGHT * 0.1);
         //setBackground(new Background(new BackgroundFill(Color.GRAY, new CornerRadii(20), Insets.EMPTY)));
         setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
@@ -133,7 +141,7 @@ public class DialogPane extends BorderPane {
         )));
 
         // Clip the buttons area so that the drop shadow only shades the left edge.
-        Rectangle r = new Rectangle(ViewPane.WIDTH * 0.7 + 40, ViewPane.HEIGHT * 0.8);
+        Rectangle r = new Rectangle(ViewPane.WIDTH * 0.84 + 40, ViewPane.HEIGHT * 0.8);
         r.setArcHeight(20);
         r.setArcWidth(20);
         r.setLayoutX(-40);
@@ -203,6 +211,10 @@ public class DialogPane extends BorderPane {
         setRight(answerButtonsBox);
     }
 
+    public void setVars( String[] vars ) {
+        this.vars = vars;
+    }
+    
     public void setCameo( Image iv ) {
         cameoView.setImage(iv);
         cameoView.setViewport(new Rectangle2D(0, 0, iv.getWidth(), iv.getHeight()));
@@ -319,7 +331,7 @@ public class DialogPane extends BorderPane {
      * @param ds the currentDialogSheet to set
      */
     public void setCurrentDialogSheet(DialogSheet2 ds) {
-        dialogText.setText(ds.getDialogText());
+        dialogText.setText(processText(ds.getDialogText()));
         rebuildResponsePane(ds.getResponse());
 
         //dialogPane.getChildren().remove(this.currentDialogSheet);
@@ -340,8 +352,8 @@ public class DialogPane extends BorderPane {
     }
 
     private Button responseButton(DialogResponse2 response) {
-        Text bText = new Text(response.getText());
-        bText.setWrappingWidth(ViewPane.WIDTH * 0.27);
+        Text bText = new Text(processText(response.getText()));
+        bText.setWrappingWidth(ViewPane.WIDTH * 0.36);
         bText.setTextAlignment(TextAlignment.CENTER);
         //Button b = new Button(response.getText());
         Button b = new Button("",bText);
@@ -353,6 +365,7 @@ public class DialogPane extends BorderPane {
                         new CornerRadii(FONT_SIZE / 2),
                         new BorderWidths(2)
                 )));
+        b.setBackground(Background.EMPTY);
         b.setOnAction((tt) -> {
             tt.consume();
             response.getAction().doResponseAction();
@@ -377,4 +390,24 @@ public class DialogPane extends BorderPane {
         setVisible(false);
     }
 
+    /**
+     * Replace var markers ($0 - $9) with the pre-set var value.
+     * 
+     * @param text containing var markers $0 - $9.
+     * @return text with substituted var[n] String values.
+     */
+    private String processText( String text ) {
+        if ( vars == null ) return text;
+        String pText = new String(text);
+        for ( int i=0; i<vars.length; i++ ) {
+            //String pVar = '$' + Integer.toString(i);
+            String pVar = "$" + Integer.toString(i);
+            if ( pText.contains(pVar) ) {
+                // Need to escape with double back-slashes because $ is a regex character.
+                pText = pText.replaceAll(new String( '\\' + pVar), vars[i]);
+            }
+        }
+        
+        return pText;
+    }
 }
