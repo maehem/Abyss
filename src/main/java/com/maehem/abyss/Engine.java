@@ -388,7 +388,7 @@ public class Engine extends Application implements GameStateListener {
         LOGGER.setUseParentHandlers(false);  // Prevent INFO and HIGHER from going to stderr.
         LOGGER.addHandler(loggingHandler);
 
-        // For our java package only, log ony FINE and above.
+        // Log everything and use the DebugTab to filter later.
         LOGGER.setLevel(Level.FINEST);
 
         //ConsoleHandler handler = new ConsoleHandler();
