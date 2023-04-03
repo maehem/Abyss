@@ -220,7 +220,7 @@ public abstract class Vignette extends ViewPane {
                 if (playerTriggered) {
                     if (!door.isLocked()) {
                         // Return the players pose skin back to default.
-                        getPlayer().useDefaultSkin();
+                        //getPlayer().useDefaultSkin();
                         LOGGER.fine("player triggered door.");
                         return door;
                     } else {
