@@ -49,7 +49,7 @@ public class CrtTextPane2 extends ScrollPane {
             CRT_FONT_H
     );
 
-    private static final double LINE_SMEAR = 5.0;  // Blur the lines.
+    private static final double LINE_SMEAR = 4.0;  // Blur the lines.
     private static final double SCANS_PER_LINE = 11;
     private static final double SCREEN_LINE_SPACE = -CRT_FONT_H/SCANS_PER_LINE; // default is 0.0
     public static final Color SCREEN_BG_COLOR = new Color(0.15, 0.15, 0.15, 1.0);
