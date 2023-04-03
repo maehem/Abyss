@@ -168,19 +168,23 @@ public class DialogPane extends BorderPane {
         //HBox hBox = new HBox(leftArea, answerButtonsBox);
 
         // Image of NPC as cameo cropped view
-        ImageView npcView = npc.getPoseSheet().getCameo();
-        cameoView = new ImageView(npc.getCameo());
-        if ( cameoView == null ) {
+        //ImageView npcView;
+        Image cameo = npc.getCameo();
+        if ( cameo == null ) {
+            cameoView = new ImageView(npc.getCameo());
             LOGGER.log(Level.INFO, "NPC cameo was null.");
-            cameoView = npcView;
+        } else {
+            cameoView = new ImageView( cameo );
+            //npcView = npc.getPoseSheet().getCameo();
         }
         //npcView.setY(-npcView.getBoundsInLocal().getHeight());
-        npcView.setY(0);
-        npcView.setX(-CAMEO_H/2);
-        npcView.setFitHeight(CAMEO_H);
-        npcView.setPreserveRatio(true);
+//        npcView.setY(0);
+//        npcView.setX(-CAMEO_H/2);
+//        npcView.setFitHeight(CAMEO_H);
+//        npcView.setPreserveRatio(true);
 
-        cameoViewPane = new StackPane(npcView);
+        //cameoViewPane = new StackPane(npcView);
+        cameoViewPane = new StackPane(cameoView);
         cameoViewPane.setPrefSize(CAMEO_H, CAMEO_H);
         cameoViewPane.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
         //Rectangle cameoFrame = new Rectangle(npcView.getX(), npcView.getY(), npcView.getViewport().getWidth(), npcView.getViewport().getHeight());
@@ -206,9 +210,9 @@ public class DialogPane extends BorderPane {
 
         //cameoViewPane.getChildren().add(cameoFrame);
         AnchorPane topArea = new AnchorPane(cameoViewPane, closeX);
-        setTop(topArea);
         setCenter(leftArea);
         setRight(answerButtonsBox);
+        setTop(topArea); // Make sure top is closest Z so we can tune cameo overlap.
     }
 
     public void setVars( String[] vars ) {
@@ -226,68 +230,12 @@ public class DialogPane extends BorderPane {
         cameoViewPane.getChildren().add(cameoView);
         
     }
+    
+    public void setCameoTranslate( double x, double y ) {
+        cameoView.setTranslateX(x);
+        cameoView.setTranslateY(y);
+    }
         
-//    /**
-//     * Initialize the geometry of the dialog screen.  
-//     * Called by Vignette once the screen geometry is known.
-//     * 
-//     * @param width
-//     * @param height 
-//     */
-//    public void init(double width, double height ) {
-//        this.width = width;
-//        this.height = height;
-//        
-//        this.boxX = width/3;
-//        this.boxY = height/3;
-//        
-//        this.boxW = width/3;
-//        this.boxH = height/3;
-//        
-//        Rectangle rect = new Rectangle(width, height);
-//        rect.setFill(Color.BLACK);
-//        rect.setOpacity(0.5);
-//                
-////        Rectangle dialogRect = new Rectangle(boxW, boxH, Color.LIGHTSLATEGRAY);
-////        dialogRect.setX(boxX);
-////        dialogRect.setY(boxY);
-//        
-//        // Debug rect
-//        //dialogRect.setStrokeWidth(2.0);
-//        //dialogRect.setStroke(Color.MAGENTA);
-//        
-//        dialogPane.setAlignment(Pos.CENTER);
-//        
-//        StackPane dialogStackPane = new StackPane(/*dialogRect,*/ dialogPane );
-//        //dialogStackPane.setAlignment(Pos.CENTER);
-//        dialogStackPane.setLayoutX(boxX);
-//        dialogStackPane.setLayoutY(boxY);
-//        dialogStackPane.setBackground(new Background(new BackgroundFill(Color.DARKGREY, new CornerRadii(8), new Insets(4))));
-//        
-//        ImageView npcView = npc.getPoseSheet().getCameo();
-//        npcView.setY(boxY);
-//        npcView.setX(boxX-npcView.getViewport().getWidth());
-//        
-//        Rectangle cameoFrame = new Rectangle(npcView.getX(), npcView.getY(), npcView.getViewport().getWidth(), npcView.getViewport().getHeight());
-//        cameoFrame.setStrokeWidth(10.0);
-//        cameoFrame.setStroke(Color.DARKGREEN);
-//        cameoFrame.setFill(Color.TRANSPARENT);
-//        
-//        Rectangle closeRect = new Rectangle(40, 40, Color.DARKSLATEGRAY);
-//        closeRect.setX(boxX+boxW-20);
-//        closeRect.setY(boxY);
-//        closeRect.setOnMouseClicked((event) -> {
-//            event.consume();
-//            npc.setTalking(false);
-//            setActionDone(true);
-//        });
-//        
-//        getDialogList().forEach((ds) -> {
-//            ds.setGeometry(boxX, boxY, boxW, boxH);
-//        });
-//        
-//        //getChildren().addAll(rect, dialogStackPane, closeRect, npcView, cameoFrame);
-//    }
     /**
      * @return the actionDone
      */
@@ -334,9 +282,7 @@ public class DialogPane extends BorderPane {
         dialogText.setText(processText(ds.getDialogText()));
         rebuildResponsePane(ds.getResponse());
 
-        //dialogPane.getChildren().remove(this.currentDialogSheet);
         this.currentDialogSheet = ds;
-        //dialogPane.getChildren().add(ds);
     }
 
     private void rebuildResponsePane(ArrayList<DialogResponse2> responseList) {
@@ -344,23 +290,18 @@ public class DialogPane extends BorderPane {
         responseList.forEach((t) -> {
             Button b = responseButton(t);
             answerButtonsBox.getChildren().add(b);
-//            b.setOnAction((tt) -> {
-//                tt.consume();
-//                t.getAction().doResponseAction();                
-//            });
         });
     }
 
     private Button responseButton(DialogResponse2 response) {
         Text bText = new Text(processText(response.getText()));
-        bText.setWrappingWidth(ViewPane.WIDTH * 0.36);
+        bText.setWrappingWidth(ViewPane.WIDTH * 0.38);
         bText.setTextAlignment(TextAlignment.CENTER);
-        //Button b = new Button(response.getText());
-        Button b = new Button("",bText);
-        //b.setFont(Font.font(FONT_SIZE * 0.7));
         bText.setFont(ANSWER_FONT);
+
+        Button b = new Button("",bText);
         b.setBorder(new Border(
-                new BorderStroke(Color.MAGENTA.darker().darker(),
+                new BorderStroke(Color.BLACK.brighter(),
                         BorderStrokeStyle.SOLID,
                         new CornerRadii(FONT_SIZE / 2),
                         new BorderWidths(2)
@@ -400,7 +341,6 @@ public class DialogPane extends BorderPane {
         if ( vars == null ) return text;
         String pText = new String(text);
         for ( int i=0; i<vars.length; i++ ) {
-            //String pVar = '$' + Integer.toString(i);
             String pVar = "$" + Integer.toString(i);
             if ( pText.contains(pVar) ) {
                 // Need to escape with double back-slashes because $ is a regex character.
