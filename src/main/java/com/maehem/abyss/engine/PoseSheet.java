@@ -120,6 +120,15 @@ public class PoseSheet extends ImageView {
         setPose(pose);
     }
 
+    public void previousPose() {
+        pose--;
+        if (pose < 0) {
+            pose = getNumPoses()-1;
+        }
+
+        setPose(pose);
+    }
+
     /**
      * @return the numPoses
      */

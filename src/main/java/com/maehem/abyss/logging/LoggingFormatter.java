@@ -19,6 +19,7 @@
 */
 package com.maehem.abyss.logging;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -34,10 +35,15 @@ public class LoggingFormatter extends Formatter {
     @Override
     public synchronized String format(LogRecord lr) {
         
+        // Must process lr message and parameters before final formatting.
+        String result = MessageFormat.format(
+                lr.getMessage(), lr.getParameters()
+                );
+
         return String.format(FORMAT,
                 new Date(lr.getMillis()),
                 lr.getLevel().getLocalizedName(),
-                lr.getMessage()
+                result
         );
     }
 };
