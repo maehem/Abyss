@@ -18,6 +18,7 @@ package com.maehem.abyss.engine;
 
 import com.maehem.abyss.engine.view.ViewPane;
 import static com.maehem.abyss.Engine.LOGGER;
+import com.maehem.abyss.engine.audio.music.MusicTrack;
 import com.maehem.abyss.engine.babble.DialogPane;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.gui.GiveCreditsPane;
@@ -34,6 +35,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.Media;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -80,6 +82,7 @@ public abstract class Vignette extends ViewPane {
     private boolean playerUseTerminal = false;
     private final String assetFolderName;
     Group layerStack = new Group();
+    private MusicTrack musicTrack;
 
     private String name = "<unnamed>";
 //    private final double width;
@@ -190,6 +193,18 @@ public abstract class Vignette extends ViewPane {
         return player;
     }
 
+    public MusicTrack getMusic() {
+        return musicTrack;
+    }
+    
+    public void setMusic( Media media ) {
+        if ( musicTrack != null && musicTrack.isPlaying()) {
+            musicTrack.fadeAndStop(0);
+        }
+        musicTrack = new MusicTrack(media);
+        musicTrack.play();
+    }
+    
     /**
      * If showing, Called by loop every tick.
      * 
@@ -222,6 +237,7 @@ public abstract class Vignette extends ViewPane {
                         // Return the players pose skin back to default.
                         //getPlayer().useDefaultSkin();
                         LOGGER.fine("player triggered door.");
+                        portAction(door);
                         return door;
                     } else {
                         LOGGER.log(Level.FINE, "Door to {0} is locked.", door.getDestination());
@@ -335,6 +351,7 @@ public abstract class Vignette extends ViewPane {
 
                 // If mode/dialog set the exit door then return that.
                 if (exit != null) {
+                    portAction(exit);
                     return exit;
                 }
             }
@@ -800,5 +817,19 @@ public abstract class Vignette extends ViewPane {
     public void setGiveMoneyShowing(int amount, String title, EventHandler handler) {
         // Show pane for transering money to npc.
         giveCredits.show(amount, gameState.getPlayer().getMoney(), title, handler);
+    }
+    
+    /**
+     * Override to take some action when player leaves Vignette.
+     * Maybe stop playing music or change music track.
+     * 
+     * @param trigger 
+     */
+    public void portAction( VignetteTrigger trigger ) {
+        if ( musicTrack != null) {
+            musicTrack.fadeAndStop(2);
+        }
+        // TODO: Hand off music to next vignette.
+        // Continue playing if same music track.
     }
 }
