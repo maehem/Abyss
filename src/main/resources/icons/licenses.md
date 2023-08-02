@@ -20,3 +20,4 @@ Mechanical Head icon by Arthur Shlain from Usefulicons  https://usefulicons.com/
 Repair          icon by Arthur Shlain from Usefulicons  https://usefulicons.com/pure-lines/repair
 Turtle          icon by Arthur Shlain from Usefulicons  https://usefulicons.com/useful/turtle
 Computer Fan    icon by Arthur Shlain from Usefulicons  https://usefulicons.com/glyph-icons-16x16/computer-fan
+Ladybug         icon by Arthur Shlain from Usefulicons  https://usefulicons.com/pure-lines/ladybug

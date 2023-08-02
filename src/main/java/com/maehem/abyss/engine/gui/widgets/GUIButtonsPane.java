@@ -36,7 +36,7 @@ public class GUIButtonsPane extends DecoBox {
     private final String TERM_ICON_PATH = "/icons/command-line.png";
     private final String MATRIX_ICON_PATH = "/icons/jack-icon.png";
     private final String SAVE_ICON_PATH = "/icons/save-icon.png";
-    private final String SETTINGS_ICON_PATH = "/icons/cogwheel.png";
+    private final String DEBUG_WINDOW_ICON_PATH = "/icons/ladybug-icon.png";
     private final String POWER_ICON_PATH = "/icons/quit-icon.png";
     
     private final DSEG7Display money;
@@ -62,7 +62,7 @@ public class GUIButtonsPane extends DecoBox {
         terminalButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(TERM_ICON_PATH));
         matrixButton    = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(MATRIX_ICON_PATH));
         saveButton      = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(SAVE_ICON_PATH));
-        settingsButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(SETTINGS_ICON_PATH));
+        settingsButton  = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(DEBUG_WINDOW_ICON_PATH));
         powerButton     = new Button(BUTTON_SIZE, BUTTON_SIZE, getStream(POWER_ICON_PATH));
         
         FlowPane buttons = new FlowPane(
