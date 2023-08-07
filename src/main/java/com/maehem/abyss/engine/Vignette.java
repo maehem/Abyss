@@ -1,27 +1,28 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
  */
 package com.maehem.abyss.engine;
 
-import com.maehem.abyss.engine.view.ViewPane;
 import static com.maehem.abyss.Engine.LOGGER;
+import com.maehem.abyss.engine.Character;
 import com.maehem.abyss.engine.audio.music.MusicTrack;
 import com.maehem.abyss.engine.babble.DialogPane;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.gui.GiveCreditsPane;
+import com.maehem.abyss.engine.view.ViewPane;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.MissingResourceException;
@@ -49,8 +50,11 @@ import javafx.scene.text.Text;
 public abstract class Vignette extends ViewPane {
 
     public static final String PROP_PREFIX = "vignette.";
-    public enum RoomState { VISITED, LOCKED }
-    
+
+    public enum RoomState {
+        VISITED, LOCKED
+    }
+
     public static final double DEFAULT_SCALE = 4.2;  // Scale character up when they reach the fourth wall.
     public static final double DEFAULT_HORIZON = 0.24;  // Place horizon this far down from screen top.  0.0 - 1.0
     //public static final int NATIVE_WIDTH = 1280; // Native width of PNG background.
@@ -65,11 +69,11 @@ public abstract class Vignette extends ViewPane {
     private final GiveCreditsPane giveCredits;
 
     private final ArrayList<VignetteTrigger> doors = new ArrayList<>();
-    private final ArrayList<MatrixTrigger>   jacks = new ArrayList<>();
+    private final ArrayList<MatrixTrigger> jacks = new ArrayList<>();
     private final ArrayList<TerminalTrigger> terminals = new ArrayList<>();
     private final ArrayList<Patch> patchList = new ArrayList<>();
     private final ArrayList<Character> characterList = new ArrayList<>();
-    
+
     private double playerScale = DEFAULT_SCALE;
     private double horizon = DEFAULT_HORIZON;
     private final Player player;
@@ -82,7 +86,7 @@ public abstract class Vignette extends ViewPane {
     private boolean playerUseTerminal = false;
     private final String assetFolderName;
     Group layerStack = new Group();
-    private MusicTrack musicTrack;
+    private static MusicTrack musicTrack;
 
     private String name = "<unnamed>";
 //    private final double width;
@@ -93,7 +97,11 @@ public abstract class Vignette extends ViewPane {
     private DialogPane dialogPane;
     private int moveDistanceRL = 20;
 
-    public Vignette(GameState gs, String assetFolderName, VignetteTrigger prevPort, Player player, double[] walkBoundary) throws MissingResourceException {
+    public Vignette(
+            GameState gs, String assetFolderName,
+            VignetteTrigger prevPort,
+            Player player, double[] walkBoundary
+    ) throws MissingResourceException {
         this.gameState = gs;
         this.assetFolderName = assetFolderName;
         this.player = player;
@@ -101,7 +109,7 @@ public abstract class Vignette extends ViewPane {
         this.setWidth(WIDTH);
         this.setHeight(HEIGHT);
         this.setClip(new Rectangle(WIDTH, HEIGHT));
-        
+
         LOGGER.log(Level.CONFIG, "class name: {0}", super.getClass().getSimpleName());
 
         getChildren().add(layerStack);
@@ -109,7 +117,7 @@ public abstract class Vignette extends ViewPane {
         addNode(bgGroup);
         addNode(mainGroup);
         addNode(fgGroup);
-        
+
         setWalkArea(walkBoundary);
 
         getMainGroup().getChildren().addAll(getPlayer());
@@ -141,8 +149,8 @@ public abstract class Vignette extends ViewPane {
             player.setDirection(prevPort.getPlayerDir());
         } else {
             Point2D pp = getDefaultPlayerPosition();
-            LOGGER.log(Level.FINER, 
-                    "Set default player position to: {0},{1}", 
+            LOGGER.log(Level.FINER,
+                    "Set default player position to: {0},{1}",
                     new Object[]{pp.getX(), pp.getY()}
             );
             setPlayerPosition(pp);
@@ -154,20 +162,20 @@ public abstract class Vignette extends ViewPane {
         debugHearingBounds(showHearing);
 
         setOnMouseClicked((event) -> {
-            if (dialogPane == null || !dialogPane.isVisible() ) { // As long as dialog is not showing.
+            if (dialogPane == null || !dialogPane.isVisible()) { // As long as dialog is not showing.
                 player.walkToward(event.getX(), event.getY(), walkArea);
             }
             event.consume();
         });
 
         giveCredits = new GiveCreditsPane(gameState);
-        
+
         getChildren().add(giveCredits);
         giveCredits.setVisible(false);
-        
+
         String prefix = PROP_PREFIX + getPropName();
-        getGameState().setProperty(prefix, RoomState.VISITED.name());        
-        
+        getGameState().setProperty(prefix, RoomState.VISITED.name());
+
         LOGGER.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
@@ -179,13 +187,13 @@ public abstract class Vignette extends ViewPane {
     public String getPropName() {
         return getClass().getSimpleName();
     }
-    
+
     public abstract Point2D getDefaultPlayerPosition();
 
     public final GameState getGameState() {
         return gameState;
     }
-    
+
     /**
      * @return the player
      */
@@ -193,27 +201,43 @@ public abstract class Vignette extends ViewPane {
         return player;
     }
 
-    public MusicTrack getMusic() {
-        return musicTrack;
+    public Media getMusic() {
+        return musicTrack.getMedia();
     }
-    
-    public void setMusic( Media media ) {
-        if ( musicTrack != null && musicTrack.isPlaying()) {
-            musicTrack.fadeAndStop(0);
+
+    public void setMusic(Media media) {
+        if (media == null) {
+            if (musicTrack != null) {
+                if (musicTrack.isPlaying()) {
+                    musicTrack.fadeAndStop(1);
+                }
+                musicTrack = null;
+            }
         }
-        musicTrack = new MusicTrack(media);
-        musicTrack.play();
+        if (musicTrack != null && musicTrack.isPlaying()) {
+            if (!musicTrack.getMedia().getSource().equals(media.getSource())) {
+                musicTrack.fadeAndStop(0);
+                musicTrack = new MusicTrack(media);
+                musicTrack.play();
+
+            } else {
+                LOGGER.log(Level.SEVERE, "Keep on playing!");
+            }
+        } else {
+            musicTrack = new MusicTrack(media);
+            musicTrack.play();
+        }
     }
-    
+
     /**
      * If showing, Called by loop every tick.
-     * 
+     *
      * @param input list of keyboard events
      * @return next room to load or @null to remain in current room
      */
     protected final VignetteTrigger processEvents(ArrayList<String> input) {
 
-        if (dialogPane == null || !dialogPane.isVisible() ) {
+        if (dialogPane == null || !dialogPane.isVisible()) {
             if (!input.isEmpty()) {
                 LOGGER.log(Level.FINE, "vignette process input event:  {0}", input.toString());
 
@@ -231,7 +255,7 @@ public abstract class Vignette extends ViewPane {
             for (VignetteTrigger door : doors) {
                 boolean playerTriggered = player.colidesWith(door.getTriggerShape());
                 door.updateTriggerState(playerTriggered);
-                
+
                 if (playerTriggered) {
                     if (!door.isLocked()) {
                         // Return the players pose skin back to default.
@@ -253,7 +277,7 @@ public abstract class Vignette extends ViewPane {
                     // Show a Matrix clickable at this location.
                     // If user clicks it:
                     // Tell gameState to enter matrix
-                    if ( playerJackToMatrix || trig.isJacking() ) {
+                    if (playerJackToMatrix || trig.isJacking()) {
                         LOGGER.fine("player triggered matrix.");
                         playerJackToMatrix = false;
                         trig.setJacking(false);
@@ -274,12 +298,12 @@ public abstract class Vignette extends ViewPane {
                     // Show a Matrix clickable at this location.
                     // If user clicks it:
                     // Tell gameState to enter matrix
-                    if ( playerUseTerminal || trig.isUsingTerminal()) {
+                    if (playerUseTerminal || trig.isUsingTerminal()) {
                         LOGGER.config("player triggered terminal.");
                         playerUseTerminal = false;
                         trig.setUsingTerminal(false);
                         Class<? extends BBSTerminal> destination = trig.getDestination();
-                        if ( destination == null ) {
+                        if (destination == null) {
                             gameState.setCurrentTerminal(gameState.getPublicTerminal());
                         } else {
                             // Load the class
@@ -309,20 +333,20 @@ public abstract class Vignette extends ViewPane {
 //                    dialogOverlay2 = npc.getDialogPane();
 //                    //addNode(dialogOverlay);
 //                    addNode(dialogOverlay2);
-//                    
+//
 //                    dialogOverlay.toFront();
 //                    dialogOverlay2.toFront();
-//                    
+//
 //                    LOGGER.warning("Show Dialog Mode.");
 //                }
                 if (npc.isTalking() && !npc.getDialogPane().isActionDone()) {
-                    if ( dialogPane == null ) {
+                    if (dialogPane == null) {
                         dialogPane = npc.getDialogPane();
                         addNode(dialogPane);
                     }
                     dialogPane.setVisible(true);
                     dialogPane.toFront();
-                    
+
                     LOGGER.warning("Show Dialog Mode.");
                 } else if (npc.isTalking() && npc.getDialogPane().isActionDone()) {
                     LOGGER.log(Level.WARNING, "NPC is talking but the action is marked as done.");
@@ -461,7 +485,7 @@ public abstract class Vignette extends ViewPane {
         getCharacterList().forEach((Character npc) -> {
             ((Character) npc).showCollisionBounds(show);
         });
-        
+
     }
 
     protected final void debugHearingBounds(boolean show) {
@@ -477,7 +501,7 @@ public abstract class Vignette extends ViewPane {
         getCharacterList().forEach((Character npc) -> {
             ((Character) npc).showHearingBounds(show);
         });
-        
+
     }
 
     /**
@@ -487,7 +511,7 @@ public abstract class Vignette extends ViewPane {
     public Group getBgGroup() {
         return bgGroup;
     }
-    
+
     /**
      *
      * @return the bgGroup
@@ -532,24 +556,24 @@ public abstract class Vignette extends ViewPane {
     }
 
     /**
-     * Walk area as an array of XY pairs with a value of 0.0-1.0
-     * relative to screen width and height.
-     * 
+     * Walk area as an array of XY pairs with a value of 0.0-1.0 relative to
+     * screen width and height.
+     *
      * @param xyArray list of X/Y pair doubles.
      */
-    public final void setWalkArea( double[] xyArray ) {
-        
+    public final void setWalkArea(double[] xyArray) {
+
         //setWalkAreaOld(WALK_AREA); // set custom walk area
         double waPx[] = new double[xyArray.length];
-        
-        for ( int i=0; i< xyArray.length; i+=2) {
-            waPx[i] = xyArray[i]*getWidth();
-            waPx[i+1] = xyArray[i+1]*getHeight();
+
+        for (int i = 0; i < xyArray.length; i += 2) {
+            waPx[i] = xyArray[i] * getWidth();
+            waPx[i + 1] = xyArray[i + 1] * getHeight();
         }
-        
+
         setWalkArea(new Polygon(waPx));
     }
-    
+
     /**
      * @param walkArea the walkArea to set
      */
@@ -558,25 +582,25 @@ public abstract class Vignette extends ViewPane {
         walkAreaCoords.getChildren().clear();
         this.walkArea = walkArea;
         mainGroup.getChildren().add(0, getWalkArea());
-        
+
         ObservableList<Double> points = walkArea.getPoints();
         for (int i = 0; i < points.size(); i += 2) {
             double vX = points.get(i);
-            double vY = points.get(i+1);
+            double vY = points.get(i + 1);
             double pX = points.get(i);
-            double pY = points.get(i+1);
+            double pY = points.get(i + 1);
             //String xS = String.format(String.valueOf(pX), "%4.0f" );
             //String yS = String.format(String.valueOf(pY), "%4.0f" );
-            String xS = String.valueOf((int)pX);
-            String yS = String.valueOf((int)pY);
+            String xS = String.valueOf((int) pX);
+            String yS = String.valueOf((int) pY);
             //String xP = String.format(String.valueOf(pX/getWidth()), "%4.3f" );
             //String yP = String.format(String.valueOf(pY/getHeight()), "%4.3f" );
-            String xP = String.format("%4.3f", pX/getWidth()  );
-            String yP = String.format("%4.3f", pY/getHeight() );
-            
+            String xP = String.format("%4.3f", pX / getWidth());
+            String yP = String.format("%4.3f", pY / getHeight());
+
             Text t = new Text(
                     vX, vY,
-                    xS + "," + yS + " (" +  xP + "," + yP + ")"
+                    xS + "," + yS + " (" + xP + "," + yP + ")"
             );
             t.setFill(Color.LIGHTGREEN);
             t.setFont(Font.font(14));
@@ -585,9 +609,9 @@ public abstract class Vignette extends ViewPane {
 
         Color collisionStroke = Color.GREEN;
         getWalkArea().setStroke(new Color(
-                collisionStroke.getRed(), 
-                collisionStroke.getGreen(), 
-                collisionStroke.getBlue(), 
+                collisionStroke.getRed(),
+                collisionStroke.getGreen(),
+                collisionStroke.getBlue(),
                 0.6
         ));
         getWalkArea().setStrokeWidth(3.0);
@@ -633,7 +657,6 @@ public abstract class Vignette extends ViewPane {
 //    public double getHeight() {
 //        return height;
 //    }
-
     /**
      * @return the scale
      */
@@ -649,16 +672,16 @@ public abstract class Vignette extends ViewPane {
     }
 
     /**
-     * 
+     *
      * @param pos a 2D point X and Y range of 0.0 to 1.0
      */
-    public final void setPlayerPosition( Point2D pos ) {
+    public final void setPlayerPosition(Point2D pos) {
         getPlayer().setLayoutX(getWidth() * pos.getX());
         getPlayer().setLayoutY(getHeight() * pos.getY());
-        LOGGER.log(Level.INFO, "Set player position to: {0},{1}", 
+        LOGGER.log(Level.INFO, "Set player position to: {0},{1}",
                 new Object[]{getPlayer().getLayoutX(), getPlayer().getLayoutY()});
     }
-    
+
     /**
      * @return the horizon
      */
@@ -683,7 +706,6 @@ public abstract class Vignette extends ViewPane {
 //    public String getNarrationText() {
 //        return "This is a test.";
 //    }
-
     private void addNode(Node node) {
         layerStack.getChildren().add(node);
     }
@@ -733,19 +755,19 @@ public abstract class Vignette extends ViewPane {
         p.entrySet().forEach((t) -> {
             String key = (String) t.getKey();
             String prefix = PROP_PREFIX + getPropName() + ".door";
-            if ( key.startsWith(prefix)) {
-                String val = (String)t.getValue();
+            if (key.startsWith(prefix)) {
+                String val = (String) t.getValue();
                 //LOGGER.log(Level.WARNING, "Found key [{0}] = {1}", new Object[]{key, val});
                 String doorName = key.substring(prefix.length() + 1);
                 //LOGGER.log(Level.INFO, "    ====> Door Name: [{0}]", doorName);
                 doors.forEach((d) -> {
-                    if ( d.getDestination().equals(doorName) ) {
+                    if (d.getDestination().equals(doorName)) {
                         d.setLocked(val.equals(Vignette.RoomState.LOCKED.name()));
                     }
                 });
             }
         });
-        
+
         // load child properties
         loadProperties(p); // Overridden by sub-class.
     }
@@ -779,7 +801,6 @@ public abstract class Vignette extends ViewPane {
 //    public final NarrationPane getNarrationPane() {
 //        return narrationPane;
 //    }
-
     protected void addPort(VignetteTrigger port) {
         //port.setScale(getWidth(), getHeight());
         getDoors().add(port);
@@ -803,12 +824,12 @@ public abstract class Vignette extends ViewPane {
         getFgGroup().getChildren().add(patch);
         getFgGroup().getChildren().add(patch.getBox());
     }
-    
+
     public String getNarration() {
         String longerText;
         try {
             longerText = " " + bundle.getString("narrationL");
-        } catch ( MissingResourceException ex ) {
+        } catch (MissingResourceException ex) {
             longerText = "";
         }
         return bundle.getString("narration") + longerText;
@@ -818,17 +839,18 @@ public abstract class Vignette extends ViewPane {
         // Show pane for transering money to npc.
         giveCredits.show(amount, gameState.getPlayer().getMoney(), title, handler);
     }
-    
+
     /**
-     * Override to take some action when player leaves Vignette.
-     * Maybe stop playing music or change music track.
-     * 
-     * @param trigger 
+     * Override to take some action when player leaves Vignette. Maybe stop
+     * playing music or change music track.
+     *
+     * @param trigger
      */
-    public void portAction( VignetteTrigger trigger ) {
-        if ( musicTrack != null) {
-            musicTrack.fadeAndStop(2);
-        }
+    public void portAction(VignetteTrigger trigger) {
+
+//        if (musicTrack != null) {
+//            musicTrack.fadeAndStop(2);
+//        }
         // TODO: Hand off music to next vignette.
         // Continue playing if same music track.
     }

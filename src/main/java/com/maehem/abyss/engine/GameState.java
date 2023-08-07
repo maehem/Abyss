@@ -1,27 +1,27 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
  */
 package com.maehem.abyss.engine;
 
-import com.maehem.abyss.engine.matrix.MatrixSite;
-import static com.maehem.abyss.Engine.LOGGER;
-
 import com.maehem.abyss.Engine;
+import static com.maehem.abyss.Engine.LOGGER;
+import com.maehem.abyss.engine.audio.music.MusicTrack;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.bbs.PublicTerminalSystem;
+import com.maehem.abyss.engine.matrix.MatrixSite;
 import com.maehem.abyss.engine.matrix.MatrixSiteNeighbor;
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,9 +47,10 @@ public final class GameState extends Properties {
     private String longName;
     private String version;
     private PublicTerminalSystem publicTerminal;
+    private MusicTrack musicTrack;
 
     public enum Display { SPLASH, INVENTORY, CHIPS, TERMINAL, VIGNETTE, MATRIX }
-    
+
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
     public static final String PROP_CURRENT_DATE = "game.date";
@@ -71,7 +72,7 @@ public final class GameState extends Properties {
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
     private final Properties ephemerals = new Properties();
-    
+
     private SitesList sites;
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
 
@@ -86,7 +87,7 @@ public final class GameState extends Properties {
 
     private Display showing = Display.MATRIX;
     private Display termPop = Display.VIGNETTE; // What to display if we leave terminal.
-    
+
     private boolean showDebug = true;
 
     private File gameSaveFile = null;
@@ -99,25 +100,25 @@ public final class GameState extends Properties {
 
     // Debug toggles
     public boolean showWalkPerimeter = false;
-    
+
     private Object contentPack;
     private ResourceLoader contentLoader;
 
     public GameState() {
     }
-    
+
     public String getShortGameName() {
         return shortName;
     }
-    
+
     public String getLongGameName() {
         return longName;
     }
-    
+
     public void setGameName( String shortName, String longName ) {
         this.shortName = shortName;
         this.longName = longName;
-        
+
         gameSaveFile = new File(
             System.getProperty("user.home")
             + File.separator + "Documents"
@@ -125,28 +126,28 @@ public final class GameState extends Properties {
             + File.separator + "save-0.properties"
         );
     }
-    
+
     public String getGameVersion() {
         return version;
     }
-    
+
     public void setGameVersion( String versionString ) {
         this.version = versionString;
     }
-    
+
     public void setSites( SitesList sl ) {
         // TODO: Check for null and don't allow changing after set once.
         this.sites = sl;
     }
-    
+
     public void setContentLoader( ResourceLoader rl ) {
         contentLoader = rl;
     }
-    
+
     public ResourceLoader getContentLoader() {
         return contentLoader;
     }
-    
+
     public void init() {
         if ( gameSaveFile == null ) {
             LOGGER.log(Level.SEVERE, "Game name was not set by content pack! There will be issues...");
@@ -158,7 +159,7 @@ public final class GameState extends Properties {
         //this.sites = new DefaultSitesList(this);
 
         currentMatrixSite = getSite(0x00305);
-        
+
         //initNews();
         //initMessages();
     }
@@ -177,11 +178,11 @@ public final class GameState extends Properties {
     public void setContentPack( Object o) {
         this.contentPack = o;
     }
-    
+
     public Object getContentPack() {
         return contentPack;
     }
-    
+
     public void quickSave() {
         player.saveState(this);
 
@@ -220,7 +221,7 @@ public final class GameState extends Properties {
             setProperty(PROP_CURRENT_VIGNETTE,
                     ldProps.getProperty(PROP_CURRENT_VIGNETTE) // Game starting room
             );
-            // Player tracks it's own properties. 
+            // Player tracks it's own properties.
             player.loadState(ldProps);
 
             ldProps.keys().asIterator().forEachRemaining((t) -> {
@@ -252,7 +253,7 @@ public final class GameState extends Properties {
 
         } catch (FileNotFoundException ex) {
             LOGGER.config("No previous game state.  New Game.\n");
-            setProperty(PROP_CURRENT_VIGNETTE, defaultVignetteName);  // Game starting room 
+            setProperty(PROP_CURRENT_VIGNETTE, defaultVignetteName);  // Game starting room
             //setDefaultNewsStories();
         } catch (IOException ex) {
             Logger.getLogger(Engine.class.getName()).log(Level.SEVERE, null, ex);
@@ -274,7 +275,7 @@ public final class GameState extends Properties {
         } else {
             prevVal = super.setProperty(key, value);
         }
-        
+
         for (GameStateListener l : listeners) {
             l.gameStatePropertyChanged(this, key);
         }
@@ -290,14 +291,14 @@ public final class GameState extends Properties {
         } else {
             prevVal = super.remove(key);
         }
-        
+
         for (GameStateListener l : listeners) {
             l.gameStatePropertyChanged(this, kkey);
         }
         return prevVal;
     }
-    
-    
+
+
 
     // TODO:  Listener is misspelled.
     public void addListenter(GameStateListener l) {
@@ -311,19 +312,19 @@ public final class GameState extends Properties {
     public MatrixSite getCurrentMatrixSite() {
         return currentMatrixSite;
     }
-    
+
     public void setCurrentMatrixSite( MatrixSite site ) {
         this.currentMatrixSite = site;
         for (GameStateListener l : listeners) {
             l.gameStateMatrixSiteChanged(this, site.getIntAddress());
         }
-        
+
     }
-    
+
     public void setCurrentMatrixSite( MatrixSiteNeighbor n ) {
         setCurrentMatrixSite(getSite(getCurrentMatrixSite().getNeighbor(n)));
     }
-    
+
     public void setShowing ( Display d ) {
         LOGGER.log(Level.FINER, "GameState set showing from: {0} to: {1}", new Object[]{showing.toString(), d.toString()});
         if ( d == Display.TERMINAL ) {
@@ -332,18 +333,18 @@ public final class GameState extends Properties {
             termPop = showing;
         }
         showing = d;
-        
+
         for (GameStateListener l : listeners) {
             l.gameStateDisplayChanged(this, d);
         }
-        
+
     }
-    
+
     /**
      * If it is showing, hide it.
      * If hidden, show it.
-     * 
-     * @param d 
+     *
+     * @param d
      */
     public void toggleShowing( Display d ){
         if ( showing == d) {
@@ -370,7 +371,7 @@ public final class GameState extends Properties {
             setShowing(d);
         }
     }
-        
+
     public Vignette getCurrentVignette() {
         return currentVignette;
     }
@@ -392,11 +393,11 @@ public final class GameState extends Properties {
 //    public int getCurrentMatrixAddress() {
 //        return currentMatrixAddress;
 //    }
-//    
+//
 //    public void setCurrentMatrixAddress( int addr ) {
 //        this.currentMatrixAddress = addr;
 //    }
-//    
+//
     public void notifyPlayerStateChanged(String key) {
         for (GameStateListener l : listeners) {
             l.gameStatePropertyChanged(this, key);
@@ -606,7 +607,7 @@ public final class GameState extends Properties {
                     "Tried to add matrix site at existing address! {0}",
                     site.getAddress()
             );
-            
+
             // Return the one that's already there.
             return getSite(site.getIntAddress());
         } else {
@@ -624,13 +625,13 @@ public final class GameState extends Properties {
         }
         return false;
     }
-    
+
     /**
      * Known sites are set up at start of game. All other
      * sites are blank sites and generated as requested.
-     * 
+     *
      * @param address
-     * @return 
+     * @return
      */
     public MatrixSite getSite(int address) {
         for (MatrixSite s : sites) {
@@ -653,9 +654,16 @@ public final class GameState extends Properties {
     public EdgeMap getMatrixMap() {
         return matrixEdges;
     }
-    
+
     public PublicTerminalSystem getPublicTerminal() {
         return publicTerminal;
     }
 
+    public MusicTrack getMusicTrack() {
+        return musicTrack;
+    }
+
+    public void setMusicTrack(MusicTrack track) {
+        musicTrack = track;
+    }
 }
