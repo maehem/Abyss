@@ -1,17 +1,17 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
  */
 package com.maehem.abyss.engine;
@@ -33,17 +33,17 @@ public class TerminalTrigger extends TriggerShape {
     private Class<? extends BBSTerminal>destination = null; // Would load the Public Page
     private boolean usingTerminal = false;
 
-    public TerminalTrigger(double x, double y, double w, double h) {
+    public TerminalTrigger(double x, double y, double w, double h, double iconX, double iconY) {
         super(x, y, w, h);
-        
+
         setTriggerColorDefault(TRIGGER_FILL);
-        
-        setClickIcon(ICON_IMAGE_FILENAME, 0.0, -200.0);
+
+        setClickIcon(ICON_IMAGE_FILENAME, iconX, iconY);
     }
-    
-    public TerminalTrigger(double x, double y, double w, double h, Class<? extends BBSTerminal> terminal) {
-        this(x, y, w, h);
-        this.setDestination( terminal );        
+
+    public TerminalTrigger(double x, double y, double w, double h, double iconX, double iconY, Class<? extends BBSTerminal> terminal) {
+        this(x, y, w, h, iconX, iconY);
+        this.setDestination( terminal );
     }
 
     /**
@@ -63,7 +63,7 @@ public class TerminalTrigger extends TriggerShape {
     public boolean isUsingTerminal() {
         return usingTerminal;
     }
-    
+
     public void setUsingTerminal( boolean state ) {
         this.usingTerminal = state;
     }
@@ -72,7 +72,7 @@ public class TerminalTrigger extends TriggerShape {
     public void onClick() {
         setUsingTerminal(true);
     }
-    
+
     @Override
     public void onIconShowing(boolean show) {
         if ( !show ) {

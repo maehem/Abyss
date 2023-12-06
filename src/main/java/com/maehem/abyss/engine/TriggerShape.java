@@ -1,26 +1,25 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
  */
 package com.maehem.abyss.engine;
 
-import com.maehem.abyss.engine.view.ViewPane;
 import static com.maehem.abyss.Engine.LOGGER;
+import com.maehem.abyss.engine.view.ViewPane;
 import java.util.logging.Level;
 import javafx.geometry.Insets;
-import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -48,7 +47,7 @@ public class TriggerShape extends Pane {
 //    private double rawY = 0.0;
 //    private double rawW = 0.1;
 //    private double rawH = 0.1;
-    
+
     private final Rectangle trigger;
     private Color triggerColorDefault = TRIGGER_FILL_DEFAULT;
     private Color triggerColorActive = TRIGGER_FILL_ACTIVE;
@@ -57,11 +56,11 @@ public class TriggerShape extends Pane {
 
     //private double scaleX = 1.0; // ScreenW. Use setScale() to input actual value.
     //private double scaleY = 1.0; // ScreenH.  ^       ^        ^
-    
+
     /**
      * Trigger shape as a x:1 ratio to the size of the scene.
      * It will be scaled later to the size of the actual scene.
-     * 
+     *
      * @param x positions relative to boundary  0.0-1.0
      * @param y position relative to boundary  0.0-1.0
      * @param w size relative to boundary  0.0-1.0
@@ -71,19 +70,19 @@ public class TriggerShape extends Pane {
         this.setPrefSize(ViewPane.WIDTH * w, ViewPane.HEIGHT * h);
         this.setLayoutX( ViewPane.WIDTH * x);
         this.setLayoutY( ViewPane.HEIGHT * y);
-        
+
         label.setFill(Color.WHITE);
         label.setTranslateY(-4.0);
-        this.trigger = new Rectangle(0, 0, 
+        this.trigger = new Rectangle(0, 0,
                 ViewPane.WIDTH*w, ViewPane.HEIGHT*h
         );
         getChildren().addAll(trigger,label, icon);
-        
+
 //        this.rawX = x;
 //        this.rawY = y;
 //        this.rawW = w;
 //        this.rawH = h;
-        
+
         updateTriggerState(false);
     }
 
@@ -97,32 +96,32 @@ public class TriggerShape extends Pane {
     }
 
 //    /**
-//     * 
+//     *
 //     * @param scaleX usually the width of the @Scene
 //     * @param scaleY usually the height of the @Scene
 //     */
 //    public void setScale( double scaleX, double scaleY ) {
 //        this.scaleX = scaleX;
 //        this.scaleY = scaleY;
-//        
+//
 //        this.setLayoutX(scaleX * rawX);
 //        this.setLayoutY(scaleY * rawY);
-//        
+//
 //        this.setWidth( scaleX * rawW);
 //        this.setHeight(scaleY * rawH);
-//        
+//
 //        this.setMinWidth(scaleX*rawW);
 //        this.setMinHeight(scaleY*rawH);
-//        
+//
 //        // Trigger is the size of out pane.
 //        trigger.setWidth(scaleX * rawW);
 //        trigger.setHeight(scaleY * rawH);
 //    }
-    
+
     public Shape getTriggerShape() {
         return trigger;
     }
-   
+
     /**
      * @param c the triggerColorDefault to set
      */
@@ -145,11 +144,11 @@ public class TriggerShape extends Pane {
     public Pane getIcon() {
         return icon;
     }
-    
+
     public void setClickIcon(String iconPath, double offX, double offY) {
         double rad = ViewPane.WIDTH * 0.01; // Pane arc and drop shadow rad+offset
         Color dropShadow = new Color(0.0,0.0,0.0,0.4);
-        
+
         ImageView iconImg = new ImageView(new Image(getClass().getResourceAsStream(iconPath)));
         //icon = new StackPane(iconImg);
         icon.getChildren().clear();
@@ -158,15 +157,15 @@ public class TriggerShape extends Pane {
         icon.setBackground(new Background(
                 new BackgroundFill(Color.DARKGRAY, new CornerRadii(rad), Insets.EMPTY))
         );
-        
+
         iconImg.setPreserveRatio(true);
         iconImg.setFitWidth(icon.getMinHeight()*0.85);
-        icon.setTranslateX(offX);
-        icon.setTranslateY(offY);
+        icon.setTranslateX(offX * ViewPane.WIDTH);
+        icon.setTranslateY(-offY * ViewPane.HEIGHT);
         icon.setEffect(new DropShadow(rad*4.0, rad/2.0, rad/2.0, dropShadow));
-        
-        //getChildren().addAll(icon);        
-        
+
+        //getChildren().addAll(icon);
+
         icon.setOnMouseClicked((event) -> {
             LOGGER.log(Level.INFO, "Opacity = {0}", icon.getOpacity());
             event.consume();
@@ -175,32 +174,32 @@ public class TriggerShape extends Pane {
                 onClick();
             }
         });
-        
+
         showIcon(false);
     }
-    
+
     /**
      * Sets visibility of the clickable icon. Informs sub-class via @onIconShowing() of state change.
-     * 
-     * @param show 
+     *
+     * @param show
      */
     public void showIcon(boolean show) {
         icon.setVisible(show);
         onIconShowing(show); // Inform sub-class that icon visibility changed.
     }
-    
+
     /**
      * Override this method to do something when user clicks visible trigger icon.
-     * 
+     *
      */
     public void onClick() {}
-    
+
     /**
      * Inform sub-class that trigger icon is showing and clickable.
      * Override to be informed of the icon visibility state.
-     * 
-     * @param showing 
+     *
+     * @param showing
      */
     public void onIconShowing( boolean showing ) {}
-    
+
 }
