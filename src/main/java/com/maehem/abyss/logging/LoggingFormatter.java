@@ -34,11 +34,11 @@ public class LoggingFormatter extends Formatter {
 
     @Override
     public synchronized String format(LogRecord lr) {
-        
+
         // Must process lr message and parameters before final formatting.
         String result = MessageFormat.format(
                 lr.getMessage(), lr.getParameters()
-                );
+        );
 
         return String.format(FORMAT,
                 new Date(lr.getMillis()),
