@@ -234,10 +234,15 @@ public class Character extends Group {
         }
     }
 
+    /**
+     * Scale - Negative scale flips Left-Right
+     *
+     * @param scale
+     */
     public void setScale(double scale) {
         // TODO:  refactor feet origin into new scale
         setScaleX(scale);
-        setScaleY(scale);
+        setScaleY(Math.abs(scale));
         updateOrigin();
     }
 
@@ -519,8 +524,8 @@ public class Character extends Group {
 //        }
         for( int i=0;  i<inventory.size(); i++ ) {
             if ( inventory.get(i) instanceof EmptyThing) {
-                LOGGER.log(Level.INFO, 
-                        "Inventory Item: {0} changed from EmptyThing to {1}", 
+                LOGGER.log(Level.INFO,
+                        "Inventory Item: {0} changed from EmptyThing to {1}",
                         new Object[]{i, thing.getClass().getSimpleName()}
                 );
                 inventory.set(i, thing);
