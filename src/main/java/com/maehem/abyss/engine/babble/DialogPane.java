@@ -171,16 +171,24 @@ public class DialogPane extends BorderPane {
             //npcView = npc.getPoseSheet().getCameo();
         }
 
-        //cameoViewPane = new StackPane(npcView);
+        InnerShadow innerShadow = new InnerShadow(
+                14.0f,
+                0.0f, -8.0f,
+                new Color(0.0, 0.0, 0.0, 0.33)
+        );
+
+        DropShadow dropShadow = new DropShadow(DROP_SPREAD, 20, 20, DROP_COLOR);
+
+        Blend blendEffect = new Blend(BlendMode.SRC_OVER);
+        blendEffect.setTopInput(innerShadow);
+        blendEffect.setBottomInput(dropShadow);
+
         cameoViewPane = new StackPane(cameoView);
         //cameoViewPane.setEffect(innerShadow);
         cameoViewPane.setPrefSize(CAMEO_H, CAMEO_H);
-        cameoViewPane.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
-        //Rectangle cameoFrame = new Rectangle(npcView.getX(), npcView.getY(), npcView.getViewport().getWidth(), npcView.getViewport().getHeight());
-        //cameoFrame.setStrokeWidth(10.0);
-        //cameoFrame.setStroke(Color.DARKGREEN);
-        //cameoFrame.setFill(Color.TRANSPARENT);
-        AnchorPane.setLeftAnchor(cameoViewPane, 0.0);
+        cameoViewPane.setEffect(blendEffect);
+
+        AnchorPane.setLeftAnchor(cameoViewPane, 20.0);
         AnchorPane.setBottomAnchor(cameoViewPane, 0.0);
 
         ImageView closeX = new ImageView(new Image(getClass().getResourceAsStream(CLOSE_X_PATH)));
