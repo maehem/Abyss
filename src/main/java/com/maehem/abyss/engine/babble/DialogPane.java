@@ -1,17 +1,17 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
  */
 package com.maehem.abyss.engine.babble;
@@ -27,7 +27,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Button;
+import javafx.scene.effect.Blend;
+import javafx.scene.effect.BlendMode;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.InnerShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -58,7 +61,7 @@ public class DialogPane extends BorderPane {
 
     public final static String FONT_PATH = "/fonts/PatrickHand-Regular.ttf";
     public final static double FONT_SIZE = 36;
-    private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.9);
+    private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.6);
     private final static Color DROP_COLOR_AB = new Color(0.0, 0.0, 0.0, 0.4);
     private final static double DROP_SPREAD = 50.0;
     private static final double CAMEO_H = 180;
@@ -95,11 +98,10 @@ public class DialogPane extends BorderPane {
             + "Dialog Text. Hello. I am a pretty pony."
     );
     private final VBox answerButtonsBox = new VBox();
-    private ImageView cameoView;
+    private final ImageView cameoView;
     private final Pane cameoViewPane;
     private String[] vars = null;
 
-    
     /**
      *
      * @param npc NPC the player is talking to.
@@ -107,10 +109,10 @@ public class DialogPane extends BorderPane {
      */
     public DialogPane(Character npc) {
         this.npc = npc;
-        
+
         this.DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
-        this.DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE*1.3);
-        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE*0.65);
+        this.DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 1.3);
+        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.65);
         setPrefSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
         setMinSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
         setLayoutX(ViewPane.WIDTH * 0.08);
@@ -123,13 +125,13 @@ public class DialogPane extends BorderPane {
         nameText.setFont(DIALOG_NAME_FONT);
         nameText.setText(npc.getName());
         nameBox.setAlignment(Pos.CENTER);
-        
+
         dialogText.setFont(DIALOG_FONT);
 
         TextFlow dialogTextFlow = new TextFlow(dialogText);
-        dialogTextFlow.setPadding(new Insets(0,FONT_SIZE,0,FONT_SIZE));
+        dialogTextFlow.setPadding(new Insets(0, FONT_SIZE, 0, FONT_SIZE));
         dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
-        dialogTextFlow.setLineSpacing(-FONT_SIZE*0.33);
+        dialogTextFlow.setLineSpacing(-FONT_SIZE * 0.33);
         //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
         VBox leftArea = new VBox(nameBox, dialogTextFlow);
         leftArea.setAlignment(Pos.TOP_CENTER);
@@ -159,32 +161,19 @@ public class DialogPane extends BorderPane {
         answerButtonsBox.setAlignment(Pos.CENTER);
         //answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, 0, 0, DROP_COLOR));
         answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR_AB));
-        // 
-//        BorderPane answerPane = new BorderPane(answerButtonsBox);
-//        answerPane.setPrefSize(getPrefWidth()*0.4, getPrefHeight());
-//        answerPane.setEffect(new DropShadow());
-//        answerPane.setBackground(new Background(new BackgroundFill(Color.GOLD, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        //HBox hBox = new HBox(leftArea, answerButtonsBox);
-
-        // Image of NPC as cameo cropped view
-        //ImageView npcView;
         Image cameo = npc.getCameo();
-        if ( cameo == null ) {
+        if (cameo == null) {
             cameoView = new ImageView(npc.getCameo());
             LOGGER.log(Level.INFO, "NPC cameo was null.");
         } else {
-            cameoView = new ImageView( cameo );
+            cameoView = new ImageView(cameo);
             //npcView = npc.getPoseSheet().getCameo();
         }
-        //npcView.setY(-npcView.getBoundsInLocal().getHeight());
-//        npcView.setY(0);
-//        npcView.setX(-CAMEO_H/2);
-//        npcView.setFitHeight(CAMEO_H);
-//        npcView.setPreserveRatio(true);
 
         //cameoViewPane = new StackPane(npcView);
         cameoViewPane = new StackPane(cameoView);
+        //cameoViewPane.setEffect(innerShadow);
         cameoViewPane.setPrefSize(CAMEO_H, CAMEO_H);
         cameoViewPane.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
         //Rectangle cameoFrame = new Rectangle(npcView.getX(), npcView.getY(), npcView.getViewport().getWidth(), npcView.getViewport().getHeight());
@@ -210,32 +199,32 @@ public class DialogPane extends BorderPane {
 
         //cameoViewPane.getChildren().add(cameoFrame);
         AnchorPane topArea = new AnchorPane(cameoViewPane, closeX);
+        setTop(topArea); // Make sure center is closest Z so we can tune cameo overlap.
         setCenter(leftArea);
         setRight(answerButtonsBox);
-        setTop(topArea); // Make sure top is closest Z so we can tune cameo overlap.
     }
 
-    public void setVars( String[] vars ) {
+    public void setVars(String[] vars) {
         this.vars = vars;
     }
-    
-    public void setCameo( Image iv ) {
+
+    public void setCameo(Image iv) {
         cameoView.setImage(iv);
         cameoView.setViewport(new Rectangle2D(0, 0, iv.getWidth(), iv.getHeight()));
         cameoView.setPreserveRatio(true);
         cameoView.setFitHeight(CAMEO_H);
         //cameoView.setX(0);
-        
+
         cameoViewPane.getChildren().clear();
         cameoViewPane.getChildren().add(cameoView);
-        
+
     }
-    
-    public void setCameoTranslate( double x, double y ) {
+
+    public void setCameoTranslate(double x, double y) {
         cameoView.setTranslateX(x);
         cameoView.setTranslateY(y);
     }
-        
+
     /**
      * @return the actionDone
      */
@@ -299,7 +288,7 @@ public class DialogPane extends BorderPane {
         bText.setTextAlignment(TextAlignment.CENTER);
         bText.setFont(ANSWER_FONT);
 
-        Button b = new Button("",bText);
+        Button b = new Button("", bText);
         b.setBorder(new Border(
                 new BorderStroke(Color.BLACK.brighter(),
                         BorderStrokeStyle.SOLID,
@@ -333,21 +322,23 @@ public class DialogPane extends BorderPane {
 
     /**
      * Replace var markers ($0 - $9) with the pre-set var value.
-     * 
+     *
      * @param text containing var markers $0 - $9.
      * @return text with substituted var[n] String values.
      */
-    private String processText( String text ) {
-        if ( vars == null ) return text;
+    private String processText(String text) {
+        if (vars == null) {
+            return text;
+        }
         String pText = new String(text);
-        for ( int i=0; i<vars.length; i++ ) {
+        for (int i = 0; i < vars.length; i++) {
             String pVar = "$" + Integer.toString(i);
-            if ( pText.contains(pVar) ) {
+            if (pText.contains(pVar)) {
                 // Need to escape with double back-slashes because $ is a regex character.
-                pText = pText.replaceAll(new String( '\\' + pVar), vars[i]);
+                pText = pText.replaceAll(new String('\\' + pVar), vars[i]);
             }
         }
-        
+
         return pText;
     }
 }
