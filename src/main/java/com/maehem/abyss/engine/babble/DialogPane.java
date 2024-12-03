@@ -44,6 +44,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -112,7 +113,7 @@ public class DialogPane extends BorderPane {
 
         this.DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
         this.DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 1.3);
-        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.65);
+        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.75);
         setPrefSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
         setMinSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
         setLayoutX(ViewPane.WIDTH * 0.08);
@@ -124,23 +125,52 @@ public class DialogPane extends BorderPane {
         nameBox.setPadding(new Insets(FONT_SIZE / 2));
         nameText.setFont(DIALOG_NAME_FONT);
         nameText.setText(npc.getName());
-        nameBox.setAlignment(Pos.CENTER);
+        nameBox.setAlignment(Pos.BASELINE_RIGHT);
 
         dialogText.setFont(DIALOG_FONT);
 
         TextFlow dialogTextFlow = new TextFlow(dialogText);
-        dialogTextFlow.setPadding(new Insets(0, FONT_SIZE, 0, FONT_SIZE));
+        dialogTextFlow.setPadding(new Insets(60, FONT_SIZE, 0, FONT_SIZE));
         dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
         dialogTextFlow.setLineSpacing(-FONT_SIZE * 0.33);
         //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
-        VBox leftArea = new VBox(nameBox, dialogTextFlow);
-        leftArea.setAlignment(Pos.TOP_CENTER);
-        leftArea.setFillWidth(true);
-        leftArea.setBackground(new Background(new BackgroundFill(
+
+        VBox nameDialogElementsBox = new VBox(nameBox, dialogTextFlow);
+        VBox.setMargin(nameBox, new Insets(0, 20, 0, 0));
+        VBox.setMargin(dialogTextFlow, new Insets(30));
+        nameDialogElementsBox.setAlignment(Pos.TOP_CENTER);
+        nameDialogElementsBox.setFillWidth(true);
+//        nameDialogElementsBox.setBackground(new Background(new BackgroundFill(
+//                Color.GRAY,
+//                new CornerRadii(20, 0, 0, 20, false),
+//                Insets.EMPTY
+//        )));
+
+        //StackPane leftArea = new StackPane(nameDialogElementsBox);
+
+        final String ROUND_BUBBLE
+                = "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
+
+        Region reg = new Region();
+        reg.setMinSize(200, 200);
+
+        StackPane bubble = new StackPane(reg);
+        bubble.setPadding(new Insets(20));
+        bubble.setStyle(
+                "-fx-background-color: white; "
+                + "-fx-border-color: black; -fx-border-width: 4px; "
+                + "-fx-shape: \"" + ROUND_BUBBLE + "\";"
+        );
+        bubble.setEffect(new DropShadow(10, 5, 5, Color.MIDNIGHTBLUE));
+
+        StackPane.setMargin(bubble, new Insets(0, 30, 30, 30));
+        StackPane layout = new StackPane(bubble, nameDialogElementsBox);
+        layout.setBackground(new Background(new BackgroundFill(
                 Color.GRAY,
                 new CornerRadii(20, 0, 0, 20, false),
                 Insets.EMPTY
         )));
+        //layout.setPadding(new Insets(80));
 
         // Clip the buttons area so that the drop shadow only shades the left edge.
         Rectangle r = new Rectangle(ViewPane.WIDTH * 0.84 + 40, ViewPane.HEIGHT * 0.8);
@@ -156,8 +186,8 @@ public class DialogPane extends BorderPane {
                 new CornerRadii(0, 20, 20, 0, false),
                 Insets.EMPTY)
         ));
-        answerButtonsBox.setPadding(new Insets(FONT_SIZE / 2.0));
-        answerButtonsBox.setSpacing(FONT_SIZE / 2.0);
+        answerButtonsBox.setPadding(new Insets(FONT_SIZE / 3.0));
+        answerButtonsBox.setSpacing(FONT_SIZE / 3.0);
         answerButtonsBox.setAlignment(Pos.CENTER);
         //answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, 0, 0, DROP_COLOR));
         answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR_AB));
@@ -208,7 +238,8 @@ public class DialogPane extends BorderPane {
         //cameoViewPane.getChildren().add(cameoFrame);
         AnchorPane topArea = new AnchorPane(cameoViewPane, closeX);
         setTop(topArea); // Make sure center is closest Z so we can tune cameo overlap.
-        setCenter(leftArea);
+        //setCenter(leftArea);
+        setCenter(layout);
         setRight(answerButtonsBox);
     }
 
@@ -295,15 +326,17 @@ public class DialogPane extends BorderPane {
         bText.setWrappingWidth(ViewPane.WIDTH * 0.38);
         bText.setTextAlignment(TextAlignment.CENTER);
         bText.setFont(ANSWER_FONT);
+        CornerRadii cornerRadii = new CornerRadii(FONT_SIZE / 2);
 
         Button b = new Button("", bText);
         b.setBorder(new Border(
                 new BorderStroke(Color.BLACK.brighter(),
                         BorderStrokeStyle.SOLID,
-                        new CornerRadii(FONT_SIZE / 2),
+                        cornerRadii,
                         new BorderWidths(2)
                 )));
         b.setBackground(Background.EMPTY);
+        b.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, cornerRadii, Insets.EMPTY)));
         b.setOnAction((tt) -> {
             tt.consume();
             response.getAction().doResponseAction();
