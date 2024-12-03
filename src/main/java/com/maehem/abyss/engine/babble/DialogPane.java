@@ -130,7 +130,7 @@ public class DialogPane extends BorderPane {
         dialogText.setFont(DIALOG_FONT);
 
         TextFlow dialogTextFlow = new TextFlow(dialogText);
-        dialogTextFlow.setPadding(new Insets(60, FONT_SIZE, 0, FONT_SIZE));
+        dialogTextFlow.setPadding(new Insets(FONT_SIZE));
         dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
         dialogTextFlow.setLineSpacing(-FONT_SIZE * 0.33);
         //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
