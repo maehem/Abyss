@@ -152,7 +152,15 @@ public class Character extends Group {
         showHearingBounds(false);
     }
 
-    public void setAllowTalk(boolean allow ) {
+    /**
+     * Move hearing boundary by X/Y
+     */
+    public final void adjustHearingBoundary(double x, double y) {
+        getHearingBoundary().setCenterX(getHearingBoundary().getCenterX() + x);
+        getHearingBoundary().setCenterY(getHearingBoundary().getCenterY() + y);
+    }
+
+    public void setAllowTalk(boolean allow) {
         this.allowTalk = allow;
         this.setTalking(false);
     }
