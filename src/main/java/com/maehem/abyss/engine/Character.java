@@ -13,7 +13,7 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
     License for the specific language governing permissions and limitations
     under the License.
-*/
+ */
 package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
@@ -33,7 +33,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /**
- *  // TODO:  Unlink Character model from view
+ *  // TODO: Unlink Character model from view
  *
  * @author Mark J Koch [@maehem on GitHub]
  */
@@ -55,7 +55,6 @@ public class Character extends Group {
     private boolean allowTalk = false;
     private boolean talking = false;
 
-
     private AnimationTimer aniTimer;
     private long lastTime = 0;
     private final long TWAIT = 40000000;
@@ -71,12 +70,12 @@ public class Character extends Group {
         this("???");
     }
 
-    public Character( String name ) {
+    public Character(String name) {
         LOGGER.log(Level.CONFIG, "{0}: Create character: {1}", new Object[]{getClass().getSimpleName(), name});
         this.name = name;
 
         // Fill the inventory with EmptyThing placeholders.
-        for ( int i=0; i< INVENTORY_SIZE; i++ ) {
+        for (int i = 0; i < INVENTORY_SIZE; i++) {
             inventory.add(new EmptyThing());
         }
 
@@ -96,8 +95,8 @@ public class Character extends Group {
     }
 
     /**
-     * Translate the character image so that the center (layoutX/Y)
-     * is at this place in the image. Usually near the feet of the character.
+     * Translate the character image so that the center (layoutX/Y) is at this
+     * place in the image. Usually near the feet of the character.
      * setOrigin(0.5, 0.8) is a good starting point.
      *
      * @param x range 0.0-1.0 (left to right)
@@ -122,8 +121,8 @@ public class Character extends Group {
         double bH = b.getHeight();
         //LOGGER.log(Level.CONFIG, "Parent Bounds for character: {0}x{1}\n", new Object[]{b.getWidth(), b.getHeight()});
         // After scaling, translate new X or Y position back to 0, then translate to desired originX/Y.
-        setTranslateX( ((-pW + bW)/2 - bW * originX ));
-        setTranslateY( ((-pH + bH)/2 - bH * originY ));
+        setTranslateX(((-pW + bW) / 2 - bW * originX));
+        setTranslateY(((-pH + bH) / 2 - bH * originY));
 
     }
 
@@ -131,19 +130,19 @@ public class Character extends Group {
         return accountId;
     }
 
-    public void setAccountId( String id ) {
+    public void setAccountId(String id) {
         this.accountId = id;
     }
 
-    public final void setDefaultHearingBoundary() {
+    private final void setDefaultHearingBoundary() {
         double clipW = getPoseSheet().getWidth();
         double clipH = getPoseSheet().getHeight();
 
         getChildren().remove(getHearingBoundary());
 
-        hearingBoundary = new Ellipse(clipW/2, clipW/4);
-        getHearingBoundary().setCenterX(clipW/2);
-        getHearingBoundary().setCenterY(clipH-getHearingBoundary().getRadiusY());
+        hearingBoundary = new Ellipse(clipW / 2, clipW / 4);
+        getHearingBoundary().setCenterX(clipW / 2);
+        getHearingBoundary().setCenterY(clipH - getHearingBoundary().getRadiusY());
 
         getHearingBoundary().setStrokeWidth(2.0);
         getHearingBoundary().setStroke(Color.HONEYDEW);
@@ -164,11 +163,11 @@ public class Character extends Group {
         talkIcon = new ImageView();
         talkIcon.setImage(new Image(getClass().getResourceAsStream(TALK_ICON_IMAGE_FILENAME)));
         talkIcon.setPreserveRatio(true);
-        talkIcon.setFitWidth(clipW/2);
-        talkIcon.setX(clipW-talkIcon.getFitWidth());
+        talkIcon.setFitWidth(clipW / 2);
+        talkIcon.setX(clipW - talkIcon.getFitWidth());
 
         // Display the talk icon such that the pointy bit is at mouth level.
-        talkIcon.setY(-talkIcon.getBoundsInLocal().getHeight()/2);
+        talkIcon.setY(-talkIcon.getBoundsInLocal().getHeight() / 2);
 
         getChildren().add(talkIcon);
 
@@ -176,7 +175,9 @@ public class Character extends Group {
             LOGGER.log(Level.WARNING, "Talk Icon clicked");
             event.consume();
             //if ( talkIcon.getOpacity() > 0.0 ) {
-                if ( allowTalk ) setTalking(true);
+            if (allowTalk) {
+                setTalking(true);
+            }
             //}
         });
 
@@ -252,7 +253,9 @@ public class Character extends Group {
     }
 
     public boolean canHear(Shape s) {
-        if ( !allowTalk ) return false;
+        if (!allowTalk) {
+            return false;
+        }
         return Shape.intersect(getHearingBoundary(), s).getBoundsInLocal().getWidth() > 0;
     }
 
@@ -260,17 +263,17 @@ public class Character extends Group {
         feetBoundary.setOpacity(show ? 0.5 : 0.0);
     }
 
-    public void showHearingBounds( boolean show ) {
+    public void showHearingBounds(boolean show) {
         getHearingBoundary().setOpacity(show ? 0.5 : 0.0);
     }
 
     public void showTalkIcon(boolean show) {
-        if ( allowTalk ) {
+        if (allowTalk) {
             talkIcon.setVisible(show);
         } else {
             talkIcon.setVisible(false);
         }
-        if ( !show ) {
+        if (!show) {
             setTalking(false);
         }
     }
@@ -319,7 +322,7 @@ public class Character extends Group {
                         stopAnimating();
                     }
                 } else if (getLayoutX() > x) {
-                    if ( moveLeft(12, pBounds) ) {
+                    if (moveLeft(12, pBounds)) {
                         LOGGER.finest("Moved Left");
                     } else {
                         stopAnimating();
@@ -328,13 +331,13 @@ public class Character extends Group {
 
                 // Figure out if we are moving up or down
                 if (getLayoutY() < y) {
-                    if ( moveDown(4, pBounds) ) {
+                    if (moveDown(4, pBounds)) {
                         LOGGER.finest("Moved Down");
                     } else {
                         stopAnimating();
                     }
                 } else if (getLayoutY() > y) {
-                    if ( moveUp(4, pBounds) ) {
+                    if (moveUp(4, pBounds)) {
                         LOGGER.finest("Moved Up");
                     } else {
                         stopAnimating();
@@ -347,7 +350,6 @@ public class Character extends Group {
 
         aniTimer.start();
     }
-
 
     public final void initFeetBoundary() {
         feetBoundary = new Rectangle();
@@ -364,14 +366,13 @@ public class Character extends Group {
         double clipW = getPoseSheet().getWidth();
         double clipH = getPoseSheet().getHeight();
 
-        double feetW = clipW/4;
-        double feetH = clipH/25;
+        double feetW = clipW / 4;
+        double feetH = clipH / 25;
 
         //double feetX = clipW/2 - feetW/2;
-        double feetX = clipW*originX - feetW/2;
+        double feetX = clipW * originX - feetW / 2;
         //double feetY = clipH - feetH;
-        double feetY = clipH*originY - feetH/2;
-
+        double feetY = clipH * originY - feetH / 2;
 
         feetBoundary.setX(feetX);
         feetBoundary.setY(feetY);
@@ -396,11 +397,11 @@ public class Character extends Group {
             }
             this.talking = talking;
         } else {
-            if ( talking ) {
+            if (talking) {
                 LOGGER.log(Level.WARNING, "Tried to set talk on character " + getName() + " they are not allowed to talk!");
             }
             this.talking = false;
-       }
+        }
     }
 
     /**
@@ -455,7 +456,6 @@ public class Character extends Group {
 //    public DialogScreen getDialog() {
 //        return dialogScreen;
 //    }
-
     public DialogPane getDialogPane() {
         return dialogPane;
     }
@@ -480,19 +480,18 @@ public class Character extends Group {
 //    public Thing[] getInventory() {
 //        return inventory;
 //    }
-
     public ArrayList<Thing> getAInventory() {
         return inventory;
     }
 
-    public void setAInventory(int index, Thing thing ) {
+    public void setAInventory(int index, Thing thing) {
         inventory.set(index, thing);
     }
 
     public boolean isInventoryFull() {
         // Fill the inventory with EmptyThing placeholders.
-        for ( int i=0; i < inventory.size(); i++ ) {
-            if ( inventory.get(i) instanceof EmptyThing ) {
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.get(i) instanceof EmptyThing) {
                 return false;
             }
         }
@@ -522,8 +521,8 @@ public class Character extends Group {
 //                break;
 //            }
 //        }
-        for( int i=0;  i<inventory.size(); i++ ) {
-            if ( inventory.get(i) instanceof EmptyThing) {
+        for (int i = 0; i < inventory.size(); i++) {
+            if (inventory.get(i) instanceof EmptyThing) {
                 LOGGER.log(Level.INFO,
                         "Inventory Item: {0} changed from EmptyThing to {1}",
                         new Object[]{i, thing.getClass().getSimpleName()}
