@@ -252,7 +252,7 @@ public class DebugTab extends Group implements LogListener {
 
         return p;
     }
-    
+
     public void reloadDebugLog() {
             // Clear and regenerate the TextFlow for the log messages.
             tf.getChildren().clear();
@@ -260,9 +260,9 @@ public class DebugTab extends Group implements LogListener {
                 messageAdded(t);
                 //LOGGER.config("Log Record Level: " + t.getLevel().intValue());
 
-            });        
+            });
     }
-    
+
     public void setFormatter(Formatter f) {
         this.formatter = f;
     }
@@ -296,7 +296,7 @@ public class DebugTab extends Group implements LogListener {
                 if (record.getLevel().intValue() >= 1000) break;
                 return;
         }
-                
+
         String message;
         if (formatter != null) {
             message = MessageFormat.format(getFormatter().format(record), record.getParameters());
