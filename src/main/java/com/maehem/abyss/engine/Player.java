@@ -1,23 +1,23 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
  */
 package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
-
+import com.maehem.abyss.engine.Character;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import java.util.Map;
 import java.util.Properties;
@@ -236,13 +236,13 @@ public class Player extends Character implements GameStateListener {
      * @return
      */
     public int installChip(SkillChipThing t) {
-        if (getAInventory().contains(t) && chipSlotAvailable()) {
+        if (getInventory().contains(t) && chipSlotAvailable()) {
             for (int i = 0; i < chipSlots.length; i++) {
                 if (chipSlots[i] == null) {
                     chipSlots[i] = t;
-                    getAInventory().remove(t);
-                    LOGGER.log(Level.FINER, 
-                            "player chip install success: t: {0} s: {1}", 
+                    getInventory().remove(t);
+                    LOGGER.log(Level.FINER,
+                            "player chip install success: t: {0} s: {1}",
                             new Object[]{t.getName(), i});
                     return i;
                 }
@@ -254,7 +254,7 @@ public class Player extends Character implements GameStateListener {
 
     public boolean removeChip(int slotNum) {
         if (chipSlots[slotNum] != null) {
-            getAInventory().add(chipSlots[slotNum]);
+            getInventory().add(chipSlots[slotNum]);
             chipSlots[slotNum] = null;
             return true;
         }
@@ -269,18 +269,18 @@ public class Player extends Character implements GameStateListener {
         }
         return false;
     }
-    
+
     public int getSlotFor(SkillChipThing t) {
         for ( int i=0; i<chipSlots.length; i++  ) {
             if ( chipSlots[i] == t ) return i;
         }
-        
+
         return -1;
     }
 
     /**
      * Add up total for all installed chips of requested Buff
-     * 
+     *
      * @param skill the buff to get total for
      * @return player's total skill for requested ability
      */
@@ -294,14 +294,14 @@ public class Player extends Character implements GameStateListener {
                 }
             }
         }
-        
+
         // Range check.
         if ( total > 999 ) {
             total = 999;
         } if ( total < 0 ) {
             total = 0;
         }
-        
+
         return total;
     }
 
@@ -321,13 +321,13 @@ public class Player extends Character implements GameStateListener {
         }
 
         LOGGER.log(Level.WARNING, "Save Inventory.");
-        for (int i = 0; i < getAInventory().size(); i++) {
+        for (int i = 0; i < getInventory().size(); i++) {
             String key = INVENTORY_KEY + "." + i;
-            Thing t = getAInventory().get(i);
+            Thing t = getInventory().get(i);
             LOGGER.log(Level.FINEST, "    Player Thing SaveState: {0} will be saved.", t.getClass().getSimpleName());
             t.saveState(key, p);
         }
-        
+
         LOGGER.log(Level.WARNING, "Save Installed Chips.");
         for (int i = 0; i < chipSlots.length; i++) {
             String key = CHIP_SLOTS_KEY + "." + i;
@@ -337,7 +337,7 @@ public class Player extends Character implements GameStateListener {
                 t.saveState(key, p);
             }
         }
-        
+
     }
 
     /**
@@ -354,10 +354,10 @@ public class Player extends Character implements GameStateListener {
         setConstitution(Integer.parseInt(p.getProperty(CONSTITUTION_KEY, String.valueOf(PLAYER_CONSTITUTION_MAX))));
 
         LOGGER.log(Level.INFO, "Load Inventory Items");
-        for (int i = 0; i < getAInventory().size(); i++) {
+        for (int i = 0; i < getInventory().size(); i++) {
             String key = INVENTORY_KEY + "." + i;
             LOGGER.log(Level.FINE, "    Player Inventory Item: {0}", key);
-            
+
             String itemClass = p.getProperty(key + ".class");
             if (itemClass != null) {
                 Thing object = Thing.factory(gameState.getContentPack(),key, p);
@@ -373,7 +373,7 @@ public class Player extends Character implements GameStateListener {
         for (int i = 0; i < chipSlots.length; i++) {
             String key = CHIP_SLOTS_KEY + "." + i;
             LOGGER.log(Level.INFO, "    Player Skill Chip: {0}", key);
-            
+
             String itemClass = p.getProperty(key + ".class");
             if (itemClass != null) {
                 Thing object = Thing.factory(gameState.getContentPack(), key, p);
@@ -382,12 +382,12 @@ public class Player extends Character implements GameStateListener {
                 }
             }
         }
-        
+
         String deck = p.getProperty(CURRENT_DECK_KEY, null);
 
         if (deck != null) {
             // Load current deck if we have it in inventory
-            for (Thing t : getAInventory()) {
+            for (Thing t : getInventory()) {
                 if ((t instanceof DeckThing) && t.getClass().getName().endsWith(deck)) { // "deck.MyDeckName"
                     currentDeck = (DeckThing) t;
                     LOGGER.log(Level.INFO, "===> Player Current Deck: {0}", currentDeck.getName());
