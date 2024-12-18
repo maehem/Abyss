@@ -1,23 +1,22 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
  */
 package com.maehem.abyss;
 
 import com.maehem.abyss.engine.PoseSheet;
-import com.maehem.abyss.engine.gui.widgets.Gauge;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +30,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -44,7 +42,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -75,8 +72,8 @@ private final ObservableList<String> directions = FXCollections.observableArrayL
     private final Spinner rowsSpinner = new Spinner(1, 4, 4);
     private final Label colsLabel = new Label(" Cols:");
     private final Spinner colsSpinner = new Spinner(1, 12, 12);
-    private final Spinner dirSpinner = new Spinner(directions);
-    
+    private final Spinner<String> dirSpinner = new Spinner<>(directions);
+
 
     private Stage stage;
     Timeline timeline;
@@ -85,17 +82,17 @@ private final ObservableList<String> directions = FXCollections.observableArrayL
     public void start(Stage window) {
         this.stage = window;
         HBox menuBox = new HBox(menuBar,
-                rowsLabel, rowsSpinner, 
+                rowsLabel, rowsSpinner,
                 colsLabel ,colsSpinner
         );
         root.setTop(menuBox);
         menuBox.setAlignment(Pos.CENTER);
         menuBox.setSpacing(5);
-        
-        
+
+
         initFileMenu();
         initBackground();
-        
+
         initPlayControls();
 
         window.setScene(this.scene);
@@ -105,7 +102,7 @@ private final ObservableList<String> directions = FXCollections.observableArrayL
     }
 
     private void initBackground() {
-        
+
         for (int y=0; y<12; y++) {
             for (int x=y%2; x<8; x+=2) {
                 Rectangle r = new Rectangle(SIZE/8, SIZE/8, Color.LIGHTGRAY);
@@ -116,14 +113,14 @@ private final ObservableList<String> directions = FXCollections.observableArrayL
         }
 
     }
-    
+
     private void initPlayControls() {
         Button stepBackButton = new Button("\u23ee");
         stepBackButton.setFont(BUTTON_FONT);
         stepBackButton.setOnAction((t) -> {
             poseSheet.previousPose();
         });
-        
+
         Button playButton = new Button("\u27A1");
         playButton.setFont(BUTTON_FONT);
         playButton.setOnAction((t) -> {
@@ -137,13 +134,13 @@ private final ObservableList<String> directions = FXCollections.observableArrayL
             timeline.play();
             playButton.setDisable(true);
         });
-        
+
         Button stepFwdButton = new Button("\u23ED");
         stepFwdButton.setFont(BUTTON_FONT);
         stepFwdButton.setOnAction((t) -> {
             poseSheet.nextPose();
         });
-        
+
         Button stopButton = new Button("\u2B1B");
         stopButton.setFont(BUTTON_FONT);
         stopButton.setOnAction((t) -> {
@@ -153,19 +150,19 @@ private final ObservableList<String> directions = FXCollections.observableArrayL
                 playButton.setDisable(false);
             }
         });
-        
+
         HBox controls = new HBox(
                 stepBackButton,
                 playButton,
-                stopButton, 
+                stopButton,
                 stepFwdButton,
                 dirSpinner
         );
         controls.setAlignment(Pos.CENTER);
         root.setBottom(controls);
     }
-    
-    
+
+
     private void initFileMenu() {
         Menu fileMenu = new Menu("File");
         menuBar.getMenus().addAll(fileMenu);
