@@ -4,9 +4,8 @@
  */
 package com.maehem.abyss;
 
-import com.maehem.abyss.engine.GameState;
+import com.maehem.abyss.engine.gui.CrtTextPane2;
 import com.maehem.abyss.engine.view.ViewPane;
-import com.maehem.abyss.engine.gui.CrtTextPane;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -29,7 +28,7 @@ public class CrtTest extends Application {
     private double SCALE = 2.0;
 
     private Stage window;
-    private CrtTextPane narrationPane;
+    private CrtTextPane2 narrationPane;
     private final VBox gamePane = new VBox();
     private final HBox bottomArea = new HBox();  // gui and naration
     private final StackPane root = new StackPane(gamePane);
@@ -55,10 +54,10 @@ public class CrtTest extends Application {
 
         //gamePane.setBottom(bottomArea);
         gamePane.getChildren().add(bottomArea);
-        GameState gameState = new GameState();
-        this.narrationPane = new CrtTextPane(gameState, ViewPane.WIDTH*SCALE/2);
+        //GameState gameState = new GameState();
+        this.narrationPane = new CrtTextPane2(ViewPane.WIDTH * SCALE / 2);
         this.bottomArea.getChildren().addAll(narrationPane );
-        
+
         root.layout();
 
         window.show();
@@ -69,5 +68,5 @@ public class CrtTest extends Application {
      */
     public static void main(String[] args) {
         launch(args);
-    }    
+    }
 }
