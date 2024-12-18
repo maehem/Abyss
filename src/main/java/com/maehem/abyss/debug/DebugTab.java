@@ -306,7 +306,7 @@ public class DebugTab extends Group implements LogListener {
         Text messageText = new Text(message);
         messageText.setFont(REGULAR);
         if (record.getLevel() == Level.SEVERE) {
-            messageText.setFill(Color.RED);
+            messageText.setFill(Color.RED.desaturate());
             messageText.setFont(BOLD);
         } else if (record.getLevel() == Level.WARNING) {
             messageText.setFill(Color.ORANGE);
