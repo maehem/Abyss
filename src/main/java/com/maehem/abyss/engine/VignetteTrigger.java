@@ -16,7 +16,9 @@
  */
 package com.maehem.abyss.engine;
 
+import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.PoseSheet.Direction;
+import java.util.logging.Level;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -28,7 +30,7 @@ import javafx.scene.shape.Rectangle;
 public class VignetteTrigger extends TriggerShape {
 
     public static final boolean SHOW_TRIGGER = true;
-    
+
     private String destination;
     private double playerX = -1;
     private double playerY = -1;
@@ -113,6 +115,7 @@ public class VignetteTrigger extends TriggerShape {
      * @param locked the locked to set
      */
     public void setLocked(boolean locked) {
+        LOGGER.log(Level.CONFIG, "Set " + playerDir.name() + " Door lock state to: " + (locked ? "Locked" : "Open"));
         this.locked = locked;
     }
 
