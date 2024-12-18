@@ -1,17 +1,17 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
 */
 package com.maehem.abyss.engine.gui;
@@ -43,7 +43,7 @@ import javafx.scene.text.Text;
 public class GiveCreditsPane extends BorderPane {
 
     private final double TEXT_SIZE = 28.0;
-    
+
     private final GameState gameState;
     private final TextField giveAmountField = new TextField();
     private final Text playerBalanceText = paneText("1234567");
@@ -51,7 +51,8 @@ public class GiveCreditsPane extends BorderPane {
     //private String successValue;
     private final Text titleText;
     private EventHandler successAction;
-    
+
+    @SuppressWarnings("unchecked")
     public GiveCreditsPane( GameState gs ) {
         this.gameState = gs;
         this.titleText = paneText("");
@@ -59,28 +60,28 @@ public class GiveCreditsPane extends BorderPane {
         HBox titleArea = new HBox(titleText);
         titleArea.setPadding(new Insets(TEXT_SIZE*0.2));
         setTop(titleArea);
-        
+
         GridPane gp = new GridPane();
-        
+
         gp.add(paneText("Credits:"), 0, 0, 1, 1);
         gp.add(playerBalanceText, 1, 0, 1, 1);
         gp.add(paneText("Give:"), 0, 1, 1, 1);
         gp.add(giveAmountField, 1, 1, 1, 1);
         giveAmountField.setFont(Font.font(TEXT_SIZE));
-        
+
         setCenter(gp);
-        
+
         Button okButton = new Button("Give");
         okButton.setFont(Font.font(TEXT_SIZE));
         Button cancelButton = new Button("Cancel");
         cancelButton.setFont(Font.font(TEXT_SIZE));
-        
+
         HBox buttons = new HBox(okButton, cancelButton);
         buttons.setAlignment(Pos.CENTER_RIGHT);
         buttons.setSpacing(10);
-        
+
         setBottom(buttons);
-        
+
         BorderPane.setMargin(gp, new Insets(30));
         BorderPane.setMargin(buttons, new Insets(30));
         setBackground(new Background(new BackgroundFill(Color.DARKGREY, new CornerRadii(20), Insets.EMPTY)));
@@ -88,9 +89,9 @@ public class GiveCreditsPane extends BorderPane {
         setPrefSize(ViewPane.WIDTH*0.5, ViewPane.HEIGHT*0.5);
         setLayoutX(ViewPane.WIDTH*0.25);
         setLayoutY(ViewPane.HEIGHT*0.25);
-        
+
         // TODO bind value field proper value to okButton enabled.
-        
+
         okButton.setOnAction((t) -> {
             LOGGER.log(Level.INFO, "Give amount: {0}", giveAmountField.getText());
             try {
@@ -119,9 +120,9 @@ public class GiveCreditsPane extends BorderPane {
         });
 
     }
-    
+
     /**
-     * 
+     *
      * @param amount to deduct from player account.
      * @param playerBalance player's current balance
      * @param titleString text to display at top of popup
@@ -134,14 +135,14 @@ public class GiveCreditsPane extends BorderPane {
         this.successAction = successAction;
         //successKey = key;
         //successValue = val;
-        
+
         setVisible(true);
     }
-    
+
     private Text paneText( String text ) {
         Text pt = new Text(text);
         pt.setFont(Font.font(TEXT_SIZE));
-        
+
         return pt;
     }
 }
