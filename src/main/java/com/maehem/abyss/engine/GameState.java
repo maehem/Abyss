@@ -66,7 +66,7 @@ public final class GameState extends Properties {
 //            "105", "106", "107", "108", "109",
 //            "110", "111"
 //    );
-    private static final int N_ZONES = 5;
+    private static final int N_ZONES = 1; // TODO: Set by sub-game.
     public static final int MAP_SIZE = 64; // Row or Cols
 
     private Player player;
