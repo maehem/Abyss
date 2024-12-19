@@ -73,10 +73,11 @@ public abstract class Vignette extends ViewPane {
     private final ArrayList<TerminalTrigger> terminals = new ArrayList<>();
     private final ArrayList<Patch> patchList = new ArrayList<>();
     private final ArrayList<Character> characterList = new ArrayList<>();
+    private final Player player;
+    private final String assetFolderName;
 
     private double playerScale = DEFAULT_SCALE;
     private double horizon = DEFAULT_HORIZON;
-    private final Player player;
     protected boolean showCollision = false;
     protected boolean showWalk = false;
     private boolean showHearing = false;
@@ -84,7 +85,6 @@ public abstract class Vignette extends ViewPane {
     private boolean playerTalkToNPC = false;
     private boolean playerJackToMatrix = false;
     private boolean playerUseTerminal = false;
-    private final String assetFolderName;
     Group layerStack = new Group();
     private static MusicTrack musicTrack;
 
