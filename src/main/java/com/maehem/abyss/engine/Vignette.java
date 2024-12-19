@@ -50,6 +50,7 @@ import javafx.scene.text.Text;
 public abstract class Vignette extends ViewPane {
 
     public static final String PROP_PREFIX = "vignette.";
+    private final int roomNumber;
 
     public enum RoomState {
         VISITED, LOCKED
@@ -98,10 +99,12 @@ public abstract class Vignette extends ViewPane {
     private int moveDistanceRL = 20;
 
     public Vignette(
+            int roomNumber,
             GameState gs, String assetFolderName,
             VignetteTrigger prevPort,
             Player player, double[] walkBoundary
     ) throws MissingResourceException {
+        this.roomNumber = roomNumber;
         this.gameState = gs;
         this.assetFolderName = assetFolderName;
         this.player = player;
