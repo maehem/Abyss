@@ -826,13 +826,14 @@ public abstract class Vignette extends ViewPane {
     }
 
     public String getNarration() {
-        String longerText;
-        try {
-            longerText = " " + bundle.getString("narrationL");
-        } catch (MissingResourceException ex) {
-            longerText = "";
-        }
-        return bundle.getString("narration") + longerText;
+//        String longerText;
+//        try {
+//            longerText = " " + bundle.getString("narrationL");
+//        } catch (MissingResourceException ex) {
+//            longerText = "";
+//        }
+        //return bundle.getString("narration") + longerText;
+        return bundle.getString("dialog.0");
     }
 
     public void setGiveMoneyShowing(int amount, String title, EventHandler handler) {
