@@ -19,7 +19,6 @@ package com.maehem.abyss.engine;
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.Character;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Bounds;
@@ -43,7 +42,7 @@ public class Character extends Group {
     public static final int INVENTORY_SIZE = 35;
     private static final double CAMEO_H = 120;
 
-    private final ArrayList<Thing> inventory = new ArrayList<>(INVENTORY_SIZE);
+    private final Inventory inventory = new Inventory(INVENTORY_SIZE);
 
     private String name;
     private String accountId = "0000000"; // Only used by some characters.
