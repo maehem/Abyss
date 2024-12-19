@@ -478,7 +478,7 @@ public class Character extends Group {
 //    public Thing[] getInventory() {
 //        return inventory;
 //    }
-    public ArrayList<Thing> getAInventory() {
+    public Inventory getInventory() {
         return inventory;
     }
 
