@@ -263,6 +263,10 @@ public class Character extends Group {
         return Shape.intersect(getHearingBoundary(), s).getBoundsInLocal().getWidth() > 0;
     }
 
+    public boolean canTalk() {
+        return allowTalk;
+    }
+
     public void showCollisionBounds(boolean show) {
         feetBoundary.setOpacity(show ? 0.5 : 0.0);
     }
