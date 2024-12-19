@@ -854,4 +854,29 @@ public abstract class Vignette extends ViewPane {
         // TODO: Hand off music to next vignette.
         // Continue playing if same music track.
     }
+
+    /**
+     * Called by Babble processor when @DialogCommand.ITEM_GET command called.
+     */
+    public void onItemGet() {
+
+    }
+
+    /**
+     *
+     * @param gs
+     * @return list of things NPC can vend.
+     */
+    public ArrayList<Thing> getVendItems(GameState gs) {
+        return new ArrayList<>();
+    }
+
+    /**
+     *
+     * @param gs
+     * @return
+     */
+    public boolean onVendItemsFinished(GameState gs) {
+        return false;
+    }
 }
