@@ -49,7 +49,9 @@ public final class GameState extends Properties {
     private PublicTerminalSystem publicTerminal;
     private MusicTrack musicTrack;
 
-    public enum Display { SPLASH, INVENTORY, CHIPS, TERMINAL, VIGNETTE, MATRIX }
+    public enum Display {
+        SPLASH, INVENTORY, CHIPS, TERMINAL, VIGNETTE, MATRIX
+    }
 
     // KEYS
     public static final String PROP_CURRENT_VIGNETTE = "game.vignette";
@@ -84,7 +86,6 @@ public final class GameState extends Properties {
     private int messageIndex = 0;
 
     //private ResourceBundle bundle;
-
     private Display showing = Display.MATRIX;
     private Display termPop = Display.VIGNETTE; // What to display if we leave terminal.
 
@@ -115,15 +116,15 @@ public final class GameState extends Properties {
         return longName;
     }
 
-    public void setGameName( String shortName, String longName ) {
+    public void setGameName(String shortName, String longName) {
         this.shortName = shortName;
         this.longName = longName;
 
         gameSaveFile = new File(
-            System.getProperty("user.home")
-            + File.separator + "Documents"
-            + File.separator + shortName
-            + File.separator + "save-0.properties"
+                System.getProperty("user.home")
+                + File.separator + "Documents"
+                + File.separator + shortName
+                + File.separator + "save-0.properties"
         );
     }
 
@@ -131,16 +132,16 @@ public final class GameState extends Properties {
         return version;
     }
 
-    public void setGameVersion( String versionString ) {
+    public void setGameVersion(String versionString) {
         this.version = versionString;
     }
 
-    public void setSites( SitesList sl ) {
+    public void setSites(SitesList sl) {
         // TODO: Check for null and don't allow changing after set once.
         this.sites = sl;
     }
 
-    public void setContentLoader( ResourceLoader rl ) {
+    public void setContentLoader(ResourceLoader rl) {
         contentLoader = rl;
     }
 
@@ -149,7 +150,7 @@ public final class GameState extends Properties {
     }
 
     public void init() {
-        if ( gameSaveFile == null ) {
+        if (gameSaveFile == null) {
             LOGGER.log(Level.SEVERE, "Game name was not set by content pack! There will be issues...");
         }
         setProperty(PROP_CURRENT_DATE, START_DATE);
@@ -168,14 +169,15 @@ public final class GameState extends Properties {
     public String getProperty(String key) {
         if (key.startsWith(Player.PLAYER_KEY)) {
             return player.getProperty(key);
-        } if (key.startsWith(EPHEMERAL_KEY)) {
+        }
+        if (key.startsWith(EPHEMERAL_KEY)) {
             return ephemerals.getProperty(key);
         } else {
             return super.getProperty(key);
         }
     }
 
-    public void setContentPack( Object o) {
+    public void setContentPack(Object o) {
         this.contentPack = o;
     }
 
@@ -298,8 +300,6 @@ public final class GameState extends Properties {
         return prevVal;
     }
 
-
-
     // TODO:  Listener is misspelled.
     public void addListenter(GameStateListener l) {
         listeners.add(l);
@@ -313,7 +313,7 @@ public final class GameState extends Properties {
         return currentMatrixSite;
     }
 
-    public void setCurrentMatrixSite( MatrixSite site ) {
+    public void setCurrentMatrixSite(MatrixSite site) {
         this.currentMatrixSite = site;
         for (GameStateListener l : listeners) {
             l.gameStateMatrixSiteChanged(this, site.getIntAddress());
@@ -321,13 +321,13 @@ public final class GameState extends Properties {
 
     }
 
-    public void setCurrentMatrixSite( MatrixSiteNeighbor n ) {
+    public void setCurrentMatrixSite(MatrixSiteNeighbor n) {
         setCurrentMatrixSite(getSite(getCurrentMatrixSite().getNeighbor(n)));
     }
 
-    public void setShowing ( Display d ) {
+    public void setShowing(Display d) {
         LOGGER.log(Level.FINER, "GameState set showing from: {0} to: {1}", new Object[]{showing.toString(), d.toString()});
-        if ( d == Display.TERMINAL ) {
+        if (d == Display.TERMINAL) {
             // If the user goes into terminal, remember where to come back to.
             // Should only ever be MATRIX or VIGNETTE
             termPop = showing;
@@ -341,13 +341,12 @@ public final class GameState extends Properties {
     }
 
     /**
-     * If it is showing, hide it.
-     * If hidden, show it.
+     * If it is showing, hide it. If hidden, show it.
      *
      * @param d
      */
-    public void toggleShowing( Display d ){
-        if ( showing == d) {
+    public void toggleShowing(Display d) {
+        if (showing == d) {
             // Hide it.
             LOGGER.log(Level.FINER, "GameState: toggleShowing():  hide:{0}", showing);
             switch (d) {
@@ -364,8 +363,8 @@ public final class GameState extends Properties {
         } else {
             // Show it
             LOGGER.log(Level.FINER, "GameState: toggleShowing():  show:" + d);
-            if ( d == Display.TERMINAL || d == Display.SPLASH ) {
-                LOGGER.log(Level.FINER, "GameState: set termpop from: " + termPop + "to: " + showing );
+            if (d == Display.TERMINAL || d == Display.SPLASH) {
+                LOGGER.log(Level.FINER, "GameState: set termpop from: " + termPop + "to: " + showing);
                 termPop = showing;
             }
             setShowing(d);
@@ -442,7 +441,7 @@ public final class GameState extends Properties {
         return news;
     }
 
-    public void initNews( ResourceBundle bundle) {
+    public void initNews(ResourceBundle bundle) {
         LOGGER.fine("Initialize News Stories");
         // Load the localization bundle for the News
         //String bPath = "content.messages.bbs.news";
@@ -547,7 +546,7 @@ public final class GameState extends Properties {
 
     }
 
-    public BulletinMessage getBulletingMessage(String uid) {
+    public BulletinMessage getBulletinMessage(String uid) {
         for (BulletinMessage bs : messages) {
             if (uid.equals(bs.getUid())) {
                 return bs;
@@ -602,7 +601,7 @@ public final class GameState extends Properties {
     }
 
     public final MatrixSite addSite(MatrixSite site) {
-        if ( siteExists(site.getIntAddress())) {
+        if (siteExists(site.getIntAddress())) {
             LOGGER.log(Level.SEVERE,
                     "Tried to add matrix site at existing address! {0}",
                     site.getAddress()
@@ -617,7 +616,7 @@ public final class GameState extends Properties {
         }
     }
 
-    private boolean siteExists( int address ) {
+    private boolean siteExists(int address) {
         for (MatrixSite s : sites) {
             if (s.getIntAddress() == address) {
                 return true;
@@ -627,8 +626,8 @@ public final class GameState extends Properties {
     }
 
     /**
-     * Known sites are set up at start of game. All other
-     * sites are blank sites and generated as requested.
+     * Known sites are set up at start of game. All other sites are blank sites
+     * and generated as requested.
      *
      * @param address
      * @return
@@ -640,14 +639,14 @@ public final class GameState extends Properties {
             }
         }
         // Create blank site and add it.
-        if (       MatrixSite.decodeCol(address) >= 0
+        if (MatrixSite.decodeCol(address) >= 0
                 && MatrixSite.decodeRow(address) >= 0
-                && MatrixSite.decodeCol(address) < MAP_SIZE-1
-                && MatrixSite.decodeRow(address) < MAP_SIZE-1) {
+                && MatrixSite.decodeCol(address) < MAP_SIZE - 1
+                && MatrixSite.decodeRow(address) < MAP_SIZE - 1) {
             return addSite(new MatrixSite(this, address));
         }
 
-        LOGGER.log(Level.INFO, "Tried to add a site out of bounds!" );
+        LOGGER.log(Level.INFO, "Tried to add a site out of bounds!");
         return null; // Out of bounds
     }
 
