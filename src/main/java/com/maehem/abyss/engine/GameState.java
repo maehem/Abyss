@@ -28,6 +28,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -74,6 +76,8 @@ public final class GameState extends Properties {
     private final ArrayList<BulletinMessage> messages = new ArrayList<>();
     private final ArrayList<GameStateListener> listeners = new ArrayList<>();
     private final Properties ephemerals = new Properties();
+
+    private final ArrayList<GameGoal> goals = new ArrayList<>(); // TODO Save/Restore
 
     private SitesList sites;
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
@@ -190,6 +194,7 @@ public final class GameState extends Properties {
 
         saveNewsSettings();
         saveBulletinSettings();
+        saveGoals();
 
         FileOutputStream out = null;
         try {
@@ -254,6 +259,10 @@ public final class GameState extends Properties {
                                 "Save file references a news story that doesn''t exist. key: {0}",
                                 key);
                     }
+                } else if (key.startsWith(GameGoal.PROP_PREFIX)) {
+                    LOGGER.log(Level.CONFIG, "Load GameGoals prop: {0}", key);
+                    setProperty(key, ldProps.getProperty(key));
+                    loadGoals();
                 }
             });
 
@@ -668,5 +677,66 @@ public final class GameState extends Properties {
 
     public void setMusicTrack(MusicTrack track) {
         musicTrack = track;
+    }
+
+    public ArrayList<GameGoal> getGoals() {
+        return goals;
+    }
+
+    public boolean hasGoal(Class<? extends GameGoal> clazz) {
+        for (GameGoal g : goals) {
+            if (g.getClass().equals(clazz)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void saveGoals() {
+        StringBuilder sb = new StringBuilder();
+        for (GameGoal gg : goals) {
+            if (sb.length() != 0) {
+                sb.append(",");
+            }
+            sb.append(gg.getClass().getSimpleName());
+
+        }
+
+        setProperty(GameGoal.PROP_PREFIX, sb.toString());
+    }
+
+    private void loadGoals() {
+        String goalProp = getProperty(GameGoal.PROP_PREFIX);
+        String[] split = goalProp.split(",");
+        for (String g : split) {
+            GameGoal goal = loadGoal(g);
+            if (goal != null) {
+                goals.add(goal);
+            } else {
+                LOGGER.log(Level.SEVERE, "Could not load goal class called: {0}", g);
+            }
+        }
+    }
+
+    private GameGoal loadGoal(String clazzName) {
+        try {
+            String packageName = getContentPack().getClass().getPackageName();
+            Class<?> c = Class.forName(packageName + ".content.goal." + clazzName);
+            Constructor<?> cons = c.getConstructor();
+            Object object = cons.newInstance();
+            LOGGER.log(Level.CONFIG, "[GameState] Loaded GameGoal: {0}", clazzName);
+            return (GameGoal) object;
+        } catch (ClassNotFoundException
+                | NoSuchMethodException
+                | SecurityException
+                | InstantiationException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException ex) {
+            ex.printStackTrace();
+        }
+
+        LOGGER.log(Level.CONFIG, "[GameState] Could not load GameGoal: {0}", clazzName);
+        return null;
     }
 }
