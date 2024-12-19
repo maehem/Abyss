@@ -18,7 +18,6 @@ package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.Character;
-import com.maehem.abyss.engine.babble.DialogPane;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -62,7 +61,6 @@ public class Character extends Group {
     //private final DialogScreen dialogScreen;
     private double originX;
     private double originY;
-    private final DialogPane dialogPane;
     //private ImageView cameoView;
     private Image cameoImage;
 
@@ -91,7 +89,6 @@ public class Character extends Group {
         initTalkIcon();
 
         //dialogScreen = new DialogScreen(this);
-        dialogPane = new DialogPane(this);
     }
 
     /**
@@ -440,7 +437,7 @@ public class Character extends Group {
         //cameoView.setFitHeight(CAMEO_H);
         //cameoView.setPreserveRatio(true);
         cameoImage = new Image(is);
-        dialogPane.setCameo(cameoImage);
+        //dialogPane.setCameo(cameoImage);
     }
 
     public Image getCameo() {
@@ -459,13 +456,6 @@ public class Character extends Group {
         getPoseSheet().setDefaultSheet();
         setFeetBoundary();
         initTalkIcon();
-    }
-
-//    public DialogScreen getDialog() {
-//        return dialogScreen;
-//    }
-    public DialogPane getDialogPane() {
-        return dialogPane;
     }
 
     /**

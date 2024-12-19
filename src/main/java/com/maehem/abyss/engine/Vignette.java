@@ -186,8 +186,27 @@ public abstract class Vignette extends ViewPane {
 
     protected abstract void loop();
 
-    //public abstract String getPropName();
-    public String getPropName() {
+    public void setDialogPane(DialogPane p) {
+        if (this.dialogPane != null) { // Remove old one if it is there.
+            layerStack.getChildren().remove(this.dialogPane);
+        }
+        this.dialogPane = p;
+        addNode(dialogPane);
+    }
+
+    public DialogPane getDialogPane() {
+        return dialogPane;
+    }
+
+    public int[][] getDialogChain() {
+        return new int[0][];
+    }
+
+    public int dialogWarmUp() {
+        return -1;
+    }
+
+    public final String getPropName() {
         return getClass().getSimpleName();
     }
 
@@ -342,16 +361,16 @@ public abstract class Vignette extends ViewPane {
 //
 //                    LOGGER.warning("Show Dialog Mode.");
 //                }
-                if (npc.isTalking() && !npc.getDialogPane().isActionDone()) {
-                    if (dialogPane == null) {
-                        dialogPane = npc.getDialogPane();
-                        addNode(dialogPane);
-                    }
+                if (npc.isTalking() && !getDialogPane().isActionDone()) {
+//                    if (dialogPane == null) {
+//                        dialogPane = getDialogPane();
+//                        addNode(dialogPane);
+//                    }
                     dialogPane.setVisible(true);
                     dialogPane.toFront();
 
                     LOGGER.warning("Show Dialog Mode.");
-                } else if (npc.isTalking() && npc.getDialogPane().isActionDone()) {
+                } else if (npc.isTalking() && getDialogPane().isActionDone()) {
                     LOGGER.log(Level.WARNING, "NPC is talking but the action is marked as done.");
                 }
             });
