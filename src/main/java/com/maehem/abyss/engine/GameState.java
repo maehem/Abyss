@@ -220,9 +220,13 @@ public final class GameState extends Properties {
                     "Loaded previous save file: {0}",
                     gameSaveFile.getAbsolutePath());
 
+            setProperty(PROP_CURRENT_DATE,
+                    ldProps.getProperty(PROP_CURRENT_DATE) // Game starting room
+            );
             setProperty(PROP_CURRENT_VIGNETTE,
                     ldProps.getProperty(PROP_CURRENT_VIGNETTE) // Game starting room
             );
+
             // Player tracks it's own properties.
             player.loadState(ldProps);
 
