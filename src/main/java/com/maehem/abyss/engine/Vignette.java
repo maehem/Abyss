@@ -157,7 +157,7 @@ public abstract class Vignette extends ViewPane {
             player.setDirection(PoseSheet.Direction.TOWARD);
         }
 
-        LOGGER.finest("do debug colllision bounds");
+        LOGGER.finest("do debug collision bounds");
         debugCollisionBounds(showCollision);
         debugHearingBounds(showHearing);
 
