@@ -237,13 +237,16 @@ public final class GameState extends Properties {
 
             ldProps.keys().asIterator().forEachRemaining((t) -> {
                 String key = (String) t;
-                // Intake Vignette flag
-                if (key.startsWith(Vignette.PROP_PREFIX)) {
+
+                if (key.startsWith(Player.PLAYER_KEY + ".")
+                        || key.startsWith(PROP_CURRENT_DATE)
+                        || key.startsWith(PROP_CURRENT_VIGNETTE)) {
+                    // Already handled by: player.loadState()
+                } else if (key.startsWith(Vignette.PROP_PREFIX)) { // Intake Vignette flag
                     LOGGER.log(Level.FINE, "Load Vignette prop: {0}", key);
                     setProperty(key, ldProps.getProperty(key));
-                }
-                if (key.startsWith(NewsStory.PROP_PREFIX)) {
-                    LOGGER.log(Level.FINE, "Load NewsStory prop: {0}", key);
+                } else if (key.startsWith(NewsStory.PROP_PREFIX)) {
+                    LOGGER.log(Level.CONFIG, "Load NewsStory prop: {0}", key);
                     String uid = key.split("\\.")[1];
                     NewsStory newsStory = getNewsStory(uid);
                     if (newsStory != null) {
@@ -259,10 +262,29 @@ public final class GameState extends Properties {
                                 "Save file references a news story that doesn''t exist. key: {0}",
                                 key);
                     }
+                } else if (key.startsWith(BulletinMessage.PROP_PREFIX)) {
+                    LOGGER.log(Level.CONFIG, "Load BulletinMessage prop: {0}", key);
+                    String uid = key.split("\\.")[1];
+                    BulletinMessage bbsMessage = getBulletinMessage(uid);
+                    if (bbsMessage != null) {
+                        String property = ldProps.getProperty(key);
+                        if (property.contains("show")) {
+                            bbsMessage.setShow(true);
+                        }
+                        if (property.contains("read")) {
+                            bbsMessage.setRead(true);
+                        }
+                    } else {
+                        LOGGER.log(Level.WARNING,
+                                "Save file references a news BBS message that doesn''t exist. key: {0}",
+                                key);
+                    }
                 } else if (key.startsWith(GameGoal.PROP_PREFIX)) {
                     LOGGER.log(Level.CONFIG, "Load GameGoals prop: {0}", key);
                     setProperty(key, ldProps.getProperty(key));
                     loadGoals();
+                } else {
+                    LOGGER.log(Level.SEVERE, "Unknown save file key: " + key);
                 }
             });
 
