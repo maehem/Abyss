@@ -150,6 +150,8 @@ public class Character extends Group {
 
     /**
      * Move hearing boundary by X/Y
+     * @param x
+     * @param y
      */
     public final void adjustHearingBoundary(double x, double y) {
         getHearingBoundary().setCenterX(getHearingBoundary().getCenterX() + x);
@@ -406,7 +408,8 @@ public class Character extends Group {
             this.talking = talking;
         } else {
             if (talking) {
-                LOGGER.log(Level.WARNING, "Tried to set talk on character " + getName() + " they are not allowed to talk!");
+                LOGGER.log(Level.WARNING,
+                        "Tried to set talk on character {0} they are not allowed to talk!", getName());
             }
             this.talking = false;
         }
