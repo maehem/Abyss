@@ -102,6 +102,7 @@ public class DialogPane extends BorderPane {
     private final ImageView cameoView;
     private final Pane cameoViewPane;
     private String[] vars = null;
+    private ArrayList<BabbleNode> dialogChain;
 
     /**
      *
@@ -152,6 +153,8 @@ public class DialogPane extends BorderPane {
         final String ROUND_BUBBLE
                 = "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
 
+        // Ensure a minimum size for our bubble.
+        // Includes the pointy bit going up.
         Region reg = new Region();
         reg.setMinSize(200, 200);
 
@@ -195,12 +198,13 @@ public class DialogPane extends BorderPane {
 
         Image cameo = npc.getCameo();
         if (cameo == null) {
-            cameoView = new ImageView(npc.getCameo());
+            cameoView = new ImageView();
             LOGGER.log(Level.INFO, "NPC cameo was null.");
         } else {
             cameoView = new ImageView(cameo);
-            //npcView = npc.getPoseSheet().getCameo();
         }
+        cameoView.setFitHeight(CAMEO_H);
+        cameoView.setPreserveRatio(true);
 
         InnerShadow innerShadow = new InnerShadow(
                 14.0f,
@@ -216,7 +220,7 @@ public class DialogPane extends BorderPane {
 
         cameoViewPane = new StackPane(cameoView);
         //cameoViewPane.setEffect(innerShadow);
-        cameoViewPane.setPrefSize(CAMEO_H, CAMEO_H);
+        //cameoViewPane.setPrefSize(CAMEO_H, CAMEO_H);
         cameoViewPane.setEffect(blendEffect);
 
         AnchorPane.setLeftAnchor(cameoViewPane, 20.0);
@@ -293,10 +297,9 @@ public class DialogPane extends BorderPane {
         }
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
+//    public void setPlayer(Player player) {
+//        this.player = player;
+//    }
     /**
      * @return the currentDialogSheet
      */
@@ -314,12 +317,82 @@ public class DialogPane extends BorderPane {
         this.currentDialogSheet = ds;
     }
 
+    public void setCurrentDialog(int num) {
+        BabbleNode node = dialogChain.get(num);
+        LOGGER.log(Level.CONFIG, "Build Dialog for: " + num);
+        //LOGGER.log(Level.SEVERE, "     ----> Text: " + node.getText());
+        dialogText.setText(processText(node.getText()));
+        answerButtonsBox.getChildren().clear();
+        node.getNumbers().forEach((t) -> {
+            if (t < DESC.num) {
+                Button b = responseButton(t);
+                answerButtonsBox.getChildren().add(b);
+            } else { // command
+                switch (DialogCommand.getCommand(t)) {
+                    case ITEM_BUY -> {
+                        LOGGER.log(Level.FINER, "Build Vend Widget for: " + num);
+                        answerButtonsBox.getChildren().add(new VendWidget(npc, vignette.getPlayer()));
+                    }
+                    default -> {
+                        LOGGER.log(Level.SEVERE, "DialogChain: item " + num + " defines unknown or unhandled command: " + t);
+                    }
+                }
+            }
+        });
+
+    }
+
     private void rebuildResponsePane(ArrayList<DialogResponse2> responseList) {
         answerButtonsBox.getChildren().clear();
         responseList.forEach((t) -> {
             Button b = responseButton(t);
             answerButtonsBox.getChildren().add(b);
         });
+    }
+
+    private Button responseButton(int response) {
+        LOGGER.log(Level.CONFIG, "Build Response Button for: " + response);
+        BabbleNode node = dialogChain.get(response);
+        if (node instanceof OptionBabbleNode obn) {
+            Text bText = new Text(processText(obn.getText()));
+            //LOGGER.log(Level.SEVERE, "     ----> Text: " + obn.getText());
+            bText.setWrappingWidth(ViewPane.WIDTH * 0.38);
+            bText.setTextAlignment(TextAlignment.CENTER);
+            bText.setFont(ANSWER_FONT);
+            CornerRadii cornerRadii = new CornerRadii(FONT_SIZE / 2);
+
+            Button b = new Button("", bText);
+            b.setBorder(new Border(
+                    new BorderStroke(Color.BLACK.brighter(),
+                            BorderStrokeStyle.SOLID,
+                            cornerRadii,
+                            new BorderWidths(2)
+                    )));
+            b.setBackground(Background.EMPTY);
+            b.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, cornerRadii, Insets.EMPTY)));
+            b.setOnAction((tt) -> {
+                tt.consume();
+                ///  do these action(s)
+                obn.getNumbers().forEach((t) -> {
+                    // Apply each command.
+                    if (t >= DESC.num) {
+                        // Command
+                        processCommand(t);
+                    } else {
+                        // Set new dialog to final number.
+                        setCurrentDialog(t);
+                    }
+                });
+            });
+
+            return b;
+        } else {
+            String msg = "Error:  Node is not a OptionBabbleNode.";
+            LOGGER.log(Level.SEVERE, msg);
+
+            return new Button(msg);
+        }
+
     }
 
     private Button responseButton(DialogResponse2 response) {
@@ -382,5 +455,13 @@ public class DialogPane extends BorderPane {
         }
 
         return pText;
+    }
+
+    private void processCommand(int command) {
+        LOGGER.log(Level.SEVERE, "DialogPane: Process Command " + DialogCommand.getCommand(command).name());
+    }
+
+    public void setDialogChain(ArrayList<BabbleNode> dChain) {
+        this.dialogChain = dChain;
     }
 }
