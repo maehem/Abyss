@@ -149,7 +149,7 @@ public class DialogPane extends BorderPane {
                 + "-fx-border-color: black; -fx-border-width: 4px; "
                 + "-fx-shape: \"" + ROUND_BUBBLE + "\";"
         );
-        bubble.setEffect(new DropShadow(10, 5, 5, Color.MIDNIGHTBLUE));
+        bubble.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
 
         StackPane.setMargin(bubble, new Insets(0, 30, 30, 30));
         StackPane layout = new StackPane(bubble, nameDialogElementsBox);
