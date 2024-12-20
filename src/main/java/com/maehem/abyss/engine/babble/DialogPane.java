@@ -136,16 +136,6 @@ public class DialogPane extends BorderPane {
         VBox.setMargin(dialogTextFlow, new Insets(30));
         nameDialogElementsBox.setAlignment(Pos.TOP_CENTER);
         nameDialogElementsBox.setFillWidth(true);
-//        nameDialogElementsBox.setBackground(new Background(new BackgroundFill(
-//                Color.GRAY,
-//                new CornerRadii(20, 0, 0, 20, false),
-//                Insets.EMPTY
-//        )));
-
-        //StackPane leftArea = new StackPane(nameDialogElementsBox);
-
-        final String ROUND_BUBBLE
-                = "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
 
         // Ensure a minimum size for our bubble.
         // Includes the pointy bit going up.
