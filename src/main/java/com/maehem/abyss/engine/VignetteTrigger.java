@@ -46,6 +46,10 @@ public class VignetteTrigger extends TriggerShape {
         this(x,y,w,h, false,px,py,pdir,vignette);
     }
 
+    public VignetteTrigger(double x, double y, double w, double h, double px, double py, Direction pdir, Class<? extends Vignette> vignette) {
+        this(x, y, w, h, false, px, py, pdir, vignette.getSimpleName());
+    }
+
     public VignetteTrigger(double x, double y, double w, double h, boolean showTrigger, double px, double py, Direction pdir, String vignette) {
         super(x, y, w, h);
 
