@@ -198,10 +198,10 @@ public abstract class Vignette extends ViewPane {
         return dialogPane;
     }
 
-    public int[][] getDialogChain() {
-        return new int[0][];
-    }
-
+//    public int[][] getDialogChain() {
+//        return new int[0][];
+//    }
+//
     public int dialogWarmUp() {
         return -1;
     }
