@@ -67,6 +67,8 @@ public class DialogPane extends BorderPane {
     private final static double DROP_SPREAD = 50.0;
     private static final double CAMEO_H = 210;
     private static final String CLOSE_X_PATH = "/ui/panel-close-x.png";
+    private static final String ROUND_BUBBLE
+            = "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
 
     private final Vignette vignette;
     private final ArrayList<DialogSheet2> dialogList = new ArrayList<>();
