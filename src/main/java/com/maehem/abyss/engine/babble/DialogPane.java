@@ -20,6 +20,7 @@ import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.Character;
 import com.maehem.abyss.engine.Vignette;
 import com.maehem.abyss.engine.VignetteTrigger;
+import static com.maehem.abyss.engine.babble.DialogCommand.DESC;
 import com.maehem.abyss.engine.view.ViewPane;
 import java.util.ArrayList;
 import java.util.logging.Level;
