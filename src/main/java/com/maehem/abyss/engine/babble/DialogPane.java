@@ -18,7 +18,7 @@ package com.maehem.abyss.engine.babble;
 
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.Character;
-import com.maehem.abyss.engine.Player;
+import com.maehem.abyss.engine.Vignette;
 import com.maehem.abyss.engine.VignetteTrigger;
 import com.maehem.abyss.engine.view.ViewPane;
 import java.util.ArrayList;
@@ -68,13 +68,13 @@ public class DialogPane extends BorderPane {
     private static final double CAMEO_H = 210;
     private static final String CLOSE_X_PATH = "/ui/panel-close-x.png";
 
+    private final Vignette vignette;
     private final ArrayList<DialogSheet2> dialogList = new ArrayList<>();
     private DialogSheet2 currentDialogSheet;
     private VignetteTrigger port = null;
 
     private boolean actionDone;
     private final Character npc;
-    private Player player;
     private final Font DIALOG_FONT;
     private final Font DIALOG_NAME_FONT;
     private final Font ANSWER_FONT;
@@ -105,10 +105,11 @@ public class DialogPane extends BorderPane {
 
     /**
      *
-     * @param npc NPC the player is talking to.
-     * @param vars vars to replace in text stings. i.e. $0, $1, etc.
+     * @param vignette
+     * @param npc
      */
-    public DialogPane(Character npc) {
+    public DialogPane(Vignette vignette, Character npc) {
+        this.vignette = vignette;
         this.npc = npc;
 
         this.DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
