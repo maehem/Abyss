@@ -119,7 +119,7 @@ public class VignetteTrigger extends TriggerShape {
      * @param locked the locked to set
      */
     public void setLocked(boolean locked) {
-        LOGGER.log(Level.CONFIG, "Set " + playerDir.name() + " Door lock state to: " + (locked ? "Locked" : "Open"));
+        LOGGER.log(Level.CONFIG, "Set Door lock state to: " + (locked ? "Locked" : "Open"));
         this.locked = locked;
     }
 
