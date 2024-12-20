@@ -65,7 +65,7 @@ public class DialogPane extends BorderPane {
     private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.6);
     private final static Color DROP_COLOR_AB = new Color(0.0, 0.0, 0.0, 0.4);
     private final static double DROP_SPREAD = 50.0;
-    private static final double CAMEO_H = 180;
+    private static final double CAMEO_H = 210;
     private static final String CLOSE_X_PATH = "/ui/panel-close-x.png";
 
     private final ArrayList<DialogSheet2> dialogList = new ArrayList<>();
