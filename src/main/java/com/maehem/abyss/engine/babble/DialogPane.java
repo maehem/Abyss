@@ -77,10 +77,6 @@ public class DialogPane extends BorderPane {
 
     private boolean actionDone;
     private final Character npc;
-    private final Font DIALOG_FONT;
-    private final Font DIALOG_NAME_FONT;
-    private final Font ANSWER_FONT;
-
     //private final FlowPane dialogPane = new FlowPane();
 //    private double width=0;
 //    private double height=0;
@@ -88,6 +84,10 @@ public class DialogPane extends BorderPane {
 //    private double boxY;
 //    private double boxW;
 //    private double boxH;
+    private final Font DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
+    private final Font DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 1.3);
+    private final Font ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.75);
+
     private final Text nameText = new Text("Character Name");
     private final Text dialogText = new Text(
             "Dialog Text. Hello. I am a pretty pony. "
@@ -115,9 +115,6 @@ public class DialogPane extends BorderPane {
         this.vignette = vignette;
         this.npc = npc;
 
-        this.DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
-        this.DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 1.3);
-        this.ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.75);
         setPrefSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
         setMinSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
         setLayoutX(ViewPane.WIDTH * 0.08);
