@@ -77,13 +77,6 @@ public class DialogPane extends BorderPane {
 
     private boolean actionDone;
     private final Character npc;
-    //private final FlowPane dialogPane = new FlowPane();
-//    private double width=0;
-//    private double height=0;
-//    private double boxX;
-//    private double boxY;
-//    private double boxW;
-//    private double boxH;
     private final Font DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
     private final Font DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 1.3);
     private final Font ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.75);
