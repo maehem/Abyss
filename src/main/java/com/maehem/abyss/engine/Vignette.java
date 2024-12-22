@@ -300,7 +300,7 @@ public abstract class Vignette extends ViewPane {
                     // If user clicks it:
                     // Tell gameState to enter matrix
                     if (playerJackToMatrix || trig.isJacking()) {
-                        LOGGER.fine("player triggered matrix.");
+                        LOGGER.config("Player triggered matrix.");
                         playerJackToMatrix = false;
                         trig.setJacking(false);
                         gameState.setCurrentMatrixSite(
