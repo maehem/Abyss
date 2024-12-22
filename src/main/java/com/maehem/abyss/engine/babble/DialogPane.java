@@ -316,7 +316,21 @@ public class DialogPane extends BorderPane {
                 switch (DialogCommand.getCommand(t)) {
                     case ITEM_BUY -> {
                         LOGGER.log(Level.FINER, "Build Vend Widget for: " + num);
-                        answerButtonsBox.getChildren().add(new VendWidget(npc, vignette.getPlayer()));
+                        VendWidget vendWidget = new VendWidget(
+                                npc, vignette.getPlayer(),
+                                vignette.getVendItems(),
+                                answerButtonsBox.getHeight()
+                        );
+                        VBox.setMargin(vendWidget, new Insets(FONT_SIZE / 2));
+                        VBox.getVgrow(vendWidget);
+                        answerButtonsBox.getChildren().add(vendWidget);
+
+                        vendWidget.setOnAction((tt) -> {
+                            tt.consume();
+                            ///  do these action(s)
+
+                            vignette.onVendItemsFinished();
+                        });
                     }
                     default -> {
                         LOGGER.log(Level.SEVERE, "DialogChain: item " + num + " defines unknown or unhandled command: " + t);
