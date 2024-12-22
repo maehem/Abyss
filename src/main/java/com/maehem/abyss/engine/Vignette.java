@@ -321,7 +321,7 @@ public abstract class Vignette extends ViewPane {
                     // If user clicks it:
                     // Tell gameState to enter matrix
                     if (playerUseTerminal || trig.isUsingTerminal()) {
-                        LOGGER.config("player triggered terminal.");
+                        LOGGER.config("Player triggered terminal.");
                         playerUseTerminal = false;
                         trig.setUsingTerminal(false);
                         Class<? extends BBSTerminal> destination = trig.getDestination();
@@ -366,6 +366,8 @@ public abstract class Vignette extends ViewPane {
 //                        dialogPane = getDialogPane();
 //                        addNode(dialogPane);
 //                    }
+
+                    // TODO:  Snapshot vingette. Blur it. Add it.
                     dialogPane.setVisible(true);
                     dialogPane.toFront();
 
@@ -389,6 +391,7 @@ public abstract class Vignette extends ViewPane {
 //                }
 //            }
             if (dialogPane.isActionDone()) {
+                // TODO: Remove blur effect node.
                 removeNode(dialogPane);
 
                 // See if the dialog invoked a scene exit event.
