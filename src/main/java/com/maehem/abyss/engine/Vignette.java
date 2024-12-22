@@ -886,20 +886,21 @@ public abstract class Vignette extends ViewPane {
     }
 
     /**
+     * Override to provide items to show in VendWidget.
      *
      * @param gs
      * @return list of things NPC can vend.
      */
-    public ArrayList<Thing> getVendItems(GameState gs) {
+    public ArrayList<Thing> getVendItems() {
         return new ArrayList<>();
     }
 
     /**
+     * Override to take action when VendWidget is done.
      *
-     * @param gs
      * @return
      */
-    public boolean onVendItemsFinished(GameState gs) {
+    public boolean onVendItemsFinished() {
         return false;
     }
 }
