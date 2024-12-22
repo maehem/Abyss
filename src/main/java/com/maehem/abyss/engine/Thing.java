@@ -39,6 +39,7 @@ public abstract class Thing {
     private String name;
     private Color color = Color.DARKGREY;
     private int value;
+    private int vendQuantity = -1;
     private int repairSkill;
     private int condition = CONDITION_DEFAULT;
 
@@ -257,7 +258,7 @@ public abstract class Thing {
         }
     }
 
-    public static final Thing factory( Object contentPack, String key, Properties p ) {
+    public static final Thing factory(Object contentPack, String key, Properties p) {
         //String key = INVENTORY_KEY + "." + i;
         //LOGGER.log(Level.INFO, "Player Inventory Item: " + key);
         String itemClass = p.getProperty(key + ".class");
@@ -267,7 +268,7 @@ public abstract class Thing {
 //                if ( itemClass.startsWith("Empty") ) {
 //                    packageName = Engine.class.getPackageName();
 //                } else {
-                    packageName = contentPack.getClass().getPackageName();
+                packageName = contentPack.getClass().getPackageName();
 //                }
                 Class<?> c = Class.forName(packageName + ".content.things." + itemClass);
                 Constructor<?> cons = c.getConstructor();
@@ -295,5 +296,19 @@ public abstract class Thing {
 
         }
         return null;
+    }
+
+    /**
+     * @return the vendQuantity
+     */
+    public int getVendQuantity() {
+        return vendQuantity;
+    }
+
+    /**
+     * @param vendQuantity the vendQuantity to set
+     */
+    public void setVendQuantity(int vendQuantity) {
+        this.vendQuantity = vendQuantity;
     }
 }
