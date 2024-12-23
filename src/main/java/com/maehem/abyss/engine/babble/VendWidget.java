@@ -81,7 +81,12 @@ public class VendWidget extends VBox {
         getChildren().add(hBox);
 
         Text descLabel = headerText(" Description");
-        Text qtyLabel = headerText("QTY   ");
+        Text qtyLabel;
+        if (itemsHaveQuantity()) {
+            qtyLabel = headerText("QTY   ");
+        } else {
+            qtyLabel = headerText("      ");
+        }
         Text costLabel = headerText("Cost  ");
         Region hSpacer = new Region();
         HBox.setHgrow(hSpacer, Priority.ALWAYS);
@@ -167,5 +172,15 @@ public class VendWidget extends VBox {
 
     public final void setOnAction(EventHandler<ActionEvent> eh) {
         this.eventHandler = eh;
+    }
+
+    private boolean itemsHaveQuantity() {
+        for (Thing t : items) {
+            if (t.getVendQuantity() >= 0) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
