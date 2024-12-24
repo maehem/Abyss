@@ -37,4 +37,8 @@ public class Inventory extends ArrayList<Thing> {
 
         return false;
     }
+
+    public void addNewInstanceOf(Thing thing) {
+
+    }
 }
