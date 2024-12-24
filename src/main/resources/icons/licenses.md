@@ -1,7 +1,7 @@
 ### License attributions
 
 
-## Icons (license: Creative Commons)
+## Icons (license: Creative Commons 3.0 attribution)
 Heart           icon by Mark Koch Created for Flatline Jack
 Inventory       icon by Mark Koch Created for Flatline Jack
 Knowledge       icon by Mark Koch Created for Flatline Jack
@@ -21,3 +21,5 @@ Repair          icon by Arthur Shlain from Usefulicons  https://usefulicons.com/
 Turtle          icon by Arthur Shlain from Usefulicons  https://usefulicons.com/useful/turtle
 Computer Fan    icon by Arthur Shlain from Usefulicons  https://usefulicons.com/glyph-icons-16x16/computer-fan
 Ladybug         icon by Arthur Shlain from Usefulicons  https://usefulicons.com/pure-lines/ladybug
+
+Coin            icon by MyLadKings from Noun Project  https://thenounproject.com/icon/coin-1083799
