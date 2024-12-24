@@ -17,7 +17,6 @@
 package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
-import com.maehem.abyss.engine.Character;
 import java.io.InputStream;
 import java.util.logging.Level;
 import javafx.animation.AnimationTimer;
@@ -49,7 +48,7 @@ public class Character extends Group {
     private PoseSheet poseSheet;
     private Rectangle feetBoundary;
     private Ellipse hearingBoundary;
-    private ImageView talkIcon = new ImageView();
+    private final ImageView talkIcon = new ImageView();
     private boolean allowTalk = false;
     private boolean talking = false;
 
@@ -78,6 +77,8 @@ public class Character extends Group {
 
         this.poseSheet = new PoseSheet(200);
         getChildren().add(this.poseSheet);
+        getChildren().add(talkIcon);
+
         // set origin
         // Translate the image such that our image position
         // is relative to the feet.
@@ -130,7 +131,7 @@ public class Character extends Group {
         this.accountId = id;
     }
 
-    private final void setDefaultHearingBoundary() {
+    private void setDefaultHearingBoundary() {
         double clipW = getPoseSheet().getWidth();
         double clipH = getPoseSheet().getHeight();
 
@@ -159,6 +160,7 @@ public class Character extends Group {
     }
 
     public void setAllowTalk(boolean allow) {
+        LOGGER.log(Level.CONFIG, "Allow talk changed to: " + String.valueOf(allow));
         this.allowTalk = allow;
         this.setTalking(false);
     }
@@ -166,7 +168,7 @@ public class Character extends Group {
     final void initTalkIcon() {
         double clipW = getPoseSheet().getWidth();
 
-        talkIcon = new ImageView();
+        //talkIcon = new ImageView();
         talkIcon.setImage(new Image(getClass().getResourceAsStream(TALK_ICON_IMAGE_FILENAME)));
         talkIcon.setPreserveRatio(true);
         talkIcon.setFitWidth(clipW / 2);
@@ -175,14 +177,14 @@ public class Character extends Group {
         // Display the talk icon such that the pointy bit is at mouth level.
         talkIcon.setY(-talkIcon.getBoundsInLocal().getHeight() / 2);
 
-        getChildren().add(talkIcon);
-
         talkIcon.setOnMouseClicked((event) -> {
-            LOGGER.log(Level.WARNING, "Talk Icon clicked");
+            LOGGER.log(Level.WARNING, getName() + ": Talk Icon clicked");
             event.consume();
             //if ( talkIcon.getOpacity() > 0.0 ) {
-            if (allowTalk) {
+            if (canTalk()) {
                 setTalking(true);
+            } else {
+                LOGGER.log(Level.CONFIG, "    but not allowed to talk.");
             }
             //}
         });
@@ -259,7 +261,7 @@ public class Character extends Group {
     }
 
     public boolean canHear(Shape s) {
-        if (!allowTalk) {
+        if (!canTalk()) {
             return false;
         }
         return Shape.intersect(getHearingBoundary(), s).getBoundsInLocal().getWidth() > 0;
@@ -278,12 +280,13 @@ public class Character extends Group {
     }
 
     public void showTalkIcon(boolean show) {
-        if (allowTalk) {
-            talkIcon.setVisible(show);
+        //LOGGER.log(Level.CONFIG, getName() + " showTalkIcon(" + String.valueOf(show) + ")");
+        if (canTalk()) {
+            talkIcon.setOpacity(show ? 1.0 : 0.0);
         } else {
-            talkIcon.setVisible(false);
+            talkIcon.setOpacity(0.0);
         }
-        if (!show) {
+        if (canTalk() && !show) {
             setTalking(false);
         }
     }
@@ -401,7 +404,7 @@ public class Character extends Group {
      * @param talking the talking to set
      */
     public void setTalking(boolean talking) {
-        if (allowTalk) {
+        if (canTalk()) {
             if (talking != this.talking) {
                 LOGGER.log(Level.INFO, "Talking to NPC [{0}] set to {1}", new Object[]{getName(), talking});
             }
@@ -536,6 +539,13 @@ public class Character extends Group {
             }
         }
         //getInventory().add(thing);
+    }
+
+    /**
+     * Used by Player to remove non-used talk icon.
+     */
+    protected void removeTalkIcon() {
+        getChildren().remove(talkIcon);
     }
 
 }

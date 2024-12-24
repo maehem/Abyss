@@ -61,6 +61,8 @@ public class Player extends Character implements GameStateListener {
         super(PLAYER_NAME_DEFAULT);
         this.gameState = gs;
         gs.addListenter(this);
+
+        super.removeTalkIcon(); // Fix bug where NPC collides with this unused one.
     }
 
     /**
