@@ -17,7 +17,6 @@
 package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
-import com.maehem.abyss.engine.Character;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import java.util.Map;
 import java.util.Properties;
@@ -184,6 +183,16 @@ public class Player extends Character implements GameStateListener {
     public void addMoney(int amount) {
         this.money += amount;
         gameState.notifyPlayerStateChanged(MONEY_KEY);
+    }
+
+    public boolean takeMoney(int amount) {
+        if (this.money >= amount) {
+            this.money -= amount;
+            gameState.notifyPlayerStateChanged(MONEY_KEY);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -419,6 +428,5 @@ public class Player extends Character implements GameStateListener {
     @Override
     public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {
     }
-
 
 }
