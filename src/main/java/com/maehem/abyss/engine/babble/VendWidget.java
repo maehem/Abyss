@@ -16,9 +16,12 @@
  */
 package com.maehem.abyss.engine.babble;
 
+import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.*;
 import com.maehem.abyss.engine.Character;
+import com.maehem.abyss.engine.audio.sound.SoundEffectManager;
 import java.util.ArrayList;
+import java.util.logging.Level;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -26,6 +29,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -40,15 +45,18 @@ import javafx.scene.text.Text;
  */
 public class VendWidget extends VBox {
 
+    private final Image COIN_IMAGE = new Image(getClass().getResourceAsStream("/icons/coin-icon.png"));
     public final static String FONT_PATH = "/fonts/Modenine-2OPd.ttf";
     public final static double FONT_SIZE = 24;
     private final Font FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
     private final Font HEADER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.8);
+    private final double ITEM_GONE_OPACITY = 0.5;
 
     private final Player player;
     private final Character character;
     private EventHandler<ActionEvent> eventHandler;
     private final ArrayList<Thing> items;
+    private Text playerMoneyText;
 
     public VendWidget(Character character, Player player, ArrayList<Thing> vendItems, double height) {
         this.character = character;
@@ -62,7 +70,6 @@ public class VendWidget extends VBox {
         setSpacing(8);
 
         //setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-
         initHeading();
         initCenter();
         initBottom();
@@ -73,10 +80,11 @@ public class VendWidget extends VBox {
         // TODO: i18n Bundle strings.
         Text title = topText("Price List");
         Text crLabel = topText("Credits: ");
-        Text crVal = topText("$" + player.getMoney());
+        Text currencyText = topText("$");
+        playerMoneyText = topText(String.valueOf(player.getMoney()));
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox hBox = new HBox(title, spacer, crLabel, crVal);
+        HBox hBox = new HBox(title, spacer, crLabel, currencyText, playerMoneyText);
         //BorderPane.setMargin(hBox, new Insets(FONT_SIZE));
         getChildren().add(hBox);
 
@@ -87,7 +95,7 @@ public class VendWidget extends VBox {
         } else {
             qtyLabel = headerText("      ");
         }
-        Text costLabel = headerText("Cost  ");
+        Text costLabel = headerText("Cost" + "        ");
         Region hSpacer = new Region();
         HBox.setHgrow(hSpacer, Priority.ALWAYS);
         HBox hdrBox = new HBox(descLabel, hSpacer, qtyLabel, costLabel);
@@ -134,16 +142,65 @@ public class VendWidget extends VBox {
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        Text nameText = itemText(thing.getName());
         Text priceText = itemText(String.format("%4d", thing.getValue()));
-        Text qtyText;
-        if (thing.getVendQuantity() < 0) {
-            qtyText = itemText("  ");
-        } else {
-            qtyText = itemText(String.format("%2d", thing.getVendQuantity()));
-        }
-        HBox lineBox = new HBox(itemText(thing.getName()), spacer, qtyText, priceText);
+        Text qtyText = itemText("999");
+        updateQtyText(thing, qtyText);
+
+        ImageView coinView = new ImageView(COIN_IMAGE);
+        coinView.setFitHeight(20);
+        coinView.setPreserveRatio(true);
+        updateItemOpacity(thing.getVendQuantity(), nameText, priceText, qtyText);
+
+        Button b = new Button(null, coinView);
+        b.setDisable(thing.getVendQuantity() == 0);
+        b.setOnAction((t) -> {
+            if (thing.getVendQuantity() != 0) {
+                if (player.takeMoney(thing.getValue())) {
+                    playerMoneyText.setText(String.valueOf(player.getMoney()));
+                    if (thing.getVendQuantity() > 0) {
+                        thing.setVendQuantity(thing.getVendQuantity() - 1);
+                    }
+                    updateQtyText(thing, qtyText);
+                    // Add ting to player inventory.
+                    player.getInventory().addNewInstanceOf(thing);
+                    // TODO: PLay a cash sound.
+                    SoundEffectManager.getInstance().play(SoundEffectManager.Sound.MONEY);
+                    LOGGER.log(Level.CONFIG, "Purchased {0}", thing.getName());
+                } else {
+                    SoundEffectManager.getInstance().play(SoundEffectManager.Sound.FAIL);
+                    LOGGER.log(Level.CONFIG, "Not enough funds to buy item.");
+                    // TODO: Play a "fail" sound.
+                    // TODO: Cause player money to go red and fade back to black.
+                }
+            }
+            // Update grey-out state of item.
+            if (thing.getVendQuantity() == 0) {
+                b.setDisable(true);
+                updateItemOpacity(thing.getVendQuantity(), nameText, priceText, qtyText);
+            }
+        });
+
+        HBox lineBox = new HBox(nameText, spacer, qtyText, priceText, b);
+        lineBox.setAlignment(Pos.BOTTOM_LEFT);
         lineBox.setSpacing(FONT_SIZE);
         return lineBox;
+    }
+
+    private void updateItemOpacity(int qty, Node... n) {
+        double opacity = qty == 0 ? ITEM_GONE_OPACITY : 1.0;
+        for (Node nn : n) {
+            nn.setOpacity(opacity);
+        }
+    }
+
+    private void updateQtyText(Thing thing, Text t) {
+        if (thing.getVendQuantity() < 0) {
+            t.setText("  ");
+        } else {
+            t.setText(String.format("%2d", thing.getVendQuantity()));
+        }
+
     }
 
     private Text itemText(String s) {
