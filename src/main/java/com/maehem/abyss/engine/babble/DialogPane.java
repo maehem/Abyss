@@ -332,6 +332,10 @@ public class DialogPane extends BorderPane {
                             vignette.onVendItemsFinished();
                         });
                     }
+                    case DIALOG_NO_MORE -> {
+                        vignette.getCharacterList().get(0).setAllowTalk(false);
+                        doCloseDialog();
+                    }
                     default -> {
                         LOGGER.log(Level.SEVERE, "DialogChain: item " + num + " defines unknown or unhandled command: " + t);
                     }
