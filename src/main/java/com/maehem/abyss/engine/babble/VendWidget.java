@@ -163,10 +163,14 @@ public class VendWidget extends VBox {
                     }
                     updateQtyText(thing, qtyText);
                     // Add ting to player inventory.
-                    player.getInventory().addNewInstanceOf(thing);
-                    // TODO: PLay a cash sound.
-                    SoundEffectManager.getInstance().play(SoundEffectManager.Sound.MONEY);
-                    LOGGER.log(Level.CONFIG, "Purchased {0}", thing.getName());
+                    Thing factoryThing = Thing.factory(thing.getClass().getCanonicalName());
+                    if (player.getInventory().add(factoryThing)) {
+                        // TODO: PLay a cash sound.
+                        SoundEffectManager.getInstance().play(SoundEffectManager.Sound.MONEY);
+                        LOGGER.log(Level.CONFIG, "Purchased {0}", thing.getName());
+                    } else {
+                        LOGGER.log(Level.SEVERE, "VendWidget: Could not add item to inventory!");
+                    }
                 } else {
                     SoundEffectManager.getInstance().play(SoundEffectManager.Sound.FAIL);
                     LOGGER.log(Level.CONFIG, "Not enough funds to buy item.");
