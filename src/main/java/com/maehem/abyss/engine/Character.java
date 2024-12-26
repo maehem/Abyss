@@ -70,11 +70,6 @@ public class Character extends Group {
         LOGGER.log(Level.CONFIG, "{0}: Create character: {1}", new Object[]{getClass().getSimpleName(), name});
         this.name = name;
 
-        // Fill the inventory with EmptyThing placeholders.
-        for (int i = 0; i < INVENTORY_SIZE; i++) {
-            inventory.add(new EmptyThing());
-        }
-
         this.poseSheet = new PoseSheet(200);
         getChildren().add(this.poseSheet);
         getChildren().add(talkIcon);
@@ -178,13 +173,13 @@ public class Character extends Group {
         talkIcon.setY(-talkIcon.getBoundsInLocal().getHeight() / 2);
 
         talkIcon.setOnMouseClicked((event) -> {
-            LOGGER.log(Level.WARNING, getName() + ": Talk Icon clicked");
+            LOGGER.log(Level.INFO, getName() + ": Talk Icon clicked");
             event.consume();
             //if ( talkIcon.getOpacity() > 0.0 ) {
             if (canTalk()) {
                 setTalking(true);
             } else {
-                LOGGER.log(Level.CONFIG, "    but not allowed to talk.");
+                LOGGER.log(Level.INFO, "    but not allowed to talk.");
             }
             //}
         });
