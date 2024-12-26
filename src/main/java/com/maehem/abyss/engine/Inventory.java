@@ -16,7 +16,9 @@
  */
 package com.maehem.abyss.engine;
 
+import static com.maehem.abyss.Engine.LOGGER;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 /**
  *
@@ -26,6 +28,28 @@ public class Inventory extends ArrayList<Thing> {
 
     public Inventory(int size) {
         super(size);
+
+        // Fill the inventory with EmptyThing placeholders.
+        for (int i = 0; i < size; i++) {
+            super.add(new EmptyThing());
+        }
+
+    }
+
+    @Override
+    public boolean add(Thing t) {
+        // Get index of first EmptyThing
+        for (int i = 0; i < this.size(); i++) {
+            if (this.get(i) instanceof EmptyThing) {
+                this.set(i, t);
+
+                LOGGER.log(Level.CONFIG, "Placed {0} Thing at Inventory slot: {1}", new Object[]{t.getName(), i});
+                return true;
+            }
+        }
+
+        LOGGER.log(Level.SEVERE, "No empty slots in Inventory! Could not store Thing.");
+        return false;
     }
 
     public boolean hasItemType(String cName) {
@@ -38,7 +62,14 @@ public class Inventory extends ArrayList<Thing> {
         return false;
     }
 
-    public void addNewInstanceOf(Thing thing) {
+    public Thing getFirst(String cName) {
+        for (Thing t : this) {
+            if (t.getClass().getSimpleName().equals(cName)) {
+                return t;
+            }
+        }
 
+        return null;
     }
+
 }
