@@ -17,7 +17,6 @@
 package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
-import com.maehem.abyss.engine.Character;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
@@ -278,23 +277,40 @@ public abstract class Thing {
                 //getAInventory().set(i, object);
                 object.loadState(p, key);
                 return object;
-            } catch (ClassNotFoundException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (InstantiationException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (IllegalAccessException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (IllegalArgumentException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (InvocationTargetException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (NoSuchMethodException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
-            } catch (SecurityException ex) {
-                LOGGER.log(Level.SEVERE, null, ex);
+            } catch (ClassNotFoundException
+                    | InstantiationException
+                    | IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException
+                    | NoSuchMethodException
+                    | SecurityException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
             }
 
         }
+        return null;
+    }
+
+    public static final Thing factory(String itemClass) {
+        if (itemClass != null) {
+            try {
+                Class<?> c = Class.forName(itemClass);
+                Constructor<?> cons = c.getConstructor();
+                Thing object = (Thing) cons.newInstance();
+                LOGGER.log(Level.CONFIG, "Thing Factory: create::  {0}", itemClass);
+                return object;
+            } catch (ClassNotFoundException
+                    | InstantiationException
+                    | IllegalAccessException
+                    | IllegalArgumentException
+                    | InvocationTargetException
+                    | NoSuchMethodException
+                    | SecurityException ex) {
+                LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
+                ex.printStackTrace();
+            }
+        }
+
         return null;
     }
 
