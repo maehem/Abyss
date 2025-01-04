@@ -216,6 +216,16 @@ public abstract class Vignette extends ViewPane {
     }
 
     /**
+     * Return room number as defined in Neuromancer PC game data. Used for
+     * cached data file reference.
+     *
+     * @return room number.
+     */
+    public int getRoomNumber() {
+        return roomNumber;
+    }
+
+    /**
      * @return the player
      */
     public final Player getPlayer() {
