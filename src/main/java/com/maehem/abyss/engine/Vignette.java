@@ -17,7 +17,6 @@
 package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
-import com.maehem.abyss.engine.Character;
 import com.maehem.abyss.engine.audio.music.MusicTrack;
 import com.maehem.abyss.engine.babble.DialogPane;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
@@ -255,9 +254,8 @@ public abstract class Vignette extends ViewPane {
      * If showing, Called by loop every tick.
      *
      * @param input list of keyboard events
-     * @return next room to load or @null to remain in current room
      */
-    protected final VignetteTrigger processEvents(ArrayList<String> input) {
+    protected final void processEvents(ArrayList<String> input) {
 
         if (dialogPane == null || !dialogPane.isVisible()) {
             if (!input.isEmpty()) {
@@ -284,7 +282,9 @@ public abstract class Vignette extends ViewPane {
                         //getPlayer().useDefaultSkin();
                         LOGGER.fine("player triggered door.");
                         portAction(door);
-                        return door;
+                        getGameState().setNextRoom(door);
+                        return;
+                        //return door;
                     } else {
                         LOGGER.log(Level.FINE, "Door to {0} is locked.", door.getDestination());
                     }
@@ -377,19 +377,7 @@ public abstract class Vignette extends ViewPane {
                 }
             });
         } else {
-            // Alternate mode is overlayed like a DialogScreen.  Handle that.
-//            if (dialogOverlay.isActionDone()) {
-//                removeNode(dialogOverlay);
-//
-//                // See if the dialog invoked a scene exit event.
-//                VignetteTrigger exit = dialogOverlay.getExit();
-//                dialogOverlay = null;
-//
-//                // If mode/dialog set the exit door then return that.
-//                if (exit != null) {
-//                    return exit;
-//                }
-//            }
+
             if (dialogPane.isActionDone()) {
                 // TODO: Remove blur effect node.
                 removeNode(dialogPane);
@@ -401,7 +389,9 @@ public abstract class Vignette extends ViewPane {
                 // If mode/dialog set the exit door then return that.
                 if (exit != null) {
                     portAction(exit);
-                    return exit;
+                    getGameState().setNextRoom(exit);
+                    return;
+                    //return exit;
                 }
             }
         }
@@ -414,7 +404,7 @@ public abstract class Vignette extends ViewPane {
         loop(); // Run the user defined @loop() code.
 
         // TODO:  maybe return loop() and allow the child to cause exit of scene?
-        return null;
+        //return null;
     }
 
     private void processUDLR(ArrayList<String> input) {
@@ -891,7 +881,6 @@ public abstract class Vignette extends ViewPane {
     /**
      * Override to provide items to show in VendWidget.
      *
-     * @param gs
      * @return list of things NPC can vend.
      */
     public ArrayList<Thing> getVendItems() {
