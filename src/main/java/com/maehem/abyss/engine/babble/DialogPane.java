@@ -20,7 +20,6 @@ import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.Character;
 import com.maehem.abyss.engine.Vignette;
 import com.maehem.abyss.engine.VignetteTrigger;
-import static com.maehem.abyss.engine.babble.DialogCommand.DESC;
 import com.maehem.abyss.engine.view.ViewPane;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -71,6 +70,10 @@ public class DialogPane extends BorderPane {
     private static final String ROUND_BUBBLE
             = "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
 
+    public final static String RESP_FONT_PATH = "/fonts/Modenine-2OPd.ttf";
+    private static final int RESPONSE_OK = 900;
+    private static final int RESPONSE_NEXT = 901;
+
     private final Vignette vignette;
     private final ArrayList<DialogSheet2> dialogList = new ArrayList<>();
     private DialogSheet2 currentDialogSheet;
@@ -83,6 +86,8 @@ public class DialogPane extends BorderPane {
     private final Font DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
     private final Font DIALOG_NAME_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 1.3);
     private final Font ANSWER_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE * 0.75);
+    private final Font ALERT_BTN_FONT = Font.loadFont(getClass().getResourceAsStream(RESP_FONT_PATH), FONT_SIZE);
+    private final Font ALERT_TXT_FONT = Font.loadFont(getClass().getResourceAsStream(RESP_FONT_PATH), FONT_SIZE * 0.8);
 
     private final Text nameText = new Text("Character Name");
     private final Text dialogText = new Text(
@@ -101,6 +106,9 @@ public class DialogPane extends BorderPane {
     private final Pane cameoViewPane;
     private String[] vars = null;
     private ArrayList<BabbleNode> dialogChain;
+    private final StackPane bubble;
+    private final StackPane alert;
+    private final TextFlow dialogTextFlow;
 
     /**
      *
@@ -126,24 +134,19 @@ public class DialogPane extends BorderPane {
 
         dialogText.setFont(DIALOG_FONT);
 
-        TextFlow dialogTextFlow = new TextFlow(dialogText);
-        dialogTextFlow.setPadding(new Insets(FONT_SIZE));
-        dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
-        dialogTextFlow.setLineSpacing(-FONT_SIZE * 0.33);
-        //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
+        dialogTextFlow = new TextFlow(dialogText);
 
         VBox nameDialogElementsBox = new VBox(nameBox, dialogTextFlow);
         VBox.setMargin(nameBox, new Insets(0, 20, 0, 0));
-        VBox.setMargin(dialogTextFlow, new Insets(30));
         nameDialogElementsBox.setAlignment(Pos.TOP_CENTER);
         nameDialogElementsBox.setFillWidth(true);
 
         // Ensure a minimum size for our bubble.
         // Includes the pointy bit going up.
-        Region reg = new Region();
-        reg.setMinSize(200, 200);
+        Region bubbleReg = new Region();
+        bubbleReg.setMinSize(200, 200);
 
-        StackPane bubble = new StackPane(reg);
+        bubble = new StackPane(bubbleReg);
         bubble.setPadding(new Insets(20));
         bubble.setStyle(
                 "-fx-background-color: white; "
@@ -151,15 +154,27 @@ public class DialogPane extends BorderPane {
                 + "-fx-shape: \"" + ROUND_BUBBLE + "\";"
         );
         bubble.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
-
         StackPane.setMargin(bubble, new Insets(0, 30, 30, 30));
-        StackPane layout = new StackPane(bubble, nameDialogElementsBox);
+
+        Region alertReg = new Region();
+        alertReg.setMinSize(200, 100);
+
+        alert = new StackPane(alertReg);
+        alert.setPadding(new Insets(20));
+        alert.setStyle(
+                "-fx-background-color: #020; "
+                + "-fx-border-color: #373; -fx-border-width: 5px; "
+        );
+        StackPane.setMargin(alert, new Insets(80, 30, 30, 30));
+
+        setBubbleAlertMode(true);
+
+        StackPane layout = new StackPane(alert, bubble, nameDialogElementsBox);
         layout.setBackground(new Background(new BackgroundFill(
                 Color.GRAY,
                 new CornerRadii(20, 0, 0, 20, false),
                 Insets.EMPTY
         )));
-        //layout.setPadding(new Insets(80));
 
         // Clip the buttons area so that the drop shadow only shades the left edge.
         Rectangle r = new Rectangle(ViewPane.WIDTH * 0.84 + 40, ViewPane.HEIGHT * 0.8);
@@ -249,6 +264,28 @@ public class DialogPane extends BorderPane {
 
     }
 
+    private void setBubbleAlertMode(boolean asBubble) {
+        bubble.setVisible(asBubble);
+        alert.setVisible(!asBubble);
+        if (asBubble) {
+            dialogText.setFont(DIALOG_FONT);
+            dialogText.setFill(Color.BLACK);
+            dialogTextFlow.setPadding(new Insets(FONT_SIZE));
+            dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
+            dialogTextFlow.setLineSpacing(-FONT_SIZE * 0.33);
+            //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
+            VBox.setMargin(dialogTextFlow, new Insets(30));
+        } else {
+            dialogText.setFont(ALERT_TXT_FONT);
+            dialogText.setFill(Color.GREEN);
+            dialogTextFlow.setPadding(new Insets(FONT_SIZE));
+            dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
+            dialogTextFlow.setLineSpacing(FONT_SIZE * 0.33);
+            //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
+            VBox.setMargin(dialogTextFlow, new Insets(30));
+        }
+    }
+
     public void setCameoTranslate(double x, double y) {
         cameoView.setTranslateX(x);
         cameoView.setTranslateY(y);
@@ -304,45 +341,129 @@ public class DialogPane extends BorderPane {
 
     public void setCurrentDialog(int num) {
         BabbleNode node = dialogChain.get(num);
-        LOGGER.log(Level.CONFIG, "Build Dialog for: " + num);
-        //LOGGER.log(Level.SEVERE, "     ----> Text: " + node.getText());
-        dialogText.setText(processText(node.getText()));
+        LOGGER.log(Level.CONFIG, "Build BabbleNode for: " + num);
         answerButtonsBox.getChildren().clear();
-        node.getNumbers().forEach((t) -> {
-            if (t < DESC.num) {
-                Button b = responseButton(t);
-                answerButtonsBox.getChildren().add(b);
-            } else { // command
-                switch (DialogCommand.getCommand(t)) {
-                    case ITEM_BUY -> {
-                        LOGGER.log(Level.FINER, "Build Vend Widget for: " + num);
-                        VendWidget vendWidget = new VendWidget(
-                                npc, vignette.getPlayer(),
-                                vignette.getVendItems(),
-                                answerButtonsBox.getHeight()
-                        );
-                        VBox.setMargin(vendWidget, new Insets(FONT_SIZE / 2));
-                        VBox.getVgrow(vendWidget);
-                        answerButtonsBox.getChildren().add(vendWidget);
 
-                        vendWidget.setOnAction((tt) -> {
-                            tt.consume();
-                            ///  do these action(s)
+        if (node instanceof DialogBabbleNode dn) {  // Dialog
+            LOGGER.log(Level.SEVERE, "Build NPC dialog...");
+            // Show NPC Bubble and Hide Alert Bubble
+            setBubbleAlertMode(true);
 
-                            vignette.onVendItemsFinished();
-                        });
+            // Text goes into NPC bubble.
+            dialogText.setText(processText(node.getText()));
+            node.getNumbers().forEach((t) -> {
+                // Each 't' must be less than dialog chain length
+                // and each referenced item must be a OptionBabbleNode.
+                try {
+                    BabbleNode optionNode = dialogChain.get(t);
+                    if (optionNode instanceof OptionBabbleNode) {
+                        Button b = responseButton(t);
+                        answerButtonsBox.getChildren().add(b);
+                    } else {
+                        throw new IndexOutOfBoundsException("Only OptionBabbleNode allowed here.");
                     }
-                    case DIALOG_NO_MORE -> {
-                        vignette.getCharacterList().get(0).setAllowTalk(false);
-                        doCloseDialog();
-                    }
-                    default -> {
-                        LOGGER.log(Level.SEVERE, "DialogChain: item " + num + " defines unknown or unhandled command: " + t);
-                    }
+                } catch (IndexOutOfBoundsException ex) {
+                    LOGGER.log(Level.SEVERE,
+                            "Dialog Chain element at {0} Syntax Error: "
+                            + "Only OptionBabbleNode elements allowed under.",
+                            new Object[]{t});
                 }
-            }
-        });
+            });
+        } else if (node instanceof NarrationBabbleNode nn) {
+            // Narration
+            LOGGER.log(Level.SEVERE, "Build Narration dialog...");
+            vignette.getGameState().getNarrationQue().add(node.getText());
 
+            // Execute commands here
+            node.getNumbers().forEach((t) -> {
+                if (t < DialogCommand.DESC.num) {
+                    // Set next dialog index to this.
+                    setCurrentDialog(t);
+                } else {
+                    // Execute command.
+                    // No OptionBabbleNode elements allowed here.
+                    processCommand(num, t);
+                }
+            });
+        } else if (node instanceof AlertBabbleNode) { // Syntax Error. Not allowed.
+            LOGGER.log(Level.SEVERE, "Build Alert dialog...");
+            setBubbleAlertMode(false); // Hide NPC text bubble. Show alert bubble.
+
+            dialogText.setText(processText(node.getText()));
+            Button b = alertResponseButton(true, node.getNumbers().getLast());
+            answerButtonsBox.getChildren().add(b);
+
+            b.setOnAction((bb) -> {
+                node.getNumbers().forEach((t) -> {
+                    if (t < DialogCommand.DESC.num) {
+                        // Set next dialog index to this.
+                        setCurrentDialog(t);
+                    } else {
+                        // Execute command.
+                        // No OptionBabbleNode elements allowed here.
+                        processCommand(num, t);
+                    }
+                });
+            });
+
+        } else if (node instanceof OptionBabbleNode) { // Syntax Error. Not allowed.
+            LOGGER.log(Level.SEVERE, "Syntax Error? :: OptionBabbleNode found at " + num + ". Expected Dialog or Narration node");
+        }
+
+        //
+        //
+        //
+        //
+        //LOGGER.log(Level.SEVERE, "     ----> Text: " + node.getText());
+//        dialogText.setText(processText(node.getText()));
+//        answerButtonsBox.getChildren().clear();
+//        node.getNumbers().forEach((t) -> {
+//            if (t < DESC.num) {
+//                if (node instanceof OptionBabbleNode) {
+//                    Button b = responseButton(t);
+//                    answerButtonsBox.getChildren().add(b);
+//                } else if (node instanceof NarrationBabbleNode) {
+//                    LOGGER.log(Level.SEVERE, "Do narration action.");
+//                    LOGGER.log(Level.SEVERE, "Place text for {0} into narration window.", num);
+//                    // Execute items in numbers.
+//                    List<Integer> numbers = n.getNumbers();
+//                    if (numbers.size() == 1) {
+//                        setCurrentDialog(numbers.getFirst());
+//                    } else {
+//                        LOGGER.log(Level.SEVERE, "Multiple");
+//                    }
+//                }
+//            } else { // command
+//                processCommand(num, t);
+//                switch (DialogCommand.getCommand(t)) {
+//                   case ITEM_BUY -> {
+//                        LOGGER.log(Level.FINER, "Build Vend Widget for: " + num);
+//                        VendWidget vendWidget = new VendWidget(
+//                                npc, vignette.getPlayer(),
+//                                vignette.getVendItems(),
+//                                answerButtonsBox.getHeight()
+//                        );
+//                        VBox.setMargin(vendWidget, new Insets(FONT_SIZE / 2));
+//                        VBox.getVgrow(vendWidget);
+//                        answerButtonsBox.getChildren().add(vendWidget);
+//
+//                        vendWidget.setOnAction((tt) -> {
+//                            tt.consume();
+//                            ///  do these action(s)
+//
+//                            vignette.onVendItemsFinished();
+//                        });
+//                    }
+//                    case DIALOG_NO_MORE -> {
+//                        vignette.getCharacterList().get(0).setAllowTalk(false);
+//                        doCloseDialog();
+//                    }
+//                    default -> {
+//                        LOGGER.log(Level.SEVERE, "DialogChain: item " + num + " defines unknown or unhandled command: " + t);
+//                    }
+//                }
+//            }
+//        });
     }
 
     private void rebuildResponsePane(ArrayList<DialogResponse2> responseList) {
@@ -351,6 +472,28 @@ public class DialogPane extends BorderPane {
             Button b = responseButton(t);
             answerButtonsBox.getChildren().add(b);
         });
+    }
+
+    private Button alertResponseButton(boolean typeOk, int response) {
+        Text bText;
+        if (response == RESPONSE_OK) {
+            bText = new Text("OK");
+        } else {
+            bText = new Text("NEXT");
+        }
+        bText.setTextAlignment(TextAlignment.CENTER);
+        bText.setFont(ALERT_BTN_FONT);
+        CornerRadii cornerRadii = new CornerRadii(ALERT_BTN_FONT.getSize() / 4);
+        Button b = new Button("", bText);
+        b.setBorder(new Border(
+                new BorderStroke(Color.BLACK.brighter(),
+                        BorderStrokeStyle.SOLID,
+                        cornerRadii,
+                        new BorderWidths(3)
+                )));
+        b.setBackground(new Background(new BackgroundFill(Color.web("373"), cornerRadii, Insets.EMPTY)));
+
+        return b;
     }
 
     private Button responseButton(int response) {
@@ -362,7 +505,7 @@ public class DialogPane extends BorderPane {
             bText.setWrappingWidth(ViewPane.WIDTH * 0.38);
             bText.setTextAlignment(TextAlignment.CENTER);
             bText.setFont(ANSWER_FONT);
-            CornerRadii cornerRadii = new CornerRadii(FONT_SIZE / 2);
+            CornerRadii cornerRadii = new CornerRadii(ANSWER_FONT.getSize() / 2);
 
             Button b = new Button("", bText);
             b.setBorder(new Border(
@@ -371,19 +514,18 @@ public class DialogPane extends BorderPane {
                             cornerRadii,
                             new BorderWidths(2)
                     )));
-            b.setBackground(Background.EMPTY);
             b.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, cornerRadii, Insets.EMPTY)));
             b.setOnAction((tt) -> {
                 tt.consume();
                 ///  do these action(s)
                 obn.getNumbers().forEach((t) -> {
                     // Apply each command.
-                    if (t >= DESC.num) {
-                        // Command
-                        processCommand(t);
-                    } else {
+                    if (t < DialogCommand.DESC.num) {
                         // Set new dialog to final number.
                         setCurrentDialog(t);
+                    } else {
+                        // Command
+                        processCommand(response, t);
                     }
                 });
             });
@@ -448,20 +590,98 @@ public class DialogPane extends BorderPane {
         if (vars == null) {
             return text;
         }
-        String pText = new String(text);
+        String pText = text;
         for (int i = 0; i < vars.length; i++) {
             String pVar = "$" + Integer.toString(i);
             if (pText.contains(pVar)) {
                 // Need to escape with double back-slashes because $ is a regex character.
-                pText = pText.replaceAll(new String('\\' + pVar), vars[i]);
+                pText = pText.replaceAll(('\\' + pVar), vars[i]);
             }
         }
 
         return pText;
     }
 
-    private void processCommand(int command) {
-        LOGGER.log(Level.SEVERE, "DialogPane: Process Command " + DialogCommand.getCommand(command).name());
+    private void processCommand(int dcNum, int command) {
+        LOGGER.log(Level.SEVERE,
+                "DialogPane: Process Command for Dialog Chain#{0}  => {1}",
+                new Object[]{dcNum, DialogCommand.getCommand(command).name()}
+        );
+        switch (DialogCommand.getCommand(command)) {
+            case DESC -> {
+                LOGGER.log(Level.SEVERE, "Process Description Command. TODO!");
+            }
+            case DESC_NEXT -> {
+                LOGGER.log(Level.SEVERE, "Process Description Next Command. TODO!");
+            }
+            case EXIT_T -> {
+                LOGGER.log(Level.CONFIG, "Process Exit Top Command.");
+                for (VignetteTrigger t : vignette.getDoors()) {
+                    if (t.getLocation().equals(VignetteTrigger.Location.TOP)) {
+                        vignette.getGameState().setNextRoom(t);
+                        return;
+                    }
+                }
+            }
+            case EXIT_R -> {
+                LOGGER.log(Level.CONFIG, "Process Exit Right Command.");
+                for (VignetteTrigger t : vignette.getDoors()) {
+                    if (t.getLocation().equals(VignetteTrigger.Location.RIGHT)) {
+                        vignette.getGameState().setNextRoom(t);
+                        return;
+                    }
+                }
+            }
+            case EXIT_B -> {
+                LOGGER.log(Level.CONFIG, "Process Exit Bottom Command.");
+                for (VignetteTrigger t : vignette.getDoors()) {
+                    if (t.getLocation().equals(VignetteTrigger.Location.BOTTOM)) {
+                        vignette.getGameState().setNextRoom(t);
+                        return;
+                    }
+                }
+            }
+            case EXIT_L -> {
+                LOGGER.log(Level.CONFIG, "Process Exit Left Command.");
+                for (VignetteTrigger t : vignette.getDoors()) {
+                    if (t.getLocation().equals(VignetteTrigger.Location.LEFT)) {
+                        vignette.getGameState().setNextRoom(t);
+                        return;
+                    }
+                }
+            }
+            case ITEM_GET -> {
+                LOGGER.log(Level.SEVERE, "Process Item Get Command. TODO!");
+            }
+            case ITEM_BUY -> {
+                LOGGER.log(Level.FINER, "Build Vend Widget for dialogChain item: {0}", dcNum);
+                VendWidget vendWidget = new VendWidget(
+                        npc, vignette.getPlayer(),
+                        vignette.getVendItems(),
+                        answerButtonsBox.getHeight()
+                );
+                VBox.setMargin(vendWidget, new Insets(FONT_SIZE / 2));
+                VBox.getVgrow(vendWidget);
+                answerButtonsBox.getChildren().add(vendWidget);
+
+                vendWidget.setOnAction((tt) -> {
+                    tt.consume();
+                    ///  do these action(s)
+
+                            vignette.onVendItemsFinished();
+                });
+            }
+            case DIALOG_NO_MORE -> {
+                vignette.getCharacterList().get(0).setAllowTalk(false);
+                doCloseDialog();
+            }
+            default -> {
+                LOGGER.log(Level.SEVERE,
+                        "DialogChain: item {0} defines unknown or unhandled command: {1}",
+                        new Object[]{dcNum, command});
+            }
+        }
+
     }
 
     public void setDialogChain(ArrayList<BabbleNode> dChain) {
