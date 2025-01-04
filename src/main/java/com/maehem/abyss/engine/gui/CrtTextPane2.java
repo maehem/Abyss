@@ -1,17 +1,17 @@
 /*
-    Licensed to the Apache Software Foundation (ASF) under one or more 
+    Licensed to the Apache Software Foundation (ASF) under one or more
     contributor license agreements.  See the NOTICE file distributed with this
-    work for additional information regarding copyright ownership.  The ASF 
-    licenses this file to you under the Apache License, Version 2.0 
-    (the "License"); you may not use this file except in compliance with the 
+    work for additional information regarding copyright ownership.  The ASF
+    licenses this file to you under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with the
     License.  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
 
-    Unless required by applicable law or agreed to in writing, software 
-    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT 
-    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the 
-    License for the specific language governing permissions and limitations 
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+    WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+    License for the specific language governing permissions and limitations
     under the License.
 */
 package com.maehem.abyss.engine.gui;
@@ -55,10 +55,10 @@ public class CrtTextPane2 extends ScrollPane {
     public static final Color SCREEN_BG_COLOR = new Color(0.15, 0.15, 0.15, 1.0);
     private static final Color SCREEN_FG_COLOR = new Color(0.1, 1.0, 0.1, 1.0);
 
-    private final Text text = new Text();    
+    private final Text text = new Text();
     private final TextFlow flow = new TextFlow(text);
     private final  StackPane contentPane = new StackPane();
-    
+
     public CrtTextPane2(double width) {
         LOGGER.log(Level.INFO, "W:{0}  H:{1}", new Object[]{width, width});
         double ratio = 1.0;
@@ -67,13 +67,13 @@ public class CrtTextPane2 extends ScrollPane {
         setFitToWidth(true);
         setHbarPolicy(ScrollBarPolicy.NEVER);
         setVbarPolicy(ScrollBarPolicy.NEVER);
-        
+
         setContent(new Group(contentPane));
         setBackground(new Background(new BackgroundFill(SCREEN_BG_COLOR, CornerRadii.EMPTY, Insets.EMPTY)));
         contentPane.setBackground(new Background(new BackgroundFill(
                SCREEN_BG_COLOR, CornerRadii.EMPTY, Insets.EMPTY
         )));
-        
+
         flow.setBackground(new Background(
                 new BackgroundFill(SCREEN_BG_COLOR, CornerRadii.EMPTY, Insets.EMPTY)
         ));
@@ -82,14 +82,14 @@ public class CrtTextPane2 extends ScrollPane {
         flow.setTabSize(4);
         flow.setEffect(new GaussianBlur( LINE_SMEAR ));
         flow.setPrefSize(CRT_WIDTH, CRT_WIDTH*ratio);
-        
+
         // We must clip the flow because alot of text can make
         // it's height longer than any requested limits.
         flow.setClip(new Rectangle(CRT_WIDTH, CRT_WIDTH*ratio));
-        
+
         Group flowPane = new Group(flow);
         contentPane.getChildren().add(flowPane);
-                
+
         text.setFill(SCREEN_FG_COLOR);
         text.setFont(CRT_FONT);
         text.setText("Narration Area.\n\tHello\nSuper long text stuff, I can see my house from here!\n" +
@@ -102,7 +102,7 @@ public class CrtTextPane2 extends ScrollPane {
                 "012345678901234567 8901234567 89012345678 9012345 67890123456789012345678 90123456789" +
                 "0123456789 0123456789012 345678901234567 89012345678901234567890 1234567890 123456789"
         );
-        
+
         // Scan line negative space.
         WritableImage im = new WritableImage((int)CRT_WIDTH, (int)(CRT_WIDTH*ratio));
         PixelWriter pw = im.getPixelWriter();
@@ -118,10 +118,10 @@ public class CrtTextPane2 extends ScrollPane {
         scanLines.setEffect(new GaussianBlur(LINE_SMEAR/2.0));
         Group scanLinesGroup = new Group(scanLines);
         scanLines.setClip(new Rectangle(CRT_WIDTH, CRT_WIDTH*ratio));
-        
+
         contentPane.getChildren().add(scanLinesGroup);
     }
-    
+
     public void setText( String text ) {
         this.text.setText(text);
     }
@@ -129,7 +129,7 @@ public class CrtTextPane2 extends ScrollPane {
     @Override
     protected void layoutChildren() {
         super.layoutChildren();
-        
+
         contentPane.setScaleX(getWidth()/CRT_WIDTH);
         contentPane.setScaleY(getWidth()/CRT_WIDTH);
     }
