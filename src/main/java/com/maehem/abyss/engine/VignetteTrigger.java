@@ -31,6 +31,10 @@ public class VignetteTrigger extends TriggerShape {
 
     public static final boolean SHOW_TRIGGER = true;
 
+    public enum Location {
+        TOP, RIGHT, BOTTOM, LEFT, NONE
+    }
+
     private String destination;
     private double playerX = -1;
     private double playerY = -1;
