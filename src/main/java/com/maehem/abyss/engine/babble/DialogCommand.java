@@ -31,6 +31,7 @@ public enum DialogCommand {
     WORD2(56),
     WHERE_IS(57), // Street Light Girl - Where is Lonny Zone?
     DISCOUNT(58), // Apply vendor discount (asano 20%)
+    DESC_NEXT(59), // Place in narration of next room.
     LUNGS(60), // lungs removed at Hitachi
     BODY_SELL(61), // Bodyshop menu
     BODY_BUY(62), // Bodyshop menu
@@ -63,7 +64,7 @@ public enum DialogCommand {
     DIALOG_CLOSE(98),
     DIALOG_END(99),
     ON_FILTER_1(400), // Call onFilter1() and return the array of int reposnses.
-    DESC_DIRECT(500), // Subtract 500 and put remainder(index) in DESC box.// Subtract 500 and put remainder(index) in DESC box.
+    DESC_DIRECT(500), // Subtract 500 and put remainder(index) in DESC box.
     INVALID_COMMAND(999);
 
     public final int num;
