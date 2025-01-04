@@ -13,7 +13,7 @@
     WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
     License for the specific language governing permissions and limitations
     under the License.
-*/
+ */
 package com.maehem.abyss;
 
 import com.maehem.abyss.debug.DebugTab;
@@ -63,8 +63,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 /**
- *  TODO:   For when we deploy on GitHub:
- *          https://stackoverflow.com/questions/14013644/hosting-a-maven-repository-on-github
+ * TODO: For when we deploy on GitHub:
+ * https://stackoverflow.com/questions/14013644/hosting-a-maven-repository-on-github
  *
  * @author Mark J Koch [@maehem on GitHub]
  */
@@ -107,15 +107,10 @@ public class Engine extends Application implements GameStateListener {
 
     private final GameState gameState;// = new GameState();
 
-
     // TODO:   Music track system
     //          - Blend music scene to scene
-
     // TODO:   Cut Scenes
-
-
-
-    public Engine( ) {
+    public Engine() {
         configureLogging();
 
         // TRUE for debug.
@@ -123,7 +118,6 @@ public class Engine extends Application implements GameStateListener {
         this.gameState = new GameState();
 
     }
-
 
     @Override
     public void start(Stage window) {
@@ -143,7 +137,6 @@ public class Engine extends Application implements GameStateListener {
         LOGGER.finer("Finer log message.");
         LOGGER.finest("Finest log message.");
 
-
         gameState.init();
 
         splashScreen = new ImageView(new Image(getClass().getResourceAsStream("/splash.png")));
@@ -156,17 +149,17 @@ public class Engine extends Application implements GameStateListener {
             Platform.exit();
         });
 
-        gameControls = new GameControlsPane(getGameState(), ViewPane.WIDTH/2);
+        gameControls = new GameControlsPane(getGameState(), ViewPane.WIDTH / 2);
 
         // Narration - Shares space with ROM, but only one is visible at a time.
-        narrationPane = new NarrationPane(ViewPane.WIDTH/2);
+        narrationPane = new NarrationPane(ViewPane.WIDTH / 2);
         // ROM Adviser -- Hint System and Third Hand
-        romPane = new RomConstructPane(getGameState(), ViewPane.WIDTH/2);
-        StackPane rightPane = new StackPane(narrationPane,romPane);
+        romPane = new RomConstructPane(getGameState(), ViewPane.WIDTH / 2);
+        StackPane rightPane = new StackPane(narrationPane, romPane);
 
         narrationPane.setVisible(true);
         romPane.setVisible(false);
-        bottomArea.getChildren().addAll(gameControls ,rightPane  );
+        bottomArea.getChildren().addAll(gameControls, rightPane);
 
         configureGuiLayout();
 
@@ -179,13 +172,13 @@ public class Engine extends Application implements GameStateListener {
         chipsPane = new ChipsConfiguratorPane(gameState);
 
         // Terminal -- Base BBS style system
-        terminalPane = new TerminalPane(gameState );
+        terminalPane = new TerminalPane(gameState);
         terminalPane.setTerminal(gameState.getPublicTerminal(), false);
 
         // Deck Bench -- Configure your Deck with inventory components
-
         // Cyberspace  -- ROM Helper replaces Narration Window
-        matrixPane = new MatrixPane(gameState );  ///, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
+        matrixPane = new MatrixPane(gameState);
+        ///, Vignette.NATIVE_WIDTH, Vignette.NATIVE_HEIGHT);
 
         topArea.getChildren().addAll(vignetteGroup, //splashScreen,
                 chipsPane, inventoryPane, terminalPane, matrixPane
@@ -194,22 +187,23 @@ public class Engine extends Application implements GameStateListener {
         // Initilize the game
         getGameState().load(STARTING_VIGNETTE);
 
-        matrixPane.updateHudSoftwareTabs(); /// Might not need this here.
+        matrixPane.updateHudSoftwareTabs();
+        /// Might not need this here.
 
         initHotKeys();
         initKeyInput();
 
-         // Load the starting room.
+        // Load the starting room.
         String roomName = getGameState().getProperty(
                 GameState.PROP_CURRENT_VIGNETTE,
                 STARTING_VIGNETTE
         );
         notifyVignetteExit(new VignetteTrigger(roomName));  // Just leveraging the Room Loading System here.
         gameState.setShowing(GameState.Display.VIGNETTE);
-   }
+    }
 
     private void initDebugWindow() {
-        DebugTab debugTab = new DebugTab( messageLog, gameState);
+        DebugTab debugTab = new DebugTab(messageLog, gameState);
         debugTab.setFormatter(loggingHandler.getFormatter());
         Scene debugScene = new Scene(debugTab);
 
@@ -225,8 +219,8 @@ public class Engine extends Application implements GameStateListener {
 
         debugWindow.show();
         Rectangle2D bounds = Screen.getPrimary().getBounds();
-        debugWindow.setX(bounds.getWidth()-debugWindow.getWidth());
-        debugWindow.setY(bounds.getHeight()-debugWindow.getHeight());
+        debugWindow.setX(bounds.getWidth() - debugWindow.getWidth());
+        debugWindow.setY(bounds.getHeight() - debugWindow.getHeight());
     }
 
     private void setVignette(Vignette v) {
@@ -264,38 +258,38 @@ public class Engine extends Application implements GameStateListener {
         // Player - stop doing any movement/actions
         gameState.getPlayer().stopAnimating();
 
-
 // Don't do this.  GameState should already have info on vignette changes.
 //        // Save relevant game data/goals from scene?
 //        Vignette currentVignette = gameState.getCurrentVignette();
 //        if ( currentVignette != null ) {
 //            currentVignette.saveState(getGameState());
 //        }
-
         try {
             String packageName = gameState.getContentPack().getClass().getPackageName();
             Class<?> c = Class.forName(packageName + ".content.vignette." + nextRoom.getDestination());
             Constructor<?> cons = c.getConstructor(GameState.class, VignetteTrigger.class, Player.class);
-            Object object = cons.newInstance( gameState, nextRoom, getPlayer());
+            Object object = cons.newInstance(gameState, nextRoom, getPlayer());
             setVignette((Vignette) object);
             LOGGER.log(Level.FINER, "[Engine] Loaded Vignette: {0}", nextRoom.getDestination());
-        } catch (ClassNotFoundException |
-                NoSuchMethodException |
-                SecurityException |
-                InstantiationException |
-                IllegalAccessException |
-                IllegalArgumentException |
-                InvocationTargetException   ex) {
+        } catch (ClassNotFoundException
+                | NoSuchMethodException
+                | SecurityException
+                | InstantiationException
+                | IllegalAccessException
+                | IllegalArgumentException
+                | InvocationTargetException ex) {
             ex.printStackTrace();
         }
 
+        // Push delayed narration messages into the narration pane.
+        getNarrationPane().appendAllMessages(gameState.getNarrationQue());
     }
 
     private void initHotKeys() {
         // Save Game   COMMAND+S
         scene.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
             final KeyCombination keyComb = new KeyCodeCombination(
-                    KeyCode.S,KeyCombination.META_DOWN);
+                    KeyCode.S, KeyCombination.META_DOWN);
 
             @Override
             public void handle(KeyEvent ke) {
@@ -350,19 +344,16 @@ public class Engine extends Application implements GameStateListener {
     public void doExit() {
 
         // TODO:   Ask if user is sure.
-
         // Check if we need to save.
-
-
         LOGGER.warning("Exit called.  Quitting game.");
         window.close();
     }
 
     private void initKeyInput() {
         scene.addEventHandler(KeyEvent.KEY_PRESSED, (key) -> {
-              if(key.getCode()==KeyCode.ENTER) {
-                  LOGGER.log(Level.INFO, "You pressed ENTER" );
-              }
+            if (key.getCode() == KeyCode.ENTER) {
+                LOGGER.log(Level.INFO, "You pressed ENTER");
+            }
         });
     }
 
@@ -395,7 +386,6 @@ public class Engine extends Application implements GameStateListener {
         // Add console handler as handler of logs
         //Logger.getLogger("com.maehem.abyss").addHandler(handler);
         //Logger.getLogger("com.maehem.abyss").setUseParentHandlers(false);
-
     }
 
     /**
@@ -428,7 +418,8 @@ public class Engine extends Application implements GameStateListener {
     }
 
     @Override
-    public void gameStatePropertyChanged(GameState gs, String propKey) {}
+    public void gameStatePropertyChanged(GameState gs, String propKey) {
+    }
 
 //    @Override
 //    public void gameStateShowInventory(GameState gs, boolean state) {
@@ -437,23 +428,20 @@ public class Engine extends Application implements GameStateListener {
 //        if ( state ) { inventoryPane.updateItemGrid(); }
 //        inventoryPane.setVisible(state);
 //    }
-
 //    @Override
 //    public void gameStateShowChips(GameState gs, boolean state) {
 //        LOGGER.log(Level.INFO, "Set show chips pane: {0}", state);
 //        hideSpecialPanes();
 //        chipsPane.setVisible(state);
 //    }
-
 //    private void hideSpecialPanes() {
 //        chipsPane.setVisible(false);
 //        inventoryPane.setVisible(false);
 //        terminalPane.setVisible(false);
 //    }
-
     @Override
     public void gameStateShowDebug(GameState gs, boolean state) {
-        if ( state ) {
+        if (state) {
             debugWindow.show();
         } else {
             debugWindow.hide();
@@ -472,12 +460,12 @@ public class Engine extends Application implements GameStateListener {
 //        hideSpecialPanes();
 //        terminalPane.setVisible(state);
 //    }
-
     @Override
     public void gameStateDisplayChanged(GameState aThis, GameState.Display d) {
     }
 
     @Override
-    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {}
+    public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {
+    }
 
 }
