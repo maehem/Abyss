@@ -468,4 +468,8 @@ public class Engine extends Application implements GameStateListener {
     public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {
     }
 
+    public NarrationPane getNarrationPane() {
+        return narrationPane;
+    }
+
 }
