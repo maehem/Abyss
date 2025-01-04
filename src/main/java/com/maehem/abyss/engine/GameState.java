@@ -79,6 +79,10 @@ public final class GameState extends Properties {
 
     private final ArrayList<GameGoal> goals = new ArrayList<>(); // TODO Save/Restore
 
+    // Add messages to this list and they will be displayed in the narration
+    // pane on the next execution of the loop().
+    private final ArrayList<String> narrationQue = new ArrayList<>();
+
     private SitesList sites;
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
 
@@ -187,6 +191,10 @@ public final class GameState extends Properties {
 
     public Object getContentPack() {
         return contentPack;
+    }
+
+    public ArrayList<String> getNarrationQue() {
+        return narrationQue;
     }
 
     public void quickSave() {
