@@ -18,6 +18,7 @@ package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.PoseSheet.Direction;
+import static com.maehem.abyss.engine.VignetteTrigger.Location.NONE;
 import java.util.logging.Level;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -40,22 +41,37 @@ public class VignetteTrigger extends TriggerShape {
     private double playerY = -1;
     private Direction playerDir;
     private boolean locked = false;
+    private Location location = NONE;
 
     public VignetteTrigger(String vingette) {
         // Dummy Port for providing a default vignette. (like at game start)
-        this(0, 0, 1, 1, false, -1, -1, Direction.RIGHT, vingette);
+        this(0, 0, 1, 1, false, -1, -1, Location.NONE, Direction.RIGHT, vingette);
     }
 
-    public VignetteTrigger(double x, double y, double w, double h, double px, double py, Direction pdir, String vignette) {
-        this(x,y,w,h, false,px,py,pdir,vignette);
+//    public VignetteTrigger(double x, double y, double w, double h, double px, double py, Location loc, Direction pdir, String vignette) {
+//        this(x, y, w, h, false, px, py, loc, pdir, vignette);
+//    }
+
+    public VignetteTrigger(double x, double y, double w, double h, double px, double py, Location loc, Direction pdir, Class<? extends Vignette> vignette) {
+        this(x, y, w, h, false, px, py, loc, pdir, vignette.getSimpleName());
     }
+
+//    public VignetteTrigger(double x, double y, double w, double h, double px, double py, Direction pdir, String vignette) {
+//        this(x, y, w, h, false, px, py, Location.NONE, pdir, vignette);
+//    }
 
     public VignetteTrigger(double x, double y, double w, double h, double px, double py, Direction pdir, Class<? extends Vignette> vignette) {
-        this(x, y, w, h, false, px, py, pdir, vignette.getSimpleName());
+        this(x, y, w, h, false, px, py, Location.NONE, pdir, vignette.getSimpleName());
     }
 
-    public VignetteTrigger(double x, double y, double w, double h, boolean showTrigger, double px, double py, Direction pdir, String vignette) {
+    public VignetteTrigger(double x, double y, double w, double h, boolean showTrigger, double px, double py, Direction pdir, Class<? extends Vignette> vignette) {
+        this(x, y, w, h, showTrigger, px, py, Location.NONE, pdir, vignette.getSimpleName());
+    }
+
+    public VignetteTrigger(double x, double y, double w, double h, boolean showTrigger, double px, double py, Location loc, Direction pdir, String vignette) {
         super(x, y, w, h);
+
+        this.location = loc;
 
         setDestination(vignette);
 
@@ -66,6 +82,10 @@ public class VignetteTrigger extends TriggerShape {
         this.playerX = px;
         this.playerY = py;
         this.playerDir = pdir;
+    }
+
+    public Location getLocation() {
+        return location;
     }
 
     /**
