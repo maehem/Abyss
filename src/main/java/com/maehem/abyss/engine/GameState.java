@@ -87,6 +87,8 @@ public final class GameState extends Properties {
     private final EdgeMap matrixEdges = new EdgeMap(MAP_SIZE, MAP_SIZE);
 
     private Vignette currentVignette;
+    private VignetteTrigger nextRoom = null; // Ephemeral. Handled each Loop pass.
+
     private BBSTerminal currentTerminal;
     //private int currentMatrixAddress = 0x00305;
     private MatrixSite currentMatrixSite;
@@ -769,4 +771,19 @@ public final class GameState extends Properties {
         LOGGER.log(Level.CONFIG, "[GameState] Could not load GameGoal: {0}", clazzName);
         return null;
     }
+
+    /**
+     * @return the nextRoom
+     */
+    public VignetteTrigger getNextRoom() {
+        return nextRoom;
+    }
+
+    /**
+     * @param nextRoom the nextRoom to set
+     */
+    public void setNextRoom(VignetteTrigger nextRoom) {
+        this.nextRoom = nextRoom;
+    }
+
 }
