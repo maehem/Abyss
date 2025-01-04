@@ -61,7 +61,7 @@ public class CrtTextPane2 extends ScrollPane {
 
     public CrtTextPane2(double width) {
         LOGGER.log(Level.INFO, "W:{0}  H:{1}", new Object[]{width, width});
-        double ratio = 1.0;
+        double ratio = 0.7;
         //double hClip = height*ratio;
         setFitToHeight(true);
         setFitToWidth(true);
@@ -133,6 +133,11 @@ public class CrtTextPane2 extends ScrollPane {
         contentPane.setScaleX(getWidth()/CRT_WIDTH);
         contentPane.setScaleY(getWidth()/CRT_WIDTH);
     }
-    
-    
+
+    public void appendLine(String s) {
+        text.setText(text.getText() + "\n" + s);
+        setVvalue(1.0);
+    }
+
+
 }
