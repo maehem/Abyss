@@ -246,7 +246,7 @@ public abstract class Vignette extends ViewPane {
             }
         }
         if (musicTrack != null && musicTrack.isPlaying()) {
-            if (!musicTrack.getMedia().getSource().equals(media.getSource())) {
+            if (media != null && !musicTrack.getMedia().getSource().equals(media.getSource())) {
                 musicTrack.fadeAndStop(0);
                 musicTrack = new MusicTrack(media);
                 musicTrack.play();
