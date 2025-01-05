@@ -650,7 +650,7 @@ public class DialogPane extends BorderPane {
                 }
             }
             case ITEM_GET -> {
-                LOGGER.log(Level.SEVERE, "Process Item Get Command. TODO!");
+                LOGGER.log(Level.SEVERE, "Process Item Get Command.");
             }
             case ITEM_BUY -> {
                 LOGGER.log(Level.FINER, "Build Vend Widget for dialogChain item: {0}", dcNum);
@@ -676,7 +676,7 @@ public class DialogPane extends BorderPane {
                 doCloseDialog();
             }
             case DIALOG_NO_X -> { // The "X" that allows clossing dialog.
-                LOGGER.log(Level.SEVERE, "Process Dialog-No-X Command. TODO!");
+                LOGGER.log(Level.CONFIG, "Process Dialog-No-X Command.");
                 closeX.setVisible(false);
             }
             default -> {
