@@ -109,6 +109,7 @@ public class DialogPane extends BorderPane {
     private final StackPane bubble;
     private final StackPane alert;
     private final TextFlow dialogTextFlow;
+    private final ImageView closeX;
 
     /**
      *
@@ -226,18 +227,16 @@ public class DialogPane extends BorderPane {
         AnchorPane.setLeftAnchor(cameoViewPane, 20.0);
         AnchorPane.setBottomAnchor(cameoViewPane, 0.0);
 
-        ImageView closeX = new ImageView(new Image(getClass().getResourceAsStream(CLOSE_X_PATH)));
+        closeX = new ImageView(new Image(getClass().getResourceAsStream(CLOSE_X_PATH)));
         // Close Dialog control 'X' (upper right of pane.)
         //Rectangle closeRect = new Rectangle(40, 40, Color.RED);
         AnchorPane.setRightAnchor(closeX, 0.0);
         AnchorPane.setBottomAnchor(closeX, 0.0);
         closeX.setOnMouseClicked((event) -> {
-            event.consume();
-            doCloseDialog();
-            //npc.setTalking(false);
-            //setVisible(false);
-
-            //setActionDone(false);
+            if (closeX.isVisible()) {
+                event.consume();
+                doCloseDialog();
+            }
         });
 
         //cameoViewPane.getChildren().add(cameoFrame);
@@ -672,8 +671,13 @@ public class DialogPane extends BorderPane {
                 });
             }
             case DIALOG_NO_MORE -> {
+                LOGGER.log(Level.CONFIG, "Process Dialog-No-More command.");
                 vignette.getCharacterList().get(0).setAllowTalk(false);
                 doCloseDialog();
+            }
+            case DIALOG_NO_X -> { // The "X" that allows clossing dialog.
+                LOGGER.log(Level.SEVERE, "Process Dialog-No-X Command. TODO!");
+                closeX.setVisible(false);
             }
             default -> {
                 LOGGER.log(Level.SEVERE,

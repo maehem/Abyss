@@ -57,9 +57,10 @@ public enum DialogCommand {
     UXB(90), // Shin gives UXB
     PASS(91), // Shiva gives Rest. Pass
     CAVIAR(92), // Edo gives ConLink 2.0 for Caviar
-    CHIP(94), // n credits.
-    FINE_BANK_500(95), // Fine bank
-    FINE_BANK_20K(96), // Fine bank
+    CHIP(93), // n credits.
+    FINE_BANK_500(94), // Fine bank
+    FINE_BANK_20K(95), // Fine bank
+    DIALOG_NO_X(96),
     DIALOG_NO_MORE(97), // Like DIALOG_END but leave dialog open so next command can run.
     DIALOG_CLOSE(98),
     DIALOG_END(99),
