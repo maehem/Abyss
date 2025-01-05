@@ -651,6 +651,7 @@ public class DialogPane extends BorderPane {
             }
             case ITEM_GET -> {
                 LOGGER.log(Level.SEVERE, "Process Item Get Command.");
+                vignette.onItemGet();
             }
             case ITEM_BUY -> {
                 LOGGER.log(Level.FINER, "Build Vend Widget for dialogChain item: {0}", dcNum);
