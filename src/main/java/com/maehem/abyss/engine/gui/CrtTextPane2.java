@@ -41,7 +41,7 @@ import javafx.scene.text.TextFlow;
  */
 public class CrtTextPane2 extends ScrollPane {
     private final static double CRT_WIDTH = 1000;
-    private final static double CRT_HEIGHT = 1000;
+    //private final static double CRT_HEIGHT = 1000;
     private static final double CRT_FONT_H = 60.5;
     private static final String CRT_FONT_PATH = "/fonts/VT323-Regular.ttf";
     private final Font CRT_FONT = Font.loadFont(
@@ -61,7 +61,7 @@ public class CrtTextPane2 extends ScrollPane {
 
     public CrtTextPane2(double width) {
         LOGGER.log(Level.INFO, "W:{0}  H:{1}", new Object[]{width, width});
-        double ratio = 0.7;
+        double ratio = 0.4;
         //double hClip = height*ratio;
         setFitToHeight(true);
         setFitToWidth(true);
@@ -92,15 +92,7 @@ public class CrtTextPane2 extends ScrollPane {
 
         text.setFill(SCREEN_FG_COLOR);
         text.setFont(CRT_FONT);
-        text.setText("Narration Area.\n\tHello\nSuper long text stuff, I can see my house from here!\n" +
-                "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+{}[]|\\" +
-                "\n" +
-                "012 345678901234567 8901234567890 12345678901234 5678901234 567890123456789 0123456789" +
-                "012345 678901234567 8901 234567890123 45678901234 567890123456789 012345678901 23456789" +
-                "012345 67890123456 7890123456789012345678 9012345678901234567890123456789012 3456789" +
-                "  89012345678901234567890 123456789012345678901 23456789012 3456789" +
-                "012345678901234567 8901234567 89012345678 9012345 67890123456789012345678 90123456789" +
-                "0123456789 0123456789012 345678901234567 89012345678901234567890 1234567890 123456789"
+        text.setText("Narration Area.\n\tHello\nSuper long text stuff, I can see my house from here!\n"
         );
 
         // Scan line negative space.
