@@ -344,7 +344,7 @@ public class DialogPane extends BorderPane {
         answerButtonsBox.getChildren().clear();
 
         if (node instanceof DialogBabbleNode dn) {  // Dialog
-            LOGGER.log(Level.SEVERE, "Build NPC dialog...");
+            LOGGER.log(Level.CONFIG, "Build NPC dialog...");
             // Show NPC Bubble and Hide Alert Bubble
             setBubbleAlertMode(true);
 
@@ -370,7 +370,7 @@ public class DialogPane extends BorderPane {
             });
         } else if (node instanceof NarrationBabbleNode nn) {
             // Narration
-            LOGGER.log(Level.SEVERE, "Build Narration dialog...");
+            LOGGER.log(Level.CONFIG, "Build Narration dialog...");
             vignette.getGameState().getNarrationQue().add(node.getText());
 
             // Execute commands here
@@ -602,7 +602,7 @@ public class DialogPane extends BorderPane {
     }
 
     private void processCommand(int dcNum, int command) {
-        LOGGER.log(Level.SEVERE,
+        LOGGER.log(Level.INFO,
                 "DialogPane: Process Command for Dialog Chain#{0}  => {1}",
                 new Object[]{dcNum, DialogCommand.getCommand(command).name()}
         );
@@ -650,7 +650,7 @@ public class DialogPane extends BorderPane {
                 }
             }
             case ITEM_GET -> {
-                LOGGER.log(Level.SEVERE, "Process Item Get Command.");
+                LOGGER.log(Level.INFO, "Process Item Get Command.");
                 vignette.onItemGet();
             }
             case ITEM_BUY -> {
