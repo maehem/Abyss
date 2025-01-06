@@ -412,7 +412,7 @@ public class Engine extends Application implements GameStateListener {
 
     @Override
     public void gameStateVignetteChanged(GameState gs) {
-        LOGGER.log(Level.SEVERE, "Engine: Update narration pane.");
+        LOGGER.log(Level.CONFIG, "Engine: Update narration pane.");
         narrationPane.setTitle(gs.getCurrentVignette().getName());
         narrationPane.setText(gs.getCurrentVignette().getNarration());
     }
