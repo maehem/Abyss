@@ -70,6 +70,8 @@ public enum DialogCommand {
 
     public final int num;
 
+    public static final int CMD_BASE = 50;
+
     private DialogCommand(int num) {
         this.num = num;
     }
