@@ -381,7 +381,7 @@ public abstract class Vignette extends ViewPane {
                     dialogPane.setVisible(true);
                     dialogPane.toFront();
 
-                    LOGGER.warning("Show Dialog Mode.");
+                    LOGGER.config("Show Dialog Mode.");
                 } else if (npc.isTalking() && getDialogPane().isActionDone()) {
                     LOGGER.log(Level.WARNING, "NPC is talking but the action is marked as done.");
                 }
