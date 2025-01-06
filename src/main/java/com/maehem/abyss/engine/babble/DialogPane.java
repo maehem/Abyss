@@ -94,12 +94,6 @@ public class DialogPane extends BorderPane {
             "Dialog Text. Hello. I am a pretty pony. "
             + "Dialog Text. Hello. I am a pretty pony. "
             + "Dialog Text. Hello. I am a pretty pony. "
-            + "Dialog Text. Hello. I am a pretty pony. "
-            + "Dialog Text. Hello. I am a pretty pony. "
-            + "Dialog Text. Hello. I am a pretty pony. "
-            + "Dialog Text. Hello. I am a pretty pony. "
-            + "Dialog Text. Hello. I am a pretty pony. "
-            + "Dialog Text. Hello. I am a pretty pony."
     );
     private final VBox answerButtonsBox = new VBox();
     private final ImageView cameoView;
@@ -120,15 +114,15 @@ public class DialogPane extends BorderPane {
         this.vignette = vignette;
         this.npc = npc;
 
-        setPrefSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
+        setPrefSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.9);
         setMinSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
         setLayoutX(ViewPane.WIDTH * 0.08);
-        setLayoutY(ViewPane.HEIGHT * 0.1);
+        setLayoutY(ViewPane.HEIGHT * 0.05);
         //setBackground(new Background(new BackgroundFill(Color.GRAY, new CornerRadii(20), Insets.EMPTY)));
         setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
 
         HBox nameBox = new HBox(nameText);
-        nameBox.setPadding(new Insets(FONT_SIZE / 2));
+        nameBox.setPadding(new Insets(FONT_SIZE / 3));
         nameText.setFont(DIALOG_NAME_FONT);
         nameText.setText(npc.getName());
         nameBox.setAlignment(Pos.BASELINE_RIGHT);
@@ -136,7 +130,6 @@ public class DialogPane extends BorderPane {
         dialogText.setFont(DIALOG_FONT);
 
         dialogTextFlow = new TextFlow(dialogText);
-
         VBox nameDialogElementsBox = new VBox(nameBox, dialogTextFlow);
         VBox.setMargin(nameBox, new Insets(0, 20, 0, 0));
         nameDialogElementsBox.setAlignment(Pos.TOP_CENTER);
@@ -269,7 +262,7 @@ public class DialogPane extends BorderPane {
         if (asBubble) {
             dialogText.setFont(DIALOG_FONT);
             dialogText.setFill(Color.BLACK);
-            dialogTextFlow.setPadding(new Insets(FONT_SIZE));
+            dialogTextFlow.setPadding(new Insets(FONT_SIZE, FONT_SIZE / 2, 0, FONT_SIZE / 2));
             dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
             dialogTextFlow.setLineSpacing(-FONT_SIZE * 0.33);
             //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
