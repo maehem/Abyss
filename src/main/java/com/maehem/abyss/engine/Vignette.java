@@ -900,9 +900,19 @@ public abstract class Vignette extends ViewPane {
     /**
      * Override to take action when VendWidget is done.
      *
+     * @return non-negative dialog chain index number if Vend should not occur
+     * and set dialog to that index.
+     */
+    public int onVendItemsStart() {
+        return -1;
+    }
+
+    /**
+     * Override to take action when VendWidget is done.
+     *
      * @return
      */
     public boolean onVendItemsFinished() {
-        return false;
+        return true;
     }
 }

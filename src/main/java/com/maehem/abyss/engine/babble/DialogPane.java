@@ -359,13 +359,17 @@ public class DialogPane extends BorderPane {
                         Button b = responseButton(t);
                         answerButtonsBox.getChildren().add(b);
                     } else {
-                        throw new IndexOutOfBoundsException("Only OptionBabbleNode allowed here.");
+                        throw new IndexOutOfBoundsException("Only OptionBabbleNode or DialogCommand allowed here.");
                     }
                 } catch (IndexOutOfBoundsException ex) {
-                    LOGGER.log(Level.SEVERE,
-                            "Dialog Chain element at {0} Syntax Error: "
-                            + "Only OptionBabbleNode elements allowed under.",
-                            new Object[]{t});
+                    if (t >= DialogCommand.CMD_BASE) {
+                        processCommand(num, t);
+                    } else {
+                        LOGGER.log(Level.SEVERE,
+                                "Dialog Chain element at #{0} Syntax Error: "
+                                + "Unknown referenced Dialog Chain Index number: {1}",
+                                new Object[]{num, t});
+                    }
                 }
             });
         } else if (node instanceof NarrationBabbleNode nn) {
@@ -655,21 +659,26 @@ public class DialogPane extends BorderPane {
             }
             case ITEM_BUY -> {
                 LOGGER.log(Level.FINER, "Build Vend Widget for dialogChain item: {0}", dcNum);
-                VendWidget vendWidget = new VendWidget(
-                        npc, vignette.getPlayer(),
-                        vignette.getVendItems(),
-                        answerButtonsBox.getHeight()
-                );
-                VBox.setMargin(vendWidget, new Insets(FONT_SIZE / 2));
-                VBox.getVgrow(vendWidget);
-                answerButtonsBox.getChildren().add(vendWidget);
+                int vendState = vignette.onVendItemsStart();
+                if (vendState < 0) { // Perform any pre-actions in custom vugnette.
+                    VendWidget vendWidget = new VendWidget(
+                            npc, vignette.getPlayer(),
+                            vignette.getVendItems(),
+                            answerButtonsBox.getHeight()
+                    );
+                    VBox.setMargin(vendWidget, new Insets(FONT_SIZE / 2));
+                    VBox.getVgrow(vendWidget);
+                    answerButtonsBox.getChildren().add(vendWidget);
 
-                vendWidget.setOnAction((tt) -> {
-                    tt.consume();
-                    ///  do these action(s)
-
-                            vignette.onVendItemsFinished();
-                });
+                    vendWidget.setOnAction((tt) -> {
+                        tt.consume();
+                        ///  do these action(s) in the custom Vingette.
+                        vignette.onVendItemsFinished();
+                    });
+                } else {
+                    // Set the dialog to this index.
+                    setCurrentDialog(vendState);
+                }
             }
             case DIALOG_NO_MORE -> {
                 LOGGER.log(Level.CONFIG, "Process Dialog-No-More command.");
