@@ -492,25 +492,45 @@ public class DialogPane extends BorderPane {
         return b;
     }
 
+    private Button responseButton(String txt) {
+        Text bText = new Text(processText(txt));
+        bText.setWrappingWidth(ViewPane.WIDTH * 0.38);
+        bText.setTextAlignment(TextAlignment.CENTER);
+        bText.setFont(ANSWER_FONT);
+        CornerRadii cornerRadii = new CornerRadii(ANSWER_FONT.getSize() / 2);
+
+        Button b = new Button("", bText);
+        b.setBorder(new Border(
+                new BorderStroke(Color.BLACK.brighter(),
+                        BorderStrokeStyle.SOLID,
+                        cornerRadii,
+                        new BorderWidths(2)
+                )));
+        b.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, cornerRadii, Insets.EMPTY)));
+
+        return b;
+    }
+
     private Button responseButton(int response) {
         LOGGER.log(Level.CONFIG, "Build Response Button for: " + response);
         BabbleNode node = dialogChain.get(response);
         if (node instanceof OptionBabbleNode obn) {
-            Text bText = new Text(processText(obn.getText()));
-            //LOGGER.log(Level.SEVERE, "     ----> Text: " + obn.getText());
-            bText.setWrappingWidth(ViewPane.WIDTH * 0.38);
-            bText.setTextAlignment(TextAlignment.CENTER);
-            bText.setFont(ANSWER_FONT);
-            CornerRadii cornerRadii = new CornerRadii(ANSWER_FONT.getSize() / 2);
-
-            Button b = new Button("", bText);
-            b.setBorder(new Border(
-                    new BorderStroke(Color.BLACK.brighter(),
-                            BorderStrokeStyle.SOLID,
-                            cornerRadii,
-                            new BorderWidths(2)
-                    )));
-            b.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, cornerRadii, Insets.EMPTY)));
+            Button b = responseButton(processText(obn.getText()));
+//            Text bText = new Text(processText(obn.getText()));
+//            //LOGGER.log(Level.SEVERE, "     ----> Text: " + obn.getText());
+//            bText.setWrappingWidth(ViewPane.WIDTH * 0.38);
+//            bText.setTextAlignment(TextAlignment.CENTER);
+//            bText.setFont(ANSWER_FONT);
+//            CornerRadii cornerRadii = new CornerRadii(ANSWER_FONT.getSize() / 2);
+//
+//            Button b = new Button("", bText);
+//            b.setBorder(new Border(
+//                    new BorderStroke(Color.BLACK.brighter(),
+//                            BorderStrokeStyle.SOLID,
+//                            cornerRadii,
+//                            new BorderWidths(2)
+//                    )));
+//            b.setBackground(new Background(new BackgroundFill(Color.LIGHTGREY, cornerRadii, Insets.EMPTY)));
             b.setOnAction((tt) -> {
                 tt.consume();
                 ///  do these action(s)
