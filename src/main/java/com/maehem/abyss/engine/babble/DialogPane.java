@@ -666,6 +666,22 @@ public class DialogPane extends BorderPane {
                     }
                 }
             }
+            case TO_JAIL -> {
+                LOGGER.log(Level.CONFIG, "Process Go to Jail Command.");
+
+                // TODO: Get random cop arrest text from bundle.
+                Button b = responseButton("Oh no!");
+                answerButtonsBox.getChildren().add(b);
+                b.setOnAction((ba) -> {
+                    for (VignetteTrigger t : vignette.getDoors()) {
+                        if (t.getLocation().equals(VignetteTrigger.Location.JAIL)) {
+                            vignette.getGameState().setNextRoom(t);
+                            return;
+                        }
+                    }
+                });
+
+            }
             case ITEM_GET -> {
                 LOGGER.log(Level.INFO, "Process Item Get Command.");
                 vignette.onItemGet();
