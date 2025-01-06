@@ -783,6 +783,7 @@ public final class GameState extends Properties {
      * @param nextRoom the nextRoom to set
      */
     public void setNextRoom(VignetteTrigger nextRoom) {
+        LOGGER.log(Level.SEVERE, "Next room set to: {0}", nextRoom == null ? "null" : nextRoom.getDestination());
         this.nextRoom = nextRoom;
     }
 
