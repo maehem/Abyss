@@ -18,6 +18,7 @@ package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.audio.music.MusicTrack;
+import com.maehem.abyss.engine.babble.BabbleNode;
 import com.maehem.abyss.engine.babble.DialogPane;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.gui.GiveCreditsPane;
@@ -915,4 +916,20 @@ public abstract class Vignette extends ViewPane {
     public boolean onVendItemsFinished() {
         return true;
     }
+
+    public void initDialogText(ArrayList<BabbleNode> DIALOG_CHAIN) {
+        for (int i = 0; i < DIALOG_CHAIN.size(); i++) {
+            String dString;
+            try {
+                dString = bundle.getString("dialog." + i);
+            } catch (MissingResourceException ex) {
+                dString = "Dialog Element: " + i + ": Missing item in bundle.";
+            }
+
+            LOGGER.log(Level.CONFIG, "Set DialogChain item: {0}  to: {1}", new Object[]{i, dString});
+            DIALOG_CHAIN.get(i).setText(dString);
+        }
+
+    }
+
 }
