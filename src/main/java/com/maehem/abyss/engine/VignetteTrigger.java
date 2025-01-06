@@ -33,7 +33,7 @@ public class VignetteTrigger extends TriggerShape {
     public static final boolean SHOW_TRIGGER = true;
 
     public enum Location {
-        TOP, RIGHT, BOTTOM, LEFT, NONE
+        TOP, RIGHT, BOTTOM, LEFT, JAIL, BODY_SHOP, NONE
     }
 
     private String destination;
@@ -43,9 +43,18 @@ public class VignetteTrigger extends TriggerShape {
     private boolean locked = false;
     private Location location = NONE;
 
+    /**
+     *
+     * @param vingette
+     */
     public VignetteTrigger(String vingette) {
         // Dummy Port for providing a default vignette. (like at game start)
         this(0, 0, 1, 1, false, -1, -1, Location.NONE, Direction.RIGHT, vingette);
+    }
+
+    public VignetteTrigger(Class<? extends Vignette> vignette) {
+        // Used by game content for Jail and Body Shop when triggered.
+        this(-1000, -1000, 1, 1, false, -1, -1, Location.NONE, Direction.TOWARD, vignette.getSimpleName());
     }
 
 //    public VignetteTrigger(double x, double y, double w, double h, double px, double py, Location loc, Direction pdir, String vignette) {
