@@ -33,7 +33,7 @@ public class VignetteTrigger extends TriggerShape {
     public static final boolean SHOW_TRIGGER = true;
 
     public enum Location {
-        TOP, RIGHT, BOTTOM, LEFT, JAIL, BODY_SHOP, NONE
+        TOP, RIGHT, BOTTOM, LEFT, JAIL, DEATH, NONE
     }
 
     private String destination;
