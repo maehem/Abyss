@@ -72,7 +72,7 @@ public class DialogPane extends BorderPane {
 
     public final static String RESP_FONT_PATH = "/fonts/Modenine-2OPd.ttf";
     private static final int RESPONSE_OK = 900;
-    private static final int RESPONSE_NEXT = 901;
+    //private static final int RESPONSE_NEXT = 901;
 
     private final Vignette vignette;
     private final ArrayList<DialogSheet2> dialogList = new ArrayList<>();
@@ -81,6 +81,8 @@ public class DialogPane extends BorderPane {
 
     private boolean actionDone;
     private final Character npc;
+    private final Character npc2;
+    private Character currentNpc;
     //private final Player player;
 
     private final Font DIALOG_FONT = Font.loadFont(getClass().getResourceAsStream(FONT_PATH), FONT_SIZE);
@@ -111,8 +113,19 @@ public class DialogPane extends BorderPane {
      * @param npc
      */
     public DialogPane(Vignette vignette, Character npc) {
+        this(vignette, npc, null);
+    }
+
+    /**
+     *
+     * @param vignette
+     * @param npc
+     */
+    public DialogPane(Vignette vignette, Character npc, Character npc2) {
         this.vignette = vignette;
         this.npc = npc;
+        this.npc2 = npc2;
+        currentNpc = npc;
 
         setPrefSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.9);
         setMinSize(ViewPane.WIDTH * 0.84, ViewPane.HEIGHT * 0.8);
@@ -190,13 +203,15 @@ public class DialogPane extends BorderPane {
         //answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, 0, 0, DROP_COLOR));
         answerButtonsBox.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR_AB));
 
-        Image cameo = npc.getCameo();
-        if (cameo == null) {
-            cameoView = new ImageView();
-            LOGGER.log(Level.INFO, "NPC cameo was null.");
-        } else {
-            cameoView = new ImageView(cameo);
-        }
+        cameoView = new ImageView();
+//        Image cameo = npc.getCameo();
+//        // TODO: Use setCameo()
+//        if (cameo == null) {
+//            cameoView = new ImageView();
+//            LOGGER.log(Level.INFO, "NPC cameo was null.");
+//        } else {
+//            cameoView = new ImageView(cameo);
+//        }
         cameoView.setFitHeight(CAMEO_H);
         cameoView.setPreserveRatio(true);
 
@@ -244,16 +259,19 @@ public class DialogPane extends BorderPane {
         this.vars = vars;
     }
 
+    private void setCurrentNpc(Character c) {
+        currentNpc = c;
+        setCameo(c.getCameo());
+    }
+
     public void setCameo(Image iv) {
         cameoView.setImage(iv);
         cameoView.setViewport(new Rectangle2D(0, 0, iv.getWidth(), iv.getHeight()));
-        cameoView.setPreserveRatio(true);
-        cameoView.setFitHeight(CAMEO_H);
-        //cameoView.setX(0);
+        //cameoView.setPreserveRatio(true);
+        //cameoView.setFitHeight(CAMEO_H);
 
-        cameoViewPane.getChildren().clear();
-        cameoViewPane.getChildren().add(cameoView);
-
+        //cameoViewPane.getChildren().clear();
+        //cameoViewPane.getChildren().add(cameoView);
     }
 
     private void setBubbleAlertMode(boolean asBubble) {
@@ -311,9 +329,6 @@ public class DialogPane extends BorderPane {
         }
     }
 
-//    public void setPlayer(Player player) {
-//        this.player = player;
-//    }
     /**
      * @return the currentDialogSheet
      */
@@ -333,13 +348,14 @@ public class DialogPane extends BorderPane {
 
     public void setCurrentDialog(int num) {
         BabbleNode node = dialogChain.get(num);
-        LOGGER.log(Level.CONFIG, "Build BabbleNode for: " + num);
+        LOGGER.log(Level.CONFIG, "Build BabbleNode for: {0}", num);
         answerButtonsBox.getChildren().clear();
 
-        if (node instanceof DialogBabbleNode dn) {  // Dialog
+        if (node instanceof DialogBabbleNode) {  // Dialog
             LOGGER.log(Level.CONFIG, "Build NPC dialog...");
             // Show NPC Bubble and Hide Alert Bubble
             setBubbleAlertMode(true);
+            setCurrentNpc(npc);
 
             // Text goes into NPC bubble.
             dialogText.setText(processText(node.getText()));
@@ -365,7 +381,7 @@ public class DialogPane extends BorderPane {
                     }
                 }
             });
-        } else if (node instanceof NarrationBabbleNode nn) {
+        } else if (node instanceof NarrationBabbleNode) {
             // Narration
             LOGGER.log(Level.CONFIG, "Build Narration dialog...");
             vignette.getGameState().getNarrationQue().add(node.getText());
@@ -403,7 +419,7 @@ public class DialogPane extends BorderPane {
             });
 
         } else if (node instanceof OptionBabbleNode) { // Syntax Error. Not allowed.
-            LOGGER.log(Level.SEVERE, "Syntax Error? :: OptionBabbleNode found at " + num + ". Expected Dialog or Narration node");
+            LOGGER.log(Level.SEVERE, "Syntax Error? :: OptionBabbleNode found at {0}. Expected Dialog or Narration node", num);
         }
 
         //
@@ -512,7 +528,7 @@ public class DialogPane extends BorderPane {
     }
 
     private Button responseButton(int response) {
-        LOGGER.log(Level.CONFIG, "Build Response Button for: " + response);
+        LOGGER.log(Level.CONFIG, "Build Response Button for: {0}", response);
         BabbleNode node = dialogChain.get(response);
         if (node instanceof OptionBabbleNode obn) {
             Button b = responseButton(processText(obn.getText()));
@@ -630,6 +646,10 @@ public class DialogPane extends BorderPane {
             case DESC_NEXT -> {
                 LOGGER.log(Level.SEVERE, "Process Description Next Command. TODO!");
             }
+            case NPC2 -> {
+                LOGGER.log(Level.SEVERE, "Process NPC2 command.");
+                setCurrentNpc(npc2);
+            }
             case EXIT_T -> {
                 LOGGER.log(Level.CONFIG, "Process Exit Top Command.");
                 for (VignetteTrigger t : vignette.getDoors()) {
@@ -669,8 +689,8 @@ public class DialogPane extends BorderPane {
             case TO_JAIL -> {
                 LOGGER.log(Level.CONFIG, "Process Go to Jail Command.");
 
-                // TODO: Get random cop arrest text from bundle.
-                Button b = responseButton("Oh no!");
+                // TODO: Replace with glyph for justiace.
+                Button b = responseButton("⚖️");
                 answerButtonsBox.getChildren().add(b);
                 b.setOnAction((ba) -> {
                     for (VignetteTrigger t : vignette.getDoors()) {
@@ -680,7 +700,21 @@ public class DialogPane extends BorderPane {
                         }
                     }
                 });
+            }
+            case DEATH -> {
+                LOGGER.log(Level.CONFIG, "Process Death Command.");
 
+                // TODO: Replace with glyph for Death.
+                Button b = responseButton("💀");
+                answerButtonsBox.getChildren().add(b);
+                b.setOnAction((ba) -> {
+                    for (VignetteTrigger t : vignette.getDoors()) {
+                        if (t.getLocation().equals(VignetteTrigger.Location.DEATH)) {
+                            vignette.getGameState().setNextRoom(t);
+                            return;
+                        }
+                    }
+                });
             }
             case ITEM_GET -> {
                 LOGGER.log(Level.INFO, "Process Item Get Command.");
