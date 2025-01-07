@@ -22,10 +22,12 @@ package com.maehem.abyss.engine.babble;
  */
 public enum DialogCommand {
 
+    // TODO: Renumber these.
     DESC(50), // show in room desc instead of dialog.
     LONG_DESC(51),
     SHORT_DESC(52),
     NPC(53), // Don't toggle to PLAYER after this dialog
+    NPC2(101),
     PLAYER(54), // Don't toggle to PLAYER after this dialog
     WORD1(55),
     WORD2(56),
