@@ -368,7 +368,7 @@ public class DialogPane extends BorderPane {
                         Button b = responseButton(t);
                         answerButtonsBox.getChildren().add(b);
                     } else if (optionNode instanceof DialogBabbleNode) {
-                        Button b = responseButton(">>>");
+                        Button b = nextButton(" >>> ");
                         answerButtonsBox.getChildren().add(b);
                         b.setOnAction((tt) -> {
                             // Set next dialog to t
@@ -511,6 +511,25 @@ public class DialogPane extends BorderPane {
                         new BorderWidths(3)
                 )));
         b.setBackground(new Background(new BackgroundFill(Color.web("373"), cornerRadii, Insets.EMPTY)));
+
+        return b;
+    }
+
+    private Button nextButton(String txt) {
+        Text bText = new Text(processText(txt));
+        //bText.setWrappingWidth(ViewPane.WIDTH * 0.18);
+        bText.setTextAlignment(TextAlignment.CENTER);
+        bText.setFont(ALERT_BTN_FONT);
+        CornerRadii cornerRadii = new CornerRadii(ALERT_BTN_FONT.getSize() / 4);
+
+        Button b = new Button("", bText);
+        b.setBorder(new Border(
+                new BorderStroke(Color.DARKGREEN.darker(),
+                        BorderStrokeStyle.SOLID,
+                        cornerRadii,
+                        new BorderWidths(3)
+                )));
+        b.setBackground(new Background(new BackgroundFill(Color.PALEGREEN.darker(), cornerRadii, Insets.EMPTY)));
 
         return b;
     }
@@ -697,7 +716,8 @@ public class DialogPane extends BorderPane {
                 LOGGER.log(Level.CONFIG, "Process Go to Jail Command.");
 
                 // TODO: Replace with glyph for justiace.
-                Button b = responseButton("⚖️");
+                Button b = nextButton(" >>> ");
+                VBox.setMargin(b, new Insets(FONT_SIZE * 2));
                 answerButtonsBox.getChildren().add(b);
                 b.setOnAction((ba) -> {
                     for (VignetteTrigger t : vignette.getDoors()) {
@@ -712,7 +732,8 @@ public class DialogPane extends BorderPane {
                 LOGGER.log(Level.CONFIG, "Process Death Command.");
 
                 // TODO: Replace with glyph for Death.
-                Button b = responseButton("💀");
+                Button b = nextButton(" >>> ");
+                VBox.setMargin(b, new Insets(FONT_SIZE * 2));
                 answerButtonsBox.getChildren().add(b);
                 b.setOnAction((ba) -> {
                     for (VignetteTrigger t : vignette.getDoors()) {
