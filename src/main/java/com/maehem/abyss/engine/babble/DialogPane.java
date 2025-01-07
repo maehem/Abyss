@@ -367,6 +367,13 @@ public class DialogPane extends BorderPane {
                     if (optionNode instanceof OptionBabbleNode) {
                         Button b = responseButton(t);
                         answerButtonsBox.getChildren().add(b);
+                    } else if (optionNode instanceof DialogBabbleNode) {
+                        Button b = responseButton(">>>");
+                        answerButtonsBox.getChildren().add(b);
+                        b.setOnAction((tt) -> {
+                            // Set next dialog to t
+                            setCurrentDialog(t);
+                        });
                     } else {
                         throw new IndexOutOfBoundsException("Only OptionBabbleNode or DialogCommand allowed here.");
                     }
