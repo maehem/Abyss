@@ -712,6 +712,22 @@ public class DialogPane extends BorderPane {
                     }
                 }
             }
+            case EXIT_GENERIC -> {
+                LOGGER.log(Level.CONFIG, "Process Exit to Generic Location (NONE).");
+
+                // TODO: Replace with glyph for justiace.
+                Button b = nextButton(" >>> ");
+                //VBox.setMargin(b, new Insets(FONT_SIZE * 2));
+                answerButtonsBox.getChildren().add(b);
+                b.setOnAction((ba) -> {
+                    for (VignetteTrigger t : vignette.getDoors()) {
+                        if (t.getLocation().equals(VignetteTrigger.Location.NONE)) {
+                            vignette.getGameState().setNextRoom(t);
+                            return;
+                        }
+                    }
+                });
+            }
             case TO_JAIL -> {
                 LOGGER.log(Level.CONFIG, "Process Go to Jail Command.");
 

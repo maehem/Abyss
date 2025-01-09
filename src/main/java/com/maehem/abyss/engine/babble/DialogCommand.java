@@ -48,7 +48,7 @@ public enum DialogCommand {
     EXIT_R(71), // Exit Right
     EXIT_B(72), // Exit Bottom
     EXIT_L(73), // Exit Left
-    EXIT_ST_CHAT(74), // Exit Outside Chatsubo
+    EXIT_GENERIC(74), // Exit Outside Chatsubo
     EXIT_BDSHOP(75), // Exit to body shop.
     EXIT_SHUTTLE_FS(76), // Exit To Freeside Shuttle
     EXIT_SHUTTLE_ZION(77), // Exit To Zion Shuttle
