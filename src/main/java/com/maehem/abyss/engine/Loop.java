@@ -65,6 +65,9 @@ public class Loop extends AnimationTimer {
             } else { // old vingette requested new room.
                 // Save scene state.
                 LOGGER.config("[Loop] Load next room.");
+                // Mark current room as visited.
+                gs.getCurrentVignette().setVisited(true);
+
                 gs.setNextRoom(null);
                 engine.notifyVignetteExit(nextRoom);
             }

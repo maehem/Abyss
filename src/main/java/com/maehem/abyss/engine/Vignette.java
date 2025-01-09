@@ -176,9 +176,6 @@ public abstract class Vignette extends ViewPane {
         getChildren().add(giveCredits);
         giveCredits.setVisible(false);
 
-        String prefix = PROP_PREFIX + getPropName();
-        getGameState().setProperty(prefix, RoomState.VISITED.name());
-
         LOGGER.log(Level.CONFIG, "[Vignette] \"{0}\" loaded.", getName());
     }
 
@@ -852,15 +849,47 @@ public abstract class Vignette extends ViewPane {
     }
 
     public String getNarration() {
-//        String longerText;
-//        try {
-//            longerText = " " + bundle.getString("narrationL");
-//        } catch (MissingResourceException ex) {
-//            longerText = "";
-//        }
-        //return bundle.getString("narration") + longerText;
-        return bundle.getString("dialog.0");
+        return !isVisited() ? getDescriptionLong() : getDescriptionShort();
     }
+
+    public void setVisited(boolean state) {
+        String prefix = PROP_PREFIX + getPropName();
+        getGameState().setProperty(prefix, RoomState.VISITED.name());
+    }
+
+    // TODO: visited is a list of room numbers in the game.visited property.
+    public boolean isVisited() {
+        String prefix = PROP_PREFIX + getPropName();
+        String property = getGameState().getProperty(prefix);
+        if (property != null) {
+            return getGameState().getProperty(prefix).equals(RoomState.VISITED.name());
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Get Short Description. Default is bundle "dialog.0"
+     *
+     * Override if bundle does not have description
+     *
+     * @return text description of room.
+     */
+    public String getDescriptionShort() {
+        return bundle.getString("dialog.1"); // Short
+    }
+
+    /**
+     * Get Long Description. Default is bundle "dialog.1"
+     *
+     * Override if bundle does not have description
+     *
+     * @return text description of room.
+     */
+    public String getDescriptionLong() {
+        return bundle.getString("dialog.0"); // Long
+    }
+
 
     public void setGiveMoneyShowing(int amount, String title, EventHandler handler) {
         // Show pane for transering money to npc.
