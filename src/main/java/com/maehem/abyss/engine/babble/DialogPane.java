@@ -717,7 +717,6 @@ public class DialogPane extends BorderPane {
 
                 // TODO: Replace with glyph for justiace.
                 Button b = nextButton(" >>> ");
-                //VBox.setMargin(b, new Insets(FONT_SIZE * 2));
                 answerButtonsBox.getChildren().add(b);
                 b.setOnAction((ba) -> {
                     for (VignetteTrigger t : vignette.getDoors()) {
@@ -733,7 +732,6 @@ public class DialogPane extends BorderPane {
 
                 // TODO: Replace with glyph for justiace.
                 Button b = nextButton(" >>> ");
-                VBox.setMargin(b, new Insets(FONT_SIZE * 2));
                 answerButtonsBox.getChildren().add(b);
                 b.setOnAction((ba) -> {
                     for (VignetteTrigger t : vignette.getDoors()) {
@@ -749,7 +747,6 @@ public class DialogPane extends BorderPane {
 
                 // TODO: Replace with glyph for Death.
                 Button b = nextButton(" >>> ");
-                VBox.setMargin(b, new Insets(FONT_SIZE * 2));
                 answerButtonsBox.getChildren().add(b);
                 b.setOnAction((ba) -> {
                     for (VignetteTrigger t : vignette.getDoors()) {
