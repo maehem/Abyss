@@ -784,6 +784,10 @@ public class DialogPane extends BorderPane {
                     setCurrentDialog(vendState);
                 }
             }
+            case DIALOG_CLOSE -> {
+                LOGGER.log(Level.CONFIG, "Process Close command.");
+                doCloseDialog();
+            }
             case DIALOG_NO_MORE -> {
                 LOGGER.log(Level.CONFIG, "Process Dialog-No-More command.");
                 vignette.getCharacterList().get(0).setAllowTalk(false);
