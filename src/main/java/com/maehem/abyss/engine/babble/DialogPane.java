@@ -789,7 +789,7 @@ public class DialogPane extends BorderPane {
                 vignette.getCharacterList().get(0).setAllowTalk(false);
                 doCloseDialog();
             }
-            case DIALOG_NO_X -> { // The "X" that allows clossing dialog.
+            case DIALOG_NO_X -> { // Hide the "X" that allows clossing dialog.
                 LOGGER.log(Level.CONFIG, "Process Dialog-No-X Command.");
                 closeX.setVisible(false);
             }
