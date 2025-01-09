@@ -926,7 +926,7 @@ public abstract class Vignette extends ViewPane {
                 dString = "Dialog Element: " + i + ": Missing item in bundle.";
             }
 
-            LOGGER.log(Level.CONFIG, "Set DialogChain item: {0}  to: {1}", new Object[]{i, dString});
+            LOGGER.log(Level.FINER, "Set DialogChain item: {0}  to: {1}", new Object[]{i, dString});
             DIALOG_CHAIN.get(i).setText(dString);
         }
 
