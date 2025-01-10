@@ -73,20 +73,20 @@ public class Player extends Character implements GameStateListener {
      * @return requested value as a string
      */
     public String getProperty(String key) {
-        switch (key) {
-            case CONSTITUTION_KEY:
-                return String.valueOf(getConstitution());
-            case HEALTH_KEY:
-                return String.valueOf(getHealth());
-            case MONEY_KEY:
-                return String.valueOf(getMoney());
-            case BANK_MONEY_KEY:
-                return String.valueOf(getBankMoney());
-            case NAME_KEY:
-                return getName();
-            default:
-                return null;
-        }
+        return switch (key) {
+            case CONSTITUTION_KEY ->
+                String.valueOf(getConstitution());
+            case HEALTH_KEY ->
+                String.valueOf(getHealth());
+            case MONEY_KEY ->
+                String.valueOf(getMoney());
+            case BANK_MONEY_KEY ->
+                String.valueOf(getBankMoney());
+            case NAME_KEY ->
+                getName();
+            default ->
+                null;
+        }; // TODO Body parts list.
     }
 
     /**
@@ -100,9 +100,9 @@ public class Player extends Character implements GameStateListener {
      * @param health the health to set
      */
     public void setHealth(int health) {
-        if ( health > PLAYER_HEALTH_MAX ) {
+        if (health > PLAYER_HEALTH_MAX) {
             this.health = PLAYER_HEALTH_MAX;
-        } else if ( health < 0 ) {
+        } else if (health < 0) {
             this.health = 0;
         } else {
             this.health = health;
@@ -138,9 +138,9 @@ public class Player extends Character implements GameStateListener {
      * @param constitution the constitution to set
      */
     public void setConstitution(int constitution) {
-        if ( constitution > PLAYER_CONSTITUTION_MAX ) {
+        if (constitution > PLAYER_CONSTITUTION_MAX) {
             this.constitution = PLAYER_CONSTITUTION_MAX;
-        } else if ( constitution < 0 ) {
+        } else if (constitution < 0) {
             this.constitution = 0;
         } else {
             this.constitution = constitution;
@@ -282,8 +282,10 @@ public class Player extends Character implements GameStateListener {
     }
 
     public int getSlotFor(SkillChipThing t) {
-        for ( int i=0; i<chipSlots.length; i++  ) {
-            if ( chipSlots[i] == t ) return i;
+        for (int i = 0; i < chipSlots.length; i++) {
+            if (chipSlots[i] == t) {
+                return i;
+            }
         }
 
         return -1;
@@ -297,19 +299,22 @@ public class Player extends Character implements GameStateListener {
      */
     public int getSkill(SkillChipThing.Buff skill) {
         int total = 0;
-        for ( SkillChipThing t: getChipSlots() ) {
-            if ( t == null ) continue;
+        for (SkillChipThing t : getChipSlots()) {
+            if (t == null) {
+                continue;
+            }
             for (Map.Entry<SkillChipThing.Buff, Integer> next : t.getBuffs()) {
-                if ( next.getKey() == skill ) {
+                if (next.getKey() == skill) {
                     total += next.getValue();
                 }
             }
         }
 
         // Range check.
-        if ( total > 999 ) {
+        if (total > 999) {
             total = 999;
-        } if ( total < 0 ) {
+        }
+        if (total < 0) {
             total = 0;
         }
 
@@ -343,7 +348,7 @@ public class Player extends Character implements GameStateListener {
         for (int i = 0; i < chipSlots.length; i++) {
             String key = CHIP_SLOTS_KEY + "." + i;
             Thing t = chipSlots[i];
-            if ( t != null ) {
+            if (t != null) {
                 LOGGER.log(Level.FINEST, "    Player Chip SaveState: {0} will be saved.", t.getClass().getSimpleName());
                 t.saveState(key, p);
             }
@@ -371,8 +376,8 @@ public class Player extends Character implements GameStateListener {
 
             String itemClass = p.getProperty(key + ".class");
             if (itemClass != null) {
-                Thing object = Thing.factory(gameState.getContentPack(),key, p);
-                if ( object == null ) {
+                Thing object = Thing.factory(gameState.getContentPack(), key, p);
+                if (object == null) {
                     LOGGER.log(Level.SEVERE, "Tried to load a non-existent Thing from save file: {0}", itemClass);
                 } else {
                     setAInventory(i, object);
@@ -388,8 +393,8 @@ public class Player extends Character implements GameStateListener {
             String itemClass = p.getProperty(key + ".class");
             if (itemClass != null) {
                 Thing object = Thing.factory(gameState.getContentPack(), key, p);
-                if ( object instanceof SkillChipThing ) {
-                    chipSlots[i] = (SkillChipThing) object;
+                if (object instanceof SkillChipThing skillChipThing) {
+                    chipSlots[i] = skillChipThing;
                 }
             }
         }
