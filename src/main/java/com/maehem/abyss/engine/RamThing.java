@@ -60,7 +60,8 @@ public abstract class RamThing extends Thing {
 
     @Override
     public void loadProperties(Properties p) {
-        setCondition(Integer.parseInt(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
+        // Condition handled by super class.
+        //setCondition(Integer.parseInt(p.getProperty(PROPERTY_CONDITION, String.valueOf(CONDITION_DEFAULT))));
         setCapacity(Integer.parseInt(p.getProperty(PROPERTY_CAPACITY, String.valueOf(CAPACITY_DEFAULT))));
     }
 
@@ -68,8 +69,9 @@ public abstract class RamThing extends Thing {
     public Properties saveProperties() {
         Properties p = new Properties();
         //p.setProperty("class", getPackage() + "." + getClass().getSimpleName());
-        p.setProperty(PROPERTY_CONDITION, condition.toString());
-        
+        //p.setProperty(PROPERTY_CONDITION, condition.toString());
+        p.setProperty(PROPERTY_CAPACITY, capacity.toString());
+
         return p;
     }
 
