@@ -18,6 +18,8 @@ package com.maehem.abyss.engine;
 
 import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -51,6 +53,9 @@ public class Player extends Character implements GameStateListener {
     private int bankMoney = PLAYER_BANK_MONEY_AMOUNT_DEFAULT;
     private int health = PLAYER_HEALTH_MAX;
     private int constitution = PLAYER_CONSTITUTION_MAX;
+
+    // Body parts
+    private final ArrayList<BodyPart> soldBodyParts = new ArrayList<>();
 
     private DeckThing currentDeck = null;
     private final SkillChipThing chipSlots[] = new SkillChipThing[4]; // Player can install four chips.
@@ -234,6 +239,10 @@ public class Player extends Character implements GameStateListener {
             // TODO Unregister current deck.
         }
         this.currentDeck = d;
+    }
+
+    public List<BodyPart> getSoldBodyParts() {
+        return soldBodyParts;
     }
 
     public SkillChipThing[] getChipSlots() {
