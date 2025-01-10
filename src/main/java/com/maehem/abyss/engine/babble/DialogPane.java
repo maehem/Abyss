@@ -752,6 +752,7 @@ public class DialogPane extends BorderPane {
                     for (VignetteTrigger t : vignette.getDoors()) {
                         if (t.getLocation().equals(VignetteTrigger.Location.DEATH)) {
                             vignette.getGameState().setNextRoom(t);
+                            vignette.getPlayer().setConstitution(0); // Kill
                             return;
                         }
                     }
