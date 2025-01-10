@@ -32,7 +32,7 @@ public abstract class Thing {
 
     public final static int DEFAULT_VALUE = 0;
     protected static final int CONDITION_DEFAULT = 1000;
-    protected static final int CONDITION_MAX = DeckThing.CONDITION_DEFAULT;
+    protected static final int CONDITION_MAX = CONDITION_DEFAULT;
     protected static final String PROPERTY_CONDITION = "condition";
 
     private String name;
