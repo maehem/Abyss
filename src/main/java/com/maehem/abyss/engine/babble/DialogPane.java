@@ -666,10 +666,10 @@ public class DialogPane extends BorderPane {
                 new Object[]{dcNum, DialogCommand.getCommand(command).name()}
         );
         switch (DialogCommand.getCommand(command)) {
-            case DESC -> {
+            case DESC -> { // Depricated
                 LOGGER.log(Level.SEVERE, "Process Description Command. TODO!");
             }
-            case DESC_NEXT -> {
+            case DESC_NEXT -> { // Depricated
                 LOGGER.log(Level.SEVERE, "Process Description Next Command. TODO!");
             }
             case NPC2 -> {
@@ -678,39 +678,59 @@ public class DialogPane extends BorderPane {
             }
             case EXIT_T -> {
                 LOGGER.log(Level.CONFIG, "Process Exit Top Command.");
-                for (VignetteTrigger t : vignette.getDoors()) {
-                    if (t.getLocation().equals(VignetteTrigger.Location.TOP)) {
-                        vignette.getGameState().setNextRoom(t);
-                        return;
+                Button b = nextButton(" >>> ");
+                answerButtonsBox.getChildren().add(b);
+                b.setOnAction((ba) -> {
+                    for (VignetteTrigger t : vignette.getDoors()) {
+                        if (t.getLocation().equals(VignetteTrigger.Location.TOP)) {
+                            vignette.getGameState().setNextRoom(t);
+                            return;
+                        }
                     }
-                }
+                    LOGGER.log(Level.SEVERE, "No exit found for: EXIT_B");
+                });
             }
             case EXIT_R -> {
                 LOGGER.log(Level.CONFIG, "Process Exit Right Command.");
-                for (VignetteTrigger t : vignette.getDoors()) {
-                    if (t.getLocation().equals(VignetteTrigger.Location.RIGHT)) {
-                        vignette.getGameState().setNextRoom(t);
-                        return;
+                Button b = nextButton(" >>> ");
+                answerButtonsBox.getChildren().add(b);
+                b.setOnAction((ba) -> {
+                    for (VignetteTrigger t : vignette.getDoors()) {
+                        if (t.getLocation().equals(VignetteTrigger.Location.RIGHT)) {
+                            vignette.getGameState().setNextRoom(t);
+                            return;
+                        }
                     }
-                }
+                    LOGGER.log(Level.SEVERE, "No exit found for: EXIT_R");
+                });
             }
             case EXIT_B -> {
                 LOGGER.log(Level.CONFIG, "Process Exit Bottom Command.");
-                for (VignetteTrigger t : vignette.getDoors()) {
-                    if (t.getLocation().equals(VignetteTrigger.Location.BOTTOM)) {
-                        vignette.getGameState().setNextRoom(t);
-                        return;
+                Button b = nextButton(" >>> ");
+                answerButtonsBox.getChildren().add(b);
+                b.setOnAction((ba) -> {
+                    for (VignetteTrigger t : vignette.getDoors()) {
+                        if (t.getLocation().equals(VignetteTrigger.Location.BOTTOM)) {
+                            vignette.getGameState().setNextRoom(t);
+                            return;
+                        }
                     }
-                }
+                    LOGGER.log(Level.SEVERE, "No exit found for: EXIT_B");
+                });
             }
             case EXIT_L -> {
                 LOGGER.log(Level.CONFIG, "Process Exit Left Command.");
-                for (VignetteTrigger t : vignette.getDoors()) {
-                    if (t.getLocation().equals(VignetteTrigger.Location.LEFT)) {
-                        vignette.getGameState().setNextRoom(t);
-                        return;
+                Button b = nextButton(" >>> ");
+                answerButtonsBox.getChildren().add(b);
+                b.setOnAction((ba) -> {
+                    for (VignetteTrigger t : vignette.getDoors()) {
+                        if (t.getLocation().equals(VignetteTrigger.Location.LEFT)) {
+                            vignette.getGameState().setNextRoom(t);
+                            return;
+                        }
                     }
-                }
+                    LOGGER.log(Level.SEVERE, "No exit found for: EXIT_L");
+                });
             }
             case EXIT_GENERIC -> {
                 LOGGER.log(Level.CONFIG, "Process Exit to Generic Location (NONE).");
@@ -725,6 +745,7 @@ public class DialogPane extends BorderPane {
                             return;
                         }
                     }
+                    LOGGER.log(Level.SEVERE, "No exit found for: EXIT_GENERIC");
                 });
             }
             case TO_JAIL -> {
