@@ -212,14 +212,8 @@ public class VendWidget extends VBox {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         Text nameText = itemText(thing.getName());
-        Text priceText = itemText(String.format("%4d", thing.getValue()));
         Text qtyText = itemText("999");
         updateQtyText(thing, qtyText);
-
-//        ImageView coinView = new ImageView(COIN_IMAGE);
-//        coinView.setFitHeight(20);
-//        coinView.setPreserveRatio(true);
-        updateItemOpacity(thing.getVendQuantity(), nameText, priceText, qtyText);
 
         final Button b1;
         final Button b2;
@@ -235,6 +229,14 @@ public class VendWidget extends VBox {
                 b2 = null;
             }
             case ORGANS, TRADE -> {
+                if (thing instanceof BodyPartThing bpt) {
+                    if (thing.getVendQuantity() < 0) {
+                        thing.setValue(bpt.getBodyPart().sellPrice);
+                    } else {
+                        thing.setValue(bpt.getBodyPart().buyPrice);
+                        // TODO: discount price
+                    }
+                }
                 b1 = new Button("Buy");
                 b1.setDisable(thing.getVendQuantity() < 0);
 
@@ -243,17 +245,21 @@ public class VendWidget extends VBox {
             }
         }
 
+        Text priceText = itemText(String.format("%4d", thing.getValue()));
+
+        updateItemOpacity(thing.getVendQuantity(), nameText, priceText, qtyText);
+
         b1.setOnAction((t) -> {
             if (thing.getVendQuantity() != 0) {
                 if (mode == VendMode.ORGANS) { // Buy organ
                     if (player.takeMoney(thing.getValue())) {
                         playerMoneyText.setText(String.valueOf(player.getMoney()));
                         thing.setVendQuantity(-1); // Can sell it.
-                        //player.restoreBodyPart(thing);
+                        player.restoreBodyPart((BodyPartThing) thing);
                     } else {
                         SoundEffectManager.getInstance().play(SoundEffectManager.Sound.FAIL);
                         LOGGER.log(Level.CONFIG, "Not enough funds to buy organ.");
-                        LOGGER.log(Level.CONFIG, "TODO: Button should be greyed out.");
+                        //LOGGER.log(Level.CONFIG, "TODO: Button should be greyed out.");
                     }
 
                 } else { // Inventory Item
@@ -266,7 +272,6 @@ public class VendWidget extends VBox {
                         // Add ting to player inventory.
                         Thing factoryThing = Thing.factory(thing.getClass().getCanonicalName());
                         if (player.getInventory().add(factoryThing)) {
-                            // TODO: PLay a cash sound.
                             SoundEffectManager.getInstance().play(SoundEffectManager.Sound.MONEY);
                             LOGGER.log(Level.CONFIG, "Purchased {0}", thing.getName());
                         } else {
