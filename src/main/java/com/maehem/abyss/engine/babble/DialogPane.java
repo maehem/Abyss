@@ -785,13 +785,18 @@ public class DialogPane extends BorderPane {
             }
             case ITEM_BUY -> {
                 LOGGER.log(Level.FINER, "Build Vend Widget for dialogChain item: {0}", dcNum);
-                int vendState = vignette.onVendItemsStart();
-                if (vendState < 0) { // Perform any pre-actions in custom vugnette.
-                    VendWidget vendWidget = new VendWidget(
-                            npc, vignette.getPlayer(),
-                            vignette.getVendItems(),
-                            answerButtonsBox.getHeight()
-                    );
+                VendWidget vendWidget = new VendWidget(
+                        npc, vignette.getPlayer(),
+                        answerButtonsBox.getHeight()
+                );
+                int vendState = vignette.onVendItemsStart(vendWidget);
+                if (vendState < 0) { // Perform any pre-actions in custom vignette.
+//                    VendWidget vendWidget = new VendWidget(
+//                            npc, vignette.getPlayer(),
+//                            vignette.getVendItems(),
+//                            answerButtonsBox.getHeight()
+//                    );
+                    vendWidget.init();
                     VBox.setMargin(vendWidget, new Insets(FONT_SIZE / 2));
                     VBox.getVgrow(vendWidget);
                     answerButtonsBox.getChildren().add(vendWidget);
