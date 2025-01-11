@@ -44,6 +44,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -67,7 +68,7 @@ public class DialogPane extends BorderPane {
     private final static double DROP_SPREAD = 50.0;
     private static final double CAMEO_H = 210;
     private static final String CLOSE_X_PATH = "/ui/panel-close-x.png";
-    // Bubble tuned with: https://svg-path.com/   Wonderful tool!
+    // Bubble SVG tuned with: https://svg-path.com/   Wonderful tool!
     private static final String ROUND_BUBBLE
             //= "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
             = "M175,39 h-10.82 L110.5,11 l27.92,28 H23 c-8.8,0,-16,7.2,-16,16 v98 c0,8.8,7.2,16,16,16 h152 c8.8,0,16,-7.2,16,-16 v-98 c0,-8.8,-7.2,-16,-16,-16 Z";
@@ -145,7 +146,16 @@ public class DialogPane extends BorderPane {
         dialogText.setFont(DIALOG_FONT);
 
         dialogTextFlow = new TextFlow(dialogText);
-        VBox nameDialogElementsBox = new VBox(nameBox, dialogTextFlow);
+        //dialogTextFlow.setBorder(new Border(new BorderStroke(Color.RED, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+
+        // Wrap the text flow in a Vbox to center align the text.
+        VBox dialogCenteringBox = new VBox(dialogTextFlow);
+        dialogCenteringBox.setPadding(new Insets(0, 0, FONT_SIZE * 2.0, 0));
+        //dialogCenteringBox.setBorder(new Border(new BorderStroke(Color.BLUE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
+        dialogCenteringBox.setAlignment(Pos.CENTER);
+        VBox.setVgrow(dialogCenteringBox, Priority.ALWAYS);
+
+        VBox nameDialogElementsBox = new VBox(nameBox, dialogCenteringBox);
         VBox.setMargin(nameBox, new Insets(0, 0, 0, 30));
         nameDialogElementsBox.setAlignment(Pos.TOP_CENTER);
         nameDialogElementsBox.setFillWidth(true);
@@ -156,14 +166,14 @@ public class DialogPane extends BorderPane {
         bubbleReg.setMinSize(200, 200);
 
         bubble = new StackPane(bubbleReg);
-        bubble.setPadding(new Insets(20));
+        //bubble.setPadding(new Insets(20));
         bubble.setStyle(
-                "-fx-background-color: white; "
+                "-fx-background-color: white; -fx-padding: 20;"
                 + "-fx-border-color: black; -fx-border-width: 4px; "
                 + "-fx-shape: \"" + ROUND_BUBBLE + "\";"
         );
         bubble.setEffect(new DropShadow(DROP_SPREAD, DROP_COLOR));
-        StackPane.setMargin(bubble, new Insets(0, 30, 30, 30));
+        StackPane.setMargin(bubble, new Insets(4, 30, 30, 30));
 
         Region alertReg = new Region();
         alertReg.setMinSize(200, 100);
@@ -282,7 +292,7 @@ public class DialogPane extends BorderPane {
         if (asBubble) {
             dialogText.setFont(DIALOG_FONT);
             dialogText.setFill(Color.BLACK);
-            dialogTextFlow.setPadding(new Insets(FONT_SIZE, FONT_SIZE / 2, 0, FONT_SIZE / 2));
+            dialogTextFlow.setPadding(new Insets(0, FONT_SIZE / 2, 0, FONT_SIZE / 2));
             dialogTextFlow.setTextAlignment(TextAlignment.CENTER);
             dialogTextFlow.setLineSpacing(-FONT_SIZE * 0.33);
             //dialogTextFlow.setEffect(new DropShadow(20, 10, 10, Color.BLACK));
