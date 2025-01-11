@@ -445,4 +445,13 @@ public class Player extends Character implements GameStateListener {
     public void gameStateMatrixSiteChanged(GameState gs, int newAddr) {
     }
 
+    public void restoreBodyPart(BodyPartThing thing) {
+        if (getSoldBodyParts().contains(thing.getBodyPart())) {
+            getSoldBodyParts().remove(thing.getBodyPart());
+            LOGGER.log(Level.SEVERE, "Restored sold body part." + thing.getBodyPart().name());
+        } else {
+            LOGGER.log(Level.SEVERE, "Unable to remove body part: " + thing.getBodyPart().name());
+        }
+    }
+
 }
