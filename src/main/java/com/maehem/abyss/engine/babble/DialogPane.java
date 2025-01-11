@@ -67,8 +67,10 @@ public class DialogPane extends BorderPane {
     private final static double DROP_SPREAD = 50.0;
     private static final double CAMEO_H = 210;
     private static final String CLOSE_X_PATH = "/ui/panel-close-x.png";
+    // Bubble tuned with: https://svg-path.com/   Wonderful tool!
     private static final String ROUND_BUBBLE
-            = "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
+            //= "M175,59h-96.82L47.5,11l7.92,48H23c-8.8,0-16,7.2-16,16v98c0,8.8,7.2,16,16,16h152c8.8,0,16-7.2,16-16v-98c0-8.8-7.2-16-16-16Z";
+            = "M175,39 h-10.82 L110.5,11 l27.92,28 H23 c-8.8,0,-16,7.2,-16,16 v98 c0,8.8,7.2,16,16,16 h152 c8.8,0,16,-7.2,16,-16 v-98 c0,-8.8,-7.2,-16,-16,-16 Z";
 
     public final static String RESP_FONT_PATH = "/fonts/Modenine-2OPd.ttf";
     private static final int RESPONSE_OK = 900;
@@ -138,13 +140,13 @@ public class DialogPane extends BorderPane {
         nameBox.setPadding(new Insets(FONT_SIZE / 3));
         nameText.setFont(DIALOG_NAME_FONT);
         nameText.setText(npc.getName());
-        nameBox.setAlignment(Pos.BASELINE_RIGHT);
+        nameBox.setAlignment(Pos.BASELINE_LEFT);
 
         dialogText.setFont(DIALOG_FONT);
 
         dialogTextFlow = new TextFlow(dialogText);
         VBox nameDialogElementsBox = new VBox(nameBox, dialogTextFlow);
-        VBox.setMargin(nameBox, new Insets(0, 20, 0, 0));
+        VBox.setMargin(nameBox, new Insets(0, 0, 0, 30));
         nameDialogElementsBox.setAlignment(Pos.TOP_CENTER);
         nameDialogElementsBox.setFillWidth(true);
 
