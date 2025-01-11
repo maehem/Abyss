@@ -61,7 +61,7 @@ import javafx.scene.text.TextFlow;
 public class DialogPane extends BorderPane {
 
     public final static String FONT_PATH = "/fonts/PatrickHand-Regular.ttf";
-    public final static double FONT_SIZE = 36;
+    public final static double FONT_SIZE = 30;
     private final static Color DROP_COLOR = new Color(0.0, 0.0, 0.0, 0.6);
     private final static Color DROP_COLOR_AB = new Color(0.0, 0.0, 0.0, 0.4);
     private final static double DROP_SPREAD = 50.0;
