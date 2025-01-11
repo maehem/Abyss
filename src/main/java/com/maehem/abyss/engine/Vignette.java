@@ -20,6 +20,7 @@ import static com.maehem.abyss.Engine.LOGGER;
 import com.maehem.abyss.engine.audio.music.MusicTrack;
 import com.maehem.abyss.engine.babble.BabbleNode;
 import com.maehem.abyss.engine.babble.DialogPane;
+import com.maehem.abyss.engine.babble.VendWidget;
 import com.maehem.abyss.engine.bbs.BBSTerminal;
 import com.maehem.abyss.engine.gui.GiveCreditsPane;
 import com.maehem.abyss.engine.view.ViewPane;
@@ -890,7 +891,6 @@ public abstract class Vignette extends ViewPane {
         return bundle.getString("dialog.0"); // Long
     }
 
-
     public void setGiveMoneyShowing(int amount, String title, EventHandler handler) {
         // Show pane for transering money to npc.
         giveCredits.show(amount, gameState.getPlayer().getMoney(), title, handler);
@@ -919,21 +919,14 @@ public abstract class Vignette extends ViewPane {
     }
 
     /**
-     * Override to provide items to show in VendWidget.
+     * Override to configure vend widget.
      *
-     * @return list of things NPC can vend.
+     * @param widget Vend widget. Add items and program any custom settings.
+     * @return -1 for normal vending or non-negative dialog chain index number
+     * if Vend should not occur and set dialog to that index.
      */
-    public ArrayList<Thing> getVendItems() {
-        return new ArrayList<>();
-    }
+    public int onVendItemsStart(VendWidget widget) {
 
-    /**
-     * Override to take action when VendWidget is done.
-     *
-     * @return non-negative dialog chain index number if Vend should not occur
-     * and set dialog to that index.
-     */
-    public int onVendItemsStart() {
         return -1;
     }
 
