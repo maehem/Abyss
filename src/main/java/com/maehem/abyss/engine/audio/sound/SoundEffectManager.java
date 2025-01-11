@@ -30,6 +30,7 @@ public class SoundEffectManager {
     public static enum Sound { // Use WAV. JavaFX/Mac bugs with mp3 and AAC.
         FAIL("fail.wav"),
         MONEY("money.wav"),
+        SQUISH("money.wav"), // TODO: Organ squish sound.
         ICE_DOWN_1("ice-down-1.wav");
 
         private AudioClip clip;
