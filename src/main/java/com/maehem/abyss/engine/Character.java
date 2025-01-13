@@ -324,13 +324,13 @@ public class Character extends Group {
 
                 // Figure out if we are moving left or right
                 if (getLayoutX() < x) {
-                    if (moveRight(12, pBounds)) {
+                    if (moveRight(16, pBounds)) {
                         LOGGER.finest("Moved Right");
                     } else {
                         stopAnimating();
                     }
                 } else if (getLayoutX() > x) {
-                    if (moveLeft(12, pBounds)) {
+                    if (moveLeft(16, pBounds)) {
                         LOGGER.finest("Moved Left");
                     } else {
                         stopAnimating();
@@ -339,13 +339,13 @@ public class Character extends Group {
 
                 // Figure out if we are moving up or down
                 if (getLayoutY() < y) {
-                    if (moveDown(4, pBounds)) {
+                    if (moveDown(6, pBounds)) {
                         LOGGER.finest("Moved Down");
                     } else {
                         stopAnimating();
                     }
                 } else if (getLayoutY() > y) {
-                    if (moveUp(4, pBounds)) {
+                    if (moveUp(6, pBounds)) {
                         LOGGER.finest("Moved Up");
                     } else {
                         stopAnimating();
