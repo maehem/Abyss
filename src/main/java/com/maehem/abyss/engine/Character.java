@@ -77,7 +77,7 @@ public class Character extends Group {
         // set origin
         // Translate the image such that our image position
         // is relative to the feet.
-        setOrigin(0.5, 0.9);
+        setOrigin(0.5, 0.8);
 
         setDefaultHearingBoundary();
         initFeetBoundary();
@@ -87,6 +87,8 @@ public class Character extends Group {
     }
 
     /**
+     * TODO: Setting this after init does not work right. Needs fixing.
+     *
      * Translate the character image so that the center (layoutX/Y) is at this
      * place in the image. Usually near the feet of the character.
      * setOrigin(0.5, 0.8) is a good starting point.
