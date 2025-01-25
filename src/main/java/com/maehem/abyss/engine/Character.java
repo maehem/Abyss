@@ -79,7 +79,7 @@ public class Character extends Group {
         // is relative to the feet.
         setOrigin(0.5, 0.8);
 
-        setDefaultHearingBoundary();
+        setHearingBoundary(1.0);
         initFeetBoundary();
         initTalkIcon();
 
@@ -128,13 +128,13 @@ public class Character extends Group {
         this.accountId = id;
     }
 
-    private void setDefaultHearingBoundary() {
+    public void setHearingBoundary(double scale) {
         double clipW = getPoseSheet().getWidth();
         double clipH = getPoseSheet().getHeight();
 
         getChildren().remove(getHearingBoundary());
 
-        hearingBoundary = new Ellipse(clipW / 2, clipW / 4);
+        hearingBoundary = new Ellipse(scale * clipW / 2, scale * clipW / 4);
         getHearingBoundary().setCenterX(clipW / 2);
         getHearingBoundary().setCenterY(clipH - getHearingBoundary().getRadiusY());
 
@@ -434,7 +434,7 @@ public class Character extends Group {
         setFeetBoundary();
 
         // todo reset listen bounds
-        setDefaultHearingBoundary();
+        setHearingBoundary(1.0);
         initTalkIcon();
     }
 
